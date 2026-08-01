@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Pusterom – Rolig mini-app</title>
+<meta name="description" content="Rolig mini-app for å dempe stress og nedstemthet.">
+<meta name="theme-color" content="#a8c5b0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <style>
   :root {
     --bg: #f5f7f4;
@@ -14,6 +22,20 @@
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --border: #e5ebe6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c211d;
+      --card: #262e26;
+      --text: #e3ece4;
+      --muted: #94a696;
+      --accent: #7fa98c;
+      --soft-blue: #2c3a44;
+      --soft-beige: #33302a;
+      --soft-green: #2a352c;
+      --border: #38423a;
+    }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -56,7 +78,7 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--border);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
@@ -71,20 +93,21 @@
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
     background: var(--card);
+    color: var(--text);
     margin-bottom: 16px;
   }
   .btn {
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: #16211a;
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -96,7 +119,13 @@
   .btn:active { opacity: 0.85; }
   .btn-secondary {
     background: var(--soft-blue);
+    color: var(--text);
     margin-top: 12px;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
   }
   .message {
     background: var(--soft-green);
@@ -107,7 +136,52 @@
     display: none;
   }
   .message.show { display: block; }
+  /* Streak / stats */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-card .num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-card .label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
   /* Breathing */
+  .pattern-picker {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .pattern-btn {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 4px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .pattern-btn.selected {
+    border-color: var(--accent);
+    background: var(--soft-green);
+    color: var(--text);
+    font-weight: 600;
+  }
   .circle-wrap {
     display: flex;
     justify-content: center;
@@ -123,12 +197,20 @@
     transition: transform 4s ease-in-out;
   }
   .circle.inhale { transform: scale(1.6); background: var(--accent); }
+  .circle.hold { transform: scale(1.6); background: var(--accent); }
   .circle.exhale { transform: scale(1); }
   .breath-text {
     text-align: center;
     font-size: 1.3rem;
     font-weight: 500;
     min-height: 2rem;
+  }
+  .cycle-count {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    min-height: 1.2rem;
+    margin-bottom: 8px;
   }
   .actions-list {
     display: flex;
@@ -142,7 +224,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    gap: 12px;
+    border: 1px solid var(--border);
   }
   .action-card.done {
     opacity: 0.6;
@@ -156,17 +239,35 @@
     font-size: 0.85rem;
     cursor: pointer;
     color: var(--text);
+    flex-shrink: 0;
   }
   .history-item {
     background: var(--card);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--border);
   }
   .history-item .date {
     font-size: 0.85rem;
     color: var(--muted);
+  }
+  .sparkline {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 60px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px;
+  }
+  .sparkline .bar {
+    flex: 1;
+    background: var(--accent);
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
   }
   .nav {
     position: fixed;
@@ -177,7 +278,7 @@
     display: flex;
     justify-content: space-around;
     padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    border-top: 1px solid var(--border);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
@@ -201,33 +302,44 @@
     text-align: center;
     margin-top: 24px;
   }
+  .data-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .data-actions .btn { font-size: 0.85rem; padding: 12px; }
+  #installBtn { display: none; }
 </style>
 </head>
 <body>
 
 <div id="page-hjem" class="page active">
-  <h1>Hei. Du er trygg her.</h1>
+  <h1 id="greeting">Hei. Du er trygg her.</h1>
+  <p class="support" id="streakLine"></p>
   <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+  <div class="mood-scale" id="moodScale" role="group" aria-label="Velg humør">
+    <button class="mood-btn" data-mood="1" aria-pressed="false" aria-label="Veldig lei meg">😔</button>
+    <button class="mood-btn" data-mood="2" aria-pressed="false" aria-label="Lei meg">😕</button>
+    <button class="mood-btn" data-mood="3" aria-pressed="false" aria-label="Nøytral">😐</button>
+    <button class="mood-btn" data-mood="4" aria-pressed="false" aria-label="Bra">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-pressed="false" aria-label="Veldig bra">😌</button>
   </div>
-  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
+  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)" aria-label="Notat"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
-  <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <div class="message" id="saveMsg" role="status" aria-live="polite">Takk. Det er bra at du sjekket inn.</div>
+  <button class="btn btn-secondary" onclick="switchPage('pusterom', event)">Pust med meg</button>
+  <button class="btn btn-ghost" id="installBtn" onclick="installApp()">📲 Legg til på hjemskjerm</button>
 </div>
 
 <div id="page-pusterom" class="page">
   <h1>Pusterom</h1>
-  <p class="support">Følg sirkelen. Pust rolig.</p>
+  <p class="support">Velg tempo og følg sirkelen.</p>
+  <div class="pattern-picker" id="patternPicker" role="group" aria-label="Velg pustemønster"></div>
   <div class="circle-wrap">
     <div class="circle" id="breathCircle"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
+  <div class="breath-text" id="breathText" role="status" aria-live="polite">Trykk start</div>
+  <div class="cycle-count" id="cycleCount"></div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
 </div>
 
@@ -239,37 +351,85 @@
 
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="num" id="statStreak">0</div>
+      <div class="label">Dager på rad</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statWeek">0</div>
+      <div class="label">Denne uken</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statTotal">0</div>
+      <div class="label">Totalt</div>
+    </div>
+  </div>
+  <div class="sparkline" id="sparkline" aria-hidden="true"></div>
   <div id="historyList"></div>
-  <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <div class="summary" id="weekSummary"></div>
+  <div class="data-actions">
+    <button class="btn btn-ghost" onclick="exportData()">⬇️ Eksporter data</button>
+    <button class="btn btn-ghost" onclick="resetData()">🗑️ Nullstill</button>
+  </div>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" onclick="switchPage('hjem', event)"><span>🏠</span>Hjem</button>
+  <button onclick="switchPage('pusterom', event)"><span>🌬️</span>Pusterom</button>
+  <button onclick="switchPage('grep', event)"><span>✋</span>Små grep</button>
+  <button onclick="switchPage('historikk', event)"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
 const actions = [
-  "Gå ut i frisk luft i 5 minutter",
-  "Drikk et glass vann sakte",
-  "Sett deg og kjenn føttene i gulvet",
-  "Skriv ned én ting du er takknemlig for",
-  "Ta tre dype pust der du er",
-  "Legg telefonen bort i 10 minutter",
-  "Strekk armene over hodet"
+  { text: "Gå ut i frisk luft i 5 minutter", icon: "🌤️" },
+  { text: "Drikk et glass vann sakte", icon: "💧" },
+  { text: "Sett deg og kjenn føttene i gulvet", icon: "🦶" },
+  { text: "Skriv ned én ting du er takknemlig for", icon: "📝" },
+  { text: "Ta tre dype pust der du er", icon: "🌬️" },
+  { text: "Legg telefonen bort i 10 minutter", icon: "📵" },
+  { text: "Strekk armene over hodet", icon: "🙆" }
 ];
+
+const BREATH_PATTERNS = {
+  rolig: { label: "Rolig", phases: [
+    { key: "inhale", text: "Pust inn…", ms: 4000 },
+    { key: "hold", text: "Hold…", ms: 2000 },
+    { key: "exhale", text: "Pust ut…", ms: 6000 }
+  ]},
+  boks: { label: "Boks", phases: [
+    { key: "inhale", text: "Pust inn…", ms: 4000 },
+    { key: "hold", text: "Hold…", ms: 4000 },
+    { key: "exhale", text: "Pust ut…", ms: 4000 },
+    { key: "hold", text: "Hold…", ms: 4000 }
+  ]},
+  "4-7-8": { label: "4-7-8", phases: [
+    { key: "inhale", text: "Pust inn…", ms: 4000 },
+    { key: "hold", text: "Hold…", ms: 7000 },
+    { key: "exhale", text: "Pust ut…", ms: 8000 }
+  ]}
+};
 
 let selectedMood = null;
 let breathing = false;
-let breathInterval = null;
-let phase = 0; // 0 inhale, 1 hold, 2 exhale
+let breathTimer = null;
+let phaseIndex = 0;
+let cycles = 0;
+let selectedPattern = localStorage.getItem('breathPattern') || 'rolig';
+let deferredInstallPrompt = null;
 
+// ---------- storage helpers ----------
+function getList(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
+function setList(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function dayKey(d) { return new Date(d).toDateString(); }
+
+// ---------- mood check-in ----------
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.mood-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
     btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
     selectedMood = btn.dataset.mood;
   });
 });
@@ -280,29 +440,47 @@ function saveCheckin() {
     return;
   }
   const note = document.getElementById('note').value.trim();
-  const entry = {
-    date: new Date().toISOString(),
-    mood: selectedMood,
-    note: note
-  };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const entry = { date: new Date().toISOString(), mood: selectedMood, note: note };
+  const list = getList('checkins');
   list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
+  setList('checkins', list);
   document.getElementById('saveMsg').classList.add('show');
   document.getElementById('note').value = '';
   selectedMood = null;
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
   setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
+  renderGreeting();
 }
 
-function switchPage(name) {
+// ---------- navigation ----------
+function switchPage(name, evt) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  if (name === 'hjem') renderGreeting();
+}
+
+// ---------- breathing ----------
+function renderPatternPicker() {
+  const picker = document.getElementById('patternPicker');
+  picker.innerHTML = '';
+  Object.keys(BREATH_PATTERNS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'pattern-btn' + (key === selectedPattern ? ' selected' : '');
+    btn.textContent = BREATH_PATTERNS[key].label;
+    btn.setAttribute('aria-pressed', key === selectedPattern ? 'true' : 'false');
+    btn.onclick = () => {
+      if (breathing) return;
+      selectedPattern = key;
+      localStorage.setItem('breathPattern', key);
+      renderPatternPicker();
+    };
+    picker.appendChild(btn);
+  });
 }
 
 function toggleBreath() {
@@ -311,53 +489,69 @@ function toggleBreath() {
   const text = document.getElementById('breathText');
   if (!breathing) {
     breathing = true;
+    cycles = 0;
+    phaseIndex = 0;
     btn.textContent = 'Stopp';
-    phase = 0;
+    updateCycleCount();
     runBreathCycle();
   } else {
     breathing = false;
-    clearTimeout(breathInterval);
+    clearTimeout(breathTimer);
     btn.textContent = 'Start';
     text.textContent = 'Trykk start';
     circle.className = 'circle';
+    if (cycles > 0) logBreathSession();
+    document.getElementById('cycleCount').textContent = '';
   }
+}
+
+function updateCycleCount() {
+  document.getElementById('cycleCount').textContent = cycles > 0 ? `Runde ${cycles}` : '';
 }
 
 function runBreathCycle() {
   if (!breathing) return;
   const circle = document.getElementById('breathCircle');
   const text = document.getElementById('breathText');
-  if (phase === 0) {
-    text.textContent = 'Pust inn…';
-    circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
-  } else if (phase === 1) {
-    text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
-  } else {
-    text.textContent = 'Pust ut…';
-    circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
-  }
+  const pattern = BREATH_PATTERNS[selectedPattern];
+  const phase = pattern.phases[phaseIndex];
+  text.textContent = phase.text;
+  circle.className = 'circle ' + phase.key;
+  breathTimer = setTimeout(() => {
+    phaseIndex++;
+    if (phaseIndex >= pattern.phases.length) {
+      phaseIndex = 0;
+      cycles++;
+      updateCycleCount();
+    }
+    runBreathCycle();
+  }, phase.ms);
 }
 
+function logBreathSession() {
+  const list = getList('breathSessions');
+  list.unshift({ date: new Date().toISOString(), pattern: selectedPattern, cycles: cycles });
+  setList('breathSessions', list);
+}
+
+// ---------- small actions ----------
 function renderActions() {
   const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
+  const today = dayKey(new Date());
   const list = document.getElementById('actionsList');
   list.innerHTML = '';
   actions.forEach((a, i) => {
     const isDone = done[today] && done[today].includes(i);
     const card = document.createElement('div');
     card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    card.innerHTML = `<span>${a.icon} ${a.text}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
     list.appendChild(card);
   });
 }
 
 function toggleAction(i) {
   const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
+  const today = dayKey(new Date());
   if (!done[today]) done[today] = [];
   const idx = done[today].indexOf(i);
   if (idx > -1) done[today].splice(idx, 1);
@@ -366,8 +560,57 @@ function toggleAction(i) {
   renderActions();
 }
 
+// ---------- activity aggregation (for streak & weekly stats) ----------
+function allActivityDates() {
+  const dates = [];
+  getList('checkins').forEach(e => dates.push(new Date(e.date)));
+  getList('breathSessions').forEach(e => dates.push(new Date(e.date)));
+  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  Object.keys(done).forEach(dstr => { if (done[dstr].length > 0) dates.push(new Date(dstr)); });
+  return dates;
+}
+
+function computeStreak() {
+  const dayKeys = new Set(allActivityDates().map(d => dayKey(d)));
+  let streak = 0;
+  let cursor = new Date();
+  while (dayKeys.has(dayKey(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+function computeWeekCount() {
+  const now = new Date();
+  const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  return allActivityDates().filter(d => d > weekAgo).length;
+}
+
+function computeTotalCount() {
+  return allActivityDates().length;
+}
+
+// ---------- greeting ----------
+function renderGreeting() {
+  const hour = new Date().getHours();
+  let greet = 'Hei. Du er trygg her.';
+  if (hour < 6) greet = 'God natt. Du er trygg her.';
+  else if (hour < 10) greet = 'God morgen. Du er trygg her.';
+  else if (hour < 18) greet = 'Hei. Du er trygg her.';
+  else greet = 'God kveld. Du er trygg her.';
+  document.getElementById('greeting').textContent = greet;
+
+  const streak = computeStreak();
+  const streakLine = document.getElementById('streakLine');
+  streakLine.textContent = streak > 1
+    ? `Du har tatt vare på deg selv ${streak} dager på rad. Bra jobbet.`
+    : '';
+}
+
+// ---------- history page ----------
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = getList('checkins');
   const container = document.getElementById('historyList');
   container.innerHTML = '';
   if (list.length === 0) {
@@ -378,18 +621,99 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + escapeHtml(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
-  // week count
-  const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
-  const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+
+  document.getElementById('statStreak').textContent = computeStreak();
+  document.getElementById('statWeek').textContent = computeWeekCount();
+  document.getElementById('statTotal').textContent = computeTotalCount();
+
+  const weekCount = computeWeekCount();
+  document.getElementById('weekSummary').textContent =
+    `Du har tatt vare på deg selv ${weekCount} ${weekCount === 1 ? 'gang' : 'ganger'} denne uken. Det er fint.`;
+
+  renderSparkline(list);
 }
 
-// init
+function renderSparkline(checkins) {
+  const spark = document.getElementById('sparkline');
+  spark.innerHTML = '';
+  const recent = checkins.slice(0, 14).reverse();
+  if (recent.length === 0) {
+    spark.style.display = 'none';
+    return;
+  }
+  spark.style.display = 'flex';
+  recent.forEach(e => {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    const pct = Math.max(10, (Number(e.mood) / 5) * 100);
+    bar.style.height = pct + '%';
+    spark.appendChild(bar);
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---------- data export / reset ----------
+function exportData() {
+  const data = {
+    checkins: getList('checkins'),
+    breathSessions: getList('breathSessions'),
+    doneActions: JSON.parse(localStorage.getItem('doneActions') || '{}'),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pusterom-data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetData() {
+  if (!confirm('Er du sikker på at du vil slette all lagret data? Dette kan ikke angres.')) return;
+  ['checkins', 'breathSessions', 'doneActions', 'breathPattern'].forEach(k => localStorage.removeItem(k));
+  selectedPattern = 'rolig';
+  renderPatternPicker();
+  renderActions();
+  renderHistory();
+  renderGreeting();
+}
+
+// ---------- PWA install ----------
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+});
+
+function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.then && deferredInstallPrompt.then(() => {});
+  deferredInstallPrompt.userChoice.finally(() => {
+    deferredInstallPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ---------- init ----------
+renderGreeting();
+renderPatternPicker();
 renderActions();
 renderHistory();
 </script>
