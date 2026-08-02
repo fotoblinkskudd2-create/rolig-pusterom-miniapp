@@ -201,6 +201,34 @@
     text-align: center;
     margin-top: 24px;
   }
+  .gold-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 18, 8, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .gold-overlay.show { display: flex; }
+  #goldCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .gold-card {
+    position: relative;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 32px 24px 24px;
+    max-width: 320px;
+    width: 85%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    z-index: 2;
+  }
+  .gold-card h2 { margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -250,6 +278,15 @@
   <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
+<div class="gold-overlay" id="goldOverlay">
+  <canvas id="goldCanvas"></canvas>
+  <div class="gold-card">
+    <h2>🌟 Gyllent øyeblikk</h2>
+    <p id="goldStreak"></p>
+    <button class="btn" onclick="closeGoldMoment()">Takk</button>
+  </div>
+</div>
+
 <script>
 const actions = [
   "Gå ut i frisk luft i 5 minutter",
@@ -265,6 +302,8 @@ let selectedMood = null;
 let breathing = false;
 let breathInterval = null;
 let phase = 0; // 0 inhale, 1 hold, 2 exhale
+let breathCycles = 0;
+let goldRunning = false;
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -294,6 +333,7 @@ function saveCheckin() {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
   setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
+  checkGoldMoment();
 }
 
 function switchPage(name) {
@@ -337,8 +377,20 @@ function runBreathCycle() {
   } else {
     text.textContent = 'Pust ut…';
     circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
+    breathInterval = setTimeout(() => {
+      phase = 0;
+      breathCycles++;
+      if (breathCycles === 1) markBreathDone();
+      runBreathCycle();
+    }, 6000);
   }
+}
+
+function markBreathDone() {
+  const done = JSON.parse(localStorage.getItem('breathDone') || '{}');
+  done[new Date().toDateString()] = true;
+  localStorage.setItem('breathDone', JSON.stringify(done));
+  checkGoldMoment();
 }
 
 function renderActions() {
@@ -364,6 +416,7 @@ function toggleAction(i) {
   else done[today].push(i);
   localStorage.setItem('doneActions', JSON.stringify(done));
   renderActions();
+  checkGoldMoment();
 }
 
 function renderHistory() {
@@ -386,7 +439,90 @@ function renderHistory() {
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  const streak = calcStreak();
+  const streakNote = streak > 1 ? ` 🔥 ${streak} dager på rad.` : '';
+  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.${streakNote}`;
+}
+
+function calcStreak() {
+  const checkins = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const days = new Set(checkins.map(e => new Date(e.date).toDateString()));
+  let streak = 0;
+  let cursor = new Date();
+  while (days.has(cursor.toDateString())) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+function checkGoldMoment() {
+  const today = new Date().toDateString();
+  const checkins = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const hasCheckin = checkins.some(e => new Date(e.date).toDateString() === today);
+  const doneActions = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  const hasAction = (doneActions[today] || []).length > 0;
+  const hasBreathed = !!JSON.parse(localStorage.getItem('breathDone') || '{}')[today];
+  if (!(hasCheckin && hasAction && hasBreathed)) return;
+  const shown = JSON.parse(localStorage.getItem('goldShown') || '{}');
+  if (shown[today]) return;
+  shown[today] = true;
+  localStorage.setItem('goldShown', JSON.stringify(shown));
+  showGoldMoment();
+}
+
+function showGoldMoment() {
+  const streak = calcStreak();
+  document.getElementById('goldStreak').textContent = streak > 1
+    ? `${streak} dager på rad. Du bygger noe fint.`
+    : 'Du sjekket inn, pustet, og tok et lite grep for deg selv i dag. Tre gode ting.';
+  document.getElementById('goldOverlay').classList.add('show');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    runGoldParticles();
+  }
+}
+
+function closeGoldMoment() {
+  document.getElementById('goldOverlay').classList.remove('show');
+  goldRunning = false;
+}
+
+function runGoldParticles() {
+  const canvas = document.getElementById('goldCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#e8c468', '#f0d98c', '#d4af37', '#fff3c4'];
+  const particles = Array.from({ length: 70 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * 0.6,
+    r: 2 + Math.random() * 4,
+    speed: 1 + Math.random() * 2.5,
+    drift: (Math.random() - 0.5) * 1.2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 0.6 + Math.random() * 0.4
+  }));
+  goldRunning = true;
+  let elapsed = 0;
+  function frame() {
+    if (!goldRunning) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y += p.speed;
+      p.x += p.drift;
+      if (p.y > canvas.height + 20) p.y = -20;
+      ctx.beginPath();
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    elapsed += 16;
+    if (elapsed < 4500 && goldRunning) requestAnimationFrame(frame);
+    else goldRunning = false;
+  }
+  requestAnimationFrame(frame);
 }
 
 // init
