@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="description" content="Rolig mini-app for å dempe stress og nedstemthet.">
+<meta name="theme-color" content="#a8c5b0">
 <title>Pusterom – Rolig mini-app</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
   :root {
     --bg: #f5f7f4;
@@ -201,6 +206,49 @@
     text-align: center;
     margin-top: 24px;
   }
+  .help-box {
+    background: var(--soft-blue);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 24px;
+    font-size: 0.9rem;
+  }
+  .help-box summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .help-box ul {
+    margin: 10px 0 0 18px;
+    color: var(--text);
+  }
+  .data-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .data-actions button {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid #e0e6e1;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .data-actions button.danger {
+    color: #a85a4a;
+    border-color: #e6cfc8;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 </style>
 </head>
 <body>
@@ -208,26 +256,36 @@
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
   <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+  <div class="mood-scale" id="moodScale" role="group" aria-label="Velg humør">
+    <button class="mood-btn" data-mood="1" aria-label="Veldig vanskelig" aria-pressed="false">😔</button>
+    <button class="mood-btn" data-mood="2" aria-label="Vanskelig" aria-pressed="false">😕</button>
+    <button class="mood-btn" data-mood="3" aria-label="Nøytral" aria-pressed="false">😐</button>
+    <button class="mood-btn" data-mood="4" aria-label="Bra" aria-pressed="false">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-label="Veldig bra" aria-pressed="false">😌</button>
   </div>
-  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
+  <label for="note" class="visually-hidden">Noen ord om hvordan du har det (valgfritt)</label>
+  <textarea id="note" maxlength="500" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+  <div class="message" id="saveMsg" role="status" aria-live="polite">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+
+  <details class="help-box">
+    <summary>Trenger du å snakke med noen nå?</summary>
+    <ul>
+      <li>Mental Helse Hjelpetelefon: 116 123 (døgnåpen)</li>
+      <li>Kirkens SOS: 22 40 00 40 (døgnåpen)</li>
+      <li>Ved akutt fare for liv og helse: ring 113</li>
+    </ul>
+  </details>
 </div>
 
 <div id="page-pusterom" class="page">
   <h1>Pusterom</h1>
   <p class="support">Følg sirkelen. Pust rolig.</p>
   <div class="circle-wrap">
-    <div class="circle" id="breathCircle"></div>
+    <div class="circle" id="breathCircle" aria-hidden="true"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
+  <div class="breath-text" id="breathText" role="status" aria-live="polite">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
 </div>
 
@@ -241,13 +299,17 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <div class="data-actions">
+    <button type="button" onclick="exportData()">Last ned mine data</button>
+    <button type="button" class="danger" onclick="clearAllData()">Slett alle mine data</button>
+  </div>
 </div>
 
-<nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+<nav class="nav" aria-label="Hovednavigasjon">
+  <button class="active" data-page="hjem" aria-current="page" onclick="switchPage('hjem')"><span aria-hidden="true">🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span aria-hidden="true">🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span aria-hidden="true">✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span aria-hidden="true">📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -268,8 +330,12 @@ let phase = 0; // 0 inhale, 1 hold, 2 exhale
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.mood-btn').forEach(b => {
+      b.classList.remove('selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
     btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
     selectedMood = btn.dataset.mood;
   });
 });
@@ -291,7 +357,10 @@ function saveCheckin() {
   document.getElementById('saveMsg').classList.add('show');
   document.getElementById('note').value = '';
   selectedMood = null;
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
   setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
 }
@@ -299,8 +368,12 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => {
+    const isActive = b.dataset.page === name;
+    b.classList.toggle('active', isActive);
+    if (isActive) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -378,7 +451,15 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      const dateDiv = document.createElement('div');
+      dateDiv.className = 'date';
+      dateDiv.textContent = `${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}`;
+      item.appendChild(dateDiv);
+      if (e.note) {
+        const noteDiv = document.createElement('div');
+        noteDiv.textContent = e.note;
+        item.appendChild(noteDiv);
+      }
       container.appendChild(item);
     });
   }
@@ -389,9 +470,41 @@ function renderHistory() {
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
+function exportData() {
+  const data = {
+    checkins: JSON.parse(localStorage.getItem('checkins') || '[]'),
+    doneActions: JSON.parse(localStorage.getItem('doneActions') || '{}'),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pusterom-data.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function clearAllData() {
+  const ok = confirm('Er du sikker på at du vil slette alle dine sjekk-ins og lagrede grep? Dette kan ikke angres.');
+  if (!ok) return;
+  localStorage.removeItem('checkins');
+  localStorage.removeItem('doneActions');
+  renderHistory();
+  renderActions();
+}
+
 // init
 renderActions();
 renderHistory();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
