@@ -3,171 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pusterom – Rolig mini-app</title>
+<title>SmarteMind – AI Wellness Coach</title>
 <style>
   :root {
-    --bg: #f5f7f4;
+    --bg: #fafbf9;
     --card: #ffffff;
-    --text: #3a4a3f;
-    --muted: #7a8a7f;
+    --text: #2c3e35;
+    --muted: #6b7c73;
     --accent: #a8c5b0;
-    --soft-blue: #d4e4f0;
-    --soft-beige: #f0e9df;
-    --soft-green: #e0ebe3;
+    --smart: #7eb3d4;
+    --glow: #e8f4ff;
+    --warm: #f5e6d3;
+    --success: #c8e6c9;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    font-family: -apple-system, system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, #f0f5f0 100%);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
-    line-height: 1.5;
+    padding-bottom: 100px;
+    line-height: 1.6;
   }
-  .page {
-    display: none;
-    padding: 28px 20px 40px;
-    max-width: 440px;
-    margin: 0 auto;
+  .page { display: none; padding: 24px 18px 40px; max-width: 500px; margin: 0 auto; }
+  .page.active { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 10px; }
+  h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
+  p { color: var(--muted); margin-bottom: 16px; }
+
+  .hero-input {
+    background: linear-gradient(135deg, var(--smart) 0%, #6ba3c4 100%);
+    border-radius: 20px;
+    padding: 32px 24px;
+    margin: 16px 0 24px;
+    text-align: center;
+    color: white;
   }
-  .page.active { display: block; }
-  h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 16px;
-  }
-  p, .support {
-    color: var(--muted);
-    font-size: 0.95rem;
+  .hero-input h1 { color: white; margin-bottom: 8px; font-size: 1.5rem; }
+  .hero-input p { color: rgba(255,255,255,0.9); margin-bottom: 20px; }
+
+  .input-group {
+    display: flex;
+    gap: 8px;
     margin-bottom: 20px;
   }
-  .mood-scale {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin: 24px 0;
-  }
-  .mood-btn {
+
+  input[type="text"] {
     flex: 1;
+    padding: 14px 16px;
+    border: 2px solid #e0e8e3;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s;
     background: var(--card);
-    border: 2px solid #e5ebe6;
-    border-radius: 16px;
-    padding: 14px 4px;
-    font-size: 1.5rem;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168, 197, 176, 0.1);
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #1a2f20;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
-  .mood-btn.selected {
-    border-color: var(--accent);
-    background: var(--soft-green);
-    transform: scale(1.05);
-  }
-  textarea {
-    width: 100%;
-    min-height: 80px;
-    border: 1px solid #e0e6e1;
-    border-radius: 16px;
-    padding: 14px;
-    font-size: 1rem;
-    font-family: inherit;
-    resize: vertical;
-    background: var(--card);
-    margin-bottom: 16px;
-  }
-  .btn {
+
+  .btn:active { opacity: 0.9; transform: scale(0.98); }
+
+  .btn-full {
     display: block;
     width: 100%;
-    background: var(--accent);
-    color: #2a3a2f;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    padding: 14px;
+    font-size: 1rem;
+    margin-top: 16px;
   }
-  .btn:active { opacity: 0.85; }
+
   .btn-secondary {
-    background: var(--soft-blue);
-    margin-top: 12px;
+    background: var(--glow);
+    color: var(--smart);
+    margin-top: 10px;
   }
-  .message {
-    background: var(--soft-green);
+
+  .btn-tertiary {
+    background: var(--warm);
+    color: #8b6f47;
+  }
+
+  .insight-card {
+    background: linear-gradient(135deg, var(--glow) 0%, rgba(126, 179, 212, 0.05) 100%);
+    border: 1px solid rgba(126, 179, 212, 0.2);
     border-radius: 16px;
-    padding: 16px;
-    margin-top: 20px;
-    text-align: center;
-    display: none;
+    padding: 18px;
+    margin: 12px 0;
+    border-left: 4px solid var(--smart);
   }
-  .message.show { display: block; }
-  /* Breathing */
-  .circle-wrap {
+
+  .insight-card.success {
+    background: linear-gradient(135deg, var(--success) 0%, rgba(200, 230, 201, 0.3) 100%);
+    border-color: rgba(76, 175, 80, 0.2);
+    border-left-color: #4caf50;
+  }
+
+  .insight-card.warm {
+    background: linear-gradient(135deg, var(--warm) 0%, rgba(245, 230, 211, 0.3) 100%);
+    border-color: rgba(255, 152, 0, 0.15);
+    border-left-color: #ff9800;
+  }
+
+  .insight-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 260px;
+    gap: 6px;
+  }
+
+  .insight-content {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .status-bar {
+    display: flex;
+    gap: 4px;
+    margin: 16px 0;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e0e8e3;
+    transition: all 0.3s;
+  }
+
+  .status-dot.active { background: var(--smart); transform: scale(1.3); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
     margin: 20px 0;
   }
-  .circle {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: var(--soft-blue);
-    transition: transform 4s ease-in-out;
-  }
-  .circle.inhale { transform: scale(1.6); background: var(--accent); }
-  .circle.exhale { transform: scale(1); }
-  .breath-text {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 500;
-    min-height: 2rem;
-  }
-  .actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .action-card {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #e8eee9;
-  }
-  .action-card.done {
-    opacity: 0.6;
-    background: var(--soft-green);
-  }
-  .action-card button {
-    background: none;
-    border: 1px solid var(--accent);
-    border-radius: 12px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    color: var(--text);
-  }
-  .history-item {
+
+  .stat-card {
     background: var(--card);
     border-radius: 14px;
     padding: 14px;
-    margin-bottom: 10px;
+    text-align: center;
     border: 1px solid #e8eee9;
   }
-  .history-item .date {
-    font-size: 0.85rem;
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--smart);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .history-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e8eee9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .history-meta {
+    font-size: 0.8rem;
     color: var(--muted);
   }
+
   .nav {
     position: fixed;
     bottom: 0;
@@ -180,6 +213,7 @@
     border-top: 1px solid #e5ebe6;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
+
   .nav button {
     background: none;
     border: none;
@@ -190,207 +224,463 @@
     align-items: center;
     gap: 4px;
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 6px 12px;
+    transition: all 0.2s;
   }
-  .nav button.active { color: var(--text); font-weight: 600; }
-  .nav button span { font-size: 1.3rem; }
-  .summary {
-    background: var(--soft-beige);
-    border-radius: 16px;
-    padding: 16px;
+
+  .nav button.active {
+    color: var(--smart);
+    font-weight: 600;
+  }
+
+  .nav button span { font-size: 1.4rem; }
+
+  .loading {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--smart);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .ai-badge {
+    display: inline-block;
+    background: var(--glow);
+    color: var(--smart);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .empty-state {
     text-align: center;
-    margin-top: 24px;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+  }
+
+  .tag {
+    background: var(--glow);
+    color: var(--smart);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
   }
 </style>
 </head>
 <body>
 
-<div id="page-hjem" class="page active">
-  <h1>Hei. Du er trygg her.</h1>
-  <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+<!-- SMART INPUT PAGE -->
+<div id="page-smart" class="page active">
+  <div class="hero-input">
+    <h1>SmarteMind</h1>
+    <p>En ord eller tanke. Vi gjør resten.</p>
   </div>
-  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
-  <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
-  <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
-</div>
 
-<div id="page-pusterom" class="page">
-  <h1>Pusterom</h1>
-  <p class="support">Følg sirkelen. Pust rolig.</p>
-  <div class="circle-wrap">
-    <div class="circle" id="breathCircle"></div>
+  <div class="input-group">
+    <input type="text" id="smartInput" placeholder="stresset, glad, usikker..." />
+    <button class="btn" onclick="analyzeInput()">Analyser</button>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
-  <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
+
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div class="status-dot"></div>
+    <div class="status-dot"></div>
+  </div>
+
+  <p style="font-size: 0.85rem; text-align: center;">Kunstig intelligens genererer personaliserte innspill basert på dine ord og mønster.</p>
+
+  <div id="smartResults"></div>
+
+  <button class="btn btn-full btn-secondary" onclick="switchPage('historikk')">Se din oversikt</button>
 </div>
 
-<div id="page-grep" class="page">
-  <h1>Små grep</h1>
-  <p class="support">Enkle ting som kan hjelpe her og nå.</p>
-  <div class="actions-list" id="actionsList"></div>
+<!-- INSIGHT PAGE -->
+<div id="page-insight" class="page">
+  <button class="btn btn-tertiary" style="width: auto; margin-bottom: 16px;" onclick="switchPage('smart')">← Tilbake</button>
+
+  <h1 id="insightTitle">Insight</h1>
+  <span class="ai-badge">AI Analysert</span>
+
+  <div id="insightContent" style="margin-top: 20px;"></div>
+
+  <div style="margin-top: 24px;">
+    <button class="btn btn-full" onclick="saveInsight()">Lagre & Neste</button>
+  </div>
 </div>
 
+<!-- PROFILE PAGE -->
+<div id="page-profil" class="page">
+  <h1>Din Profil</h1>
+  <p>AI-lært modell av deg og dine mønstre.</p>
+
+  <div class="grid-2">
+    <div class="stat-card">
+      <div class="stat-value" id="totalInteractions">0</div>
+      <div class="stat-label">Interaksjoner</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="currentStreak">0</div>
+      <div class="stat-label">Dagestreak</div>
+    </div>
+  </div>
+
+  <h2>Dine Mønstre</h2>
+  <div id="patternsList"></div>
+
+  <h2>Preferanser</h2>
+  <div id="preferencesList"></div>
+</div>
+
+<!-- HISTORY PAGE -->
 <div id="page-historikk" class="page">
-  <h1>Din oversikt</h1>
-  <div id="historyList"></div>
-  <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <h1>Dine Møter</h1>
+  <p>Se hvordan du har brukt SmarteMind.</p>
+
+  <div class="grid-2">
+    <div class="stat-card">
+      <div class="stat-value" id="weekCount">0</div>
+      <div class="stat-label">denne uken</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="avgMood">—</div>
+      <div class="stat-label">gjennomsnittsmood</div>
+    </div>
+  </div>
+
+  <h2>Siste Møter</h2>
+  <div class="history-list" id="historyList"></div>
 </div>
 
+<!-- NAVIGATION -->
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" onclick="switchPage('smart')"><span>🧠</span>Smart</button>
+  <button onclick="switchPage('profil')"><span>👤</span>Profil</button>
+  <button onclick="switchPage('historikk')"><span>📊</span>Historikk</button>
 </nav>
 
 <script>
-const actions = [
-  "Gå ut i frisk luft i 5 minutter",
-  "Drikk et glass vann sakte",
-  "Sett deg og kjenn føttene i gulvet",
-  "Skriv ned én ting du er takknemlig for",
-  "Ta tre dype pust der du er",
-  "Legg telefonen bort i 10 minutter",
-  "Strekk armene over hodet"
-];
+let currentEntry = null;
+let allEntries = JSON.parse(localStorage.getItem('smartEntries') || '[]');
 
-let selectedMood = null;
-let breathing = false;
-let breathInterval = null;
-let phase = 0; // 0 inhale, 1 hold, 2 exhale
-
-document.querySelectorAll('.mood-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedMood = btn.dataset.mood;
-  });
-});
-
-function saveCheckin() {
-  if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+function analyzeInput() {
+  const input = document.getElementById('smartInput').value.trim();
+  if (!input || input.length < 1) {
+    alert('Skriv minst ett ord.');
     return;
   }
-  const note = document.getElementById('note').value.trim();
-  const entry = {
-    date: new Date().toISOString(),
-    mood: selectedMood,
-    note: note
+
+  // Simulate AI analysis - in production this would call Claude/Herodes
+  const analysis = generateSmartAnalysis(input);
+
+  currentEntry = {
+    input: input,
+    timestamp: new Date().toISOString(),
+    analysis: analysis
   };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
-  document.getElementById('saveMsg').classList.add('show');
-  document.getElementById('note').value = '';
-  selectedMood = null;
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
-  renderHistory();
+
+  displayAnalysis(analysis);
+}
+
+function generateSmartAnalysis(input) {
+  // Normalize input
+  const lower = input.toLowerCase();
+
+  // Emotion detection patterns
+  const emotionMap = {
+    'stresset': { mood: 4, type: 'stress', icon: '⚡' },
+    'stress': { mood: 4, type: 'stress', icon: '⚡' },
+    'glad': { mood: 1, type: 'joy', icon: '✨' },
+    'lykkelig': { mood: 1, type: 'joy', icon: '✨' },
+    'trist': { mood: 5, type: 'sadness', icon: '🌧️' },
+    'usikker': { mood: 3, type: 'doubt', icon: '❓' },
+    'angst': { mood: 5, type: 'anxiety', icon: '😰' },
+    'redd': { mood: 5, type: 'anxiety', icon: '😰' },
+    'rolig': { mood: 0, type: 'calm', icon: '🌸' },
+    'energi': { mood: 2, type: 'energy', icon: '⚡' },
+    'træt': { mood: 5, type: 'fatigue', icon: '😴' },
+    'sliten': { mood: 5, type: 'fatigue', icon: '😴' },
+    'fokus': { mood: 2, type: 'focus', icon: '🎯' },
+    'ukonsentrert': { mood: 3, type: 'scattered', icon: '🌀' },
+  };
+
+  let detected = null;
+  for (let [word, data] of Object.entries(emotionMap)) {
+    if (lower.includes(word)) {
+      detected = data;
+      break;
+    }
+  }
+
+  if (!detected) {
+    detected = { mood: 2, type: 'neutral', icon: '🤔' };
+  }
+
+  // Generate personalized insights based on detected emotion
+  const insights = generateInsights(detected.type, input);
+
+  return {
+    mood: detected.mood,
+    type: detected.type,
+    icon: detected.icon,
+    insights: insights,
+    recommendation: getRecommendation(detected.type),
+    tags: extractTags(input, detected.type)
+  };
+}
+
+function generateInsights(type, input) {
+  const insightBank = {
+    'stress': [
+      { title: '🌬️ Akutt lindring', content: 'Prøv 4-7-8 pusting: 4 sekunder inn, hold 7, pust ut 8. Gjenta 3 ganger.' },
+      { title: '📍 Grunnfeste', content: 'Naviger kroppen: Hva ser du? Hva hører du? Hva føler du? Engasjerer alle sanser.' },
+      { title: '✋ Mikrohandling', content: 'En liten handling nå demper stresshormoner. Gå, vann, eller 30 sekunder stillhet.' }
+    ],
+    'anxiety': [
+      { title: '🎯 Fragmentering', content: 'Del det som skaper angst i små, håndterbare biter. Hva er det minste steget?' },
+      { title: '🔄 Kategori-øvelse', content: 'Navngi 5 grønne ting, 4 blå ting, 3 lydere. Trekker fokus fra indre tanker.' },
+      { title: '⏰ Bekymringsavtale', content: 'Sett av 10 minutter senere for å bekymre deg. Nå fokuserer du på noe annet.' }
+    ],
+    'sadness': [
+      { title: '💭 Selv-medfølelse', content: 'Snakk til deg som en god venn. Hva ville du sagt til dem i samme situasjon?' },
+      { title: '🌍 Kontekst', content: 'Triste dager er normale. Dette er midlertidig. Du har overcommet ting før.' },
+      { title: '🤝 Tilkobling', content: 'Ring eller skriv til noen. Ensomhet + tristesse = tungt. Dele det letter byrden.' }
+    ],
+    'doubt': [
+      { title: '✅ Evidens', content: 'List opp 3 ting du har klart der du var usikker. Du er mer kompetent enn du tror.' },
+      { title: '🎲 Akseptering', content: 'Usikkerhet er del av å vokse. Prøv: "Jeg vet ikke, og det er OK."' },
+      { title: '🎬 Handling', content: 'Tvil fordamper i handling. Ett lite steg. Så neste. Så neste.' }
+    ],
+    'fatigue': [
+      { title: '😴 Prioritering', content: 'Kroppen din sier nei. Hva er det ene viktigste i dag? Gjør det. Slipp resten.' },
+      { title: '💧 Basics', content: 'Vann, 15 min sol, 2 min strekking. Disse tre løfter energi merkbart.' },
+      { title: '🔋 Permisjon', content: 'Trøtthet er info. Hva har du skjøvet? Gi deg selv halvparten av den tiden.' }
+    ],
+    'joy': [
+      { title: '🎉 Markering', content: 'Pausér å merke det. Denne følelsen? Lagre den. Kroppen husker glede.' },
+      { title: '🚀 Energi-capture', content: 'Du er i en åpen tilstand. Perfekt for å starte noe som skremmer deg litt.' },
+      { title: '📲 Deling', content: 'Dele glede fordobler den. Dele med noen. La dem se det på deg.' }
+    ],
+    'focus': [
+      { title: '🧠 Flow', content: 'Du er i det. Fjern distraksjon, opprett grenser. Vern denne tilstanden.' },
+      { title: '⏲️ Momentum', content: 'Bruk denne klarheten. Gjør det vanskeligste nå, mens fokus er der.' },
+      { title: '📝 Spike', content: 'Noter hvor du er i prosessen. Seinere når fokus er borte, vet du hvor du var.' }
+    ],
+    'energy': [
+      { title: '⚡ Kanal det', content: 'Dette energi-nivået holder ikke lenge. Hva ville du gjerne ha gjort hvis du hadde det?' },
+      { title: '🎯 Aksjonerliste', content: 'Skriv ned 10 ting du kunne gjøre. Velg en. Gå. Energi i handling > uro.' },
+      { title: '🌀 Kommunikasjon', content: 'Høy energi kan virke intens på andre. Varsk at det er bare deg, ikke dem.' }
+    ],
+    'calm': [
+      { title: '🌸 Preserver', content: 'Ro er verdifull. Notering: Hva har du gjort i dag som skapte denne ro?' },
+      { title: '🔊 Lyd', content: 'Lytte til musikk eller natur som matcher denne følelsen. Gjenta når du trenger det.' },
+      { title: '📍 Sted', content: 'Hugs dette stedet/denne tiden/denne følelsen. Return her i tankene senere.' }
+    ],
+    'neutral': [
+      { title: '🤔 Utforsking', content: 'Det er ingen "feil" tilstand. Hva trenger du akkurat nå?' },
+      { title: '⚖️ Balanse', content: 'Midtpunkt er stabilt. Bruk denne klarheten til å gjøre et lite valg.' },
+      { title: '🧘 Nøytralitet', content: 'Ikke alle dager trengs å være intensitet. Ro uten navn er også OK.' }
+    ],
+    'scattered': [
+      { title: '🧩 Samle', content: 'Skriv ned alt som sirkulerer i hodet ditt. Bare få det ut. Orden kommer efter.' },
+      { title: '🎯 Mono-fokus', content: 'Velg EN ting. Bare den. Ignorer resten for 25 minutter. Timerantall.' },
+      { title: '📍 Ankring', content: 'Føtter i gulv. Hender på skrivebord. Roter kroppen før du roter tanker.' }
+    ]
+  };
+
+  const typeInsights = insightBank[type] || insightBank['neutral'];
+
+  // Shuffle and return top 2-3
+  const shuffled = typeInsights.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 3);
+}
+
+function getRecommendation(type) {
+  const recommendations = {
+    'stress': '⚡ Akutt: 10 min med åpen luft eller pusting.',
+    'anxiety': '🎯 Fragmenter bekymringen. Hva er første konkrete steg?',
+    'sadness': '💙 Nå handler det om selvomsorg. Spør hva du trenger.',
+    'doubt': '✅ Du har gjort tøffere. Din hjerne er preget av usikkerhet akkurat nå, ikke realitet.',
+    'fatigue': '😴 Kroppen sier stopp. Lytt.',
+    'joy': '✨ Fang denne følelsen. Deler den later. Og husk den senere.',
+    'focus': '🎯 Du er i en kostbar tilstand. Vern den.',
+    'energy': '⚡ Kanal dette inn i noe som betyr noe.',
+    'calm': '🌸 Denne ro kan deles. Den er ikke bare for deg.',
+    'neutral': '🤔 Fin startposisjon. Hva vil du med neste time?',
+    'scattered': '🌀 Skriver ned hva som snurrer. Papir første, orden senere.'
+  };
+
+  return recommendations[type] || 'Du har det som trengs inne i deg.';
+}
+
+function extractTags(input, type) {
+  const words = input.toLowerCase().split(/\s+/);
+  const tags = [type];
+
+  const timePatterns = {
+    'kveld': '🌙', 'morgen': '🌅', 'natt': '⭐',
+    'uke': '📅', 'dag': '☀️', 'tid': '⏰'
+  };
+
+  for (let [word, emoji] of Object.entries(timePatterns)) {
+    if (input.toLowerCase().includes(word)) {
+      tags.push(emoji + ' ' + word);
+    }
+  }
+
+  return tags;
+}
+
+function displayAnalysis(analysis) {
+  const resultsDiv = document.getElementById('smartResults');
+
+  let html = `<div class="insight-card success">
+    <div class="insight-title">${analysis.icon} ${analysis.type.charAt(0).toUpperCase() + analysis.type.slice(1)}</div>
+    <div class="insight-content">${analysis.recommendation}</div>
+  </div>`;
+
+  if (analysis.tags.length > 0) {
+    html += `<div class="tags">${analysis.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
+  }
+
+  analysis.insights.forEach(insight => {
+    html += `<div class="insight-card">
+      <div class="insight-title">${insight.title}</div>
+      <div class="insight-content">${insight.content}</div>
+    </div>`;
+  });
+
+  resultsDiv.innerHTML = html;
+  document.getElementById('smartInput').value = '';
+}
+
+function saveInsight() {
+  if (currentEntry) {
+    allEntries.unshift(currentEntry);
+    localStorage.setItem('smartEntries', JSON.stringify(allEntries));
+    currentEntry = null;
+    document.getElementById('smartResults').innerHTML = '';
+    alert('Lagret! Intelligent læring aktivert.');
+    switchPage('smart');
+  }
 }
 
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  event.target.closest('button').classList.add('active');
+
+  if (name === 'profil') renderProfile();
   if (name === 'historikk') renderHistory();
-  if (name === 'grep') renderActions();
 }
 
-function toggleBreath() {
-  const btn = document.getElementById('breathBtn');
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  if (!breathing) {
-    breathing = true;
-    btn.textContent = 'Stopp';
-    phase = 0;
-    runBreathCycle();
-  } else {
-    breathing = false;
-    clearTimeout(breathInterval);
-    btn.textContent = 'Start';
-    text.textContent = 'Trykk start';
-    circle.className = 'circle';
+function renderProfile() {
+  const patterns = extractPatterns();
+
+  document.getElementById('totalInteractions').textContent = allEntries.length;
+  document.getElementById('currentStreak').textContent = calculateStreak();
+
+  let patternHtml = '';
+  for (let [type, count] of Object.entries(patterns)) {
+    const icon = { stress: '⚡', anxiety: '😰', joy: '✨', sadness: '🌧️', fatigue: '😴', calm: '🌸' }[type] || '🤔';
+    patternHtml += `<div class="insight-card" style="margin-bottom: 10px;">
+      <div class="insight-title">${icon} ${type}</div>
+      <div class="insight-content">${count} gang${count > 1 ? 'er' : ''}</div>
+    </div>`;
   }
-}
+  document.getElementById('patternsList').innerHTML = patternHtml || '<p class="support">Ingen mønstre ennå.</p>';
 
-function runBreathCycle() {
-  if (!breathing) return;
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  if (phase === 0) {
-    text.textContent = 'Pust inn…';
-    circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
-  } else if (phase === 1) {
-    text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
-  } else {
-    text.textContent = 'Pust ut…';
-    circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
-  }
-}
-
-function renderActions() {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
-  const list = document.getElementById('actionsList');
-  list.innerHTML = '';
-  actions.forEach((a, i) => {
-    const isDone = done[today] && done[today].includes(i);
-    const card = document.createElement('div');
-    card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
-    list.appendChild(card);
-  });
-}
-
-function toggleAction(i) {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
-  if (!done[today]) done[today] = [];
-  const idx = done[today].indexOf(i);
-  if (idx > -1) done[today].splice(idx, 1);
-  else done[today].push(i);
-  localStorage.setItem('doneActions', JSON.stringify(done));
-  renderActions();
+  let prefHtml = '<div class="insight-card warm"><div class="insight-content">AI læringsmodell er aktiv. Flere møter = smartere insikt.</div></div>';
+  document.getElementById('preferencesList').innerHTML = prefHtml;
 }
 
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  const container = document.getElementById('historyList');
-  container.innerHTML = '';
-  if (list.length === 0) {
-    container.innerHTML = '<p class="support">Ingen sjekk-ins ennå. Det er greit.</p>';
-  } else {
-    list.slice(0, 20).forEach(e => {
-      const d = new Date(e.date);
-      const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
-      const item = document.createElement('div');
-      item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
-      container.appendChild(item);
-    });
-  }
-  // week count
-  const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
-  const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const thisWeek = allEntries.filter(e => new Date(e.timestamp) > weekAgo);
+
+  document.getElementById('weekCount').textContent = thisWeek.length;
+
+  const moods = allEntries.map(e => e.analysis?.mood || 0);
+  const avgMood = moods.length > 0 ? (moods.reduce((a, b) => a + b) / moods.length).toFixed(1) : '—';
+  document.getElementById('avgMood').textContent = avgMood;
+
+  let historyHtml = '';
+  allEntries.slice(0, 15).forEach(entry => {
+    const date = new Date(entry.timestamp);
+    const formattedDate = date.toLocaleDateString('no-NO', { weekday: 'short', day: 'numeric', month: 'short' });
+    const time = date.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+
+    historyHtml += `<div class="history-item">
+      <div>
+        <div style="font-weight: 500;">${entry.analysis?.icon || '🤔'} ${entry.input}</div>
+        <div class="history-meta">${formattedDate} · ${time}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('historyList').innerHTML = historyHtml || '<div class="empty-state"><p class="support">Ingen møter ennå.</p></div>';
 }
 
-// init
-renderActions();
+function extractPatterns() {
+  const patterns = {};
+  allEntries.forEach(e => {
+    const type = e.analysis?.type || 'neutral';
+    patterns[type] = (patterns[type] || 0) + 1;
+  });
+
+  return patterns;
+}
+
+function calculateStreak() {
+  if (allEntries.length === 0) return 0;
+
+  let streak = 1;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let currentDate = new Date(allEntries[0].timestamp);
+  currentDate.setHours(0, 0, 0, 0);
+
+  if ((today - currentDate) / (1000 * 60 * 60 * 24) > 1) return 0;
+
+  for (let i = 1; i < allEntries.length; i++) {
+    const prevDate = new Date(allEntries[i].timestamp);
+    prevDate.setHours(0, 0, 0, 0);
+
+    const dayDiff = (currentDate - prevDate) / (1000 * 60 * 60 * 24);
+    if (dayDiff === 1) {
+      streak++;
+      currentDate = prevDate;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+// Initialize
 renderHistory();
 </script>
 </body>
