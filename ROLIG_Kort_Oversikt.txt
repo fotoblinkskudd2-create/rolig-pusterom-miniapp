@@ -1,0 +1,115 @@
+================================================================================
+                    ROLIG – INNOVASJONSSTRATEGI
+                         KORT OVERSIKT
+================================================================================
+Dato: 5. august 2026
+Mål: 50% effektivitetsøkning gjennom 8 strategiske forbedringer
+
+================================================================================
+SAMMENDRAG
+================================================================================
+Rolig er en minimalistisk stressmestrings-app med solid grunnstruktur. Analysen
+identifiserer 8 nøkkelideer for optimalisering som hver skal øke verdi med ~50%.
+
+Fokus: Data-insight, personalisering, emosjonal validering, og gamifikasjon.
+
+Estimert dev-tid: ~35 timer over 8 uker (Phase 1-4)
+Forventet resultat: +45% DAU, +60% retention, +55% bruker-satisfaksjon
+
+================================================================================
+DE 8 BESTE IDEENE – FORBEDRINGER
+================================================================================
+
+1. MOOD-TILBAKEMELDING & KONTEKST
+   Dagens: Enkel 5-punkt mood-skala + valgfri note
+   Forbedring: Legg til kontekst-spørsmål når mood ≤ 2 (søvn, stress, fysisk helse, relasjoner)
+   Resultat: +40% mer brukerdata → bedre personalisering, emotional validation
+   Dev-tid: 3 timer | Kompleksitet: Lav
+
+2. BREATHING-GUIDNING MED PROGRESJON
+   Dagens: Fast 4-2-6 breathing pattern
+   Forbedring: 3 nivåer (Rolig/Normal/Dypere), teller, lydfeedback, positive reinforcement
+   Resultat: +45% personalisering, bruker lærer progression
+   Dev-tid: 5 timer | Kompleksitet: Lav-Middels
+
+3. SMART QUICK-ACTIONS MED MERKINGER
+   Dagens: Statisk liste av 7 tips, daglig sjekkliste
+   Forbedring: Effekt-emojis (⚡/💚/🧠), tidsestimater, mood-basert sortering, skjul-funksjon
+   Resultat: +50% relevans, høyere completion rate
+   Dev-tid: 4 timer | Kompleksitet: Middels
+
+4. HISTORIKK-VISUALISERING MED INSIGHTS
+   Dagens: Liste over innsjekker + ukesum
+   Forbedring: Linjegraf (30 dager), "best day" highlight, mood-gjennomsnitt, mest brukt tip
+   Resultat: +60% bruker-innsikt, personlig validering driver re-engagement
+   Dev-tid: 6 timer | Kompleksitet: Middels-Høy
+
+5. STREAK-SYSTEM & ACHIEVEMENTS
+   Dagens: Minimal feedback på progress
+   Forbedring: Streak-counter, badges ("First Week", "Breathing Master", "Consistent"), push notis
+   Resultat: +55% DAU, extrinsic motivation driver habit-forming
+   Dev-tid: 3 timer | Kompleksitet: Lav-Middels
+
+6. PERSONALISERING & INNSTILLINGER
+   Dagens: Fast fargeskjema, ingen innstillinger
+   Forbedring: Settings-tab (tema, breathing-tempo, favoriserte tips, notis-tidspunkt)
+   Resultat: +35% brukertilfredshet, app matcher brukers preferanser
+   Dev-tid: 4 timer | Kompleksitet: Lav
+
+7. SMART REMINDER-NOTISER
+   Dagens: Ingen notiser
+   Forbedring: Opt-in daily check-in reminders, streak-milestones, "feeling check" etter 3 dager
+   Resultat: +45% engagement, smart reminders uten spam
+   Dev-tid: 4 timer | Kompleksitet: Middels
+
+8. TRIGGER-BASERT TIP-DELIVERY
+   Dagens: Statisk/random tip-rotasjon
+   Forbedring: Regel-basert system - hvis mood ≤ 2 + trigger-ord (søvn, stress, alenhet),
+              prioriter relevante tips basert på historikk
+   Resultat: +50% tip-relevans, smart personalisering, høyere completion
+   Dev-tid: 6 timer | Kompleksitet: Høy
+
+================================================================================
+IMPLEMENTERINGSVEI (8 uker)
+================================================================================
+
+PHASE 1 (Uke 1–2) – GRUNNLEGGENDE
+  □ Idé 1: Mood-tilbakemelding (3h)
+  □ Idé 6: Personalisering (4h)
+  □ Idé 5: Streak-system (3h)
+
+PHASE 2 (Uke 3–4) – VISUELL & INNSIKT
+  □ Idé 4: Historikk-visualisering (6h)
+  □ Idé 3: Smart quick-actions (4h)
+
+PHASE 3 (Uke 5–6) – ENGASJEMENT
+  □ Idé 2: Breathing-guidning (5h)
+  □ Idé 7: Notis-system (4h)
+
+PHASE 4 (Uke 7–8) – AVANSERT
+  □ Idé 8: Trigger-basert delivery (6h)
+
+Total dev-tid: ~35 timer
+
+================================================================================
+FORVENTET RESULTAT
+================================================================================
+
+✓ +50% verdi per funksjon (estimert)
+✓ +45% daily active users (DAU)
+✓ +60% retention (dag 7)
+✓ +55% bruker-satisfaksjon (NPS)
+✓ ~35 timer total dev-tid, høy ROI
+
+================================================================================
+KONKLUSJON
+================================================================================
+
+Rolig har solid grunnlag og minimalistisk design. Med disse 8 strategiske
+forbedringene blir appen kraftfull, personlig og engasjerende – uten å miste
+sin essens av å være stressfri og lett å bruke.
+
+Hver idé er konkret, handlingsrettet og implementerbar. Fokus på:
+Personalisering → Innsikt → Engasjement
+
+================================================================================

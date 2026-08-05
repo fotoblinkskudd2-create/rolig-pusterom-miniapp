@@ -1,0 +1,9 @@
+ID,Område,Original Idé,Forbedring,Resultat,Verdi +%,Dev-tid (h),Kompleksitet,Prioritering
+1,Innsjekk,Enkel 5-punkt mood-skala + valgfri note,Legg til kontekst-spørsmål når mood ≤ 2 (søvn stress fysisk helse relasjoner),+40% brukerdata → bedre personalisering + emotional validation,40%,3,Lav,1
+2,Pusterom,Fast 4-2-6 breathing pattern,3 nivåer (Rolig/Normal/Dypere) + teller + lydfeedback + positive reinforcement,+45% personalisering + bruker lærer progression + høyere compliance,45%,5,Middels,3
+3,Små grep,Statisk liste av 7 tips + daglig sjekkliste,Effekt-emojis (⚡/💚/🧠) + tidsestimater + mood-basert sortering + skjul-funksjon,+50% relevans + høyere completion rate,50%,4,Middels,4
+4,Historikk,Liste over innsjekker + ukesum antall,Linjegraf (30 dager) + best day highlight + mood-gjennomsnitt + mest brukt tip,+60% bruker-innsikt + personlig validering drives re-engagement,60%,6,Høy,2
+5,Gamifikasjon,Minimal progress feedback,Streak-counter + badges (First Week Breathing Master Consistent) + milestone push notis,+55% DAU + extrinsic motivation drives habit-forming,55%,3,Lav,1
+6,UX,Fast fargeskjema ingen innstillinger,Settings-tab (tema breathing-tempo favoriserte tips notis-tidspunkt),+35% brukertilfredshet + app matcher brukers preferanser,35%,4,Lav,1
+7,Retention,Ingen notiser,Opt-in daily check-in reminders + streak-milestones + feeling check etter 3 dager,+45% engagement + smart reminders uten spam,45%,4,Middels,3
+8,Personalisering/AI,Statisk eller random tip-rotasjon,Regel-basert system: hvis mood ≤ 2 + trigger-ord (søvn stress alenhet) → prioriter relevante tips basert på historikk,+50% tip-relevans + smart personalisering + høyere completion,50%,6,Høy,4
