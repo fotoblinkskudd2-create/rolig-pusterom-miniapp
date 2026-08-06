@@ -2,7 +2,11 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<meta name="theme-color" content="#f5f7f4">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
@@ -208,17 +212,17 @@
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
   <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+  <div class="mood-scale" id="moodScale" role="group" aria-label="Velg humør">
+    <button class="mood-btn" data-mood="1" aria-label="Veldig dårlig">😔</button>
+    <button class="mood-btn" data-mood="2" aria-label="Dårlig">😕</button>
+    <button class="mood-btn" data-mood="3" aria-label="Nøytral">😐</button>
+    <button class="mood-btn" data-mood="4" aria-label="Bra">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-label="Veldig bra">😌</button>
   </div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
-  <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <button class="btn btn-secondary" onclick="switchPage('pusterom', null)">Pust med meg</button>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -243,11 +247,11 @@
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
 
-<nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+<nav class="nav" aria-label="Sidenavigasjon">
+  <button class="active" onclick="switchPage('hjem', this)" aria-label="Hjem"><span>🏠</span>Hjem</button>
+  <button onclick="switchPage('pusterom', this)" aria-label="Pusterom"><span>🌬️</span>Pusterom</button>
+  <button onclick="switchPage('grep', this)" aria-label="Små grep"><span>✋</span>Små grep</button>
+  <button onclick="switchPage('historikk', this)" aria-label="Historikk"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -296,11 +300,13 @@ function saveCheckin() {
   renderHistory();
 }
 
-function switchPage(name) {
+function switchPage(name, navBtn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  const target = navBtn || document.querySelector(`.nav button[onclick^="switchPage('${name}'"]`);
+  if (target) target.classList.add('active');
+  if (breathing && name !== 'pusterom') toggleBreath();
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
