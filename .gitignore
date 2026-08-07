@@ -1,0 +1,23 @@
+## Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+
+## REGNViking OS runtime state (generated at runtime, not source)
+data/
+backups/
+products/
+*.db
+*.db-shm
+*.db-wal
+
+## Node / Next.js
+node_modules/
+.next/
+frontend/next-env.d.ts
+
+## Env
+.env
+.env.local

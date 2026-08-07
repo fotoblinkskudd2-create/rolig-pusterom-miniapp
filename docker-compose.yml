@@ -1,0 +1,52 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      REGNVIKING_OFFLINE: "1"
+      OLLAMA_HOST: http://ollama:11434
+      REGNVIKING_CORS_ORIGINS: http://localhost:3000
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+    volumes:
+      - regnviking_data:/app/data
+      - regnviking_backups:/app/backups
+      - regnviking_products:/app/products
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # Optional local LLM. The backend runs fully offline with deterministic
+  # templates even if this service is never started (no hard dependency).
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    profiles: ["ollama"]
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+
+volumes:
+  redis_data:
+  regnviking_data:
+  regnviking_backups:
+  regnviking_products:
+  ollama_data:
