@@ -201,6 +201,68 @@
     text-align: center;
     margin-top: 24px;
   }
+  .stats-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 6px;
+    text-align: center;
+    border: 1px solid #e8eee9;
+  }
+  .stat-num {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+  .chart-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px 16px;
+    border: 1px solid #e8eee9;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  #moodChart {
+    width: 100%;
+    height: 100px;
+    display: block;
+  }
+  .chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .insight-card {
+    background: var(--soft-beige);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
 </style>
 </head>
 <body>
@@ -239,8 +301,15 @@
 
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
+  <div class="stats-row" id="statsRow"></div>
+  <div class="chart-card">
+    <div class="chart-title">Humør siste 14 dager</div>
+    <svg id="moodChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
+    <div class="chart-labels" id="chartLabels"></div>
+  </div>
+  <div class="insight-card" id="insightCard"></div>
+  <div class="section-title">Nylige sjekk-inn</div>
   <div id="historyList"></div>
-  <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
 
 <nav class="nav">
@@ -382,11 +451,119 @@ function renderHistory() {
       container.appendChild(item);
     });
   }
-  // week count
+  renderStats(list);
+  renderChart(list);
+  renderInsight(list);
+}
+
+function dayKey(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+function totalActionsDone() {
+  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  return Object.values(done).reduce((sum, arr) => sum + arr.length, 0);
+}
+
+function computeStreak(list) {
+  const days = new Set(list.map(e => dayKey(e.date)));
+  let cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  if (!days.has(cursor.getTime())) {
+    cursor = new Date(cursor.getTime() - 24 * 60 * 60 * 1000);
+  }
+  let streak = 0;
+  while (days.has(cursor.getTime())) {
+    streak++;
+    cursor = new Date(cursor.getTime() - 24 * 60 * 60 * 1000);
+  }
+  return streak;
+}
+
+function renderStats(list) {
+  const row = document.getElementById('statsRow');
+  row.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${computeStreak(list)}</div><div class="stat-label">dager på rad</div></div>
+    <div class="stat-card"><div class="stat-num">${list.length}</div><div class="stat-label">sjekk-inn totalt</div></div>
+    <div class="stat-card"><div class="stat-num">${totalActionsDone()}</div><div class="stat-label">grep gjort</div></div>
+  `;
+}
+
+function renderChart(list) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    days.push(new Date(today.getTime() - i * 24 * 60 * 60 * 1000));
+  }
+  const byDay = {};
+  list.forEach(e => {
+    const key = dayKey(e.date);
+    (byDay[key] = byDay[key] || []).push(Number(e.mood));
+  });
+  const points = days.map(d => {
+    const arr = byDay[d.getTime()];
+    return arr && arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+  });
+
+  const w = 300, h = 100, pad = 8;
+  const xStep = (w - pad * 2) / (days.length - 1);
+  const yFor = v => h - pad - ((v - 1) / 4) * (h - pad * 2);
+
+  let path = '';
+  let dots = '';
+  let drawing = false;
+  points.forEach((v, i) => {
+    if (v === null) { drawing = false; return; }
+    const x = pad + i * xStep;
+    const y = yFor(v);
+    path += (drawing ? ' L ' : 'M ') + x.toFixed(1) + ' ' + y.toFixed(1);
+    drawing = true;
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#a8c5b0" />`;
+  });
+
+  const svg = document.getElementById('moodChart');
+  if (points.every(v => v === null)) {
+    svg.innerHTML = '<text x="150" y="54" text-anchor="middle" font-size="10" fill="#7a8a7f">Ingen data ennå</text>';
+  } else {
+    svg.innerHTML = `<path d="${path}" fill="none" stroke="#a8c5b0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${dots}`;
+  }
+
+  document.getElementById('chartLabels').innerHTML =
+    `<span>${days[0].toLocaleDateString('no-NO', { day: 'numeric', month: 'short' })}</span><span>I dag</span>`;
+}
+
+function renderInsight(list) {
+  const card = document.getElementById('insightCard');
+  if (list.length === 0) {
+    card.textContent = 'Ingen sjekk-inn ennå. Det er greit — start når du er klar.';
+    return;
+  }
   const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
-  const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  const day = 24 * 60 * 60 * 1000;
+  const last7 = list.filter(e => new Date(e.date) > new Date(now - 7 * day));
+  const prev7 = list.filter(e => {
+    const t = new Date(e.date);
+    return t <= new Date(now - 7 * day) && t > new Date(now - 14 * day);
+  });
+  const avg = arr => arr.length ? arr.reduce((s, e) => s + Number(e.mood), 0) / arr.length : null;
+  const a1 = avg(last7), a2 = avg(prev7);
+
+  let msg;
+  if (last7.length === 0) {
+    msg = 'Ingen sjekk-inn denne uken ennå. Et lite sjekk-inn kan være en fin start.';
+  } else if (a2 === null) {
+    msg = `Du har sjekket inn ${last7.length} ${last7.length === 1 ? 'gang' : 'ganger'} denne uken. Fint at du tar deg tid.`;
+  } else if (a1 - a2 >= 0.4) {
+    msg = 'Det ser ut som denne uken har vært litt lysere enn forrige. Godt jobbet.';
+  } else if (a2 - a1 >= 0.4) {
+    msg = 'Denne uken har vært tyngre enn forrige. Det er greit — du er her, og det teller.';
+  } else {
+    msg = 'Humøret ditt har vært ganske stabilt denne uken.';
+  }
+  card.textContent = msg;
 }
 
 // init
