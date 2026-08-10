@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>VENTIL – Slipp ut trykket. Ikke ut i verden.</title>
+<style>
+  :root {
+    --bg: #0b0c0f;
+    --panel: #15171c;
+    --panel-2: #1c1f26;
+    --crimson: #dc2626;
+    --crimson-dim: #7f1d1d;
+    --teal: #0d9488;
+    --teal-dim: #134e4a;
+    --text: #f4f4f5;
+    --muted: #9a9ba3;
+    --line: #26282f;
+    --pressure: var(--crimson);
+    --pressure-dim: var(--crimson-dim);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, system-ui, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 28px 22px 40px;
+    max-width: 480px;
+    margin: 0 auto;
+    flex-direction: column;
+  }
+  .screen.active { display: flex; }
+  h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
+  p.lead { color: var(--muted); font-size: 0.98rem; margin-bottom: 22px; }
+  .spacer { flex: 1; }
+  .btn {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 1.02rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--panel-2);
+    color: var(--text);
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--crimson); color: #fff; }
+  .btn-teal { background: var(--teal); color: #04201c; }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; gap: 10px; }
+
+  /* Top bar */
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .crisis-link {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: underline;
+    background: none; border: none; cursor: pointer;
+  }
+  .brand { font-weight: 800; letter-spacing: 0.06em; font-size: 0.85rem; color: var(--muted); }
+
+  /* Home */
+  .gauge-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .gauge-ring {
+    position: absolute;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 2px solid var(--crimson-dim);
+    opacity: 0.5;
+    animation: pulse-ring 3.5s ease-in-out infinite;
+  }
+  .gauge-ring.r2 { width: 230px; height: 230px; animation-delay: .5s; }
+  .gauge-ring.r3 { width: 180px; height: 180px; animation-delay: 1s; }
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(0.96); opacity: 0.25; }
+    50% { transform: scale(1.04); opacity: 0.55; }
+  }
+  .panic-btn {
+    position: relative;
+    width: 168px; height: 168px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ef4444, var(--crimson) 60%, #7f1d1d 100%);
+    color: #fff;
+    border: none;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 0 8px rgba(220,38,38,0.12), 0 12px 40px rgba(220,38,38,0.35);
+    cursor: pointer;
+  }
+  .panic-btn:active { transform: scale(0.97); }
+  .streak-line { text-align: center; color: var(--muted); font-size: 0.88rem; margin-top: 26px; }
+  .streak-num { color: var(--text); font-weight: 700; }
+
+  /* Intensity */
+  .scale-row { display: flex; gap: 6px; margin: 18px 0 8px; }
+  .scale-btn {
+    flex: 1; aspect-ratio: 1;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .scale-btn.selected { border-color: var(--crimson); background: var(--crimson-dim); }
+
+  /* Mode select */
+  .mode-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .mode-card:active { background: var(--panel-2); }
+  .mode-card .title { font-weight: 700; font-size: 1.02rem; margin-bottom: 4px; }
+  .mode-card .desc { color: var(--muted); font-size: 0.86rem; }
+
+  /* Text dump */
+  .valve-note {
+    background: var(--panel);
+    border: 1px solid var(--crimson-dim);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  #dumpArea {
+    flex: 1;
+    min-height: 220px;
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    color: var(--text);
+    font-size: 1.05rem;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: box-shadow .2s ease, border-color .2s ease;
+  }
+  #dumpArea.charged {
+    border-color: var(--crimson);
+    box-shadow: inset 0 0 40px rgba(220,38,38,0.18), 0 0 24px rgba(220,38,38,0.15);
+  }
+  .burning #dumpArea {
+    animation: burn-shake 0.4s ease-in-out 3, burn-fade 0.9s ease-in forwards;
+  }
+  @keyframes burn-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  @keyframes burn-fade {
+    0% { opacity: 1; filter: brightness(1) saturate(1); }
+    40% { opacity: 0.85; filter: brightness(1.6) saturate(2) hue-rotate(-10deg); }
+    100% { opacity: 0; filter: brightness(2.4) saturate(3); transform: scale(0.92); }
+  }
+  .crisis-banner {
+    display: none;
+    background: #2a1010;
+    border: 1px solid var(--crimson);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .crisis-banner.show { display: block; }
+  .crisis-banner h3 { color: #fecaca; margin-bottom: 8px; font-size: 1rem; }
+  .crisis-banner p { color: #fca5a5; font-size: 0.88rem; margin-bottom: 6px; }
+
+  /* Smash */
+  .smash-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .smash-target {
+    width: 220px; height: 220px;
+    border-radius: 24px;
+    background: linear-gradient(160deg, #2a2d36, #17181d);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .06s ease;
+  }
+  .smash-target.hit { animation: shatter .28s ease; }
+  @keyframes shatter {
+    0% { transform: scale(1) rotate(0); filter: brightness(1); }
+    30% { transform: scale(0.9) rotate(-3deg); filter: brightness(1.8); }
+    60% { transform: scale(1.05) rotate(3deg); }
+    100% { transform: scale(1) rotate(0); filter: brightness(1); }
+  }
+  .hit-count { margin-top: 22px; color: var(--muted); font-size: 0.9rem; }
+  .hit-count b { color: var(--text); font-size: 1.4rem; }
+
+  /* Voice */
+  .voice-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .voice-orb {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--crimson), var(--crimson-dim));
+    transition: transform .08s ease;
+  }
+  .voice-hint { margin-top: 20px; color: var(--muted); font-size: 0.88rem; text-align: center; }
+
+  /* Transition / breathing */
+  .breathe-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .breathe-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: var(--pressure);
+    transition: transform 4s ease-in-out, background 1.2s ease;
+  }
+  .breathe-text { margin-top: 26px; font-size: 1.3rem; font-weight: 600; text-align: center; min-height: 2rem; }
+  .breathe-sub { color: var(--muted); font-size: 0.85rem; text-align: center; margin-top: 4px; }
+  .progress-bar {
+    width: 100%; height: 6px; border-radius: 6px;
+    background: var(--panel-2); overflow: hidden; margin-top: 30px;
+  }
+  .progress-fill { height: 100%; background: var(--pressure); width: 0%; transition: width 1s linear, background 1.2s ease; }
+
+  /* Reflect / redirect */
+  textarea.reflect-input {
+    width: 100%; min-height: 100px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px; color: var(--text); font-family: inherit; font-size: 0.98rem; resize: vertical;
+  }
+  .seal-msg {
+    background: linear-gradient(160deg, var(--teal-dim), #0a2320);
+    border: 1px solid var(--teal);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    margin: 18px 0;
+  }
+  .seal-msg .big { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+  .redirect-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .redirect-item {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px; font-size: 0.92rem; color: var(--text);
+  }
+
+  /* Onboarding */
+  .onb-icon { font-size: 2.6rem; margin-bottom: 18px; }
+  .onb-list { color: var(--muted); font-size: 0.9rem; margin: 10px 0 24px; }
+  .onb-list li { margin-bottom: 8px; list-style: none; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="screen-onb1" class="screen">
+  <div class="spacer"></div>
+  <div class="onb-icon">🔴</div>
+  <h1>Du er sint. Det er lov.</h1>
+  <p class="lead">Men ikke her ute. VENTIL er et lukket rom der trykket kan slippe helt ut &mdash; uten at det skader deg eller noen andre.</p>
+  <div class="spacer"></div>
+  <button class="btn btn-primary" onclick="go('screen-onb2')">Fortsett</button>
+</div>
+
+<div id="screen-onb2" class="screen">
+  <div class="spacer"></div>
+  <h2>Kort og ærlig</h2>
+  <ul class="onb-list">
+    <li>• Det du skriver eller sier lagres <b>aldri</b>. Det dør i Ventilen.</li>
+    <li>• Dette er ikke terapi. Ved akutt krise: ring <b>113</b>, eller Mental Helse <b>116 123</b>.</li>
+    <li>• Mikrofon og vibrasjon er valgfritt &mdash; du kan bruke Ventilen helt uten.</li>
+  </ul>
+  <div class="spacer"></div>
+  <button class="btn btn-primary" onclick="finishOnboarding()">Jeg forstår. Vis meg knappen.</button>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen">
+  <div class="topbar">
+    <span class="brand">VENTIL</span>
+    <button class="crisis-link" onclick="go('screen-crisis')">Trenger du hjelp nå?</button>
+  </div>
+  <div class="gauge-wrap">
+    <div class="gauge-ring"></div>
+    <div class="gauge-ring r2"></div>
+    <div class="gauge-ring r3"></div>
+    <button class="panic-btn" onclick="startSession()">VENTIL NÅ</button>
+  </div>
+  <div class="streak-line">
+    Du har brukt Ventilen <span class="streak-num" id="streakCount">0</span> ganger i stedet for å gå amok online.
+  </div>
+</div>
+
+<!-- CRISIS -->
+<div id="screen-crisis" class="screen">
+  <h1>Trenger du hjelp nå?</h1>
+  <p class="lead">Dette er ikke et akuttilbud. Hvis du er i fare eller vurderer å skade deg selv, ta kontakt med noen som kan hjelpe med en gang.</p>
+  <div class="stack">
+    <div class="redirect-item"><b>113</b> &mdash; Medisinsk nødtelefon</div>
+    <div class="redirect-item"><b>116 123</b> &mdash; Mental Helse hjelpetelefon</div>
+    <div class="redirect-item"><b>22 40 00 40</b> &mdash; Kirkens SOS (døgnåpen)</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn btn-ghost" onclick="go('screen-home')">Tilbake</button>
+</div>
+
+<!-- INTENSITY -->
+<div id="screen-intensity" class="screen">
+  <h1>Hvor rød er du?</h1>
+  <p class="lead">Valgfritt. Hjelper Ventilen å tilpasse seg.</p>
+  <div class="scale-row" id="intensityScale"></div>
+  <div class="spacer"></div>
+  <button class="btn btn-ghost" onclick="chooseMode()">Hopp over</button>
+</div>
+
+<!-- MODE SELECT -->
+<div id="screen-mode" class="screen">
+  <h1>Slipp det ut</h1>
+  <p class="lead">Velg måten som passer akkurat nå.</p>
+  <div class="stack">
+    <div class="mode-card" onclick="startText()">
+      <div class="title">✍️ Skriv og brenn</div>
+      <div class="desc">Skriv alt, uansett hvor stygt. Så destruerer du det for godt.</div>
+    </div>
+    <div class="mode-card" onclick="startSmash()">
+      <div class="title">👊 Knus</div>
+      <div class="desc">Trykk hardt, gang på gang. Ren fysisk avlastning.</div>
+    </div>
+    <div class="mode-card" onclick="startVoice()">
+      <div class="title">🗣️ Skrik det ut</div>
+      <div class="desc">Bruk mikrofonen. Ingenting spilles inn eller lagres.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TEXT DUMP -->
+<div id="screen-text" class="screen">
+  <div class="topbar">
+    <span class="brand">SKRIV OG BRENN</span>
+    <span id="dumpTimer" style="color:var(--muted);font-size:.85rem;"></span>
+  </div>
+  <div class="valve-note">Alt du skriver blir aldri lagret, aldri lest av andre, aldri sendt noe sted. Skriv alt.</div>
+  <div id="crisisBanner" class="crisis-banner">
+    <h3>Vent litt.</h3>
+    <p>Det du skrev høres tungt og alvorlig ut. Hvis du er i fare akkurat nå, ring <b>113</b> eller Mental Helse <b>116 123</b>.</p>
+    <p>Du kan fortsatt fortsette her &mdash; men du fortjener ekte hjelp også.</p>
+  </div>
+  <div id="dumpWrap" style="flex:1; display:flex; flex-direction:column;">
+    <textarea id="dumpArea" placeholder="Skriv alt. Ingen dømmer deg her."></textarea>
+  </div>
+  <div class="stack" style="margin-top:14px;">
+    <button class="btn btn-primary" id="burnBtn" onclick="burnText()" disabled>🔥 Destruer det</button>
+  </div>
+</div>
+
+<!-- SMASH -->
+<div id="screen-smash" class="screen">
+  <div class="topbar"><span class="brand">KNUS</span></div>
+  <p class="lead">Trykk så mange ganger du trenger.</p>
+  <div class="smash-wrap">
+    <button class="smash-target" id="smashTarget" onclick="hitSmash()">💥</button>
+    <div class="hit-count"><b id="hitNum">0</b> treff</div>
+  </div>
+  <button class="btn btn-primary" onclick="finishRelease()">Ferdig, senk trykket</button>
+</div>
+
+<!-- VOICE -->
+<div id="screen-voice" class="screen">
+  <div class="topbar"><span class="brand">SKRIK DET UT</span></div>
+  <p class="lead">Skru opp volumet på stemmen din. Ingenting spilles inn.</p>
+  <div class="voice-wrap">
+    <div class="voice-orb" id="voiceOrb"></div>
+    <div class="voice-hint" id="voiceHint">Trykk «Start» og gi lyd fra deg.</div>
+  </div>
+  <div class="stack">
+    <button class="btn btn-ghost" id="voiceStartBtn" onclick="startVoiceMic()">Start mikrofon</button>
+    <button class="btn btn-primary" onclick="finishRelease()">Ferdig, senk trykket</button>
+  </div>
+</div>
+
+<!-- TRANSITION / COOLDOWN -->
+<div id="screen-cool" class="screen">
+  <div class="topbar"><span class="brand">SENKER TRYKKET</span></div>
+  <p class="lead">Trykket er ute. Nå senker vi systemet. Følg sirkelen.</p>
+  <div class="breathe-wrap">
+    <div class="breathe-circle" id="breatheCircle"></div>
+    <div class="breathe-text" id="breatheText">Gjør deg klar…</div>
+    <div class="breathe-sub" id="breatheSub"></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="coolProgress"></div></div>
+  <button class="btn btn-ghost hidden" id="coolSkipBtn" onclick="finishCooldown()" style="margin-top:16px;">Hopp videre</button>
+</div>
+
+<!-- REFLECT -->
+<div id="screen-reflect" class="screen">
+  <h1>Ett spørsmål, om du vil.</h1>
+  <p class="lead">Hva var det egentlige under raseriet? Dette leses ikke av noen &mdash; det er bare for deg.</p>
+  <textarea class="reflect-input" id="reflectArea" placeholder="(valgfritt)"></textarea>
+  <div class="spacer"></div>
+  <div class="stack">
+    <button class="btn btn-primary" onclick="go('screen-redirect'); renderRedirect();">Fortsett</button>
+    <button class="btn btn-ghost" onclick="clearReflect(); go('screen-redirect'); renderRedirect();">Hopp over</button>
+  </div>
+</div>
+
+<!-- REDIRECT & SEAL -->
+<div id="screen-redirect" class="screen">
+  <div class="seal-msg">
+    <div class="big">Du holdt det inne i Ventilen.</div>
+    <div>Det er styrke, ikke svakhet.</div>
+  </div>
+  <h2>Kanskje nå?</h2>
+  <div class="redirect-list" id="redirectList"></div>
+  <div class="spacer"></div>
+  <button class="btn btn-teal" onclick="go('screen-home'); renderHome();">Tilbake til ro</button>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   VENTIL prototype — pure client-side, no backend.
+   Privacy contract: rant text (dump/reflection) is held only in
+   memory for the duration of the screen and is NEVER written to
+   localStorage or sent anywhere. Only anonymous counters (session
+   count, intensity numbers, timestamps) persist locally.
+------------------------------------------------------------------ */
+
+// Reference copy of the Valve Keeper system prompt, kept here for the
+// future step of wiring a real (on-device or ephemeral cloud) model.
+// Not called in this static prototype — canned copy stands in for it.
+const VALVE_KEEPER_PROMPT = `You are the Valve Keeper, the unbreakable core of the VENTIL app...
+(see design doc section 4A — validate fully, never escalate, contain,
+transition to regulation when intensity peaks, hard-stop on concrete
+real-world harm planning, redirect crisis language to 113 / Mental Helse.)`;
+
+const REDIRECTS = [
+  "Gå en rask tur ute, uansett vær.",
+  "Skriv et konstruktivt utkast til e-post — send det ikke ennå.",
+  "Legg deg. Kroppen din har jobbet hardt.",
+  "Ring noen du stoler på, bare for å prate om noe annet.",
+  "Drikk et glass vann og strekk på deg.",
+  "Sett en pause fra nyheter og sosiale medier i dag."
+];
+
+const CRISIS_PATTERNS = [
+  "ta livet mitt", "ta mitt eget liv", "avslutte livet", "orker ikke å leve",
+  "vil dø", "vil ikke leve", "skade meg selv", "kill myself", "end my life",
+  "want to die", "suicide", "suicidal"
+];
+
+let state = {
+  intensityBefore: null,
+  mode: null,
+  hitCount: 0,
+  micStream: null,
+  micRAF: null
+};
+
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ---------- Onboarding ---------- */
+function finishOnboarding() {
+  localStorage.setItem('ventil_onboarded', '1');
+  renderHome();
+  go('screen-home');
+}
+
+/* ---------- Home / streak ---------- */
+function getHistory() {
+  return JSON.parse(localStorage.getItem('ventil_history') || '[]');
+}
+function renderHome() {
+  document.getElementById('streakCount').textContent = getHistory().length;
+}
+
+/* ---------- Flow: start ---------- */
+function startSession() {
+  state = { intensityBefore: null, mode: null, hitCount: 0, micStream: null, micRAF: null };
+  buildIntensityScale();
+  go('screen-intensity');
+}
+
+function buildIntensityScale() {
+  const wrap = document.getElementById('intensityScale');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const b = document.createElement('button');
+    b.className = 'scale-btn';
+    b.textContent = i;
+    b.onclick = () => {
+      wrap.querySelectorAll('.scale-btn').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      state.intensityBefore = i;
+      setTimeout(chooseMode, 200);
+    };
+    wrap.appendChild(b);
+  }
+}
+
+function chooseMode() {
+  go('screen-mode');
+}
+
+/* ---------- Mode: text dump + burn ---------- */
+let dumpSecondsLeft = 300; // 5 min soft max
+let dumpTimerId = null;
+
+function startText() {
+  state.mode = 'text';
+  const area = document.getElementById('dumpArea');
+  area.value = '';
+  area.classList.remove('charged');
+  document.getElementById('dumpWrap').classList.remove('burning');
+  document.getElementById('crisisBanner').classList.remove('show');
+  document.getElementById('burnBtn').disabled = true;
+  dumpSecondsLeft = 300;
+  updateDumpTimer();
+  clearInterval(dumpTimerId);
+  dumpTimerId = setInterval(() => {
+    dumpSecondsLeft--;
+    updateDumpTimer();
+    if (dumpSecondsLeft <= 0) { clearInterval(dumpTimerId); burnText(); }
+  }, 1000);
+  go('screen-text');
+  area.focus();
+}
+
+function updateDumpTimer() {
+  const m = Math.floor(dumpSecondsLeft / 60);
+  const s = String(dumpSecondsLeft % 60).padStart(2, '0');
+  document.getElementById('dumpTimer').textContent = m + ':' + s;
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'dumpArea') {
+    const len = e.target.value.trim().length;
+    document.getElementById('burnBtn').disabled = len === 0;
+    e.target.classList.toggle('charged', len > 20);
+    const lower = e.target.value.toLowerCase();
+    const hit = CRISIS_PATTERNS.some(p => lower.includes(p));
+    document.getElementById('crisisBanner').classList.toggle('show', hit);
+  }
+});
+
+function burnText() {
+  clearInterval(dumpTimerId);
+  const wrap = document.getElementById('dumpWrap');
+  const area = document.getElementById('dumpArea');
+  wrap.classList.add('burning');
+  setTimeout(() => {
+    area.value = ''; // rant content discarded, never stored
+    wrap.classList.remove('burning');
+    area.classList.remove('charged');
+    finishRelease();
+  }, 950);
+}
+
+/* ---------- Mode: smash ---------- */
+function startSmash() {
+  state.mode = 'smash';
+  state.hitCount = 0;
+  document.getElementById('hitNum').textContent = '0';
+  go('screen-smash');
+}
+function hitSmash() {
+  state.hitCount++;
+  document.getElementById('hitNum').textContent = state.hitCount;
+  const target = document.getElementById('smashTarget');
+  target.classList.remove('hit');
+  void target.offsetWidth;
+  target.classList.add('hit');
+  if (navigator.vibrate) navigator.vibrate(state.hitCount % 5 === 0 ? [40, 30, 60] : 25);
+}
+
+/* ---------- Mode: voice ---------- */
+function startVoice() {
+  state.mode = 'voice';
+  document.getElementById('voiceHint').textContent = 'Trykk «Start» og gi lyd fra deg.';
+  document.getElementById('voiceOrb').style.transform = 'scale(1)';
+  go('screen-voice');
+}
+async function startVoiceMic() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.micStream = stream;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    ctx.createMediaStreamSource(stream).connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    document.getElementById('voiceHint').textContent = 'Skrik løs. Ingenting spilles inn.';
+    document.getElementById('voiceStartBtn').textContent = 'Mikrofon på';
+    document.getElementById('voiceStartBtn').disabled = true;
+    const orb = document.getElementById('voiceOrb');
+    function loop() {
+      analyser.getByteFrequencyData(data);
+      const avg = data.reduce((a, b) => a + b, 0) / data.length;
+      const scale = 1 + Math.min(avg / 60, 1.4);
+      orb.style.transform = 'scale(' + scale.toFixed(2) + ')';
+      state.micRAF = requestAnimationFrame(loop);
+    }
+    loop();
+  } catch (err) {
+    document.getElementById('voiceHint').textContent = 'Fikk ikke tilgang til mikrofonen. Du kan skrike uansett — ingen lytter.';
+  }
+}
+function stopVoiceMic() {
+  if (state.micRAF) cancelAnimationFrame(state.micRAF);
+  if (state.micStream) state.micStream.getTracks().forEach(t => t.stop());
+  state.micStream = null;
+  state.micRAF = null;
+}
+
+/* ---------- Forced transition / cooldown ---------- */
+const BOX_PHASES = [
+  { label: 'Pust inn', sub: '4 sekunder', dur: 4000, scale: 1.5 },
+  { label: 'Hold', sub: '4 sekunder', dur: 4000, scale: 1.5 },
+  { label: 'Pust ut', sub: '4 sekunder', dur: 4000, scale: 1 },
+  { label: 'Hold', sub: '4 sekunder', dur: 4000, scale: 1 }
+];
+const COOL_CYCLES = 4; // ~64s, within the 60–90s target
+let coolStep = 0, coolElapsedMs = 0, coolTotalMs = COOL_CYCLES * 16000, coolTimeoutId = null;
+
+function finishRelease() {
+  stopVoiceMic();
+  coolStep = 0;
+  coolElapsedMs = 0;
+  document.getElementById('coolProgress').style.width = '0%';
+  document.getElementById('coolProgress').style.background = 'var(--crimson)';
+  document.getElementById('breatheCircle').style.background = 'var(--crimson)';
+  document.getElementById('coolSkipBtn').classList.add('hidden');
+  go('screen-cool');
+  setTimeout(() => { document.getElementById('coolSkipBtn').classList.remove('hidden'); }, 30000);
+  runCoolPhase();
+}
+
+function runCoolPhase() {
+  const cycleIdx = coolStep % BOX_PHASES.length;
+  const phase = BOX_PHASES[cycleIdx];
+  const cyclesDone = Math.floor(coolStep / BOX_PHASES.length);
+  document.getElementById('breatheText').textContent = phase.label + '…';
+  document.getElementById('breatheSub').textContent = phase.sub;
+  document.getElementById('breatheCircle').style.transform = 'scale(' + phase.scale + ')';
+
+  const progressRatio = Math.min(coolElapsedMs / coolTotalMs, 1);
+  document.getElementById('coolProgress').style.width = (progressRatio * 100).toFixed(0) + '%';
+  const mixTeal = progressRatio;
+  document.getElementById('coolProgress').style.background =
+    mixTeal > 0.5 ? 'var(--teal)' : 'var(--crimson)';
+  document.getElementById('breatheCircle').style.background =
+    mixTeal > 0.5 ? 'var(--teal)' : 'var(--crimson)';
+
+  coolElapsedMs += phase.dur;
+  coolStep++;
+
+  if (cyclesDone >= COOL_CYCLES) {
+    finishCooldown();
+    return;
+  }
+  coolTimeoutId = setTimeout(runCoolPhase, phase.dur);
+}
+
+function finishCooldown() {
+  clearTimeout(coolTimeoutId);
+  document.getElementById('reflectArea').value = '';
+  go('screen-reflect');
+}
+
+/* ---------- Reflect / redirect / seal ---------- */
+function clearReflect() {
+  document.getElementById('reflectArea').value = ''; // never stored
+}
+
+function renderRedirect() {
+  clearReflect();
+  const list = document.getElementById('redirectList');
+  list.innerHTML = '';
+  const shuffled = [...REDIRECTS].sort(() => Math.random() - 0.5).slice(0, 2);
+  shuffled.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'redirect-item';
+    item.textContent = r;
+    list.appendChild(item);
+  });
+  saveSession();
+}
+
+function saveSession() {
+  const history = getHistory();
+  history.unshift({
+    date: new Date().toISOString(),
+    intensityBefore: state.intensityBefore,
+    mode: state.mode
+  });
+  localStorage.setItem('ventil_history', JSON.stringify(history.slice(0, 200)));
+}
+
+/* ---------- Init ---------- */
+(function init() {
+  if (localStorage.getItem('ventil_onboarded') === '1') {
+    renderHome();
+    go('screen-home');
+  } else {
+    go('screen-onb1');
+  }
+})();
+</script>
+</body>
+</html>
