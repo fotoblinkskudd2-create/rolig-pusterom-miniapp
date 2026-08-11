@@ -1,0 +1,810 @@
+<title>Bricks, Rebuilt — Product Design Dossier</title>
+<style>
+  @font-face { font-family: 'SysMono'; src: local('SF Mono'); }
+
+  :root {
+    --paper: #eef0ea;
+    --paper-raised: #ffffff;
+    --ink: #141813;
+    --ink-soft: #4c554c;
+    --ink-faint: #7b8578;
+    --line: #d7dcd0;
+    --line-strong: #b9c1b1;
+    --studio: #b85430;
+    --studio-ink: #fff8f3;
+    --shadow: rgba(20, 24, 19, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14170f;
+      --paper-raised: #1c2016;
+      --ink: #edefe6;
+      --ink-soft: #a9b19f;
+      --ink-faint: #737c6c;
+      --line: #2c3225;
+      --line-strong: #3d4531;
+      --studio: #e0824f;
+      --studio-ink: #1c1108;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14170f;
+    --paper-raised: #1c2016;
+    --ink: #edefe6;
+    --ink-soft: #a9b19f;
+    --ink-faint: #737c6c;
+    --line: #2c3225;
+    --line-strong: #3d4531;
+    --studio: #e0824f;
+    --studio-ink: #1c1108;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .accent-chip,
+    :root:not([data-theme="light"]) .accent-fill,
+    :root:not([data-theme="light"]) .iso-stroke { filter: brightness(1.22) saturate(1.05); }
+  }
+  :root[data-theme="dark"] .accent-chip,
+  :root[data-theme="dark"] .accent-fill,
+  :root[data-theme="dark"] .iso-stroke { filter: brightness(1.22) saturate(1.05); }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  }
+  a { color: inherit; }
+  h1, h2, h3, h4 { font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0 0 1em; color: var(--ink); }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--studio);
+    font-weight: 600;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { display: none; }
+  }
+
+  .rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 40px 18px 40px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+  }
+  .rail .mark {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .rail .mark .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--studio); display: inline-block; }
+  .rail a {
+    display: block;
+    text-decoration: none;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    padding: 6px 8px;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rail a:hover { color: var(--ink); border-left-color: var(--line-strong); }
+  .rail .rail-group { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .rail .rail-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); padding: 0 8px 4px; }
+  #rail-products { display: flex; flex-direction: column; gap: 2px; }
+
+  main { min-width: 0; padding: 0 28px 100px; }
+
+  /* Cover */
+  .cover {
+    padding: 78px 0 46px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .cover h1 {
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    margin: 14px 0 18px;
+    max-width: 15ch;
+  }
+  .cover .sub {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin-bottom: 26px;
+  }
+  .cover .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .cover .meta b { color: var(--ink-soft); font-weight: 600; }
+
+  /* Section dividers */
+  .divider {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 0 0 26px;
+    padding-top: 62px;
+  }
+  .divider .num { font-family: ui-monospace, monospace; font-size: 13px; color: var(--studio); font-weight: 700; }
+  .divider h2 { font-size: 26px; letter-spacing: -0.01em; }
+  .divider .rule { flex: 1; height: 1px; background: repeating-linear-gradient(90deg, var(--line-strong) 0 4px, transparent 4px 9px); align-self: center; }
+
+  .lede { max-width: 68ch; font-size: 17px; color: var(--ink-soft); margin-bottom: 26px; }
+
+  .sheet {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 30px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+
+  /* Tables */
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; }
+  td.num, th.num { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .table-wrap { overflow-x: auto; }
+
+  .pill { display: inline-block; font-family: ui-monospace, monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--line-strong); color: var(--ink-soft); }
+
+  /* Competitor spotlight */
+  .spot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 18px 0 8px; }
+  .spot-card { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; background: var(--paper); }
+  .spot-card h4 { font-size: 15px; margin-bottom: 2px; }
+  .spot-card .cat { font-size: 12px; color: var(--ink-faint); margin-bottom: 10px; }
+  .spot-card .sw { font-size: 13.5px; margin-bottom: 6px; }
+  .spot-card .sw b { color: var(--ink-soft); font-weight: 600; }
+
+  /* Product sheet */
+  .product-sheet { scroll-margin-top: 20px; }
+  .p-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 6px; }
+  .p-head .p-num { font-family: ui-monospace, monospace; font-size: 40px; font-weight: 700; color: var(--line-strong); line-height: 1; }
+  .p-title h3 { font-size: 24px; margin-bottom: 4px; }
+  .p-title .tagline { font-size: 14.5px; color: var(--ink-soft); font-style: normal; }
+  .p-swatch { width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0; }
+
+  .pitch { font-size: 15.5px; color: var(--ink); background: var(--paper); border-left: 3px solid; border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 14px 0 20px; }
+
+  .p-grid { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,0.95fr); gap: 26px; }
+  @media (max-width: 720px) { .p-grid { grid-template-columns: 1fr; } }
+
+  .field { margin-bottom: 16px; }
+  .field .k { font-family: ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 5px; }
+  .field ul { margin: 0; padding-left: 18px; }
+  .field li { margin-bottom: 4px; font-size: 14.5px; }
+
+  .visual-panel { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 14px; background: var(--paper); }
+  .visual-panel .cap { font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-faint); padding: 8px 12px; border-top: 1px solid var(--line); background: var(--paper-raised); }
+  .visual-panel svg { display: block; width: 100%; height: auto; }
+
+  .cost-row { display: flex; gap: 22px; flex-wrap: wrap; margin: 4px 0 4px; }
+  .cost-item .amt { font-family: ui-monospace, monospace; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cost-item .lbl { font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .cost-note { font-family: ui-monospace, monospace; font-size: 11.5px; color: var(--ink-faint); margin: 2px 0 4px; }
+
+  .proto-block { border-top: 1px dashed var(--line-strong); margin-top: 22px; padding-top: 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 26px; }
+  @media (max-width: 720px) { .proto-block { grid-template-columns: 1fr; } }
+  .proto-steps { counter-reset: step; list-style: none; margin: 0; padding: 0; }
+  .proto-steps li { counter-increment: step; position: relative; padding-left: 30px; margin-bottom: 9px; font-size: 14px; }
+  .proto-steps li::before { content: counter(step); position: absolute; left: 0; top: 0.05em; width: 20px; height: 20px; border-radius: 5px; background: var(--paper); border: 1px solid var(--line-strong); font-family: ui-monospace, monospace; font-size: 11px; display: flex; align-items: center; justify-content: center; color: var(--ink-soft); }
+  .timeline-mini td, .timeline-mini th { padding: 6px 10px; font-size: 13px; }
+
+  .adv { font-size: 13.5px; color: var(--ink-soft); border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
+  .adv b { color: var(--ink); }
+
+  /* Matrix */
+  .matrix td, .matrix th { text-align: center; }
+  .matrix td:first-child, .matrix th:first-child { text-align: left; }
+  .matrix .hi { background: color-mix(in srgb, var(--studio) 12%, transparent); font-weight: 700; }
+
+  footer.report-footer {
+    max-width: 68ch;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    margin-top: 70px;
+  }
+
+  @media print {
+    .rail { display: none; }
+    .shell { grid-template-columns: 1fr; }
+    .cover, .research-block, .product-sheet, .final-block { break-after: page; }
+    body { background: #fff; background-image: none; }
+  }
+</style>
+
+<div class="shell">
+  <nav class="rail" id="rail">
+    <div class="mark"><span class="dot"></span>STUDIO DOSSIER</div>
+    <a href="#cover">Cover</a>
+    <a href="#exec">Executive Summary</a>
+    <a href="#research">Research Findings</a>
+    <div class="rail-group">
+      <div class="rail-label">Product Line — 10</div>
+      <div id="rail-products"></div>
+    </div>
+    <div class="rail-group">
+      <a href="#recs">Final Recommendations</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="cover" id="cover">
+      <div class="eyebrow">Studio Dossier · Product Design Sprint</div>
+      <h1>Bricks, rebuilt for grown‑up problems.</h1>
+      <p class="sub">Ten modular hardware concepts pairing LEGO's build language with Apple's finish — charging, light, gardening, safety, sound, travel and calm, each one a system you snap together and grow rather than a fixed object you replace.</p>
+      <div class="meta">
+        <span><b>Prepared</b> 11 Aug 2026</span>
+        <span><b>Sprint</b> 10‑day concept‑to‑prototype‑plan</span>
+        <span><b>Scope</b> 10 concepts, full spec + prototyping plan each</span>
+        <span><b>Status</b> Ready for development hand‑off</span>
+      </div>
+    </header>
+
+    <section id="exec">
+      <div class="divider"><span class="num">00</span><h2>Executive Summary</h2><span class="rule"></span></div>
+      <div class="sheet">
+        <p style="font-size:16.5px; max-width:70ch;">LEGO proved that a single, honest connector — the stud — could turn a pile of parts into anything a person could imagine, and that the joy was in the rebuilding. Apple proved that everyday hardware could be quiet, premium, and obvious to use without a manual. Almost nobody has combined the two for problems adults actually have: a desk that never fits its cables, safety hardware that looks clinical the day you need it most, a tracker a kid loses interest in, a garden that dies from good intentions. This dossier proposes ten products built on that gap.</p>
+        <p style="max-width:70ch;">Every concept shares one design law: <b>the connector carries function, not just structure.</b> Where LEGO studs only hold parts together, ours also carry power, data, water, or sound between bricks — so a "modular" product here is genuinely reconfigurable, not just molded to look like it is.</p>
+        <div class="table-wrap" style="margin-top:22px;">
+          <table>
+            <thead><tr><th>№</th><th>Product</th><th>Solves</th><th>Est. retail</th></tr></thead>
+            <tbody id="exec-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="research">
+      <div class="divider"><span class="num">01</span><h2>Research Findings</h2><span class="rule"></span></div>
+      <div class="lede">Three days of desk research across adjacent categories — smart lighting, charging, trackers, home safety, audio, travel and wellness hardware — to find where "modular" is sold as an aesthetic rather than genuinely engineered.</div>
+
+      <div class="sheet research-block">
+        <div class="eyebrow" style="margin-bottom:10px;">Day 1 — Competitor Landscape</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Category</th><th>Key players</th><th>How they compete today</th><th>Where they stop short</th></tr></thead>
+            <tbody>
+              <tr><td>Smart lighting</td><td>Nanoleaf, Philips Hue, Govee</td><td>Panel shapes, app scenes, color accuracy</td><td>Glued/adhesive mounts; one failed LED strip retires the whole piece</td></tr>
+              <tr><td>Charging</td><td>Anker MagGo, Belkin, IKEA</td><td>Multi-device slabs, fast-charge specs</td><td>Fixed device count baked into one mould — can't grow or shrink with you</td></tr>
+              <tr><td>Item trackers</td><td>Apple AirTag, Tile, Samsung SmartTag</td><td>Network size, battery life, thinness</td><td>One flat disc shape; no emotional pull for the kids who actually carry them</td></tr>
+              <tr><td>Home safety / aging-in-place</td><td>Vive Health, Moen Home Care, Ring/Alexa Together</td><td>Load ratings, fall-alert monitoring</td><td>Visibly medical finishes; installed only after a fall, not before</td></tr>
+              <tr><td>Audio</td><td>Sonos, IKEA SYMFONISK, Teenage Engineering</td><td>Room-fill sound, multi-room sync</td><td>Buy the whole system for the whole room, or none of it</td></tr>
+              <tr><td>Modular build systems</td><td>LEGO Technic/Ideas, fischertechnik</td><td>Best-in-class mechanical connector, huge parts ecosystem</td><td>Treated purely as toy/hobby — never applied to daily-use electronics</td></tr>
+              <tr><td>Travel &amp; gear rigs</td><td>Away, Peak Design, SmallRig, Nomatic</td><td>Premium materials, brand-fit ecosystems</td><td>Ecosystem loyalty, not true cross-brand or cross-format interoperability</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="eyebrow" style="margin:26px 0 6px;">Three products worth studying closely</div>
+        <div class="spot-grid">
+          <div class="spot-card">
+            <h4>Nanoleaf Shapes</h4>
+            <div class="cat">Modular smart lighting</div>
+            <div class="sw"><b>Strength —</b> satisfying tactile snap, strong app, real design-object status on a wall.</div>
+            <div class="sw"><b>Weakness —</b> adhesive-mounted, non-repairable boards; one dead panel means a full replacement.</div>
+          </div>
+          <div class="spot-card">
+            <h4>Teenage Engineering OB‑4 / PO series</h4>
+            <div class="cat">Playful premium electronics</div>
+            <div class="sw"><b>Strength —</b> proof that toy-like joy and Apple-grade finish can coexist at a real price point.</div>
+            <div class="sw"><b>Weakness —</b> niche pricing and manufacturing complexity keep it a cult object, not a mass platform.</div>
+          </div>
+          <div class="spot-card">
+            <h4>Apple AirTag</h4>
+            <div class="cat">Item tracking</div>
+            <div class="sw"><b>Strength —</b> Find My network scale and one-tap pairing set the category's UX bar.</div>
+            <div class="sw"><b>Weakness —</b> one fixed disc shape; the entire accessory market exists to patch that gap.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet research-block">
+        <div class="eyebrow" style="margin-bottom:10px;">Day 2 — Market Gaps</div>
+        <p style="max-width:70ch;">Directional planning signals synthesized from public category reports and past consumer-behavior studies on renting, repair, and aging-in-place — treated as hypotheses for the usability testing in Phase 3 to confirm, not as primary survey data collected by this sprint.</p>
+        <ul style="max-width:70ch; padding-left:20px;">
+          <li style="margin-bottom:8px;"><b>Renters don't install.</b> A majority of renters avoid drilled, permanent fixtures — the exact hardware category (grab bars, shelving, lighting) that most needs to feel non-committal.</li>
+          <li style="margin-bottom:8px;"><b>Repair fatigue is real.</b> Right-to-repair sentiment is rising faster than the hardware industry's response; single-board electronics that die whole are increasingly a dealbreaker, not a shrug.</li>
+          <li style="margin-bottom:8px;"><b>Safety hardware still looks clinical.</b> Aging-in-place demand is growing quickly, but the visible product language (steel grab bars, med-alert pendants) is exactly what makes people delay buying it.</li>
+          <li style="margin-bottom:8px;"><b>Kids lose things; they don't lose interest in building things.</b> Tracker adoption for kids' gear lags adult adoption — the object itself has no pull for a child.</li>
+          <li><b>Nobody owns "adult modularity."</b> LEGO owns modularity as play. No brand owns it as a hardware design language for daily problems.</li>
+        </ul>
+
+        <div class="eyebrow" style="margin:26px 0 8px;">Day 3 — Problem Statement</div>
+        <p style="max-width:70ch; font-size:16px; border-left:3px solid var(--studio); padding-left:16px;">Consumers increasingly rent rather than own, discard rather than repair, and settle for fixed-shape hardware that never quite matches how their needs actually change. The tactile, rebuild-it-yourself satisfaction that made LEGO a design icon has never been seriously applied to daily hardware. The opportunity: a modular, repairable, Apple-finished hardware language for the problems grown-ups actually have.</p>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="divider"><span class="num">02</span><h2>Top 10 Product Concepts</h2><span class="rule"></span></div>
+      <div class="lede">Thirty concepts were sketched across the seven category gaps above; these ten were shortlisted on feasibility, impact, and originality (see scoring, §04). Each spread carries a full spec, a dimensioned technical drawing, a scene brief for photography, and a build plan to a working prototype.</div>
+      <div id="product-sheets"></div>
+    </section>
+
+    <section id="recs">
+      <div class="divider"><span class="num">03</span><h2>Usability Testing Protocol</h2><span class="rule"></span></div>
+      <div class="sheet final-block">
+        <p style="max-width:70ch;">Before any concept moves past its first working prototype, each runs the same five-user protocol — recruiting for the product's actual target user (e.g. parents + one child for TrackTag Bricks; an occupational therapist referral for CareRail). This is the test plan the development team runs in Phase 3, not a substitute for it: no shortcuts on real sessions with real hardware in hand.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Step</th><th>What happens</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">Recruit</td><td>5 participants matching the product's stated target user; screen out anyone on the design team or who saw earlier concept sketches.</td></tr>
+              <tr><td class="mono">Baseline</td><td>2-minute unprompted handling of the physical prototype — what do they try first, with no instructions given?</td></tr>
+              <tr><td class="mono">Task</td><td>One realistic task (e.g. "reconfigure this from a stereo pair into a single speaker") timed and observed without help for the first attempt.</td></tr>
+              <tr><td class="mono">Probe</td><td>Product-specific risk question — see each spec's "test this first" line below.</td></tr>
+              <tr><td class="mono">Debrief</td><td>Would they buy it, at the stated price, to replace what they use today? Why or why not, in their own words.</td></tr>
+              <tr><td class="mono">Synthesize</td><td>Findings folded back into the spec before CAD is locked — this protocol runs again after any material design change.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="divider"><span class="num">04</span><h2>Final Recommendations</h2><span class="rule"></span></div>
+      <div class="sheet final-block">
+        <div class="eyebrow" style="margin-bottom:10px;">Prioritization matrix</div>
+        <div class="table-wrap">
+          <table class="matrix">
+            <thead><tr><th>Concept</th><th>Feasibility</th><th>Impact</th><th>Originality</th><th>Total /15</th></tr></thead>
+            <tbody id="matrix-body"></tbody>
+          </table>
+        </div>
+
+        <div class="eyebrow" style="margin:26px 0 10px;">Build first</div>
+        <p style="max-width:70ch;"><b>CareRail</b> and <b>Pusterom Breath Brick</b> tie for the top score — one because it opens a large, underserved, high-margin category nobody has designed well; the other because it is the cheapest and fastest to a convincing working prototype, and shares a brand story with an existing product in this portfolio. <b>TrackTag Bricks</b> rounds out the first wave: highest mainstream demand signal, moderate build complexity. Recommend committing Weeks 1–10 of real studio time to these three before greenlighting the remaining seven.</p>
+
+        <div class="eyebrow" style="margin:26px 0 10px;">Sustainability commitments</div>
+        <ul style="max-width:70ch; padding-left:20px;">
+          <li style="margin-bottom:6px;">Every concept specifies recycled, bio-based, or compostable primary material — no virgin single-use plastic in any BOM.</li>
+          <li style="margin-bottom:6px;">Field-repairable cartridges (LumaBrick, BrickCharge Hub) are standard practice going forward, not a one-off feature.</li>
+          <li>Electronics cores are designed to outlive their shells across every tracker- and sensor-based concept, cutting e-waste at the part, not the product.</li>
+        </ul>
+
+        <div class="eyebrow" style="margin:26px 0 10px;">Next steps</div>
+        <ol style="max-width:70ch; padding-left:20px;">
+          <li style="margin-bottom:6px;">Green-light CAD lock and long-lead tooling quotes for the first-wave three.</li>
+          <li style="margin-bottom:6px;">Recruit and run the five-user protocol on first working prototypes by end of Week 6.</li>
+          <li style="margin-bottom:6px;">Fold findings back into spec before committing to injection-mould tooling.</li>
+          <li>Revisit the remaining seven concepts against first-wave learnings before their own Day-7 kickoff.</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="report-footer">
+      Prepared as a product-design sprint deliverable. Technical drawings are dimensioned schematic diagrams for engineering reference; render briefs describe the intended photography setup for production photoshoots rather than finished photographs. Cost estimates are planning-stage BOM approximations pending supplier quotes.
+    </footer>
+  </main>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+// ---- tiny icon library (24x24 viewBox), returns markup string ----
+const ICONS = {
+  bolt:  '<polygon points="13,2 6,14 11,14 10,22 18,10 13,10" fill="none" stroke-width="1.6" stroke-linejoin="round"/>',
+  bulb:  '<circle cx="12" cy="10" r="6" fill="none" stroke-width="1.6"/><line x1="9" y1="19" x2="15" y2="19" stroke-width="1.6"/><line x1="12" y1="16" x2="12" y2="19" stroke-width="1.6"/>',
+  grid:  '<rect x="4" y="4" width="7" height="7" fill="none" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" fill="none" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" fill="none" stroke-width="1.6"/><rect x="13" y="13" width="7" height="7" fill="none" stroke-width="1.6"/>',
+  drop:  '<polygon points="12,3 6,14 18,14" fill="none" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="15" r="6" fill="none" stroke-width="1.6"/>',
+  wave:  '<rect x="4" y="9" width="5" height="6" fill="none" stroke-width="1.6"/><polygon points="9,7 15,3 15,21 9,17" fill="none" stroke-width="1.6" stroke-linejoin="round"/><path d="M18 9 a5 5 0 0 1 0 6" fill="none" stroke-width="1.6"/>',
+  pin:   '<path d="M12 2 a7 7 0 0 0 -7 7 c0 5 7 13 7 13 s7 -8 7 -13 a7 7 0 0 0 -7 -7z" fill="none" stroke-width="1.6"/><circle cx="12" cy="9" r="2.2" fill="none" stroke-width="1.4"/>',
+  bar:   '<rect x="3" y="10" width="18" height="4" rx="2" fill="none" stroke-width="1.6"/><circle cx="5" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+  case:  '<rect x="3" y="8" width="18" height="12" rx="2" fill="none" stroke-width="1.6"/><rect x="9" y="4" width="6" height="4" rx="1" fill="none" stroke-width="1.6"/>',
+  lens:  '<rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke-width="1.6"/><circle cx="12" cy="13" r="4" fill="none" stroke-width="1.6"/><rect x="8" y="3" width="4" height="3" fill="none" stroke-width="1.6"/>',
+  pulse: '<polyline points="2,12 7,12 9,6 13,18 15,12 22,12" fill="none" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>',
+  laptop:'<rect x="3" y="5" width="18" height="11" rx="1" fill="none" stroke-width="1.6"/><line x1="2" y1="19" x2="22" y2="19" stroke-width="1.6"/>',
+  mug:   '<rect x="5" y="7" width="10" height="11" rx="1" fill="none" stroke-width="1.6"/><path d="M15 9 h3 a3 3 0 0 1 0 6 h-3" fill="none" stroke-width="1.6"/>',
+  phone: '<rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke-width="1.6"/><line x1="10" y1="19" x2="14" y2="19" stroke-width="1.6"/>',
+  wall:  '<rect x="4" y="4" width="16" height="16" rx="1" fill="none" stroke-width="1.6"/><line x1="4" y1="10" x2="20" y2="10" stroke-width="1.6"/>',
+  plant: '<path d="M12 21 v-9" fill="none" stroke-width="1.6"/><path d="M12 12 c-4 0-6-3-6-6 c4 0 6 2 6 6z" fill="none" stroke-width="1.6"/><path d="M12 12 c4 0 6-3 6-6 c-4 0-6 2-6 6z" fill="none" stroke-width="1.6"/>',
+  moon:  '<path d="M20 14 a8 8 0 1 1 -8-11 a6.5 6.5 0 0 0 8 11z" fill="none" stroke-width="1.6" stroke-linejoin="round"/>',
+  notebook:'<rect x="4" y="3" width="16" height="18" rx="1" fill="none" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="21" stroke-width="1.6"/>',
+  backpack:'<rect x="6" y="8" width="12" height="13" rx="2" fill="none" stroke-width="1.6"/><path d="M9 8 v-2 a3 3 0 0 1 6 0 v2" fill="none" stroke-width="1.6"/><rect x="9" y="11" width="6" height="3" fill="none" stroke-width="1.6"/>',
+  bike:  '<circle cx="6" cy="17" r="3" fill="none" stroke-width="1.6"/><circle cx="18" cy="17" r="3" fill="none" stroke-width="1.6"/><path d="M6 17 L10 9 h5 l3 8" fill="none" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 9 l2 4" fill="none" stroke-width="1.6"/>',
+  pillow:'<path d="M4 8 q8-4 16 0 q2 6-2 10 q-6 3-12 0 q-4-4-2-10z" fill="none" stroke-width="1.6" stroke-linejoin="round"/>',
+  sun:   '<circle cx="12" cy="12" r="4" fill="none" stroke-width="1.6"/><line x1="12" y1="2" x2="12" y2="5" stroke-width="1.6"/><line x1="12" y1="19" x2="12" y2="22" stroke-width="1.6"/><line x1="2" y1="12" x2="5" y2="12" stroke-width="1.6"/><line x1="19" y1="12" x2="22" y2="12" stroke-width="1.6"/>',
+  door:  '<rect x="6" y="3" width="12" height="18" rx="1" fill="none" stroke-width="1.6"/><circle cx="15" cy="12" r="1"/>',
+  bookshelf:'<rect x="3" y="4" width="18" height="16" fill="none" stroke-width="1.6"/><line x1="3" y1="12" x2="21" y2="12" stroke-width="1.6"/><line x1="8" y1="4" x2="8" y2="12" stroke-width="1.6"/><line x1="14" y1="12" x2="14" y2="20" stroke-width="1.6"/>'
+};
+function iconSvg(key, size, color){
+  return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" stroke="${color}" stroke-linecap="round">${ICONS[key]||''}</svg>`;
+}
+
+// ---- isometric technical-drawing renderer ----
+function isoPoint(x,y,z){ return [ (x-y)*0.866, (x+y)*0.5 - z ]; }
+function poly(pts){ return pts.map(p=>p.join(',')).join(' '); }
+
+function drawTechnical(svg, product){
+  const W=340, H=210;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  // dot-grid backdrop
+  const bg = el('rect', {x:0,y:0,width:W,height:H,fill:'var(--paper)'}, svg);
+  const pat = el('pattern', {id:'dots-'+product.id, width:12, height:12, patternUnits:'userSpaceOnUse'}, svg.querySelector('defs')||el('defs',{},svg));
+  el('circle', {cx:1,cy:1,r:0.7, fill:'var(--line-strong)'}, pat);
+  el('rect', {x:0,y:0,width:W,height:H,fill:'url(#dots-'+product.id+')'}, svg);
+
+  const originX = W*0.34, originY = H*0.62;
+  const g = el('g', {transform:`translate(${originX},${originY})`}, svg);
+
+  const {w:BW,d:BD,h:BH} = product.isoDims;
+  const scale = 1.6;
+  const gap = BW*scale*0.18;
+  for (let i=0;i<product.moduleCount;i++){
+    const off = i*(BW*scale+gap);
+    drawCube(g, off, 0, 0, BW*scale, BD*scale, BH*scale, product.accent);
+  }
+
+  // dimension line (width) under first brick
+  const dimY = BD*scale*0.5 + 34;
+  const p0 = isoPoint(0,0,0), p1 = isoPoint(BW*scale,0,0);
+  el('line', {x1:p0[0], y1:dimY, x2:p1[0], y2:dimY, stroke:'var(--ink-faint)', 'stroke-width':1}, g);
+  el('line', {x1:p0[0], y1:p0[1]+6, x2:p0[0], y2:dimY, stroke:'var(--ink-faint)', 'stroke-width':0.7, 'stroke-dasharray':'2,2'}, g);
+  el('line', {x1:p1[0], y1:p1[1]+6, x2:p1[0], y2:dimY, stroke:'var(--ink-faint)', 'stroke-width':0.7, 'stroke-dasharray':'2,2'}, g);
+  const dimLabel = el('text', {x:(p0[0]+p1[0])/2, y:dimY+13, 'text-anchor':'middle', 'font-family':'ui-monospace,monospace', 'font-size':9, fill:'var(--ink-faint)'}, g);
+  dimLabel.textContent = product.isoDims.w + ' mm';
+
+  const dimLabelH = el('text', {x: -BW*scale*0.5-30, y: -BH*scale*0.5, 'text-anchor':'middle', 'font-family':'ui-monospace,monospace', 'font-size':9, fill:'var(--ink-faint)', transform:`translate(${-14},0)`}, g);
+  dimLabelH.textContent = product.isoDims.h + ' mm H';
+
+  // label chip
+  const chip = el('text', {x:8, y:H-14, 'font-family':'ui-monospace,monospace', 'font-size':10, fill:'var(--ink-soft)'}, svg);
+  chip.textContent = `FIG. ${product.num} — ${product.name.toUpperCase()} MODULE, ${product.moduleCount}× SHOWN`;
+}
+
+function drawCube(g, ox, oy, oz, W, D, H, color){
+  const c = (x,y,z)=>{ const p = isoPoint(x,y,z); return [p[0]+ox, p[1]+oy-oz]; };
+  const top   = [c(0,0,H), c(W,0,H), c(W,D,H), c(0,D,H)];
+  const right = [c(W,0,0), c(W,0,H), c(W,D,H), c(W,D,0)];
+  const front = [c(0,D,0), c(W,D,0), c(W,D,H), c(0,D,H)];
+  el('polygon', {points:poly(front), fill:color, 'fill-opacity':0.55, class:'iso-stroke', stroke:color, 'stroke-width':1}, g);
+  el('polygon', {points:poly(right), fill:color, 'fill-opacity':0.78, class:'iso-stroke', stroke:color, 'stroke-width':1}, g);
+  el('polygon', {points:poly(top),   fill:color, 'fill-opacity':0.24, class:'iso-stroke', stroke:color, 'stroke-width':1.2}, g);
+  // studs
+  const cols=2, rows=2;
+  for(let i=0;i<cols;i++){
+    for(let j=0;j<rows;j++){
+      const sx = W*(i+0.5)/cols, sy = D*(j+0.5)/rows;
+      const p = c(sx, sy, H);
+      el('ellipse', {cx:p[0], cy:p[1]-3, rx:5, ry:2.6, fill:color, 'fill-opacity':0.5, stroke:color, 'stroke-width':0.8, class:'iso-stroke'}, g);
+    }
+  }
+}
+
+function drawScene(svg, product){
+  const W=340, H=170;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  el('rect', {x:0,y:0,width:W,height:H, fill:product.accent, 'fill-opacity':0.14}, svg);
+  el('line', {x1:0,y1:H*0.72,x2:W,y2:H*0.72, stroke:'var(--line-strong)', 'stroke-width':1}, svg);
+  // context icons along the horizon
+  product.sceneIcons.forEach((k,i)=>{
+    const gx = 26 + i*((W-52)/2);
+    const g = el('g', {transform:`translate(${gx-12},${H*0.72-40})`}, svg);
+    g.innerHTML = iconSvg(k, 26, 'var(--ink-faint)').replace(/<svg[^>]*>|<\/svg>/g,'');
+  });
+  // glow + product icon center
+  el('circle', {cx:W*0.62, cy:H*0.5, r:30, fill:product.accent, 'fill-opacity':0.28, class:'accent-fill'}, svg);
+  const cg = el('g', {transform:`translate(${W*0.62-16},${H*0.5-16})`}, svg);
+  cg.innerHTML = iconSvg(product.icon, 32, product.accent).replace(/<svg[^>]*>|<\/svg>/g,'');
+}
+
+// ---- product data ----
+const PRODUCTS = [
+{id:'brickcharge', num:1, name:'BrickCharge Hub', tagline:'Charging, rebuilt brick by brick.', accent:'#3d6b8a', icon:'bolt',
+ pitch:'A modular wireless-charging system built from magnetic, LEGO-compatible bricks — snap together exactly the charging surface your desk needs today, and add a brick when your gadget collection grows.',
+ problem:'Desks accumulate a graveyard of single-purpose charging pads and tangled cables because charging hardware is sold as one fixed shape that never matches how many devices you actually own.',
+ target:'Multi-device professionals and students (laptop + phone + earbuds + watch) who rent, move often, or hate cable clutter.',
+ features:['Qi2 15W charging studs, hot-swappable per brick','Magnetic stud connectors carry both power and data — no per-brick cable','Companion app shows live charge state and power budget across the stack','Bricks click apart for travel; one USB-C in powers the whole array'],
+ materials:[['Recycled aluminum top plate','1 per brick','72 g'],['Bio-based PA11 brick body','1 per brick','40 g'],['Qi2 coil + PMIC module','1 per brick','—'],['Magnetic pogo-pin contacts','4 per brick','—']],
+ dims:'Single brick 94 × 94 × 22 mm (2×2 stud); stacks up to 6 bricks in any layout',
+ bom:'$18.40 / brick', retail:'$39 single · $99 3-pack', margin:'≈54% gross margin',
+ advantage:'The only charging system where the electrical connection <b>is</b> the mechanical connection — Anker MagGo and Belkin sell fixed multi-device slabs with zero reconfigurability.',
+ test:'Test this first: do users trust snapping two live-charging bricks together without a cable in between?',
+ sceneIcons:['laptop','mug','phone'], sceneCaption:'Studio loft desk, late-afternoon window light raking across brushed aluminum studs; three bricks arranged in an L around an open laptop.',
+ isoDims:{w:94,d:94,h:22}, moduleCount:2,
+ protoMaterials:[['FDM printer, bio-PA11 filament','1 kg'],['Qi2 coil / PMIC dev modules','6'],['Neodymium pogo-pin sets','24'],['CNC-cut aluminum top plates','6']],
+ tools:['3D printer','Soldering station','CNC mill (outsourced)','Multimeter'],
+ steps:['Model brick body + stud/anti-stud geometry, tolerance-fit ±0.1 mm','3D print bio-PA11 shells, six units','Wire Qi2 coil + PMIC to the pogo-pin power bus on each shell','CNC top plates, bond to shells with structural adhesive','Flash firmware, pair app over BLE','Load-test stacked configurations for thermal and power budget','Bench test with real devices, 72 hours continuous cycling'],
+ timeline:[['CAD + tolerancing','Days 7–8'],['First physical brick','Days 9–10'],['Electronics, 6-brick set','Weeks 3–5'],['Working prototype + app pairing','Week 6']]
+},
+{id:'lumabrick', num:2, name:'LumaBrick', tagline:'Light you build, not just switch on.', accent:'#c98a2c', icon:'bulb',
+ pitch:'Hexagonal LED bricks with a true mechanical snap-fit — not adhesive-backed like Nanoleaf — that carry power and data through the stud connectors themselves, so any shape you build lights up as one fixture.',
+ problem:'Modular smart lighting exists, but panels are glued or mounted permanently and non-repairable — when one LED strip in a $300 wall dies, the whole art piece comes down.',
+ target:'Renters and design-conscious apartment dwellers who want a lighting "art wall" without commitment or landfill risk.',
+ features:['Field-replaceable LED + driver cartridge per brick, 2-minute repair, no soldering','Stud connectors carry 24V + I2C data — freeform shapes stay one addressable fixture','Magnetic wall mounts, zero drilling, remove and reposition anytime','Matter/Thread native — works with existing smart-home routines'],
+ materials:[['Recycled polycarbonate diffuser lens','1 per brick','18 g'],['Aluminum heat-spreader backplate','1 per brick','34 g'],['Addressable RGBW LED + driver cartridge','1 per brick, swappable','—'],['Brass stud/data contacts','6 per edge','—']],
+ dims:'Single hex brick 120 mm point-to-point, 14 mm thick; installs from 3 to 40+ bricks',
+ bom:'$11.20 / brick', retail:'$24 / brick · $129 6-pack starter', margin:'≈48% gross margin',
+ advantage:'Field-repairable cartridge plus a true structural stud connection, where Nanoleaf and Govee rely on glue tabs and single-use boards.',
+ test:'Test this first: can a first-time user swap a "dead" LED cartridge themselves, unprompted, in under 2 minutes?',
+ sceneIcons:['wall','plant','moon'], sceneCaption:'Evening living-room corner, hex bricks in a loose cluster above a reading chair, warm-white glow falling on a fiddle-leaf fig.',
+ isoDims:{w:60,d:60,h:14}, moduleCount:3,
+ protoMaterials:[['Addressable RGBW LED strip','3 m'],['Polycarbonate sheet 3 mm','2 sheets, laser-cut'],['Aluminum backplate blanks','10'],['Thread/Matter dev boards','2']],
+ tools:['Laser cutter','Reflow hot-air station','Thread SDK + dev boards','Lux meter'],
+ steps:['Laser-cut hex diffusers and backplates','Hand-wire first LED cartridge, bench-test brightness and CRI','Design snap-fit contact edge, test three tolerance fits','Assemble a 10-brick cluster, verify data daisy-chain across shapes','Pair to Matter fabric, build three lighting scenes','Drop-test the magnetic wall mount at 3× brick weight'],
+ timeline:[['Diffuser + contact tolerancing','Days 7–9'],['First lit brick','Day 10'],['10-brick networked cluster','Weeks 3–4'],['Matter-certified working prototype','Weeks 5–7']]
+},
+{id:'deskgrid', num:3, name:'DeskGrid', tagline:'Your desk, in brick form.', accent:'#6b7a52', icon:'grid',
+ pitch:'A rail-and-brick organization system — pen trays, phone stands, cable channels and a felt catch-all snap onto a slim aluminum rail that clamps under any desk edge in seconds.',
+ problem:'Desk organizers are either single-purpose plastic trays or expensive fixed modular systems that can’t be rearranged without buying a whole new set.',
+ target:'WFH professionals and students who reconfigure their setup often — standing desks, hot-desking, small apartments.',
+ features:['Under-desk clamp rail, no drilling, fits desks 18–35 mm thick','7 brick modules: pen tray, phone stand, cable channel, headphone hook, felt tray, USB hub, note dock','Bricks slide-lock onto the rail in any order, relocate in seconds','Cable-channel bricks route a power strip invisibly along the rail'],
+ materials:[['Extruded aluminum rail','1 × 600 mm per desk','—'],['Bamboo-composite brick body','1 per module','~60 g'],['Recycled-felt tray liner','1 per felt brick','—'],['PA6 slide-lock clips','2 per brick','—']],
+ dims:'Rail 600 mm, extendable in 300 mm sections; bricks 60 × 60 × 40 mm footprint',
+ bom:'$9.10 / starter kit (rail + 4 bricks)', retail:'$59 starter kit · $12 / added brick', margin:'≈61% gross margin',
+ advantage:'The only desk system where the mounting rail is itself the shared baseplate — every accessory is interoperable, and the system grows one brick at a time instead of forcing a full-set repurchase.',
+ test:'Test this first: how long does an unprompted user take to move all 4 bricks to a new arrangement on the rail?',
+ sceneIcons:['laptop','mug','notebook'], sceneCaption:'Home-office desk shot from above, rail mounted under a birch desktop, pen tray and phone stand holding a call in progress.',
+ isoDims:{w:60,d:60,h:40}, moduleCount:2,
+ protoMaterials:[['Aluminum T-slot extrusion','2 m'],['Bamboo composite sheet','1 sheet, CNC-routed'],['PA6 slide clips (SLS print)','20'],['Felt liner offcuts','0.5 m²']],
+ tools:['CNC router','Bandsaw','SLS print service','Desk clamps for fit testing'],
+ steps:['Extrude/cut rail sections, mill clamp-slot tolerance samples','Rout bamboo brick bodies for four core modules','Print PA6 slide-lock clips, test retention force','Bond felt liners into the tray brick','Assemble the full starter kit, mount on three desk thicknesses','User-test one-handed reconfiguration time'],
+ timeline:[['Rail + clip tolerancing','Days 7–8'],['First 4-brick kit built','Days 9–10'],['7-module full set','Weeks 3–4'],['Working prototype on 5 test desks','Week 5']]
+},
+{id:'growbrick', num:4, name:'GrowBrick', tagline:'A garden that snaps together.', accent:'#4a8f5c', icon:'drop',
+ pitch:'Self-watering planter bricks with an internal water-channel stud connection, so a whole wall of plants shares one reservoir and one moisture sensor — add a brick, and it waters itself from day one.',
+ problem:'Indoor gardening kits are single-pot or fixed-frame; killing one plant from forgetting to water it is the top reason new plant owners quit.',
+ target:'First-time plant owners and small-space urban dwellers who want greenery without a watering routine.',
+ features:['Studs double as water channels — one reservoir refill feeds every connected brick by capillary wick','A single moisture-sensor brick reports the whole wall’s watering need to the app','Modular wall bracket builds any grid from 1 to 40+ bricks','Bio-resin bricks are compostable at end of life'],
+ materials:[['PLA/PHA bio-resin planter body','1 per brick','85 g'],['Capillary wick cord','0.3 m per brick','—'],['Silicone stud gaskets','4 per brick','—'],['Moisture/reservoir sensor module','1 per wall','—']],
+ dims:'Single brick 110 × 110 × 95 mm, 0.6 L soil volume; wall bracket in 4-brick increments',
+ bom:'$6.80 / brick', retail:'$22 / brick · $79 4-brick starter wall', margin:'≈49% gross margin',
+ advantage:'Genuinely shares water and nutrients across the structure via the connector itself — competitors’ "modular" planters are same-shaped pots mounted side by side with independent watering.',
+ test:'Test this first: do users correctly read the single moisture indicator as covering the whole wall, not just one pot?',
+ sceneIcons:['wall','plant','sun'], sceneCaption:'Sunlit kitchen wall, a 9-brick grid of herbs and trailing pothos, morning light, one brick pulled forward to show the wick connector.',
+ isoDims:{w:70,d:70,h:60}, moduleCount:2,
+ protoMaterials:[['PLA/PHA resin','1 kg'],['Capillary wick cord','5 m'],['Silicone gasket sheet','1'],['Capacitive moisture sensors','3']],
+ tools:['3D printer (bio-resin capable)','Soil test kit','Wall bracket jig','Humidity chamber (optional)'],
+ steps:['Print a single brick, verify the wick channel doesn’t leak under pressure','Assemble a 4-brick wall, run a 14-day water-sharing test','Wire the moisture sensor and BLE report to the app','Pot four plant varieties, observe root/wick interaction','Compost-test one retired brick to confirm breakdown timeline','Field-test on 3 apartment walls with different light levels'],
+ timeline:[['Wick-channel prototyping','Days 7–9'],['First watered brick','Day 10'],['4-brick shared-reservoir wall','Weeks 3–5'],['Working prototype, 3 households','Weeks 6–8']]
+},
+{id:'soundstack', num:5, name:'SoundStack', tagline:'Stereo, however you stack it.', accent:'#6d4e78', icon:'wave',
+ pitch:'Single-driver speaker bricks that combine acoustically and electrically through their connector — two bricks make a stereo pair, six make a surround set, and each brick alone is a perfectly good mono speaker.',
+ problem:'Multi-speaker systems force a fixed set for a fixed room; move to a smaller place and half the system becomes dead weight.',
+ target:'Renters and small-space audiophiles who upgrade gradually instead of all at once.',
+ features:['Each brick is a complete powered mono speaker — never "incomplete" on its own','Stud connector carries synced digital audio and power between adjacent bricks','Auto-detects stack shape: side-by-side = stereo, stacked = surround channel','Felt-wrapped enclosure with swappable colorway skins'],
+ materials:[['Recycled-felt over MDF-composite enclosure','1 per brick','—'],['3" full-range driver + Class-D amp module','1 per brick','—'],['Aluminum stud contact ring','1 per brick','—'],['Passive radiator','1 per brick','—']],
+ dims:'Single brick 100 × 100 × 100 mm cube; stacks of 2–8 supported',
+ bom:'$28.50 / brick', retail:'$69 / brick · $129 stereo pair', margin:'≈45% gross margin',
+ advantage:'The only "modular" speaker line where a single unit is a complete product, not a starter-kit component you’re stuck with until you buy the rest.',
+ test:'Test this first: do users notice and trust the auto-detected stereo/surround assignment, or do they expect to configure it manually?',
+ sceneIcons:['bookshelf','plant','phone'], sceneCaption:'Apartment bookshelf, three felt-wrapped bricks stacked in an offset tower between books and a small plant, warm evening light.',
+ isoDims:{w:100,d:100,h:100}, moduleCount:2,
+ protoMaterials:[['3" full-range drivers','6'],['Class-D amp boards','6'],['MDF-composite enclosure blanks (CNC)','6'],['Recycled felt sheet','2 m²']],
+ tools:['CNC router','Soldering station','Audio measurement mic + software','Upholstery stapler'],
+ steps:['CNC enclosures, verify internal volume against driver spec','Wire driver, amp and passive radiator, bench-test frequency response','Wrap enclosures in felt, fit the stud contact ring','Build a 2-brick stereo pair, verify auto-pairing and sync latency','Stack 6 bricks, test surround-channel auto-assignment','Blind listening test against a fixed-shape competitor speaker'],
+ timeline:[['Enclosure + driver tuning','Days 7–10'],['First working mono brick','Week 2'],['Synced stereo pair','Weeks 3–5'],['6-brick surround prototype','Weeks 6–9']]
+},
+{id:'tracktag', num:6, name:'TrackTag Bricks', tagline:'Never lose it again — and never lose the fun.', accent:'#2c8a86', icon:'pin',
+ pitch:'A Find My-network tracker inside a snap-apart brick shell kids design themselves, so the thing keeping track of their backpack is also the thing they’re proudest of building.',
+ problem:'AirTags and Tile trackers solve "find it" but ship as one flat disc kids immediately lose inside a bag; parents want something a child will actually keep attached to and engaged with.',
+ target:'Parents of kids aged 5–11 (backpacks, bikes, lunchboxes) and the kids themselves as the real user.',
+ features:['UWB/BLE tracker core clips into any brick shell a kid builds from the included set','Shell designs (animal, vehicle, abstract) snap apart in seconds to move the tracker between bags and bikes','Parent app shows location and battery; a kid-facing companion shows a simple "build streak"','Shells sell separately in themed packs — the tracker core is the only electronics, replaced rarely'],
+ materials:[['Recycled ABS shell bricks','6 shapes per pack, ~8 g each','—'],['UWB + BLE tracker core with CR2032','1, shared across shells','—'],['Silicone shock bumper','1 per shell','—'],['Keyring/clip stud adapter','1 per pack','—']],
+ dims:'Shell footprint 40 × 40 × 20 mm avg; tracker core 32 × 32 × 6 mm',
+ bom:'$7.20 / starter pack (core + 6 shells)', retail:'$34 starter · $14 / theme shell pack', margin:'≈58% gross margin',
+ advantage:'Decouples the expensive tracker electronics — bought once — from the fun, cheap, replaceable shell, where competitors sell disposable single-shape hardware with zero emotional stickiness for kids.',
+ test:'Test this first: does a child re-attach the core to a new shell correctly and confidently without an adult’s help?',
+ sceneIcons:['backpack','bike','sun'], sceneCaption:'School entryway, backpack on a hook with an animal-shaped brick tracker clipped to the zipper pull, morning light.',
+ isoDims:{w:40,d:40,h:20}, moduleCount:3,
+ protoMaterials:[['UWB tracker dev modules','5'],['Recycled ABS filament','1 kg'],['CR2032 cell holders','5'],['Silicone bumper mold kit','1']],
+ tools:['3D printer','UWB dev kit + Find My-equivalent SDK','Drop-test rig','Digital scale'],
+ steps:['Print six shell geometries around a fixed tracker-core cavity','Assemble the tracker core, verify BLE/UWB range indoors and outdoors','Snap-fit test 100 cycles per shell to confirm no wear failure','Mold silicone bumpers, drop-test from 1.5 m onto concrete','Build the kid-facing app flow, test the "build streak" concept with 5 kids','Field-test shells on real backpacks and bikes for 2 weeks'],
+ timeline:[['Shell + core fit tolerancing','Days 7–9'],['First working tracker in shell','Day 10'],['6-shell pack + app pairing','Weeks 3–5'],['Working prototype, field test','Weeks 6–8']]
+},
+{id:'carerail', num:7, name:'CareRail', tagline:'Safety hardware that looks like it belongs in your home.', accent:'#8a5a3d', icon:'bar',
+ pitch:'A slim anodized rail mounts once along a hallway, bathroom or stairwell; grab-bar bricks, night-light bricks and a discreet fall-alert button snap onto it wherever needed — and relocate as needs change.',
+ problem:'Medical-grade grab bars and alert buttons look institutional, so people delay installing them until after a fall; families want hardware that works in a home they’re proud of, not a clinical retrofit.',
+ target:'Adult children furnishing a parent’s home for aging-in-place, and older adults choosing their own safety hardware.',
+ features:['ADA-rated 130 kg load-bearing rail, anodized to match four interior finishes','Grab-bar brick locks on with a quarter-turn — no stud-finding, no redrilling to move it','Night-light brick with ambient sensor; fall-alert brick pairs to a phone with optional monitoring','Every brick removable and relocatable as mobility needs change over time'],
+ materials:[['Anodized aluminum rail','1 × 900 mm per section','—'],['Die-cast zinc grab-bar core','1 per bar brick, load-tested','—'],['Ambient LED night-light module','1 per brick','—'],['Fall-alert brick, accelerometer + cellular fallback','1 per hallway','—']],
+ dims:'Rail sections 900 mm, join for any hallway length; grab bar 300 mm reach',
+ bom:'$30 / brick avg', retail:'$89 starter kit', margin:'≈52% gross margin',
+ costNote:'Per-brick BOM: rail $34/900mm section · grab-bar $22 · night-light $19 · fall-alert $46.',
+ advantage:'The only aging-in-place hardware line designed in the same visual language as premium smart-home products — competitors force a choice between "looks nice" with no safety features, and "keeps you safe" but looks medical.',
+ test:'Test this first: does an older adult attach and detach the grab-bar brick alone, without asking someone to check it’s secure?',
+ sceneIcons:['wall','door','moon'], sceneCaption:'Hallway outside a bathroom door, brushed-aluminum rail at hip height, grab bar and soft night-light brick installed, evening ambient light.',
+ isoDims:{w:90,d:30,h:30}, moduleCount:2,
+ protoMaterials:[['Aluminum rail stock, anodized','3 m'],['Die-cast zinc grab-bar cores','4'],['Accelerometer + cellular module','2'],['LED night-light modules','4']],
+ tools:['Load-test rig, rated to 200 kg','Anodizing partner (outsourced finishing)','Cellular module dev kit','Drop/impact test stand'],
+ steps:['Load-test the rail-to-wall mounting at 3× ADA rating','Prototype the quarter-turn brick lock, cycle-test 500 attach/detach cycles','Wire the night-light brick, verify the ambient sensor threshold','Build the fall-alert brick, test accelerometer trigger and cellular fallback with no WiFi','Assemble a full hallway kit, install in one real test home','Independent occupational-therapist review of the finished system'],
+ timeline:[['Rail + lock mechanism load testing','Days 7–10'],['First working grab-bar brick','Week 2'],['Night-light + alert brick electronics','Weeks 3–6'],['Working prototype installed in test home','Weeks 7–10']]
+},
+{id:'packbrick', num:8, name:'PackBrick', tagline:'Pack the shape of your trip.', accent:'#3d5a8a', icon:'case',
+ pitch:'Compressible packing bricks that snap edge-to-edge into exactly the block your suitcase needs — one long brick for a suit, six small ones for a week of basics — then flatten and nest for the flight home.',
+ problem:'Packing cubes are fixed sizes that never quite fit a real suitcase’s dead space, wasting capacity on every trip.',
+ target:'Frequent travelers and carry-on-only packers who repack for different trip lengths often.',
+ features:['Semi-rigid frame bricks compress garments and snap to neighboring bricks via a flat edge clip','Builds into custom rectangular blocks that tile a suitcase with no wasted space','Compression zip drops each brick to half height for the flight home','Recycled ripstop shell; the brick frame doubles as a packing cube and a suitcase divider'],
+ materials:[['Recycled ripstop nylon shell','1 per brick','—'],['Recycled PP semi-rigid frame','1 per brick','—'],['Edge-clip connectors','4 per brick','—'],['Compression zipper','1 per brick','—']],
+ dims:'Small 20×15×10 cm · medium 30×20×10 cm · large 40×20×10 cm — all on a shared 10 cm module grid',
+ bom:'$4.90 / brick', retail:'$19 / brick · $79 5-brick travel set', margin:'≈53% gross margin',
+ advantage:'The only packing system built on a true shared module grid — same-brand packing cubes are not dimensionally interoperable the way PackBrick’s edge-clip grid guarantees.',
+ test:'Test this first: can users tile 5 bricks to fill a real carry-on with visibly less dead space than their usual packing cubes?',
+ sceneIcons:['case','mug','sun'], sceneCaption:'Open carry-on on a hotel bed, five bricks tiled edge-to-edge filling the case exactly, airport light through a window behind.',
+ isoDims:{w:80,d:60,h:40}, moduleCount:2,
+ protoMaterials:[['Recycled ripstop nylon','3 m'],['Recycled PP sheet, for frames','2 m²'],['Edge-clip hardware','40'],['Compression zippers','10']],
+ tools:['Industrial sewing machine','Heat press (frame forming)','3 carry-on models for fit testing','Luggage scale'],
+ steps:['Die-cut and heat-form PP frames to three module sizes','Sew ripstop shells, integrate compression zippers','Fit edge-clips, test lock strength under compression','Tile a 5-brick set into three different carry-on models, measure dead space','Time pack/unpack against standard packing cubes','2-week real-trip field test with 3 travelers'],
+ timeline:[['Frame + clip prototyping','Days 7–9'],['First working brick set, 3 sizes','Day 10'],['Full 5-brick travel set','Weeks 2–3'],['Working prototype + field test','Weeks 4–6']]
+},
+{id:'studiomount', num:9, name:'StudioMount', tagline:'Your rig, rebuilt for every shot.', accent:'#565b63', icon:'lens',
+ pitch:'A universal stud-and-rail mounting brick system for phone, camera, ring light and mic arms that reconfigures between a desk podcast rig and a handheld vlogging rig in under a minute.',
+ problem:'Content creators own a drawer of single-purpose mounts that don’t share hardware, so every new format means new gear.',
+ target:'Independent creators and small studios shooting in multiple formats — desk, handheld, overhead — with the same limited kit.',
+ features:['Cold-shoe and 1/4-20 adapters live inside standard bricks, compatible with existing camera gear','Extension-arm bricks lock at any 15° increment, no separate ball-heads needed','Full rig breaks down into a flat brick tray that fits a laptop bag','Counterweight brick balances heavier lens/mic combinations'],
+ materials:[['6061 aluminum brick body','1 per module','—'],['Stainless friction-lock joint','2 per arm brick','—'],['1/4-20 + cold-shoe steel inserts','1 per mount brick','—'],['EVA foam tray liner','1 per kit','—']],
+ dims:'Base brick 50 × 50 × 25 mm; arm bricks 120/200 mm; kit tray 350 × 250 × 40 mm',
+ bom:'$21 / brick avg', retail:'$49 / brick · $219 6-brick creator kit', margin:'≈47% gross margin',
+ advantage:'Shares one mounting language across desk, tripod and handheld use — SmallRig and Joby each solve one format with incompatible hardware.',
+ test:'Test this first: how long does a creator take to reconfigure the same 6 bricks from a desk rig to a handheld rig?',
+ sceneIcons:['lens','laptop','mug'], sceneCaption:'Home studio desk, phone on an arm brick above a ring-light brick, podcast mic on a third arm, soft key light from the left.',
+ isoDims:{w:50,d:50,h:25}, moduleCount:2,
+ protoMaterials:[['6061 aluminum stock (CNC)','5 kg'],['Stainless friction-lock hardware','20 sets'],['1/4-20 steel inserts','10'],['EVA foam sheet','1']],
+ tools:['CNC mill','Torque wrench for joint calibration','Load-test stand','Laptop bag fit mockup'],
+ steps:['CNC the first base and arm bricks, verify 1/4-20 thread engagement','Calibrate friction-lock joint torque for 15° detents','Build a desk podcast rig, load-test with real mic and arm weight','Reconfigure the same bricks into a handheld vlog rig, time the changeover','CNC a counterweight brick, verify balance with a heavy lens','5-creator field test across desk, tripod and handheld shoots'],
+ timeline:[['Joint + insert prototyping','Days 7–10'],['First working desk rig','Week 2'],['Full 6-brick kit + handheld config','Weeks 3–5'],['Working prototype, creator field test','Weeks 6–8']]
+},
+{id:'pusterom-brick', num:10, name:'Pusterom Breath Brick', tagline:'Something to hold when your breath needs help.', accent:'#5c8a7a', icon:'pulse',
+ pitch:'A pocket-sized brick with a slow-pulsing surface you press to your breathing rhythm — snap several together to build a shared calm-down kit for a classroom, waiting room or family living room.',
+ problem:'Digital breathing apps ask for a screen exactly when screens are part of the stress; kids and anxious adults often want something physical to hold, not another notification.',
+ target:'Kids and adults managing everyday stress, classrooms, therapists’ offices — and, as a natural companion, users of screen-based calm tools like the Pusterom breathing app.',
+ features:['Soft-touch surface gently expands and contracts on a 4-2-6 second breathing pattern, felt more than seen','No screen, one button: press to start, press to stop — the whole interface','Bricks snap into a shared base so a room can build one big "breathing wall" together','Optional Bluetooth sync to a phone app to log calm sessions — fully usable offline without one'],
+ materials:[['Medical-grade silicone soft-touch shell','1 per brick','—'],['Micro-linear actuator + battery','1 per brick','—'],['Recycled-PET internal frame','1 per brick','—'],['Magnetic base connector','4 contacts per brick','—']],
+ dims:'Single brick 70 × 70 × 35 mm, palm-sized; base tray in 2×2 to 4×4 grids',
+ bom:'$8.30 / brick', retail:'$29 / brick · $75 family 3-pack', margin:'≈53% gross margin',
+ advantage:'The only calming tool that is both screen-free and modular/shared — meditation apps are screen-bound and solitary; fidget toys are modular but don’t actively pace your breathing.',
+ test:'Test this first: without instructions, does a user’s own breathing sync to the brick’s pulse within the first minute of holding it?',
+ sceneIcons:['pillow','moon','plant'], sceneCaption:'Child’s bedside table at night, one brick glowing faintly with a slow pulse, a small hand resting on top, soft lamp light.',
+ isoDims:{w:70,d:70,h:35}, moduleCount:2,
+ protoMaterials:[['Medical-grade silicone, 2-part mold','1 kg'],['Micro-linear actuators','6'],['LiPo cells 200 mAh','6'],['Recycled PET frame blanks','6']],
+ tools:['Silicone mold + degassing chamber','Reflow station','BLE dev kit','Volunteers for breathing-rate testing'],
+ steps:['Mold the silicone shell over the actuator cavity, verify skin-safe durometer','Tune the actuator pulse timing to a 4-2-6 breathing pattern','Assemble battery and BLE, verify 8-hour runtime on a charge','Build a 4-brick shared base, test simultaneous synced pulsing','Run a guided session with 5 test users, log perceived calm before/after','Pair to the companion app, sync one session log end-to-end'],
+ timeline:[['Actuator + silicone shell prototyping','Days 7–9'],['First working single brick','Day 10'],['Synced 4-brick base','Weeks 2–3'],['Working prototype + user testing','Weeks 4–5']]
+}
+];
+
+// ---- render: rail links, exec list, product sheets, matrix ----
+const railProducts = document.getElementById('rail-products');
+const execList = document.getElementById('exec-list');
+const sheetsRoot = document.getElementById('product-sheets');
+
+PRODUCTS.forEach(p => {
+  const a = document.createElement('a');
+  a.href = '#' + p.id;
+  a.textContent = String(p.num).padStart(2,'0') + ' · ' + p.name;
+  railProducts.appendChild(a);
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="mono num">${String(p.num).padStart(2,'0')}</td><td><b>${p.name}</b></td><td>${p.problem.split('.')[0]}.</td><td class="mono">${p.retail.split('·')[0].trim()}</td>`;
+  execList.appendChild(tr);
+
+  const sheet = document.createElement('article');
+  sheet.className = 'sheet product-sheet';
+  sheet.id = p.id;
+
+  const materialsRows = p.materials.map(m => `<tr><td>${m[0]}</td><td class="mono">${m[1]}</td><td class="mono num">${m[2]}</td></tr>`).join('');
+  const featuresLis = p.features.map(f => `<li>${f}</li>`).join('');
+  const stepsLis = p.steps.map(s => `<li>${s}</li>`).join('');
+  const protoMatRows = p.protoMaterials.map(m => `<tr><td>${m[0]}</td><td class="mono num">${m[1]}</td></tr>`).join('');
+  const timelineRows = p.timeline.map(t => `<tr><td>${t[0]}</td><td class="mono">${t[1]}</td></tr>`).join('');
+
+  sheet.innerHTML = `
+    <div class="p-head">
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <span class="p-num">${String(p.num).padStart(2,'0')}</span>
+        <div class="p-title">
+          <h3>${p.name}</h3>
+          <div class="tagline">${p.tagline}</div>
+        </div>
+      </div>
+      <span class="p-swatch accent-fill" style="background:${p.accent}"></span>
+    </div>
+    <div class="pitch" style="border-color:${p.accent}">${p.pitch}</div>
+    <div class="p-grid">
+      <div>
+        <div class="field"><div class="k">Problem solved</div><p style="font-size:14.5px; margin:0;">${p.problem}</p></div>
+        <div class="field"><div class="k">Target user</div><p style="font-size:14.5px; margin:0;">${p.target}</p></div>
+        <div class="field"><div class="k">Core features</div><ul>${featuresLis}</ul></div>
+        <div class="field">
+          <div class="k">Materials (per unit)</div>
+          <div class="table-wrap"><table><thead><tr><th>Material</th><th>Use</th><th class="num">Qty</th></tr></thead><tbody>${materialsRows}</tbody></table></div>
+        </div>
+        <div class="field"><div class="k">Dimensions</div><p class="mono" style="font-size:13.5px; margin:0;">${p.dims}</p></div>
+        <div class="cost-row">
+          <div class="cost-item"><div class="amt">${p.bom}</div><div class="lbl">Est. BOM</div></div>
+          <div class="cost-item"><div class="amt">${p.retail}</div><div class="lbl">Retail</div></div>
+          <div class="cost-item"><div class="amt">${p.margin}</div><div class="lbl">Margin</div></div>
+        </div>
+        ${p.costNote ? `<div class="cost-note">${p.costNote}</div>` : ''}
+        <div class="adv"><b>Competitive advantage —</b> ${p.advantage}</div>
+      </div>
+      <div>
+        <div class="visual-panel"><svg class="tech-drawing"></svg><div class="cap">Technical drawing — dimensioned isometric, module detail</div></div>
+        <div class="visual-panel"><svg class="scene-drawing"></svg><div class="cap">Render brief — ${p.sceneCaption}</div></div>
+        <div class="pill" style="display:block; padding:10px 12px; font-size:12px; line-height:1.5;">${p.test}</div>
+      </div>
+    </div>
+    <div class="proto-block">
+      <div>
+        <div class="k field" style="margin-bottom:10px;"><div class="k">Prototyping plan — build sequence</div></div>
+        <ol class="proto-steps">${stepsLis}</ol>
+      </div>
+      <div>
+        <div class="k field" style="margin-bottom:10px;"><div class="k">Materials &amp; tools</div></div>
+        <div class="table-wrap"><table><tbody>${protoMatRows}</tbody></table></div>
+        <div style="margin:10px 0 4px; font-size:12.5px; color:var(--ink-soft);">${p.tools.join(' · ')}</div>
+        <div class="k field" style="margin:16px 0 8px;"><div class="k">Timeline to working prototype</div></div>
+        <div class="table-wrap"><table class="timeline-mini"><tbody>${timelineRows}</tbody></table></div>
+      </div>
+    </div>
+  `;
+  sheetsRoot.appendChild(sheet);
+
+  const techSvg = sheet.querySelector('.tech-drawing');
+  const sceneSvg = sheet.querySelector('.scene-drawing');
+  drawTechnical(techSvg, p);
+  drawScene(sceneSvg, p);
+});
+
+// matrix
+const SCORES = {
+  brickcharge:[4,4,3], lumabrick:[3,4,3], deskgrid:[5,3,3], growbrick:[3,3,4], soundstack:[2,3,4],
+  tracktag:[4,4,4], carerail:[3,5,5], packbrick:[4,3,3], studiomount:[4,3,3], 'pusterom-brick':[5,4,4]
+};
+const matrixBody = document.getElementById('matrix-body');
+PRODUCTS.forEach(p => {
+  const [f,i,o] = SCORES[p.id];
+  const total = f+i+o;
+  const tr = document.createElement('tr');
+  if (total >= 12) tr.classList.add('hi');
+  tr.innerHTML = `<td>${p.name}</td><td class="mono">${f}</td><td class="mono">${i}</td><td class="mono">${o}</td><td class="mono"><b>${total}</b></td>`;
+  matrixBody.appendChild(tr);
+});
+</script>
