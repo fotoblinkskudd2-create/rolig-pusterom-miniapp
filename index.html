@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#a8c5b0">
+<meta name="description" content="Rolig mini-app for å dempe stress og nedstemthet.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
@@ -23,6 +28,7 @@
     min-height: 100vh;
     padding-bottom: 80px;
     line-height: 1.5;
+    transition: background-color 1.5s ease;
   }
   .page {
     display: none;
@@ -130,6 +136,32 @@
     font-weight: 500;
     min-height: 2rem;
   }
+  .pattern-select {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .pattern-btn {
+    flex: 1;
+    background: var(--card);
+    border: 2px solid #e5ebe6;
+    border-radius: 12px;
+    padding: 10px 4px;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pattern-btn.selected {
+    border-color: var(--accent);
+    background: var(--soft-green);
+    color: var(--text);
+    font-weight: 600;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .circle, body { transition: none !important; }
+  }
   .actions-list {
     display: flex;
     flex-direction: column;
@@ -164,8 +196,56 @@
     margin-bottom: 10px;
     border: 1px solid #e8eee9;
   }
+  .history-item {
+    position: relative;
+  }
   .history-item .date {
     font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .history-item .del-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .streak-badge {
+    background: var(--soft-beige);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 70px;
+    margin-bottom: 4px;
+  }
+  .trend-bar {
+    flex: 1;
+    background: var(--soft-blue);
+    border-radius: 6px 6px 2px 2px;
+    min-height: 6px;
+  }
+  .trend-bar.has-data { background: var(--accent); }
+  .trend-labels {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .trend-labels span {
+    flex: 1;
+    text-align: center;
+    font-size: 0.7rem;
     color: var(--muted);
   }
   .nav {
@@ -224,10 +304,15 @@
 <div id="page-pusterom" class="page">
   <h1>Pusterom</h1>
   <p class="support">Følg sirkelen. Pust rolig.</p>
+  <div class="pattern-select" id="patternSelect">
+    <button class="pattern-btn selected" data-pattern="rolig">Rolig<br>4-2-6</button>
+    <button class="pattern-btn" data-pattern="box">Boks<br>4-4-4-4</button>
+    <button class="pattern-btn" data-pattern="dyp">Dyp<br>4-7-8</button>
+  </div>
   <div class="circle-wrap">
     <div class="circle" id="breathCircle"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
+  <div class="breath-text" id="breathText" aria-live="polite">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
 </div>
 
@@ -239,6 +324,9 @@
 
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
+  <div class="streak-badge" id="streakBadge">0 dager på rad</div>
+  <div class="trend-chart" id="trendChart"></div>
+  <div class="trend-labels" id="trendLabels"></div>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
@@ -261,10 +349,44 @@ const actions = [
   "Strekk armene over hodet"
 ];
 
+const breathPatterns = {
+  rolig: [
+    { label: 'Pust inn…', cls: 'inhale', ms: 4000 },
+    { label: 'Hold…', cls: 'inhale', ms: 2000 },
+    { label: 'Pust ut…', cls: 'exhale', ms: 6000 }
+  ],
+  box: [
+    { label: 'Pust inn…', cls: 'inhale', ms: 4000 },
+    { label: 'Hold…', cls: 'inhale', ms: 4000 },
+    { label: 'Pust ut…', cls: 'exhale', ms: 4000 },
+    { label: 'Hold…', cls: 'exhale', ms: 4000 }
+  ],
+  dyp: [
+    { label: 'Pust inn…', cls: 'inhale', ms: 4000 },
+    { label: 'Hold…', cls: 'inhale', ms: 7000 },
+    { label: 'Pust ut…', cls: 'exhale', ms: 8000 }
+  ]
+};
+const phaseBg = { inhale: '#e0ebe3', exhale: '#d4e4f0' };
+
 let selectedMood = null;
 let breathing = false;
 let breathInterval = null;
-let phase = 0; // 0 inhale, 1 hold, 2 exhale
+let currentPattern = 'rolig';
+let phase = 0; // index into breathPatterns[currentPattern]
+
+document.querySelectorAll('.pattern-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    currentPattern = btn.dataset.pattern;
+    phase = 0;
+    if (breathing) {
+      clearTimeout(breathInterval);
+      runBreathCycle();
+    }
+  });
+});
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -319,7 +441,10 @@ function toggleBreath() {
     clearTimeout(breathInterval);
     btn.textContent = 'Start';
     text.textContent = 'Trykk start';
+    circle.style.transitionDuration = '';
     circle.className = 'circle';
+    document.body.style.transitionDuration = '';
+    document.body.style.backgroundColor = '';
   }
 }
 
@@ -327,18 +452,17 @@ function runBreathCycle() {
   if (!breathing) return;
   const circle = document.getElementById('breathCircle');
   const text = document.getElementById('breathText');
-  if (phase === 0) {
-    text.textContent = 'Pust inn…';
-    circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
-  } else if (phase === 1) {
-    text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
-  } else {
-    text.textContent = 'Pust ut…';
-    circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
-  }
+  const steps = breathPatterns[currentPattern];
+  const step = steps[phase];
+  circle.style.transitionDuration = step.ms + 'ms';
+  document.body.style.transitionDuration = step.ms + 'ms';
+  text.textContent = step.label;
+  circle.className = 'circle ' + step.cls;
+  document.body.style.backgroundColor = phaseBg[step.cls];
+  breathInterval = setTimeout(() => {
+    phase = (phase + 1) % steps.length;
+    runBreathCycle();
+  }, step.ms);
 }
 
 function renderActions() {
@@ -366,6 +490,55 @@ function toggleAction(i) {
   renderActions();
 }
 
+function deleteCheckin(i) {
+  if (!confirm('Slette denne sjekk-innen?')) return;
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  list.splice(i, 1);
+  localStorage.setItem('checkins', JSON.stringify(list));
+  renderHistory();
+}
+
+function renderStreak(list) {
+  const days = new Set(list.map(e => new Date(e.date).toDateString()));
+  let streak = 0;
+  const d = new Date();
+  while (days.has(d.toDateString())) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  const badge = document.getElementById('streakBadge');
+  badge.textContent = streak === 0
+    ? 'Ingen sammenhengende dager ennå. Start i dag 🌱'
+    : `${streak} dag${streak === 1 ? '' : 'er'} på rad 🌱`;
+}
+
+function renderTrend(list) {
+  const chart = document.getElementById('trendChart');
+  const labels = document.getElementById('trendLabels');
+  chart.innerHTML = '';
+  labels.innerHTML = '';
+  for (let i = 6; i >= 0; i--) {
+    const day = new Date();
+    day.setDate(day.getDate() - i);
+    const dayKey = day.toDateString();
+    const entries = list.filter(e => new Date(e.date).toDateString() === dayKey);
+    const bar = document.createElement('div');
+    if (entries.length) {
+      const avgMood = entries.reduce((s, e) => s + Number(e.mood), 0) / entries.length;
+      bar.className = 'trend-bar has-data';
+      bar.style.height = Math.max(10, (avgMood / 5) * 100) + '%';
+      bar.title = `${avgMood.toFixed(1)} / 5`;
+    } else {
+      bar.className = 'trend-bar';
+      bar.style.height = '6px';
+    }
+    chart.appendChild(bar);
+    const label = document.createElement('span');
+    label.textContent = day.toLocaleDateString('no-NO', { weekday: 'narrow' });
+    labels.appendChild(label);
+  }
+}
+
 function renderHistory() {
   const list = JSON.parse(localStorage.getItem('checkins') || '[]');
   const container = document.getElementById('historyList');
@@ -373,15 +546,17 @@ function renderHistory() {
   if (list.length === 0) {
     container.innerHTML = '<p class="support">Ingen sjekk-ins ennå. Det er greit.</p>';
   } else {
-    list.slice(0, 20).forEach(e => {
+    list.slice(0, 20).forEach((e, i) => {
       const d = new Date(e.date);
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<button class="del-btn" onclick="deleteCheckin(${i})" aria-label="Slett sjekk-inn">×</button><div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
+  renderStreak(list);
+  renderTrend(list);
   // week count
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
@@ -392,6 +567,12 @@ function renderHistory() {
 // init
 renderActions();
 renderHistory();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
