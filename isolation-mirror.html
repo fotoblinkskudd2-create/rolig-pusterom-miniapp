@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isolation Mirror</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:8px; }
+  p { color:var(--muted); font-size:0.9rem; }
+  textarea, input[type=file] { width:100%; background:var(--card); border:1px solid #3a4a3f; border-radius:12px; padding:12px; color:var(--text); margin:12px 0; }
+  button { width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:14px; font-weight:600; cursor:pointer; }
+  .output { display:none; margin-top:24px; }
+  .card { background:var(--card); border-radius:16px; padding:16px; margin-bottom:16px; }
+  .card h3 { margin:0 0 8px; font-size:1rem; }
+</style>
+</head>
+<body>
+  <h1>Isolation Mirror</h1>
+  <p>Drop en note eller et bilde. Få privat protokoll + optional Mirror Art. Alt lokalt. Anonym.</p>
+  <textarea id="note" rows="4" placeholder="Skriv kort om isolasjonen eller det som tynger..."></textarea>
+  <input type="file" id="photo" accept="image/*">
+  <button onclick="generate()">Generer</button>
+  <div class="output" id="out">
+    <div class="card">
+      <h3>Privat protokoll (kun din)</h3>
+      <div id="protocol"></div>
+    </div>
+    <div class="card">
+      <h3>Mirror Art (anonymiserbar)</h3>
+      <div id="mirror"></div>
+      <p style="font-size:0.8rem;margin-top:8px;">Flux/Midjourney: <span id="prompt"></span></p>
+    </div>
+  </div>
+<script>
+function generate() {
+  const note = document.getElementById('note').value.trim() || "stille isolasjon";
+  const steps = [
+    "Sett føttene i gulvet. 3 dype pust.",
+    "Skriv én setning som er sann akkurat nå.",
+    "Ta ett bilde av noe ekte i nærheten – ikke for andre, for deg."
+  ];
+  document.getElementById('protocol').innerHTML = steps.map((s,i)=>`<p>${i+1}. ${s}</p>`).join('') + `<p style="margin-top:12px;font-style:italic">Du er ikke alene i dette. Kampen teller.</p>`;
+  const mirrorText = `I skyggen av ${note.slice(0,30)}... vokser en sprøkke av lys. Bergen-regn vasker rent.`;
+  document.getElementById('mirror').textContent = mirrorText;
+  document.getElementById('prompt').textContent = `raw norwegian isolation, fjord mist, banksy style stencil of solitary figure with camera, black metal atmosphere, high contrast --ar 3:4`;
+  document.getElementById('out').style.display = 'block';
+}
+</script>
+</body>
+</html>
