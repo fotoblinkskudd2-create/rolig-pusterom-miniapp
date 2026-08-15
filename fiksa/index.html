@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#e8622c">
+<title>Fiksa – reparasjon &amp; feilsøking</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --card: #ffffff;
+    --text: #2b2620;
+    --muted: #7a7267;
+    --accent: #e8622c;
+    --accent-dark: #c94f1e;
+    --line: #ece7df;
+    --green: #3e8f5c;
+    --green-bg: #e5f3ea;
+    --yellow: #b8860b;
+    --yellow-bg: #fbf1dc;
+    --red: #c0392b;
+    --red-bg: #fbe6e2;
+    --blue-bg: #e6eef7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 84px;
+    line-height: 1.5;
+  }
+  .page { display: none; padding: 22px 18px 40px; max-width: 460px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+  h2 { font-size: 1.1rem; font-weight: 600; margin: 18px 0 10px; }
+  h3 { font-size: 0.98rem; font-weight: 600; margin-bottom: 6px; }
+  p { color: var(--muted); font-size: 0.92rem; }
+  .sub { margin-bottom: 18px; }
+  label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text); margin: 14px 0 6px; }
+  select, textarea, input[type=text] {
+    width: 100%; border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+    font-size: 0.95rem; font-family: inherit; background: var(--card); color: var(--text);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > div { flex: 1; }
+  .btn {
+    display: block; width: 100%; background: var(--accent); color: #fff; border: none;
+    border-radius: 14px; padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer;
+    margin-top: 18px; transition: opacity .15s;
+  }
+  .btn:active { opacity: .85; }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1.5px solid var(--line); }
+  .btn-ghost { background: none; color: var(--accent-dark); font-weight: 600; padding: 10px; margin-top: 6px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .chip {
+    border: 1.5px solid var(--line); border-radius: 20px; padding: 8px 14px; font-size: 0.85rem;
+    background: var(--card); cursor: pointer; color: var(--muted);
+  }
+  .chip.selected { border-color: var(--accent); background: #fdece3; color: var(--accent-dark); font-weight: 600; }
+  .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+  .photo-tile {
+    position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-tile .rm {
+    position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.55); color: #fff; border: none;
+    border-radius: 50%; width: 22px; height: 22px; font-size: 0.8rem; line-height: 1; cursor: pointer;
+  }
+  .photo-tag {
+    position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,.55); color: #fff;
+    font-size: 0.62rem; padding: 3px 5px; text-align: center;
+  }
+  .add-photo-tile {
+    aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed var(--line); display: flex;
+    align-items: center; justify-content: center; font-size: 1.6rem; color: var(--muted); cursor: pointer;
+    background: var(--card);
+  }
+  input[type=file] { display: none; }
+  .card {
+    background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--line);
+  }
+  .badge {
+    display: inline-block; border-radius: 10px; padding: 4px 10px; font-size: 0.78rem; font-weight: 700; margin-right: 6px;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
+  .step-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .step-text { font-size: 0.92rem; }
+  ul.plain { list-style: none; }
+  ul.plain li { font-size: 0.9rem; padding: 5px 0; display: flex; gap: 8px; }
+  ul.plain li:before { content: "•"; color: var(--accent); font-weight: 700; }
+  .safety-box { background: var(--red-bg); border-radius: 14px; padding: 14px; margin-top: 4px; }
+  .safety-box h3 { color: var(--red); }
+  .pro-box { background: var(--blue-bg); border-radius: 14px; padding: 14px; margin-top: 4px; }
+  .annot-photo { position: relative; border-radius: 12px; overflow: hidden; margin-top: 10px; }
+  .annot-photo img { width: 100%; display: block; }
+  .pin {
+    position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    transform: translate(-50%, -50%); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); cursor: pointer;
+  }
+  .pin-note {
+    font-size: 0.8rem; background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 10px; margin-top: 6px;
+  }
+  .hint { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .big { font-size: 2.4rem; margin-bottom: 10px; }
+  .history-card { cursor: pointer; }
+  .history-card .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .history-card .date { font-size: 0.78rem; color: var(--muted); }
+  .back-btn {
+    background: none; border: none; color: var(--accent-dark); font-weight: 600; font-size: 0.9rem;
+    margin-bottom: 10px; cursor: pointer; padding: 4px 0;
+  }
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); display: flex;
+    justify-content: space-around; padding: 10px 0 14px; border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 20px rgba(0,0,0,.05);
+  }
+  .nav button {
+    background: none; border: none; font-size: 0.72rem; color: var(--muted); display: flex;
+    flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 6px 14px;
+  }
+  .nav button.active { color: var(--accent-dark); font-weight: 700; }
+  .nav button span { font-size: 1.25rem; }
+  .offline-note {
+    display: none; background: var(--yellow-bg); color: var(--yellow); border-radius: 10px; padding: 8px 12px;
+    font-size: 0.78rem; margin-bottom: 12px; text-align: center;
+  }
+  .offline-note.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- SIDE: NYTT PROBLEM -->
+<div id="page-nytt" class="page active">
+  <h1>Fiksa</h1>
+  <p class="sub">Beskriv problemet. Vi finner det viktigste og lager en konkret reparasjonsguide.</p>
+  <div class="offline-note" id="offlineNote">Du er offline. Lagrede guider fungerer fortsatt.</div>
+
+  <label>Kategori</label>
+  <div class="chip-row" id="categoryChips"></div>
+
+  <label>Hva er produktet? (merke, modell, årgang – valgfritt)</label>
+  <div class="row2">
+    <div><input type="text" id="brand" placeholder="Merke, f.eks. IKEA, Samsung"></div>
+  </div>
+  <div class="row2" style="margin-top:8px;">
+    <div><input type="text" id="model" placeholder="Modell/produktnavn"></div>
+    <div><input type="text" id="year" placeholder="Årgang"></div>
+  </div>
+
+  <label>Beskriv problemet med egne ord</label>
+  <textarea id="description" placeholder="F.eks: TV-en slår seg på men skjermen forblir svart, hører en klikkelyd fra høyttaleren..."></textarea>
+
+  <label>Symptomer / observasjoner (valgfritt, én per linje)</label>
+  <textarea id="symptoms" placeholder="Lyser rødt lys på panelet&#10;Skjer bare når den er varm&#10;Startet etter flytting"></textarea>
+
+  <label>Bilder (flere vinkler anbefales)</label>
+  <div class="photo-grid" id="photoGrid">
+    <label class="add-photo-tile" for="photoInput">+</label>
+  </div>
+  <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+  <p class="hint">Trykk på et bilde etterpå for å sette markører på det du vil peke ut.</p>
+
+  <button class="btn" onclick="analyzeProblem()">Lag reparasjonsguide</button>
+</div>
+
+<!-- SIDE: GUIDE -->
+<div id="page-guide" class="page">
+  <button class="back-btn" onclick="switchPage('nytt')">‹ Tilbake til nytt problem</button>
+  <div id="guideContent"></div>
+</div>
+
+<!-- SIDE: HISTORIKK -->
+<div id="page-historikk" class="page">
+  <h1>Historikk</h1>
+  <p class="sub">Tidligere problemer du har fikset eller fått guide for.</p>
+  <div id="historyList"></div>
+</div>
+
+<nav class="nav">
+  <button class="active" data-nav="nytt" onclick="switchPage('nytt')"><span>🛠️</span>Nytt</button>
+  <button data-nav="guide" onclick="switchPage('guide')"><span>📋</span>Guide</button>
+  <button data-nav="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+</nav>
+
+<script src="knowledge.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

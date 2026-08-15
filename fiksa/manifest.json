@@ -1,0 +1,11 @@
+{
+  "name": "Fiksa – reparasjon og feilsøking",
+  "short_name": "Fiksa",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f5f2",
+  "theme_color": "#e8622c",
+  "description": "Beskriv problemet ditt – elektronikk, husholdningsapparater, møbler, treningsutstyr og mer – og få en konkret, konsis reparasjonsguide.",
+  "lang": "no",
+  "icons": []
+}
