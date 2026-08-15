@@ -300,7 +300,8 @@ function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  const navBtn = document.querySelector(`.nav button[onclick="switchPage('${name}')"]`);
+  if (navBtn) navBtn.classList.add('active');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
