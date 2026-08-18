@@ -1,0 +1,196 @@
+:root {
+  --bg: #f5f7f4;
+  --card: #ffffff;
+  --text: #3a4a3f;
+  --muted: #7a8a7f;
+  --accent: #a8c5b0;
+  --soft-blue: #d4e4f0;
+  --soft-beige: #f0e9df;
+  --soft-green: #e0ebe3;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  line-height: 1.5;
+}
+.page {
+  display: none;
+  padding: 28px 20px 40px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+.page.active { display: block; }
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+p, .support {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+.mood-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 24px 0;
+}
+.mood-btn {
+  flex: 1;
+  background: var(--card);
+  border: 2px solid #e5ebe6;
+  border-radius: 16px;
+  padding: 14px 4px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mood-btn.selected {
+  border-color: var(--accent);
+  background: var(--soft-green);
+  transform: scale(1.05);
+}
+textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #e0e6e1;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  background: var(--card);
+  margin-bottom: 16px;
+}
+.btn {
+  display: block;
+  width: 100%;
+  background: var(--accent);
+  color: #2a3a2f;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn:active { opacity: 0.85; }
+.btn-secondary {
+  background: var(--soft-blue);
+  margin-top: 12px;
+}
+.message {
+  background: var(--soft-green);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 20px;
+  text-align: center;
+  display: none;
+}
+.message.show { display: block; }
+/* Breathing */
+.circle-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 260px;
+  margin: 20px 0;
+}
+.circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--soft-blue);
+  transition: transform 4s ease-in-out;
+}
+.circle.inhale { transform: scale(1.6); background: var(--accent); }
+.circle.exhale { transform: scale(1); }
+.breath-text {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 500;
+  min-height: 2rem;
+}
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.action-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e8eee9;
+}
+.action-card.done {
+  opacity: 0.6;
+  background: var(--soft-green);
+}
+.action-card button {
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text);
+}
+.history-item {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #e8eee9;
+}
+.history-item .date {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 14px;
+  border-top: 1px solid #e5ebe6;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+}
+.nav button {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.nav button.active { color: var(--text); font-weight: 600; }
+.nav button span { font-size: 1.3rem; }
+.summary {
+  background: var(--soft-beige);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  margin-top: 24px;
+}
