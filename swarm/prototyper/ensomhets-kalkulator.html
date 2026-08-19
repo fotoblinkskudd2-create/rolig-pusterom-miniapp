@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensomhets-Kalkulator</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:4px; }
+  p.sub { color:var(--muted); font-size:0.85rem; margin-top:0; }
+  .q { background:var(--card); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .q label { display:block; margin-bottom:8px; font-size:0.9rem; }
+  .q input[type=range] { width:100%; }
+  .q .val { color:var(--accent); font-weight:700; float:right; }
+  .q select { width:100%; background:#1f2621; color:var(--text); border:1px solid #3a4a3f; border-radius:8px; padding:8px; }
+  button.calc { width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:14px; font-weight:700; cursor:pointer; margin:10px 0 20px; font-size:1rem; }
+  .result { display:none; background:var(--card); border-radius:16px; padding:20px; text-align:center; }
+  .result .score { font-size:2.6rem; font-weight:800; color:var(--accent); }
+  .result .tier { font-size:1.05rem; margin:8px 0; }
+  .result .comment { color:var(--muted); font-size:0.9rem; line-height:1.4; }
+  .disclaimer { color:var(--muted); font-size:0.7rem; text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+  <h1>Ensomhets-Kalkulator</h1>
+  <p class="sub">Helt uvitenskapelig. Delvis for morsomt. Delvis ikke.</p>
+
+  <div class="q">
+    <label>Antall ulagrede/åpne faner i nettleseren <span class="val" id="v1">20</span></label>
+    <input type="range" id="tabs" min="1" max="150" value="20" oninput="document.getElementById('v1').textContent=this.value">
+  </div>
+
+  <div class="q">
+    <label>Dager siden noen tekstet deg først, uten at du tekstet dem <span class="val" id="v2">3</span></label>
+    <input type="range" id="days" min="0" max="30" value="3" oninput="document.getElementById('v2').textContent=this.value">
+  </div>
+
+  <div class="q">
+    <label>Antall gruppechatter du har dempet ("mute") <span class="val" id="v3">2</span></label>
+    <input type="range" id="muted" min="0" max="20" value="2" oninput="document.getElementById('v3').textContent=this.value">
+  </div>
+
+  <div class="q">
+    <label>Hvor ofte snakker du høyt med deg selv hjemme?</label>
+    <select id="selftalk">
+      <option value="0">Aldri</option>
+      <option value="1" selected>Av og til, til plantene</option>
+      <option value="2">Daglig, fullstendige samtaler</option>
+      <option value="3">Jeg har roller nå</option>
+    </select>
+  </div>
+
+  <div class="q">
+    <label>Hva sier du oftest til leveringsbudet?</label>
+    <select id="delivery">
+      <option value="0">Takk, ha det bra</option>
+      <option value="1" selected>Litt mer enn nødvendig småprat</option>
+      <option value="2">Jeg spurte hvordan dagen hans/hennes var og mente det</option>
+      <option value="3">Vi er venner nå. Jeg vet navnet på hunden.</option>
+    </select>
+  </div>
+
+  <button class="calc" onclick="calculate()">Beregn ensomhetsindeks</button>
+
+  <div class="result" id="result">
+    <div class="score" id="score">0</div>
+    <div class="tier" id="tier"></div>
+    <div class="comment" id="comment"></div>
+  </div>
+
+  <p class="disclaimer">Ikke et diagnostisk verktøy. Hvis dette traff litt for godt: send en tekstmelding til noen i dag, uprompted.</p>
+
+<script>
+function calculate(){
+  const tabs = parseInt(document.getElementById('tabs').value);
+  const days = parseInt(document.getElementById('days').value);
+  const muted = parseInt(document.getElementById('muted').value);
+  const selftalk = parseInt(document.getElementById('selftalk').value);
+  const delivery = parseInt(document.getElementById('delivery').value);
+
+  let score = 0;
+  score += Math.min(tabs / 150 * 25, 25);
+  score += Math.min(days / 30 * 30, 30);
+  score += Math.min(muted / 20 * 15, 15);
+  score += selftalk / 3 * 15;
+  score += delivery / 3 * 15;
+  score = Math.round(score);
+
+  let tier, comment;
+  if (score < 20) {
+    tier = "Sosialt kalibrert";
+    comment = "Mistenkelig velfungerende. Er du sikker på at du fylte ut skjemaet ærlig?";
+  } else if (score < 40) {
+    tier = "Innen normalen";
+    comment = "Helt vanlig moderne isolasjonsnivå. De fleste er her. Det er ikke en trøst, bare et faktum.";
+  } else if (score < 60) {
+    tier = "Antall åpne faner overgår antall åpne samtaler";
+    comment = "Kanskje på tide å svare på den meldingen du har latt ligge i tre dager.";
+  } else if (score < 80) {
+    tier = "Leveringsbudet kjenner deg bedre enn de fleste";
+    comment = "Ikke en dom. Bare et forslag: ring noen i dag, ikke tekst.";
+  } else {
+    tier = "Du har roller i selvsamtalene dine nå";
+    comment = "Dette er en spøkefull kalkulator, men følelsen er ekte for mange. Vurder å ta kontakt med noen — et vennskap, familie, eller en fagperson. Du er ikke den eneste som scoret høyt her.";
+  }
+
+  document.getElementById('score').textContent = score;
+  document.getElementById('tier').textContent = tier;
+  document.getElementById('comment').textContent = comment;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

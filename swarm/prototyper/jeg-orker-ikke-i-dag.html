@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeg orker ikke i dag</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; --signal:#c98a6a; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:4px; }
+  p.sub { color:var(--muted); font-size:0.85rem; margin-top:0; }
+  .roleSwitch { display:flex; background:var(--card); border-radius:12px; padding:4px; margin:16px 0; }
+  .roleSwitch button { flex:1; background:none; border:none; color:var(--muted); padding:10px; border-radius:9px; cursor:pointer; font-weight:600; }
+  .roleSwitch button.active { background:var(--accent); color:#1a1f1c; }
+  .note { background:var(--card); border-radius:14px; padding:14px; font-size:0.8rem; color:var(--muted); margin-bottom:20px; }
+  .sendView, .receiveView { display:none; }
+  .bigButton { width:100%; background:var(--signal); color:#1a1f1c; border:none; border-radius:18px; padding:26px; font-size:1.15rem; font-weight:700; cursor:pointer; margin-bottom:16px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+  .chip { background:var(--card); border:1px solid #3a4a3f; color:var(--text); border-radius:20px; padding:9px 14px; font-size:0.85rem; cursor:pointer; }
+  .chip.selected { background:var(--accent); color:#1a1f1c; border-color:var(--accent); }
+  .status { background:var(--card); border-radius:14px; padding:16px; }
+  .status .empty { color:var(--muted); text-align:center; padding:10px 0; }
+  .signalCard { background:#2f2620; border:1px solid var(--signal); border-radius:16px; padding:20px; text-align:center; }
+  .signalCard h2 { margin:0 0 6px; font-size:1.1rem; }
+  .signalCard .need { color:var(--accent); font-weight:600; margin-top:10px; }
+  .signalCard .time { color:var(--muted); font-size:0.75rem; margin-top:10px; }
+  .clearBtn { background:none; border:1px solid var(--muted); color:var(--muted); border-radius:10px; padding:8px 12px; font-size:0.8rem; margin-top:14px; cursor:pointer; width:100%; }
+</style>
+</head>
+<body>
+  <h1>Jeg orker ikke i dag</h1>
+  <p class="sub">Et diskret signal til partneren din — uten at du trenger å forklare noe med en gang.</p>
+
+  <div class="roleSwitch">
+    <button id="btnSender" class="active" onclick="setRole('sender')">Send signal</button>
+    <button id="btnReceiver" onclick="setRole('receiver')">Motta signal</button>
+  </div>
+
+  <div class="note">Prototype-notat: dette er en enhets-demo. I en ekte versjon sender "Send signal" en push-varsel til partnerens telefon; her simulerer vi det ved å lagre lokalt og bytte visning selv.</div>
+
+  <div class="sendView" id="sendView">
+    <button class="bigButton" onclick="sendSignal()">Trykk her</button>
+    <p style="color:var(--muted);font-size:0.85rem;">Valgfritt — velg hva du trenger akkurat nå:</p>
+    <div class="chips" id="chips">
+      <div class="chip" data-need="Gi meg rom, still ingen spørsmål ennå">Rom, ingen spørsmål ennå</div>
+      <div class="chip" data-need="Bare vær nær meg, ikke si noe">Bare vær nær</div>
+      <div class="chip" data-need="Hold rundt meg">Hold rundt meg</div>
+      <div class="chip" data-need="Kan vi snakke om det i kveld?">Snakk om det senere</div>
+      <div class="chip" data-need="Ta over noe praktisk for meg i dag">Ta over noe praktisk</div>
+    </div>
+  </div>
+
+  <div class="receiveView" id="receiveView">
+    <div class="status" id="status"></div>
+    <button class="clearBtn" onclick="clearSignal()">Merk som mottatt / nullstill</button>
+  </div>
+
+<script>
+const KEY = 'jeg-orker-ikke-signal';
+let selectedNeed = null;
+
+document.querySelectorAll('.chip').forEach(c => {
+  c.onclick = () => {
+    const already = c.classList.contains('selected');
+    document.querySelectorAll('.chip').forEach(x => x.classList.remove('selected'));
+    if (!already) { c.classList.add('selected'); selectedNeed = c.dataset.need; }
+    else { selectedNeed = null; }
+  };
+});
+
+function setRole(role){
+  document.getElementById('btnSender').classList.toggle('active', role === 'sender');
+  document.getElementById('btnReceiver').classList.toggle('active', role === 'receiver');
+  document.getElementById('sendView').style.display = role === 'sender' ? 'block' : 'none';
+  document.getElementById('receiveView').style.display = role === 'receiver' ? 'block' : 'none';
+  if (role === 'receiver') renderStatus();
+}
+
+function sendSignal(){
+  const payload = { need: selectedNeed, time: new Date().toISOString() };
+  localStorage.setItem(KEY, JSON.stringify(payload));
+  alert('Signal sendt. Bytt til "Motta signal" for å se hvordan partneren din opplever det.');
+}
+
+function clearSignal(){
+  localStorage.removeItem(KEY);
+  renderStatus();
+}
+
+function renderStatus(){
+  const raw = localStorage.getItem(KEY);
+  const el = document.getElementById('status');
+  if (!raw) { el.innerHTML = '<div class="empty">Ingen aktive signaler akkurat nå.</div>'; return; }
+  const data = JSON.parse(raw);
+  const t = new Date(data.time);
+  el.innerHTML = `
+    <div class="signalCard">
+      <h2>Et signal er sendt til deg</h2>
+      <div>Ingen forklaring kreves ennå.</div>
+      ${data.need ? `<div class="need">${data.need}</div>` : ''}
+      <div class="time">Mottatt ${t.toLocaleTimeString('no-NO', {hour:'2-digit', minute:'2-digit'})}</div>
+    </div>`;
+}
+
+setRole('sender');
+</script>
+</body>
+</html>

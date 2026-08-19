@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emosjonell Værmelding</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; --warn:#c9a86a; --wet:#7fa8c9; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:4px; }
+  .date { color:var(--muted); font-size:0.85rem; margin-bottom:20px; }
+  .headline { background:var(--card); border-radius:16px; padding:20px; margin-bottom:16px; text-align:center; }
+  .headline .big { font-size:2.4rem; margin:8px 0; }
+  .headline .desc { color:var(--accent); font-size:1.05rem; font-style:italic; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+  .stat { background:var(--card); border-radius:14px; padding:14px; }
+  .stat .label { color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; }
+  .stat .value { font-size:1.3rem; margin-top:6px; }
+  .outlook { background:var(--card); border-radius:14px; padding:16px; margin-bottom:16px; }
+  .outlook h3 { margin:0 0 8px; font-size:0.95rem; color:var(--muted); font-weight:normal; text-transform:uppercase; letter-spacing:0.05em; }
+  .outlook p { margin:0; line-height:1.5; }
+  button { width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:14px; font-weight:600; cursor:pointer; font-size:1rem; }
+  .sub { text-align:center; color:var(--muted); font-size:0.8rem; margin-top:10px; }
+</style>
+</head>
+<body>
+  <h1>Emosjonell Værmelding</h1>
+  <div class="date" id="date"></div>
+
+  <div class="headline">
+    <div class="label" style="color:var(--muted);font-size:0.8rem;">I DAG</div>
+    <div class="big" id="temp">—</div>
+    <div class="desc" id="headline">beregner...</div>
+  </div>
+
+  <div class="grid">
+    <div class="stat"><div class="label">Vind</div><div class="value" id="wind">—</div></div>
+    <div class="stat"><div class="label">Nedbør (gråt-sjanse)</div><div class="value" id="rain">—</div></div>
+    <div class="stat"><div class="label">Sikt</div><div class="value" id="visibility">—</div></div>
+    <div class="stat"><div class="label">Trykk</div><div class="value" id="pressure">—</div></div>
+  </div>
+
+  <div class="outlook">
+    <h3>Utsikter neste timer</h3>
+    <p id="outlook">—</p>
+  </div>
+
+  <button onclick="render(true)">Ny personlig melding</button>
+  <p class="sub">Dagens offentlige melding er lik for alle. Trykk knappen for din egen private variant.</p>
+
+<script>
+const HEADLINES = [
+  "lett disig med glimt av ro",
+  "ustabilt, men ingen fare",
+  "klarere enn i går",
+  "tungt om morgenen, lysner utover dagen",
+  "stille front fra sørvest",
+  "høytrykk av overraskende overskudd",
+  "lavtrykk nærmer seg, ta det rolig",
+  "spredte oppklaringer mellom bekymringene",
+  "flatt, grått, helt greit",
+  "uventa varme fra et sted du ikke ventet det",
+  "kraftige vindkast av irritasjon, avtar mot kvelden",
+  "tåke som letter etter lunsj"
+];
+const WINDS = ["Stille", "Svak bris", "Frisk bris", "Kastevind", "Storm i et vannglass", "Null vind, helt flatt"];
+const VISIBILITY = ["God", "Noe redusert", "Dårlig, tåke av tanker", "Krystallklar", "Varierende"];
+const PRESSURE = ["Stigende", "Fallende", "Stabilt", "Svingende", "Uvanlig høyt"];
+const OUTLOOKS = [
+  "Ingen grunn til å endre planer. Ha en jakke i bakhånd uansett.",
+  "Kan slå om raskt. Hold deg nær noen du stoler på.",
+  "Rolig resten av dagen. Bra tidspunkt for de vanskelige samtalene.",
+  "Forvent en kort, men intens byge rundt ettermiddagen. Går fort over.",
+  "Ingenting dramatisk i vente. Bare vanlig, ordinært vær i sjela.",
+  "Sola kan bryte gjennom hvis du lar den. Ikke tving det.",
+  "Hold paraplyen klar — ikke for regnet, men for deg selv."
+];
+
+function hashDate(str){
+  let h = 0;
+  for (let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+  return h;
+}
+function pick(arr, seed){ return arr[seed % arr.length]; }
+
+function render(personal){
+  const now = new Date();
+  document.getElementById('date').textContent = now.toLocaleDateString('no-NO', {weekday:'long', day:'numeric', month:'long'});
+  let seedStr = now.toISOString().slice(0,10);
+  if (personal) seedStr += Math.random();
+  let seed = hashDate(seedStr);
+
+  const temp = 30 + (seed % 60); // 30-89 "grader overskudd"
+  document.getElementById('temp').textContent = temp + "% overskudd";
+  document.getElementById('headline').textContent = pick(HEADLINES, seed);
+  document.getElementById('wind').textContent = pick(WINDS, seed >> 2);
+  document.getElementById('rain').textContent = (10 + (seed % 85)) + "%";
+  document.getElementById('visibility').textContent = pick(VISIBILITY, seed >> 4);
+  document.getElementById('pressure').textContent = pick(PRESSURE, seed >> 6);
+  document.getElementById('outlook').textContent = pick(OUTLOOKS, seed >> 8);
+}
+render(false);
+</script>
+</body>
+</html>

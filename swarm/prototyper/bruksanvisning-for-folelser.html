@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bruksanvisning for følelser</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; --warn:#c9a86a; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:4px; }
+  p.sub { color:var(--muted); font-size:0.85rem; margin-top:0; }
+  .picker { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+  .picker button { background:var(--card); color:var(--text); border:1px solid #3a4a3f; border-radius:20px; padding:8px 14px; font-size:0.85rem; cursor:pointer; }
+  .picker button.active { background:var(--accent); color:#1a1f1c; border-color:var(--accent); }
+  .custom-row { display:flex; gap:8px; margin-bottom:16px; }
+  .custom-row input { flex:1; background:var(--card); border:1px solid #3a4a3f; border-radius:12px; padding:10px 12px; color:var(--text); }
+  .custom-row button { background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:0 16px; font-weight:600; cursor:pointer; }
+  .manual { display:none; }
+  .manual h2 { font-size:1.2rem; text-transform:capitalize; border-bottom:1px solid #3a4a3f; padding-bottom:10px; }
+  .section { background:var(--card); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .section h3 { margin:0 0 10px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); }
+  .parts { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .part { background:#1f2621; border-radius:8px; padding:8px 10px; font-size:0.85rem; }
+  .part .qty { color:var(--accent); font-weight:600; margin-right:4px; }
+  .steps { counter-reset:step; }
+  .step { counter-increment:step; position:relative; padding-left:36px; margin-bottom:14px; line-height:1.4; }
+  .step::before { content:counter(step); position:absolute; left:0; top:0; width:24px; height:24px; background:var(--accent); color:#1a1f1c; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; }
+  .warn { background:#3a2f1a; border:1px solid var(--warn); border-radius:12px; padding:12px 14px; color:var(--warn); font-size:0.85rem; }
+  .time { color:var(--muted); font-size:0.8rem; margin-top:-6px; margin-bottom:14px; }
+</style>
+</head>
+<body>
+  <h1>Bruksanvisning for følelser</h1>
+  <p class="sub">Velg en følelse. Følg trinnene i rekkefølge. Ikke hopp over advarslene.</p>
+
+  <div class="picker" id="picker"></div>
+  <div class="custom-row">
+    <input id="customInput" placeholder="...eller skriv inn din egen">
+    <button onclick="buildCustom()">Monter</button>
+  </div>
+
+  <div class="manual" id="manual">
+    <h2 id="mTitle"></h2>
+    <div class="time" id="mTime"></div>
+
+    <div class="section">
+      <h3>Verktøy som trengs</h3>
+      <p id="mTools"></p>
+    </div>
+
+    <div class="section">
+      <h3>Deler inkludert</h3>
+      <div class="parts" id="mParts"></div>
+    </div>
+
+    <div class="section">
+      <h3>Monteringstrinn</h3>
+      <div class="steps" id="mSteps"></div>
+    </div>
+
+    <div class="warn" id="mWarn"></div>
+  </div>
+
+<script>
+const MANUALS = {
+  "sinne": {
+    time: "Monteringstid: 5–40 minutter, avhengig av modell",
+    tools: "Rolig pust (medfølger ikke, må skaffes selv). Ett rom du kan være alene i.",
+    parts: ["1x Utløsende hendelse", "2x Klump i brystet", "1x Trang til å si noe du angrer på", "3x Sekunder med tenkepause (kritisk del — ikke mist denne)"],
+    steps: [
+      "Kjenn etter hvor i kroppen delen 'klump i brystet' sitter. Ikke fjern den ennå.",
+      "Sett inn delen 'tenkepause' FØR du kobler til munnen din. Dette trinnet hoppes ofte over — ikke gjør den feilen.",
+      "Pust ut lengre enn du puster inn, 4 ganger.",
+      "Spør deg selv: er jeg sint på situasjonen, eller på noe som skjedde tidligere i dag?",
+      "Si høyt (eller skriv ned) hva du faktisk trenger, ikke hva du vil si.",
+      "Fest delen 'utløsende hendelse' til en løsning, ikke til personen."
+    ],
+    warn: "ADVARSEL: Montert feil kan denne følelsen skade relasjoner rundt deg. Bruk aldri denne modellen på noen som ikke har bedt om å bli involvert."
+  },
+  "sorg": {
+    time: "Monteringstid: ingen fast tid. Kan ta år. Det er normalt.",
+    tools: "Tålmodighet. Noen å ringe. Ingen krav om ferdigstillelse.",
+    parts: ["1x Tap (kan ikke byttes ut eller returneres)", "flere x Minner (kommer i tilfeldig rekkefølge)", "1x Tomrom (passer ikke helt, det er meningen)"],
+    steps: [
+      "Ikke prøv å montere denne ferdig på én gang. Den er ikke designet sånn.",
+      "La delen 'tomrom' være der den er. Den fylles ikke med noe annet like stort.",
+      "Ta imot 'minner' etter hvert som de dukker opp, selv de du ikke ba om.",
+      "Finn én person eller ett sted du kan sette sammen deler høyt sammen med, ikke alene.",
+      "Legg bruksanvisningen vekk innimellom. Det er lov å ikke jobbe med dette hver dag."
+    ],
+    warn: "ADVARSEL: Det finnes ingen versjon av dette produktet som blir 'ferdig'. Det finnes bare versjoner som er lettere å bære."
+  },
+  "skam": {
+    time: "Monteringstid: 10–60 minutter for førstehjelp, lenger for full demontering",
+    tools: "Én person du stoler på og som ikke dømmer. Ærlighet.",
+    parts: ["1x Handling eller hendelse", "1x Historie du forteller deg selv om hva det betyr om deg", "1x Frykt for å bli avslørt"],
+    steps: [
+      "Skill delen 'handling' fra delen 'historie om hva det betyr om deg'. De er ikke sveiset sammen, selv om det føles sånn.",
+      "Si det høyt til én trygg person. Skam mister mye styrke i lyset.",
+      "Spør: ville jeg dømt en venn like hardt for det samme?",
+      "Reparer det som faktisk kan repareres. La resten være historie, ikke dom.",
+      "Legg tilbake delen 'frykt for å bli avslørt' i esken. Du trenger den ikke lenger."
+    ],
+    warn: "ADVARSEL: Denne modellen vokser i mørket og krymper i lys. Ikke oppbevar den alene over lang tid."
+  },
+  "sjalusi": {
+    time: "Monteringstid: 15–90 minutter",
+    tools: "Ærlighet med deg selv. Vilje til å se hva som egentlig mangler.",
+    parts: ["1x Sammenligning", "1x Frykt for å miste noe", "1x Ønske forkledd som mistillit"],
+    steps: [
+      "Fjern delen 'sammenligning' først — den forvrenger alle de andre delene.",
+      "Spør hva du egentlig er redd for å miste, konkret, ikke generelt.",
+      "Skill 'ønske' fra 'mistillit'. Det er ofte et behov du ikke har sagt høyt ennå.",
+      "Snakk om behovet, ikke om mistanken.",
+      "Sjekk om denne følelsen egentlig handler om noe helt annet i livet ditt akkurat nå."
+    ],
+    warn: "ADVARSEL: Brukt som våpen mot andre gir denne følelsen varig skade. Bruk kun på egen montering."
+  },
+  "overveldelse": {
+    time: "Monteringstid: 5 minutter for akutt håndtering",
+    tools: "Én oppgave om gangen. En liste. Lov til å si nei.",
+    parts: ["for mange x Oppgaver", "1x Følelse av at alt haster likt mye (det gjør det ikke)", "1x Kropp som ikke fikk beskjed om å roe seg"],
+    steps: [
+      "Legg alle delene på bordet samtidig — ikke sorter enda, bare se hvor mange det er.",
+      "Fjern minst tre deler helt. De kan vente, eller de er ikke dine å bære.",
+      "Ranger resten etter hva som faktisk haster, ikke hva som føles høyest i volum.",
+      "Monter kun én del om gangen. Ikke se på hele esken mens du jobber.",
+      "Fortell kroppen at faren er over, høyt om nødvendig: 'jeg er trygg akkurat nå.'"
+    ],
+    warn: "ADVARSEL: Denne modellen kollapser fullstendig hvis alle delene monteres samtidig. Ett trinn av gangen er ikke valgfritt."
+  },
+  "ensomhet": {
+    time: "Monteringstid: varierer sterkt, start med 20 minutter i dag",
+    tools: "Mot til å ta første kontakt. Realistiske forventninger.",
+    parts: ["1x Avstand til andre (fysisk eller emosjonell)", "1x Lengsel etter å bli sett", "1x Historie om at du er til bry"],
+    steps: [
+      "Fjern delen 'historie om at du er til bry' — den er ikke original utstyr, den er noe som festet seg over tid.",
+      "Ta ett lite, konkret kontaktpunkt i dag: en melding, ikke en plan om vennskap for livet.",
+      "Ikke krev at kontakten løser hele følelsen med en gang.",
+      "Legg merke til de gangene du faktisk blir møtt, selv i det små.",
+      "Gjenta i morgen. Denne modellen monteres i lag, ikke i ett trinn."
+    ],
+    warn: "ADVARSEL: Denne følelsen lyver ofte om hvor alene du faktisk er. Dobbeltsjekk med noen utenfra før du stoler helt på den."
+  }
+};
+
+const picker = document.getElementById('picker');
+Object.keys(MANUALS).forEach(key => {
+  const b = document.createElement('button');
+  b.textContent = key;
+  b.onclick = () => { setActive(b); render(key); };
+  picker.appendChild(b);
+});
+
+function setActive(btn){
+  [...picker.children].forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function buildCustom(){
+  const val = document.getElementById('customInput').value.trim().toLowerCase();
+  if (!val) return;
+  setActive(null);
+  if (MANUALS[val]) { render(val); return; }
+  MANUALS[val] = {
+    time: "Monteringstid: ukjent — dette er en uregistrert modell",
+    tools: "Nysgjerrighet på deg selv. Ingen fasit.",
+    parts: ["1x Kroppslig fornemmelse", "1x Tanke som kom først", "1x Behov du kanskje ikke har satt ord på ennå"],
+    steps: [
+      "Beskriv " + val + " med tre ord uten å bruke selve ordet " + val + ".",
+      "Kjenn etter hvor i kroppen den sitter akkurat nå.",
+      "Spør: hva prøver denne følelsen å fortelle meg at jeg trenger?",
+      "Del ett av disse ordene med noen du stoler på, hvis det kjennes trygt.",
+      "Legg bruksanvisningen fra deg. Ikke alle følelser trenger å bli helt forstått for å bli levd med."
+    ],
+    warn: "ADVARSEL: Denne modellen er ikke fabrikktestet. Vær ekstra skånsom med deg selv under montering."
+  };
+  render(val);
+}
+
+function render(key){
+  const m = MANUALS[key];
+  document.getElementById('mTitle').textContent = key;
+  document.getElementById('mTime').textContent = m.time;
+  document.getElementById('mTools').textContent = m.tools;
+  document.getElementById('mParts').innerHTML = m.parts.map(p => {
+    const match = p.match(/^([^\s]+x)\s(.+)$/);
+    return `<div class="part"><span class="qty">${match[1]}</span>${match[2]}</div>`;
+  }).join('');
+  document.getElementById('mSteps').innerHTML = m.steps.map(s => `<div class="step">${s}</div>`).join('');
+  document.getElementById('mWarn').textContent = m.warn;
+  document.getElementById('manual').style.display = 'block';
+  document.getElementById('manual').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
