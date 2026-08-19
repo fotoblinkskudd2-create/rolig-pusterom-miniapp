@@ -1,0 +1,15 @@
+{
+  "name": "Rolig – Pusterom",
+  "short_name": "Rolig",
+  "description": "Rolig mini-app for å dempe stress og nedstemthet. Pusterom, generativ kunst, innsikt og små grep. Alt lokalt, ingen data forlater enheten.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f7f4",
+  "theme_color": "#a8c5b0",
+  "lang": "no",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

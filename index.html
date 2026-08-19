@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#a8c5b0">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
@@ -21,7 +24,7 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: 84px;
     line-height: 1.5;
   }
   .page {
@@ -42,6 +45,7 @@
     font-weight: 500;
     margin-bottom: 16px;
   }
+  h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
   p, .support {
     color: var(--muted);
     font-size: 0.95rem;
@@ -98,6 +102,12 @@
     background: var(--soft-blue);
     margin-top: 12px;
   }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--text);
+    margin-top: 10px;
+  }
   .message {
     background: var(--soft-green);
     border-radius: 16px;
@@ -130,6 +140,20 @@
     font-weight: 500;
     min-height: 2rem;
   }
+  .sound-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .sound-toggle {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 6px 10px;
+  }
+  .sound-toggle.on { color: var(--text); font-weight: 600; }
   .actions-list {
     display: flex;
     flex-direction: column;
@@ -176,24 +200,25 @@
     background: var(--card);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 14px;
+    padding: 8px 0 12px;
     border-top: 1px solid #e5ebe6;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
     background: none;
     border: none;
-    font-size: 0.75rem;
+    font-size: 0.62rem;
     color: var(--muted);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 4px 4px;
+    flex: 1;
   }
   .nav button.active { color: var(--text); font-weight: 600; }
-  .nav button span { font-size: 1.3rem; }
+  .nav button span { font-size: 1.15rem; }
   .summary {
     background: var(--soft-beige);
     border-radius: 16px;
@@ -201,6 +226,67 @@
     text-align: center;
     margin-top: 24px;
   }
+  /* Speil (mirror / generative art + vibe code) */
+  .art-wrap {
+    background: #12181a;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 20px 0 12px;
+  }
+  #artCanvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 14px;
+  }
+  .vibe-code-box {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 1.15rem;
+    text-align: center;
+    background: var(--card);
+    border: 1px dashed var(--accent);
+    border-radius: 14px;
+    padding: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .poem {
+    font-style: italic;
+    text-align: center;
+    margin: 4px 0 20px;
+    color: var(--text);
+    font-size: 1.02rem;
+  }
+  .protocol-card {
+    background: var(--card);
+    border: 1px solid #e8eee9;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .protocol-card p { margin-bottom: 8px; color: var(--text); font-size: 0.92rem; }
+  .protocol-card p:last-child { margin-bottom: 0; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 .btn { flex: 1; }
+  /* Innsikt */
+  .insight-card {
+    background: var(--card);
+    border: 1px solid #e8eee9;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .insight-card .big {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .insight-card .label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  #sparkCanvas { width: 100%; height: 80px; display: block; }
 </style>
 </head>
 <body>
@@ -219,6 +305,7 @@
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <button class="btn btn-ghost" onclick="switchPage('speil')">Lag dagens vibe-kode</button>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -229,12 +316,46 @@
   </div>
   <div class="breath-text" id="breathText">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
+  <div class="sound-row">
+    <button class="sound-toggle" id="soundBtn" onclick="toggleSound()">🔈 Rolig lyd av</button>
+  </div>
+</div>
+
+<div id="page-speil" class="page">
+  <h1>Speil</h1>
+  <p class="support">Skriv noen ord om hvordan det er akkurat nå. Du får en privat protokoll, generativ kunst og en vibe-kode du kan dele hvis du vil.</p>
+  <textarea id="speilNote" placeholder="F.eks. «sliten og litt urolig i dag» …"></textarea>
+  <button class="btn" onclick="generateSpeil()">Generer</button>
+
+  <div id="speilOut" style="display:none">
+    <div class="art-wrap">
+      <canvas id="artCanvas" width="440" height="330"></canvas>
+    </div>
+    <div class="vibe-code-box" id="vibeCode"></div>
+    <div class="poem" id="vibePoem"></div>
+    <div class="row2">
+      <button class="btn btn-secondary" onclick="copyVibeCode()">Kopier kode</button>
+      <button class="btn btn-secondary" onclick="downloadArt()">Last ned kunst</button>
+    </div>
+
+    <div class="protocol-card">
+      <h3>Privat protokoll (kun din — lagres ikke)</h3>
+      <div id="protocol"></div>
+    </div>
+    <button class="btn btn-ghost" onclick="generateSpeil()">Lag en ny variant</button>
+  </div>
 </div>
 
 <div id="page-grep" class="page">
   <h1>Små grep</h1>
   <p class="support">Enkle ting som kan hjelpe her og nå.</p>
   <div class="actions-list" id="actionsList"></div>
+</div>
+
+<div id="page-innsikt" class="page">
+  <h1>Innsikt</h1>
+  <p class="support">Rolige mønstre fra dine egne sjekk-inn. Ingenting forlater denne enheten.</p>
+  <div id="insightContent"></div>
 </div>
 
 <div id="page-historikk" class="page">
@@ -245,8 +366,10 @@
 
 <nav class="nav">
   <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pust</button>
+  <button onclick="switchPage('speil')"><span>🔮</span>Speil</button>
+  <button onclick="switchPage('grep')"><span>✋</span>Grep</button>
+  <button onclick="switchPage('innsikt')"><span>📊</span>Innsikt</button>
   <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
@@ -300,9 +423,39 @@ function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (typeof event !== 'undefined' && event.currentTarget) event.currentTarget.classList.add('active');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  if (name === 'innsikt') renderInsight();
+}
+
+/* ---------- Pusterom + rolig lyd ---------- */
+
+let audioCtx = null, oscillator = null, gainNode = null, soundOn = false;
+
+function ensureAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    oscillator = audioCtx.createOscillator();
+    gainNode = audioCtx.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 196;
+    gainNode.gain.value = 0;
+    oscillator.connect(gainNode).connect(audioCtx.destination);
+    oscillator.start();
+  } catch (e) { /* Web Audio ikke tilgjengelig */ }
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  const btn = document.getElementById('soundBtn');
+  btn.textContent = soundOn ? '🔊 Rolig lyd på' : '🔈 Rolig lyd av';
+  btn.classList.toggle('on', soundOn);
+  if (soundOn) ensureAudio();
+  if (!soundOn && gainNode) {
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
+  }
 }
 
 function toggleBreath() {
@@ -320,6 +473,7 @@ function toggleBreath() {
     btn.textContent = 'Start';
     text.textContent = 'Trykk start';
     circle.className = 'circle';
+    if (gainNode) gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
   }
 }
 
@@ -327,9 +481,11 @@ function runBreathCycle() {
   if (!breathing) return;
   const circle = document.getElementById('breathCircle');
   const text = document.getElementById('breathText');
+  const now = () => (audioCtx ? audioCtx.currentTime : 0);
   if (phase === 0) {
     text.textContent = 'Pust inn…';
     circle.className = 'circle inhale';
+    if (soundOn) { ensureAudio(); oscillator.frequency.linearRampToValueAtTime(262, now() + 4); gainNode.gain.linearRampToValueAtTime(0.05, now() + 4); }
     breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
   } else if (phase === 1) {
     text.textContent = 'Hold…';
@@ -337,9 +493,12 @@ function runBreathCycle() {
   } else {
     text.textContent = 'Pust ut…';
     circle.className = 'circle exhale';
+    if (soundOn) { ensureAudio(); oscillator.frequency.linearRampToValueAtTime(196, now() + 6); gainNode.gain.linearRampToValueAtTime(0, now() + 6); }
     breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
   }
 }
+
+/* ---------- Små grep ---------- */
 
 function renderActions() {
   const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
@@ -366,6 +525,8 @@ function toggleAction(i) {
   renderActions();
 }
 
+/* ---------- Historikk ---------- */
+
 function renderHistory() {
   const list = JSON.parse(localStorage.getItem('checkins') || '[]');
   const container = document.getElementById('historyList');
@@ -382,16 +543,275 @@ function renderHistory() {
       container.appendChild(item);
     });
   }
-  // week count
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
-// init
+/* ---------- Innsikt: enkel lokal mønstergjenkjenning ---------- */
+
+function renderInsight() {
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]'); // nyest først
+  const container = document.getElementById('insightContent');
+  if (list.length === 0) {
+    container.innerHTML = '<p class="support">Ingen data ennå. Sjekk inn noen ganger, så finner vi mønstre sammen.</p>';
+    return;
+  }
+
+  // Streak: antall påfølgende dager (bakover fra i dag/i går) med minst én sjekk-inn
+  const days = [...new Set(list.map(e => new Date(e.date).toDateString()))];
+  let streak = 0;
+  let cursor = new Date();
+  if (!days.includes(cursor.toDateString())) cursor = new Date(cursor - 86400000);
+  while (days.includes(cursor.toDateString())) {
+    streak++;
+    cursor = new Date(cursor - 86400000);
+  }
+
+  // Ukedag med best snitt-humør (krever minst 2 datapunkter)
+  const wdNames = ['søndager', 'mandager', 'tirsdager', 'onsdager', 'torsdager', 'fredager', 'lørdager'];
+  const wdSum = {}, wdCount = {};
+  list.forEach(e => {
+    const wd = new Date(e.date).getDay();
+    wdSum[wd] = (wdSum[wd] || 0) + Number(e.mood);
+    wdCount[wd] = (wdCount[wd] || 0) + 1;
+  });
+  let bestWd = null, bestAvg = -1;
+  Object.keys(wdSum).forEach(wd => {
+    if (wdCount[wd] >= 2) {
+      const avg = wdSum[wd] / wdCount[wd];
+      if (avg > bestAvg) { bestAvg = avg; bestWd = wd; }
+    }
+  });
+
+  // Trend: siste halvdel vs forrige halvdel av de siste 6 sjekk-inn (kronologisk)
+  const chrono = list.slice(0, 8).reverse();
+  let trendText = 'Ikke nok data til å se en trend ennå.';
+  if (chrono.length >= 4) {
+    const mid = Math.floor(chrono.length / 2);
+    const avgFirst = chrono.slice(0, mid).reduce((s, e) => s + Number(e.mood), 0) / mid;
+    const avgLast = chrono.slice(mid).reduce((s, e) => s + Number(e.mood), 0) / (chrono.length - mid);
+    const diff = avgLast - avgFirst;
+    if (diff > 0.4) trendText = 'Det ser ut som du er på vei litt oppover for tiden. 🌱';
+    else if (diff < -0.4) trendText = 'Det virker som en tyngre periode akkurat nå. Det er lov. Vurder Pusterom eller et lite grep.';
+    else trendText = 'Humøret ditt har vært ganske stabilt siste tiden.';
+  }
+
+  container.innerHTML = `
+    <div class="insight-card">
+      <div class="big">${streak}</div>
+      <div class="label">${streak === 1 ? 'dag på rad du har sjekket inn' : 'dager på rad du har sjekket inn'}</div>
+    </div>
+    <div class="insight-card">
+      <h3>Siste 14 sjekk-inn</h3>
+      <canvas id="sparkCanvas" width="400" height="80"></canvas>
+    </div>
+    <div class="insight-card">
+      <h3>Mønster</h3>
+      <p style="margin-bottom:6px">${bestWd !== null ? 'Du pleier å ha det litt bedre på ' + wdNames[bestWd] + '.' : 'Ikke nok data til å se ukedagsmønster ennå.'}</p>
+      <p style="margin-bottom:0">${trendText}</p>
+    </div>
+  `;
+  drawSparkline(list.slice(0, 14).reverse());
+}
+
+function drawSparkline(entries) {
+  const canvas = document.getElementById('sparkCanvas');
+  if (!canvas || entries.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height, pad = 10;
+  ctx.clearRect(0, 0, w, h);
+  const pts = entries.map((e, i) => {
+    const x = entries.length === 1 ? w / 2 : pad + (i / (entries.length - 1)) * (w - pad * 2);
+    const y = h - pad - ((Number(e.mood) - 1) / 4) * (h - pad * 2);
+    return [x, y];
+  });
+  ctx.strokeStyle = '#a8c5b0';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+  ctx.stroke();
+  ctx.fillStyle = '#7a9a82';
+  pts.forEach(([x, y]) => { ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill(); });
+}
+
+/* ---------- Speil: seedet generativ kunst + vibe-kode ---------- */
+
+function hashStr(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h >>> 0;
+}
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const palettes = {
+  1: { colors: ['#2b3b52', '#3d5670', '#5c7a9a', '#8fa8bd'], emoji: ['🌊','🌫️','🩶','🌧️'] },
+  2: { colors: ['#3a3f5c', '#5a5f8a', '#7c81ab', '#a6a9c9'], emoji: ['🌙','💭','🫧','🔮'] },
+  3: { colors: ['#4a5c50', '#6d8a76', '#a8c5b0', '#dbe8de'], emoji: ['🍃','🌿','🌾','🕊️'] },
+  4: { colors: ['#6b7a3a', '#9aab55', '#c8d68f', '#eef3d6'], emoji: ['🌤️','🌼','🍀','☀️'] },
+  5: { colors: ['#a86b3a', '#d69a55', '#f0c98f', '#fff0d6'], emoji: ['🌅','🔥','🌻','✨'] }
+};
+
+const keywordLines = [
+  { keys: ['stress', 'press', 'mye å gjøre', 'jag'], line: 'Det som haster kan vente ett minutt. Skuldrene faller.' },
+  { keys: ['trøtt', 'sliten', 'utslitt', 'orker ikke'], line: 'Trøtthet er ikke svakhet. Det er kroppen som ber om ro.' },
+  { keys: ['ensom', 'alene', 'isolert'], line: 'Du er ikke alene i dette, selv når rommet er stille.' },
+  { keys: ['redd', 'engstelig', 'urolig', 'angst'], line: 'Frykten er en bølge. Bølger legger seg alltid.' },
+  { keys: ['sint', 'sinne', 'irritert', 'frustrert'], line: 'Sinne er energi som leter etter et sted å lande trygt.' },
+  { keys: ['glad', 'fornøyd', 'takknemlig'], line: 'La denne gode følelsen få plass, uten å skynde på den.' },
+  { keys: ['trist', 'nedstemt', 'tung', 'lei meg'], line: 'Det er lov å ha en tung dag. Den sier ingenting om i morgen.' }
+];
+const poemFragmentsA = [
+  'I skyggen av det som tynger', 'Under et stille himmelrom', 'Der pusten møter roen',
+  'I det som ennå ikke er sagt', 'Mellom to dype åndedrag', 'I lyset som siver gjennom vinduet'
+];
+const poemFragmentsB = [
+  'vokser noe som ikke haster.', 'finner du fotfeste igjen.', 'er det nok å bare være.',
+  'venter en liten, ekte ro.', 'vasker regnet rent.', 'blir tyngden litt lettere.'
+];
+const groundingPool = [
+  'Kjenn føttene i gulvet. Tre dype pust.',
+  'Legg en hånd på brystet og kjenn det stige og synke.',
+  'Se deg rundt og finn tre ting du kan se, to du kan høre, én du kan kjenne.',
+  'Skriv én setning som er sann akkurat nå — ingen andre skal lese den.',
+  'Drikk et glass vann, sakte, uten å gjøre noe annet samtidig.',
+  'Rull skuldrene bakover fem ganger og senk dem.',
+  'Ta et bilde av noe ekte i nærheten — ikke for andre, for deg.',
+  'Si til deg selv: «Dette er en øyeblikk, ikke for alltid.»'
+];
+
+let lastArtDataUrl = null;
+
+function generateSpeil() {
+  const note = document.getElementById('speilNote').value.trim();
+  const checkins = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const mood = (checkins[0] && checkins[0].mood) || '3';
+  const seedStr = note + '|' + mood + '|' + new Date().toDateString() + '|' + Math.random();
+  const seed = hashStr(seedStr);
+  const rand = mulberry32(seed);
+
+  document.getElementById('speilOut').style.display = 'block';
+  drawArt(rand, mood);
+  renderProtocol(rand, note);
+  renderVibeCode(seed, mood, note, rand);
+}
+
+function drawArt(rand, mood) {
+  const canvas = document.getElementById('artCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const palette = palettes[mood] || palettes['3'];
+
+  ctx.fillStyle = '#12181a';
+  ctx.fillRect(0, 0, w, h);
+
+  const particleCount = 90;
+  const steps = 70;
+  const particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: rand() * w,
+      y: rand() * h,
+      color: palette.colors[Math.floor(rand() * palette.colors.length)],
+      seedAngle: rand() * Math.PI * 2
+    });
+  }
+
+  let step = 0;
+  ctx.globalAlpha = 0.5;
+  ctx.lineCap = 'round';
+
+  function frame() {
+    if (step >= steps) { ctx.globalAlpha = 1; return; }
+    particles.forEach(p => {
+      const angle = Math.sin((p.x * 0.012) + p.seedAngle) * Math.cos((p.y * 0.012) - p.seedAngle) * Math.PI * 2;
+      const nx = p.x + Math.cos(angle) * 3.2;
+      const ny = p.y + Math.sin(angle) * 3.2;
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+      p.x = nx; p.y = ny;
+      if (p.x < 0) p.x += w; if (p.x > w) p.x -= w;
+      if (p.y < 0) p.y += h; if (p.y > h) p.y -= h;
+    });
+    step++;
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  setTimeout(() => { lastArtDataUrl = canvas.toDataURL('image/png'); }, (steps / 60) * 1000 + 200);
+}
+
+function renderProtocol(rand, note) {
+  const shuffled = [...groundingPool].sort(() => rand() - 0.5).slice(0, 3);
+  const lowerNote = note.toLowerCase();
+  const matched = keywordLines.find(k => k.keys.some(key => lowerNote.includes(key)));
+  let html = shuffled.map((s, i) => `<p>${i + 1}. ${s}</p>`).join('');
+  if (matched) html += `<p style="margin-top:10px;font-style:italic">${matched.line}</p>`;
+  else html += `<p style="margin-top:10px;font-style:italic">Du gjorde noe bra bare ved å stoppe opp og skrive dette.</p>`;
+  document.getElementById('protocol').innerHTML = html;
+}
+
+function renderVibeCode(seed, mood, note, rand) {
+  const palette = palettes[mood] || palettes['3'];
+  const base36 = seed.toString(36).toUpperCase().slice(0, 5);
+  const e1 = palette.emoji[Math.floor(rand() * palette.emoji.length)];
+  const e2 = palette.emoji[Math.floor(rand() * palette.emoji.length)];
+  const code = `${e1}${e2} ${base36}-${mood}`;
+  document.getElementById('vibeCode').textContent = code;
+
+  const a = poemFragmentsA[Math.floor(rand() * poemFragmentsA.length)];
+  const b = poemFragmentsB[Math.floor(rand() * poemFragmentsB.length)];
+  document.getElementById('vibePoem').textContent = `${a}, ${b}`;
+}
+
+function copyVibeCode() {
+  const text = document.getElementById('vibeCode').textContent + ' — ' + document.getElementById('vibePoem').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => flashCopyFeedback());
+  } else {
+    flashCopyFeedback();
+  }
+}
+function flashCopyFeedback() {
+  const box = document.getElementById('vibeCode');
+  const original = box.textContent;
+  box.textContent = 'Kopiert ✓';
+  setTimeout(() => { box.textContent = original; }, 1200);
+}
+
+function downloadArt() {
+  const canvas = document.getElementById('artCanvas');
+  const url = lastArtDataUrl || canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'speil-kunst.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/* ---------- init ---------- */
 renderActions();
 renderHistory();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
