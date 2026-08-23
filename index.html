@@ -201,6 +201,50 @@
     text-align: center;
     margin-top: 24px;
   }
+  input[type=file] {
+    width: 100%;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .photo-preview {
+    display: none;
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .photo-preview.show { display: block; }
+  .mirror-output { display: none; margin-top: 20px; }
+  .mirror-output.show { display: block; }
+  .reflection-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid #e8eee9;
+    margin-bottom: 12px;
+  }
+  .reflection-card strong { display: block; margin-bottom: 8px; }
+  .prompt-box {
+    background: var(--soft-beige);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-top: 10px;
+    word-break: break-word;
+  }
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    cursor: pointer;
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
@@ -243,10 +287,35 @@
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
 
+<div id="page-speil" class="page">
+  <h1>Speil</h1>
+  <p class="support">Skriv noen ord eller legg ved et bilde. Du får tre små steg og en kort refleksjon – alt blir kun på din enhet.</p>
+  <textarea id="mirrorNote" placeholder="Hva tynger akkurat nå? (valgfritt)"></textarea>
+  <img id="photoPreview" class="photo-preview" alt="Forhåndsvisning av valgt bilde">
+  <label for="mirrorPhoto" class="support" style="display:block;margin-top:-8px;">Legg ved et bilde (valgfritt, kun lokalt – lagres ikke)</label>
+  <input type="file" id="mirrorPhoto" accept="image/*">
+  <button class="btn" onclick="generateMirror()">Lag refleksjon</button>
+  <div class="mirror-output" id="mirrorOutput">
+    <div class="reflection-card">
+      <strong>Tre små steg</strong>
+      <div id="mirrorSteps"></div>
+    </div>
+    <div class="reflection-card">
+      <strong>Speil-tekst</strong>
+      <p id="mirrorText"></p>
+      <div class="prompt-box" id="mirrorPromptBox"></div>
+      <button class="copy-btn" onclick="copyMirrorPrompt()">Kopier AI-kunst-prompt</button>
+    </div>
+    <button class="btn btn-secondary" onclick="saveMirrorEntry()">Lagre refleksjon (kun lokalt)</button>
+  </div>
+  <div id="mirrorHistory"></div>
+</div>
+
 <nav class="nav">
   <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
   <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
   <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button onclick="switchPage('speil')"><span>🪞</span>Speil</button>
   <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
@@ -303,6 +372,13 @@ function switchPage(name) {
   event.currentTarget.classList.add('active');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  if (name === 'speil') renderMirrorHistory();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function toggleBreath() {
@@ -378,7 +454,7 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + escapeHtml(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
@@ -389,9 +465,94 @@ function renderHistory() {
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
+// Speil (mirror reflection)
+let mirrorPhotoData = null;
+
+document.getElementById('mirrorPhoto').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  const preview = document.getElementById('photoPreview');
+  if (!file) {
+    mirrorPhotoData = null;
+    preview.classList.remove('show');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    mirrorPhotoData = reader.result;
+    preview.src = mirrorPhotoData;
+    preview.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+});
+
+const mirrorSteps = [
+  "Sett føttene i gulvet. Ta tre dype pust.",
+  "Skriv én setning som er sann akkurat nå.",
+  "Legg merke til én ting du kan se, høre eller kjenne – ikke for andre, for deg."
+];
+
+const mirrorArtStyles = [
+  "stille tåke over fjorden, mykt lys",
+  "regn mot vindu, varme farger bak glasset",
+  "en sprekke av lys i mørket, rolig kontrast",
+  "skog i motlys, dempet grønt og grått"
+];
+
+function generateMirror() {
+  const noteInput = document.getElementById('mirrorNote').value.trim();
+  const note = noteInput || 'stillheten akkurat nå';
+  document.getElementById('mirrorSteps').innerHTML =
+    mirrorSteps.map((s, i) => `<p>${i + 1}. ${s}</p>`).join('') +
+    '<p style="margin-top:8px;font-style:italic;">Du er ikke alene i dette. Det teller at du er her.</p>';
+
+  const style = mirrorArtStyles[Math.floor(Math.random() * mirrorArtStyles.length)];
+  const photoLine = mirrorPhotoData ? ' Bildet ditt blir en del av det – kun for deg, det lagres ikke.' : '';
+  document.getElementById('mirrorText').textContent =
+    `I skyggen av «${note.slice(0, 60)}» vokser det noe rolig.${photoLine}`;
+  document.getElementById('mirrorPromptBox').textContent =
+    `norwegian calm reflection, ${style}, soft realistic photography, gentle atmosphere --ar 3:4`;
+  document.getElementById('mirrorOutput').classList.add('show');
+}
+
+function copyMirrorPrompt() {
+  const text = document.getElementById('mirrorPromptBox').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  }
+}
+
+function saveMirrorEntry() {
+  const note = document.getElementById('mirrorNote').value.trim();
+  const entry = {
+    date: new Date().toISOString(),
+    note: note,
+    hasPhoto: !!mirrorPhotoData
+  };
+  const list = JSON.parse(localStorage.getItem('mirrorEntries') || '[]');
+  list.unshift(entry);
+  localStorage.setItem('mirrorEntries', JSON.stringify(list.slice(0, 30)));
+  renderMirrorHistory();
+}
+
+function renderMirrorHistory() {
+  const list = JSON.parse(localStorage.getItem('mirrorEntries') || '[]');
+  const container = document.getElementById('mirrorHistory');
+  if (list.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = '<h2 style="margin-top:28px;">Tidligere refleksjoner</h2>' +
+    list.slice(0, 10).map(e => {
+      const d = new Date(e.date);
+      const dateLabel = d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'});
+      return `<div class="history-item"><div class="date">${dateLabel}${e.hasPhoto ? ' · 📷' : ''}</div>${e.note ? '<div>' + escapeHtml(e.note) + '</div>' : ''}</div>`;
+    }).join('');
+}
+
 // init
 renderActions();
 renderHistory();
+renderMirrorHistory();
 </script>
 </body>
 </html>
