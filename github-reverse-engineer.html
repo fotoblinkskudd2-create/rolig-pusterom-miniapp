@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repo → Prompt</title>
+<style>
+  :root {
+    --bg: #f5f7f4;
+    --card: #ffffff;
+    --text: #3a4a3f;
+    --muted: #7a8a7f;
+    --accent: #a8c5b0;
+    --soft-blue: #d4e4f0;
+    --border: #e5ebe6;
+    --danger: #c47a6a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+    padding: 28px 20px 60px;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; }
+  p.lead { color: var(--muted); font-size: 0.92rem; margin-bottom: 20px; }
+  .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  input[type=text] {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  input[type=text]:focus { outline: 2px solid var(--accent); }
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--accent);
+    color: #2a3a2f;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  button.secondary {
+    background: var(--soft-blue);
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .hint { color: var(--muted); font-size: 0.8rem; margin-bottom: 24px; }
+  .status { font-size: 0.9rem; color: var(--muted); margin: 10px 0; display: none; }
+  .status.show { display: block; }
+  .error {
+    background: #fbeae6;
+    border: 1px solid var(--danger);
+    color: #8a3a2a;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    margin: 10px 0;
+    display: none;
+  }
+  .error.show { display: block; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 16px;
+  }
+  .card h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 small { font-weight: 400; color: var(--muted); font-size: 0.75rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    background: var(--soft-blue);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.82rem;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px;
+    max-height: 260px;
+    overflow-y: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  textarea.prompt-box {
+    width: 100%;
+    min-height: 340px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+  }
+  .copy-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .results { display: none; }
+  .results.show { display: block; }
+  .meta-line { font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+  .howto {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 28px;
+  }
+  .howto h2 { font-size: 1rem; margin-bottom: 10px; }
+  .howto ol { padding-left: 20px; font-size: 0.88rem; color: var(--text); }
+  .howto li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Repo → Prompt</h1>
+  <p class="lead">Lim inn en GitHub-lenke. Verktøyet henter repoet, reverse-engineer'er strukturen og bygger et komplett prompt du kan bruke i en AI-kodeassistent.</p>
+
+  <div class="input-row">
+    <input type="text" id="repoUrl" placeholder="https://github.com/eier/repo" autocomplete="off">
+    <button id="analyzeBtn" onclick="analyze()">Analyser</button>
+  </div>
+  <div class="hint">Fungerer kun for offentlige repoer. Ingen nøkkel kreves, men GitHub sitt API tillater ca. 60 kall/time uten innlogging.</div>
+
+  <div class="status" id="status">Henter data fra GitHub …</div>
+  <div class="error" id="error"></div>
+
+  <div class="results" id="results">
+    <div class="card" id="repoCard"></div>
+    <div class="card" id="stackCard"></div>
+    <div class="card" id="structureCard"></div>
+    <div class="card" id="filesCard"></div>
+    <div class="card">
+      <h2>Komplett prompt <small>klar til å limes inn i en AI-assistent</small></h2>
+      <textarea class="prompt-box" id="promptBox" readonly></textarea>
+      <div class="copy-row">
+        <button class="secondary" onclick="copyPrompt()">Kopier prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="howto">
+    <h2>Slik bruker du den</h2>
+    <ol>
+      <li>Lim inn lenken til et offentlig GitHub-repo (f.eks. <code>https://github.com/eier/repo</code>) og trykk «Analyser».</li>
+      <li>Verktøyet henter repo-info, mappestruktur, README og nøkkelfiler (package.json, requirements.txt osv.) direkte fra GitHubs API i nettleseren din.</li>
+      <li>Les gjennom kortene for stack, struktur og filer for å forstå prosjektet raskt (reverse engineering).</li>
+      <li>Nederst finner du et ferdig utformet prompt. Bytt ut «[SETT INN HVA DU ØNSKER]»-linjen med det du faktisk vil ha gjort — f.eks. «gjenskap denne appen fra bunnen av», «porter dette til Python», «finn sikkerhetshull», eller «bygg videre med funksjon X».</li>
+      <li>Kopier prompten og lim den inn i en AI-kodeassistent (Claude, Claude Code, ChatGPT osv.) for å komme raskt i gang.</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const GH = 'https://api.github.com';
+
+function parseRepoUrl(input) {
+  let s = (input || '').trim();
+  if (!s) return null;
+  s = s.replace(/^git@github\.com:/, 'https://github.com/');
+  const m = s.match(/github\.com\/([^\/\s]+)\/([^\/\s#?]+)/i);
+  if (!m) return null;
+  return { owner: m[1], repo: m[2].replace(/\.git$/, '') };
+}
+
+function b64ToUtf8(b64) {
+  const binary = atob((b64 || '').replace(/\n/g, ''));
+  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+async function ghJson(path) {
+  const res = await fetch(GH + path);
+  if (!res.ok) {
+    const err = new Error('GitHub API ' + res.status);
+    err.status = res.status;
+    throw err;
+  }
+  return res.json();
+}
+
+async function fetchFileText(owner, repo, path) {
+  try {
+    const data = await ghJson(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`);
+    if (data.content) return b64ToUtf8(data.content);
+    if (data.download_url) {
+      const r = await fetch(data.download_url);
+      if (r.ok) return r.text();
+    }
+  } catch (e) { /* file not present, ignore */ }
+  return null;
+}
+
+function setStatus(msg) {
+  const el = document.getElementById('status');
+  if (!msg) { el.classList.remove('show'); return; }
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function setError(msg) {
+  const el = document.getElementById('error');
+  if (!msg) { el.classList.remove('show'); return; }
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function detectStack(rootFiles, pkg, extraText) {
+  const stack = [];
+  if (pkg) {
+    const deps = Object.assign({}, pkg.dependencies || {}, pkg.devDependencies || {});
+    if (deps['next']) stack.push('Next.js');
+    else if (deps['react']) stack.push('React');
+    if (deps['vue']) stack.push('Vue.js');
+    if (deps['svelte']) stack.push('Svelte');
+    if (deps['@angular/core']) stack.push('Angular');
+    if (deps['express']) stack.push('Express (Node backend)');
+    if (deps['fastify']) stack.push('Fastify (Node backend)');
+    if (deps['vite']) stack.push('Vite');
+    if (deps['webpack']) stack.push('Webpack');
+    if (deps['tailwindcss']) stack.push('Tailwind CSS');
+    if (deps['typescript']) stack.push('TypeScript');
+    if (deps['prisma']) stack.push('Prisma (ORM)');
+    if (deps['mongoose']) stack.push('MongoDB / Mongoose');
+    if (deps['electron']) stack.push('Electron');
+    if (deps['react-native']) stack.push('React Native');
+    stack.push('Node.js / npm');
+  }
+  if (rootFiles.includes('requirements.txt') || rootFiles.includes('pyproject.toml') || rootFiles.includes('Pipfile')) {
+    stack.push('Python');
+    const t = (extraText.requirements || '') + (extraText.pyproject || '');
+    if (/django/i.test(t) || rootFiles.includes('manage.py')) stack.push('Django');
+    if (/flask/i.test(t)) stack.push('Flask');
+    if (/fastapi/i.test(t)) stack.push('FastAPI');
+  }
+  if (rootFiles.includes('Cargo.toml')) stack.push('Rust');
+  if (rootFiles.includes('go.mod')) stack.push('Go');
+  if (rootFiles.includes('Gemfile')) {
+    stack.push('Ruby');
+    if (/rails/i.test(extraText.gemfile || '')) stack.push('Ruby on Rails');
+  }
+  if (rootFiles.includes('composer.json')) {
+    stack.push('PHP');
+    if (/laravel/i.test(extraText.composer || '')) stack.push('Laravel');
+  }
+  if (rootFiles.includes('pom.xml')) stack.push('Java (Maven)');
+  if (rootFiles.includes('build.gradle') || rootFiles.includes('build.gradle.kts')) stack.push('Java/Kotlin (Gradle)');
+  if (rootFiles.includes('Dockerfile')) stack.push('Docker');
+  if (rootFiles.includes('docker-compose.yml') || rootFiles.includes('docker-compose.yaml')) stack.push('Docker Compose');
+  return [...new Set(stack)];
+}
+
+function buildTreePreview(tree) {
+  const dirs = new Set();
+  const topFiles = [];
+  tree.forEach(t => {
+    const depth = t.path.split('/').length - 1;
+    if (depth === 0 && t.type === 'blob') topFiles.push(t.path);
+    if (depth <= 1 && t.type === 'tree') dirs.add(t.path);
+  });
+  const lines = [];
+  [...dirs].sort().forEach(d => lines.push(d + '/'));
+  topFiles.sort().forEach(f => lines.push(f));
+  return lines.slice(0, 100).join('\n');
+}
+
+async function analyze() {
+  const btn = document.getElementById('analyzeBtn');
+  const input = document.getElementById('repoUrl').value;
+  setError('');
+  document.getElementById('results').classList.remove('show');
+
+  const parsed = parseRepoUrl(input);
+  if (!parsed) {
+    setError('Fant ikke en gyldig GitHub-repo-lenke i det du limte inn. Bruk formatet https://github.com/eier/repo');
+    return;
+  }
+  const { owner, repo } = parsed;
+
+  btn.disabled = true;
+  setStatus('Henter data fra GitHub …');
+
+  try {
+    const repoData = await ghJson(`/repos/${owner}/${repo}`);
+    const branch = repoData.default_branch;
+
+    setStatus('Henter mappestruktur …');
+    const treeData = await ghJson(`/repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);
+    const tree = treeData.tree || [];
+
+    let languages = {};
+    try { languages = await ghJson(`/repos/${owner}/${repo}/languages`); } catch (e) {}
+
+    let readmeText = null;
+    try {
+      const readmeData = await ghJson(`/repos/${owner}/${repo}/readme`);
+      readmeText = readmeData.content ? b64ToUtf8(readmeData.content) : null;
+    } catch (e) {}
+
+    const rootFiles = tree.filter(t => t.type === 'blob' && !t.path.includes('/')).map(t => t.path);
+
+    setStatus('Leser nøkkelfiler …');
+    let pkg = null;
+    if (rootFiles.includes('package.json')) {
+      const txt = await fetchFileText(owner, repo, 'package.json');
+      try { pkg = JSON.parse(txt); } catch (e) {}
+    }
+    const extraText = {};
+    if (rootFiles.includes('requirements.txt')) extraText.requirements = await fetchFileText(owner, repo, 'requirements.txt');
+    if (rootFiles.includes('pyproject.toml')) extraText.pyproject = await fetchFileText(owner, repo, 'pyproject.toml');
+    if (rootFiles.includes('Gemfile')) extraText.gemfile = await fetchFileText(owner, repo, 'Gemfile');
+    if (rootFiles.includes('composer.json')) extraText.composer = await fetchFileText(owner, repo, 'composer.json');
+
+    const hasCI = tree.some(t => t.path.startsWith('.github/workflows/'));
+    const stack = detectStack(rootFiles, pkg, extraText);
+    const treePreview = buildTreePreview(tree);
+    const langEntries = Object.entries(languages);
+    const langTotal = langEntries.reduce((s, [, v]) => s + v, 0) || 1;
+    const langList = langEntries
+      .sort((a, b) => b[1] - a[1])
+      .map(([lang, bytes]) => `${lang} (${Math.round(bytes / langTotal * 100)}%)`);
+
+    let readmeSummary = '';
+    if (readmeText) {
+      readmeSummary = readmeText
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/^#.*$/gm, '')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(Boolean)
+        .join(' ')
+        .slice(0, 600);
+    }
+
+    renderResults({
+      owner, repo, repoData, tree, treeData, treePreview,
+      stack, langList, hasCI, rootFiles, pkg, readmeSummary
+    });
+
+    document.getElementById('results').classList.add('show');
+    setStatus('');
+  } catch (e) {
+    if (e.status === 404) {
+      setError('Fant ikke repoet. Sjekk at lenken er riktig og at repoet er offentlig.');
+    } else if (e.status === 403) {
+      setError('GitHub API-grensen er nådd (ca. 60 kall/time uten innlogging). Prøv igjen om litt.');
+    } else {
+      setError('Noe gikk galt under henting: ' + e.message);
+    }
+    setStatus('');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderResults(d) {
+  const repoCard = document.getElementById('repoCard');
+  repoCard.innerHTML = `
+    <h2>${escapeHtml(d.repoData.full_name)}</h2>
+    <div class="meta-line">${escapeHtml(d.repoData.description || 'Ingen beskrivelse.')}</div>
+    <div class="meta-line">⭐ ${d.repoData.stargazers_count} · Hovedspråk: ${escapeHtml(d.repoData.language || 'ukjent')} · Lisens: ${escapeHtml(d.repoData.license ? d.repoData.license.spdx_id : 'ingen')}</div>
+    <div class="meta-line">Standard branch: ${escapeHtml(d.repoData.default_branch)}${d.hasCI ? ' · Har GitHub Actions (CI/CD)' : ''}${d.treeData.truncated ? ' · Merk: repoet er stort, treet er forkortet' : ''}</div>
+  `;
+
+  const stackCard = document.getElementById('stackCard');
+  const chips = d.stack.length ? d.stack : ['Kunne ikke sikkert fastslå stack'];
+  const langChips = d.langList.length ? d.langList : [];
+  stackCard.innerHTML = `
+    <h2>Teknologi-stack (reverse engineered)</h2>
+    <div class="chips">${chips.map(s => `<span class="chip">${escapeHtml(s)}</span>`).join('')}</div>
+    ${langChips.length ? `<div class="meta-line" style="margin-top:10px;">Språkfordeling: ${langChips.map(escapeHtml).join(', ')}</div>` : ''}
+  `;
+
+  const structureCard = document.getElementById('structureCard');
+  structureCard.innerHTML = `
+    <h2>Mappestruktur <small>topp-nivå</small></h2>
+    <pre>${escapeHtml(d.treePreview || '(tom)')}</pre>
+  `;
+
+  const filesCard = document.getElementById('filesCard');
+  const foundManifests = ['package.json','requirements.txt','pyproject.toml','Pipfile','Cargo.toml','go.mod','Gemfile','composer.json','pom.xml','build.gradle','Dockerfile','docker-compose.yml']
+    .filter(f => d.rootFiles.includes(f));
+  filesCard.innerHTML = `
+    <h2>Nøkkelfiler funnet i rot</h2>
+    <div class="chips">${foundManifests.length ? foundManifests.map(f => `<span class="chip">${escapeHtml(f)}</span>`).join('') : '<span class="chip">Ingen kjente manifestfiler i rot</span>'}</div>
+    ${d.readmeSummary ? `<div class="meta-line" style="margin-top:10px;"><strong>README-sammendrag:</strong> ${escapeHtml(d.readmeSummary)}${d.readmeSummary.length >= 600 ? '…' : ''}</div>` : ''}
+  `;
+
+  document.getElementById('promptBox').value = buildPrompt(d);
+}
+
+function buildPrompt(d) {
+  const stackLine = d.stack.length ? d.stack.join(', ') : 'ukjent (ingen manifestfiler funnet i rot)';
+  const langLine = d.langList.length ? d.langList.join(', ') : 'ukjent';
+  return `Du får her en reverse-engineering av et eksisterende GitHub-repo. Bruk denne konteksten til å løse oppgaven nederst.
+
+KILDE
+Repo: ${d.repoData.full_name}
+URL: ${d.repoData.html_url}
+Beskrivelse: ${d.repoData.description || '(ingen beskrivelse oppgitt)'}
+Standard branch: ${d.repoData.default_branch}
+
+TEKNOLOGI-STACK
+${stackLine}
+
+SPRÅKFORDELING
+${langLine}
+
+MAPPESTRUKTUR (topp-nivå)
+${d.treePreview || '(ukjent)'}
+
+NØKKELFILER I ROT
+${d.rootFiles.length ? d.rootFiles.join(', ') : '(ingen)'}
+
+README-SAMMENDRAG
+${d.readmeSummary || '(ingen README funnet)'}
+
+OPPGAVE
+[SETT INN HVA DU ØNSKER — f.eks.:
+- "Gjenskap denne appen fra bunnen av med samme funksjonalitet, men i [ønsket stack]."
+- "Analyser koden for sikkerhetshull og foreslå konkrete fikser."
+- "Bygg videre på dette prosjektet med følgende nye funksjon: ..."
+- "Forklar arkitekturen i detalj som om jeg skal overta vedlikeholdet."]
+
+Svar strukturert, vis konkret kode der det er relevant, og forklar viktige valg underveis.`;
+}
+
+function copyPrompt() {
+  const box = document.getElementById('promptBox');
+  box.select();
+  navigator.clipboard.writeText(box.value).catch(() => document.execCommand('copy'));
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+document.getElementById('repoUrl').addEventListener('keydown', e => {
+  if (e.key === 'Enter') analyze();
+});
+</script>
+</body>
+</html>
