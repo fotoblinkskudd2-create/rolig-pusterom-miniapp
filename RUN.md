@@ -24,3 +24,7 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Idégenerator
+
+Fra Hjem → «💡 Idégenerator» (eller åpne `idea-generator.html`). Skriv en setning om et problem → «Generer idéer» → 5 idéer i 6 kategorier (Genius Ideas, Full-Stack React Project Ideas, Book Ideas, AI Inventions, Suno AI Song Concepts, Art Concepts), pluss en kort «planning phase» med problemområder. Alt genereres i nettleseren; ingenting sendes noe sted. «Kopier resultat» legger alt på utklippstavlen.
