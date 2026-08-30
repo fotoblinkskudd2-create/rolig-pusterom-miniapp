@@ -1,0 +1,7 @@
+# Pusterom CLI: local user data and logs, not source
+pusterom_data.json
+pusterom_data.json.corrupt-*
+pusterom.log
+
+__pycache__/
+*.pyc
