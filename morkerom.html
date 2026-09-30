@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mørkerommet</title>
+<style>
+  :root { --bg:#120909; --card:#1f1111; --text:#e8b4a8; --muted:#8a5a52; --safe:#b3261e; --line:#3a1c1a; }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); margin:0 auto; padding:20px; max-width:480px; line-height:1.5; }
+  h1 { font-size:1.4rem; margin:0 0 8px; font-weight:600; }
+  p { color:var(--muted); font-size:0.9rem; margin:0 0 16px; }
+  a.back { color:var(--muted); font-size:0.82rem; display:inline-block; margin-bottom:16px; }
+  label.pick { display:block; text-align:center; border:1px dashed var(--line); border-radius:14px; padding:18px; color:var(--text); cursor:pointer; }
+  input[type=file] { display:none; }
+  .tray { position:relative; margin:20px 0; border-radius:14px; overflow:hidden; background:#000; aspect-ratio:3/4; display:none; box-shadow:0 0 40px rgba(179,38,30,0.15) inset; }
+  .tray img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(0); }
+  .guide { display:flex; flex-direction:column; align-items:center; gap:10px; margin:8px 0 16px; }
+  .dot { width:48px; height:48px; border-radius:50%; background:var(--safe); opacity:0.5; transform:scale(0.7); transition:transform 4s ease-in-out, opacity 4s; }
+  .dot.inhale { transform:scale(1.25); opacity:0.9; }
+  .state { font-size:1.15rem; min-height:1.8rem; }
+  .bar { width:100%; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
+  .bar div { height:100%; width:0; background:var(--safe); }
+  button { width:100%; background:var(--safe); color:#fff1ee; border:none; border-radius:14px; padding:15px; font-size:1rem; font-weight:600; cursor:pointer; }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--text); margin-top:10px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Mørkerommet</h1>
+  <p>Velg et bilde. Det fremkalles bare mens du puster ut. Seks rolige pust, så er det der. Bildet lastes aldri opp og lagres ikke.</p>
+
+  <label class="pick" id="pick">Velg eller ta et bilde
+    <input type="file" id="photo" accept="image/*">
+  </label>
+
+  <div class="tray" id="tray"><img id="img" alt="Bildet ditt, under fremkalling"></div>
+
+  <div id="controls" class="hidden">
+    <div class="guide">
+      <div class="dot" id="dot"></div>
+      <div class="state" id="state">Trykk start når du er klar</div>
+      <div class="bar"><div id="bar"></div></div>
+    </div>
+    <button id="startBtn" onclick="toggle()">Start</button>
+    <button class="ghost" onclick="reset()">Nytt bilde</button>
+  </div>
+
+<script>
+// Samme klokke som Pusterom: alle som puster nå, puster i takt.
+const CYCLE = 12000;           // 4s inn, 2s hold, 6s ut
+const EXHALE_START = 6000;
+const DEVELOP_MS = 6 * 6000;   // seks utpust
+
+const img = document.getElementById('img');
+const dot = document.getElementById('dot');
+const state = document.getElementById('state');
+const bar = document.getElementById('bar');
+const btn = document.getElementById('startBtn');
+
+let progress = 0;
+let running = false;
+let last = 0;
+let objectUrl = null;
+
+document.getElementById('photo').addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  if (objectUrl) URL.revokeObjectURL(objectUrl);
+  objectUrl = URL.createObjectURL(f);
+  img.src = objectUrl;
+  progress = 0;
+  paint();
+  document.getElementById('pick').classList.add('hidden');
+  document.getElementById('tray').style.display = 'block';
+  document.getElementById('controls').classList.remove('hidden');
+});
+
+function paint() {
+  // Mørkt → varmt fremkallerbad → ferdig bilde.
+  const p = Math.min(progress, 1);
+  const b = Math.pow(p, 1.4);
+  const sepia = 1 - p;
+  const blur = (1 - p) * 6;
+  img.style.filter = `brightness(${b}) contrast(${0.6 + 0.4 * p}) sepia(${sepia}) blur(${blur}px)`;
+  bar.style.width = (p * 100) + '%';
+}
+
+function frame(now) {
+  if (!running) return;
+  const dt = last ? now - last : 0;
+  last = now;
+  const t = Date.now() % CYCLE;
+  const exhaling = t >= EXHALE_START;
+
+  if (t < 4000) { state.textContent = 'Pust inn…'; dot.className = 'dot inhale'; }
+  else if (!exhaling) { state.textContent = 'Hold…'; dot.className = 'dot inhale'; }
+  else { state.textContent = 'Pust ut… bildet kommer'; dot.className = 'dot'; }
+
+  if (exhaling && !document.hidden) {
+    progress += dt / DEVELOP_MS;
+    paint();
+  }
+  if (progress >= 1) {
+    running = false;
+    state.textContent = 'Fremkalt. Se på det så lenge du vil.';
+    dot.className = 'dot';
+    btn.textContent = 'Start på nytt';
+    return;
+  }
+  requestAnimationFrame(frame);
+}
+
+function toggle() {
+  if (progress >= 1) { progress = 0; paint(); }
+  running = !running;
+  btn.textContent = running ? 'Pause' : 'Fortsett';
+  if (running) { last = 0; requestAnimationFrame(frame); }
+  else { state.textContent = 'Pause. Fremkallingen venter.'; dot.className = 'dot'; }
+}
+
+function reset() {
+  running = false;
+  progress = 0;
+  if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+  img.removeAttribute('src');
+  document.getElementById('photo').value = '';
+  document.getElementById('pick').classList.remove('hidden');
+  document.getElementById('tray').style.display = 'none';
+  document.getElementById('controls').classList.add('hidden');
+  btn.textContent = 'Start';
+  state.textContent = 'Trykk start når du er klar';
+  bar.style.width = '0';
+}
+</script>
+</body>
+</html>

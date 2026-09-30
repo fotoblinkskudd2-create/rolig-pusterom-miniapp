@@ -194,6 +194,14 @@
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
+  .samtidig { font-size: 0.85rem; margin-top: -12px; }
+  .room-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
   .summary {
     background: var(--soft-beige);
     border-radius: 16px;
@@ -224,11 +232,13 @@
 <div id="page-pusterom" class="page">
   <h1>Pusterom</h1>
   <p class="support">Følg sirkelen. Pust rolig.</p>
+  <p class="support samtidig">Alle som puster her akkurat nå, puster i takt med deg. Klokka holder takten – ingen server.</p>
   <div class="circle-wrap">
     <div class="circle" id="breathCircle"></div>
   </div>
   <div class="breath-text" id="breathText">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
+  <a class="room-link" href="morkerom.html">Mørkerommet – fremkall et bilde med pusten →</a>
 </div>
 
 <div id="page-grep" class="page">
@@ -244,10 +254,10 @@
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -264,7 +274,8 @@ const actions = [
 let selectedMood = null;
 let breathing = false;
 let breathInterval = null;
-let phase = 0; // 0 inhale, 1 hold, 2 exhale
+// Samtidig: fasen regnes fra veggklokka, så alle som puster nå er i takt.
+const CYCLE = 12000; // 4s inn, 2s hold, 6s ut
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -299,8 +310,7 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -312,13 +322,13 @@ function toggleBreath() {
   if (!breathing) {
     breathing = true;
     btn.textContent = 'Stopp';
-    phase = 0;
     runBreathCycle();
   } else {
     breathing = false;
     clearTimeout(breathInterval);
     btn.textContent = 'Start';
     text.textContent = 'Trykk start';
+    circle.style.transitionDuration = '';
     circle.className = 'circle';
   }
 }
@@ -327,18 +337,16 @@ function runBreathCycle() {
   if (!breathing) return;
   const circle = document.getElementById('breathCircle');
   const text = document.getElementById('breathText');
-  if (phase === 0) {
-    text.textContent = 'Pust inn…';
-    circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
-  } else if (phase === 1) {
-    text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
-  } else {
-    text.textContent = 'Pust ut…';
-    circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
-  }
+  const t = Date.now() % CYCLE;
+  let label, cls, remaining;
+  if (t < 4000) { label = 'Pust inn…'; cls = 'inhale'; remaining = 4000 - t; }
+  else if (t < 6000) { label = 'Hold…'; cls = 'inhale'; remaining = 6000 - t; }
+  else { label = 'Pust ut…'; cls = 'exhale'; remaining = CYCLE - t; }
+  text.textContent = label;
+  // Kommer du inn midt i en fase, rekker sirkelen likevel fram i tide.
+  if (!circle.classList.contains(cls)) circle.style.transitionDuration = remaining + 'ms';
+  circle.className = 'circle ' + cls;
+  breathInterval = setTimeout(runBreathCycle, remaining + 20);
 }
 
 function renderActions() {
