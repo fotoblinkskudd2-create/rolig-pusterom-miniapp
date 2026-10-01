@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.workflowroi",
+  "appName": "ArbeidsGevinst",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}

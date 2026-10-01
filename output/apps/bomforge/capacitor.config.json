@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.bomforge",
+  "appName": "DeleSmed",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}

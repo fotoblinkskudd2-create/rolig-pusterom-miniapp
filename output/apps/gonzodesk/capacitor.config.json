@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.gonzodesk",
+  "appName": "GonzoBord",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ArbeidsGevinst",
+  "short_name": "ArbeidsGevinst",
+  "description": "Test om en automatisering betaler seg med egne antakelser.",
+  "lang": "nb",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#2f6b55",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

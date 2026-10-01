@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.leadledger",
+  "appName": "KundeSpor",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}

@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.songforge",
+  "appName": "LåtSmed",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}
