@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kodebro</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #1d2b3a;
+    --panel: #26384b;
+    --ink: #eef3f7;
+    --muted: #9fb3c6;
+    --water: #2f6f9f;
+    --water-2: #3a80b3;
+    --plank: #b9844f;
+    --plank-2: #94673a;
+    --hole: #12202c;
+    --accent: #ffc94a;
+    --go: #4cc38a;
+    --bad: #ff6b5b;
+    --loop: #8f7bff;
+    --if: #ff9f43;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body { margin: 0; background: var(--bg); min-height: 100dvh; }
+  .app { max-width: 560px; margin: 0 auto; padding: 12px 16px 24px; display: flex; flex-direction: column; gap: 12px; }
+  header { display: flex; justify-content: space-between; align-items: baseline; }
+  h1 { font-size: 1.4rem; margin: 0; }
+  .levels { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+  .levels button {
+    min-height: 40px; border: none; border-radius: 8px; font: inherit; font-weight: 700;
+    background: var(--panel); color: var(--ink); cursor: pointer;
+  }
+  .levels button.done { background: #2f5a45; }
+  .levels button.current { outline: 3px solid var(--accent); }
+  .levels button:disabled { opacity: 0.35; cursor: default; }
+
+  .msg { min-height: 1.5em; font-weight: 700; font-size: 1.05rem; margin: 0; }
+  .msg.bad { color: var(--bad); }
+  .msg.good { color: var(--go); }
+
+  .board-wrap { display: flex; justify-content: center; }
+  .board { position: relative; display: grid; gap: 3px; width: 100%; }
+  .tile { aspect-ratio: 1; border-radius: 6px; display: grid; place-items: center; font-size: 1.3rem; }
+  .tile.w { background: repeating-linear-gradient(135deg, var(--water) 0 10px, var(--water-2) 10px 20px); }
+  .tile.p, .tile.s, .tile.m {
+    background: repeating-linear-gradient(90deg, var(--plank) 0 8px, var(--plank-2) 8px 10px);
+  }
+  .tile.h { background: var(--hole); box-shadow: inset 0 0 0 3px var(--plank-2); }
+  .tile.edit { cursor: pointer; outline: 2px dashed var(--accent); outline-offset: -4px; }
+
+  .bot {
+    position: absolute; top: 0; left: 0; display: grid; place-items: center;
+    transition: transform 0.3s ease; pointer-events: none;
+  }
+  .bot .body {
+    width: 70%; height: 70%; border-radius: 50%; background: var(--accent);
+    display: grid; place-items: center; font-size: 1.1rem; color: #3a2a00; font-weight: 900;
+    box-shadow: 0 3px 0 #0006; transition: transform 0.2s;
+  }
+  .bot.jump .body { animation: jump 0.3s ease; }
+  .bot.fall .body { animation: fall 0.6s ease forwards; }
+  .bot.win .body { animation: win 0.6s ease 2; }
+  @keyframes jump { 50% { scale: 1.45; } }
+  @keyframes fall { to { scale: 0.1; opacity: 0.2; rotate: 200deg; } }
+  @keyframes win { 50% { scale: 1.3; } }
+
+  .panel { background: var(--panel); border-radius: 14px; padding: 10px; }
+  .panel h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; display: flex; justify-content: space-between; }
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; }
+  .blk {
+    min-height: 48px; padding: 0 14px; border: none; border-radius: 12px; font: inherit; font-weight: 800;
+    background: var(--go); color: #0d2a1c; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .blk.turn { background: #5bc0eb; color: #08283a; }
+  .blk.jump { background: #f6d55c; color: #3a2e00; }
+  .blk.loop { background: var(--loop); color: #fff; }
+  .blk.if { background: var(--if); color: #3a1d00; }
+  .blk.out { background: transparent; border: 2px solid var(--muted); color: var(--ink); }
+  .blk:disabled { opacity: 0.35; cursor: default; }
+
+  .program { display: flex; flex-direction: column; gap: 6px; min-height: 56px; }
+  .program .empty { color: var(--muted); margin: auto 0; }
+  .node { display: flex; align-items: center; gap: 6px; }
+  .node > .blk { flex: 1; justify-content: space-between; }
+  .x { background: #0003; border: none; color: inherit; border-radius: 8px; min-width: 32px; min-height: 32px; font: inherit; font-weight: 900; cursor: pointer; }
+  .loop-box { border: 3px solid var(--loop); border-radius: 12px; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+  .loop-box.cursor { border-style: dashed; border-color: var(--accent); }
+  .loop-head { display: flex; gap: 6px; align-items: center; }
+  .loop-head .blk { flex: 1; }
+  .count { min-width: 48px; background: #fff3; border: none; border-radius: 8px; color: #fff; font: inherit; font-weight: 900; min-height: 36px; cursor: pointer; }
+  .loop-body { padding-left: 14px; display: flex; flex-direction: column; gap: 6px; min-height: 30px; }
+  .loop-body .hint { color: var(--muted); font-size: 0.85rem; }
+  .active { outline: 4px solid #fff; outline-offset: 2px; }
+  .failed { outline: 4px solid var(--bad); outline-offset: 2px; }
+
+  .actions { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+  .actions button { min-height: 56px; border: none; border-radius: 14px; font: inherit; font-size: 1.1rem; font-weight: 900; cursor: pointer; }
+  .run { background: var(--go); color: #0d2a1c; }
+  .clear { background: var(--panel); color: var(--ink); }
+  .actions button:disabled { opacity: 0.4; }
+  .next { width: 100%; min-height: 56px; border: none; border-radius: 14px; background: var(--accent); color: #3a2a00; font: inherit; font-size: 1.1rem; font-weight: 900; cursor: pointer; }
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>Kodebro</h1>
+    <span id="score"></span>
+  </header>
+  <nav class="levels" id="levels" aria-label="Baner"></nav>
+  <p class="msg" id="msg" aria-live="polite"></p>
+  <div class="board-wrap"><div class="board" id="board"></div></div>
+  <section class="panel">
+    <h2><span>Blokker</span></h2>
+    <div class="palette" id="palette"></div>
+  </section>
+  <section class="panel">
+    <h2><span>Program</span><span id="limit"></span></h2>
+    <div class="program" id="program"></div>
+  </section>
+  <div class="actions">
+    <button class="clear" id="clear">Tøm</button>
+    <button class="run" id="run">▶ Kjør</button>
+  </div>
+  <button class="next" id="next" hidden>Neste bane →</button>
+</main>
+
+<script>
+const BLOCKS = {
+  go:    { label: 'gå',           cls: '' },
+  jump:  { label: 'hopp',         cls: 'jump' },
+  left:  { label: 'snu ↰',        cls: 'turn' },
+  right: { label: 'snu ↱',        cls: 'turn' },
+  loop:  { label: 'gjenta',       cls: 'loop' },
+  ifh:   { label: 'hvis hull → hopp, ellers gå', cls: 'if' },
+};
+
+// '.' vann, '=' planke, 'o' hull, 'S' start, 'M' mål. Figuren starter mot høyre.
+const LEVELS = [
+  { grid: ['S===M'], max: 6, blocks: ['go'], intro: 'Legg blokker. Trykk Kjør. Nå flagget.' },
+  { grid: ['S=o=M'], max: 5, blocks: ['go', 'jump'], intro: 'Hull i broa? Hopp over det.' },
+  { grid: ['S==.', '..=.', '..M.'], max: 6, blocks: ['go', 'jump', 'left', 'right'], intro: 'Snu endrer retning. Se hvor figuren peker.' },
+  { grid: ['S======M'], max: 3, blocks: ['go', 'jump', 'left', 'right', 'loop'], intro: 'For få blokker? Gjenta gjør jobben flere ganger.' },
+  { grid: ['S=o=o=o=M'], max: 4, blocks: ['go', 'jump', 'left', 'right', 'loop'], intro: 'Finn det som skjer om og om igjen.' },
+  { grid: ['S=..', '.==.', '..==', '...M'], max: 5, blocks: ['go', 'jump', 'left', 'right', 'loop'], intro: 'Trappa har et mønster. Gjenta det.' },
+  { grid: ['S=o=o==o=M'], max: 2, blocks: ['go', 'jump', 'left', 'right', 'loop', 'ifh'], intro: 'Ny blokk: hvis hull, hopp. Ellers gå.' },
+  { grid: ['S=o=', '...o', '...=', '...M'], max: 5, blocks: ['go', 'jump', 'left', 'right', 'loop', 'ifh'], intro: 'Hvis-blokken ser bare én rute fram.' },
+  { grid: ['S==o=', '....o', '....=', '....=', '....M'], max: 4, blocks: ['go', 'jump', 'left', 'right', 'loop', 'ifh'], intro: 'Gjenta inni gjenta. Én side, så snu.' },
+  { grid: ['S========M'], max: 2, build: true, blocks: ['go', 'jump', 'left', 'right', 'loop', 'ifh'], intro: 'Din bro. Trykk planker til hull. Minst tre.' },
+];
+
+const DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]]; // høyre, ned, venstre, opp
+const ARROWS = ['→', '↓', '←', '↑'];
+const STORE = 'kodebro-v1';
+
+let save = load();
+let level = Math.min(save.current || 0, save.unlocked);
+let grid, program, cursor, running = false, nextId = 1;
+let bot = null; // siste posisjon, så brettet kan tegnes på nytt uten å flytte figuren
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE));
+    if (s && typeof s.unlocked === 'number') return { best: {}, ...s };
+  } catch (e) {}
+  return { unlocked: 0, current: 0, best: {} };
+}
+function persist() {
+  try { localStorage.setItem(STORE, JSON.stringify(save)); } catch (e) {}
+}
+
+function startLevel(i) {
+  level = i;
+  save.current = i;
+  persist();
+  grid = LEVELS[i].grid.map(r => r.split(''));
+  program = [];
+  cursor = program;
+  bot = null;
+  setMsg(LEVELS[i].intro);
+  document.getElementById('next').hidden = true;
+  render();
+}
+
+// ---------- motor ----------
+function cell(x, y) { return (grid[y] && grid[y][x]) || '.'; }
+function walkable(c) { return c === '=' || c === 'S' || c === 'M'; }
+function countBlocks(list) { return list.reduce((n, b) => n + 1 + (b.children ? countBlocks(b.children) : 0), 0); }
+function findStart() {
+  for (let y = 0; y < grid.length; y++) for (let x = 0; x < grid[y].length; x++) if (grid[y][x] === 'S') return { x, y };
+}
+
+// Kjører programmet og lager en liste med steg som kan animeres.
+function simulate() {
+  let { x, y } = findStart();
+  let d = 0;
+  const trace = [];
+  let result = null;
+  let steps = 0;
+
+  function act(b) {
+    let type = b.type;
+    if (type === 'ifh') {
+      const [dx, dy] = DIRS[d];
+      type = cell(x + dx, y + dy) === 'o' ? 'jump' : 'go';
+    }
+    if (type === 'left' || type === 'right') {
+      d = (d + (type === 'left' ? 3 : 1)) % 4;
+      trace.push({ id: b.id, x, y, d, kind: 'turn' });
+      return;
+    }
+    const [dx, dy] = DIRS[d];
+    if (type === 'go') {
+      const c = cell(x + dx, y + dy);
+      x += dx; y += dy;
+      if (c === 'o') return fail(b, 'Gå: rett ned i hullet.');
+      if (!walkable(c)) return fail(b, 'Gå: rett i vannet.');
+      trace.push({ id: b.id, x, y, d, kind: 'move' });
+    } else {
+      const mid = cell(x + dx, y + dy);
+      const c = cell(x + 2 * dx, y + 2 * dy);
+      x += 2 * dx; y += 2 * dy;
+      if (mid === '.') return fail(b, 'Hopp: for langt over vann.', 'jump');
+      if (!walkable(c)) return fail(b, c === 'o' ? 'Hopp: landet i et hull.' : 'Hopp: landet i vannet.', 'jump');
+      trace.push({ id: b.id, x, y, d, kind: 'jump' });
+    }
+    if (cell(x, y) === 'M') result = { ok: true };
+  }
+  function fail(b, why, kind = 'move') {
+    trace.push({ id: b.id, x, y, d, kind, fall: true });
+    result = { ok: false, id: b.id, why };
+  }
+  function exec(list) {
+    for (const b of list) {
+      if (result) return;
+      if (++steps > 300) { result = { ok: false, id: b.id, why: 'For mange steg.' }; return; }
+      if (b.type === 'loop') {
+        for (let i = 0; i < b.n && !result; i++) {
+          trace.push({ id: b.id, x, y, d, kind: 'mark' });
+          exec(b.children);
+        }
+      } else {
+        act(b);
+      }
+    }
+  }
+  exec(program);
+  if (!result) {
+    const last = trace.length ? trace[trace.length - 1].id : null;
+    result = { ok: false, id: last, why: 'Programmet stoppet før flagget.' };
+  }
+  return { trace, result };
+}
+
+// ---------- tegning ----------
+function render() {
+  renderLevels();
+  renderBoard();
+  renderPalette();
+  renderProgram();
+  const best = save.best[level];
+  document.getElementById('score').textContent = best ? `Rekord: ${best} blokker` : '';
+}
+
+function renderLevels() {
+  const nav = document.getElementById('levels');
+  nav.innerHTML = '';
+  LEVELS.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    b.disabled = i > save.unlocked || running;
+    if (save.best[i]) b.classList.add('done');
+    if (i === level) b.classList.add('current');
+    b.onclick = () => startLevel(i);
+    nav.appendChild(b);
+  });
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  const cols = grid[0].length, rows = grid.length;
+  const size = Math.min(64, Math.floor((Math.min(window.innerWidth, 560) - 32 - (cols - 1) * 3) / cols));
+  board.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+  board.style.width = 'auto';
+  board.innerHTML = '';
+  const editable = LEVELS[level].build && !running;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const c = grid[y][x];
+    const t = document.createElement('div');
+    t.className = 'tile ' + ({ '.': 'w', '=': 'p', 'o': 'h', 'S': 's', 'M': 'm' })[c];
+    if (c === 'M') t.textContent = '🏁';
+    if (editable && (c === '=' || c === 'o')) {
+      t.classList.add('edit');
+      t.onclick = () => { grid[y][x] = c === '=' ? 'o' : '='; renderBoard(); };
+    }
+    board.appendChild(t);
+  }
+  const s = bot || { ...findStart(), d: 0 };
+  const cls = bot && bot.cls;
+  const el = document.createElement('div');
+  el.className = 'bot' + (cls ? ' ' + cls : '');
+  el.id = 'bot';
+  el.style.width = el.style.height = size + 'px';
+  el.style.transform = `translate(${s.x * (size + 3)}px, ${s.y * (size + 3)}px)`;
+  el.innerHTML = `<div class="body">${ARROWS[s.d]}</div>`;
+  board.appendChild(el);
+}
+
+function moveBot(step) {
+  const el = document.getElementById('bot');
+  const size = parseFloat(el.style.width);
+  el.classList.remove('jump');
+  void el.offsetWidth;
+  el.style.transform = `translate(${step.x * (size + 3)}px, ${step.y * (size + 3)}px)`;
+  el.querySelector('.body').textContent = ARROWS[step.d];
+  if (step.kind === 'jump') el.classList.add('jump');
+  bot = { x: step.x, y: step.y, d: step.d, cls: step.fall ? 'fall' : '' };
+  if (step.fall) setTimeout(() => el.classList.add('fall'), 250);
+}
+
+function renderPalette() {
+  const pal = document.getElementById('palette');
+  pal.innerHTML = '';
+  const full = countBlocks(program) >= LEVELS[level].max;
+  LEVELS[level].blocks.forEach(type => {
+    const b = document.createElement('button');
+    b.className = 'blk ' + BLOCKS[type].cls;
+    b.textContent = type === 'loop' ? 'gjenta …' : BLOCKS[type].label;
+    b.disabled = full || running;
+    b.onclick = () => addBlock(type);
+    pal.appendChild(b);
+  });
+  if (cursor !== program) {
+    const out = document.createElement('button');
+    out.className = 'blk out';
+    out.textContent = '⤴ ut av gjenta';
+    out.disabled = running;
+    out.onclick = () => { cursor = parentOf(cursor) || program; render(); };
+    pal.appendChild(out);
+  }
+  document.getElementById('limit').textContent = `${countBlocks(program)} / ${LEVELS[level].max}`;
+  document.getElementById('run').disabled = running || program.length === 0;
+  document.getElementById('clear').disabled = running;
+}
+
+function parentOf(list, within = program) {
+  for (const b of within) {
+    if (b.children === list) return within;
+    if (b.children) { const p = parentOf(list, b.children); if (p) return p; }
+  }
+  return null;
+}
+
+function addBlock(type) {
+  const b = { id: nextId++, type };
+  if (type === 'loop') { b.n = 3; b.children = []; }
+  cursor.push(b);
+  if (type === 'loop') cursor = b.children;
+  clearMarks();
+  render();
+}
+
+function removeBlock(list, id) {
+  const i = list.findIndex(b => b.id === id);
+  if (i >= 0) {
+    const [gone] = list.splice(i, 1);
+    if (gone.children && contains(gone.children, cursor)) cursor = list;
+    return true;
+  }
+  return list.some(b => b.children && removeBlock(b.children, id));
+}
+function contains(list, target) {
+  if (list === target) return true;
+  return list.some(b => b.children && contains(b.children, target));
+}
+
+function renderProgram() {
+  const root = document.getElementById('program');
+  root.innerHTML = '';
+  if (!program.length) {
+    root.innerHTML = '<p class="empty">Trykk en blokk for å legge den her.</p>';
+    return;
+  }
+  root.appendChild(renderList(program));
+}
+
+function renderList(list) {
+  const frag = document.createDocumentFragment();
+  list.forEach(b => {
+    if (b.type === 'loop') {
+      const box = document.createElement('div');
+      box.className = 'loop-box' + (cursor === b.children ? ' cursor' : '');
+      box.dataset.id = b.id;
+      const head = document.createElement('div');
+      head.className = 'loop-head';
+      const label = document.createElement('button');
+      label.className = 'blk loop';
+      label.textContent = 'gjenta';
+      label.disabled = running;
+      label.onclick = () => { cursor = b.children; render(); };
+      const count = document.createElement('button');
+      count.className = 'count';
+      count.textContent = '×' + b.n;
+      count.disabled = running;
+      count.setAttribute('aria-label', 'Endre antall');
+      count.onclick = () => { b.n = b.n >= 9 ? 2 : b.n + 1; render(); };
+      head.append(label, count, xButton(b));
+      const body = document.createElement('div');
+      body.className = 'loop-body';
+      if (b.children.length) body.appendChild(renderList(b.children));
+      else body.innerHTML = '<span class="hint">Tom. Legg blokker inni.</span>';
+      box.append(head, body);
+      frag.appendChild(box);
+    } else {
+      const row = document.createElement('div');
+      row.className = 'node';
+      const blk = document.createElement('div');
+      blk.className = 'blk ' + BLOCKS[b.type].cls;
+      blk.dataset.id = b.id;
+      blk.textContent = BLOCKS[b.type].label;
+      row.append(blk, xButton(b));
+      frag.appendChild(row);
+    }
+  });
+  return frag;
+}
+
+function xButton(b) {
+  const x = document.createElement('button');
+  x.className = 'x';
+  x.textContent = '✕';
+  x.disabled = running;
+  x.setAttribute('aria-label', 'Fjern blokk');
+  x.onclick = () => { removeBlock(program, b.id); clearMarks(); render(); };
+  return x;
+}
+
+function mark(id, cls) {
+  document.querySelectorAll('.' + cls).forEach(e => e.classList.remove(cls));
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (el) el.classList.add(cls);
+}
+function clearMarks() { mark(-1, 'active'); mark(-1, 'failed'); }
+
+function setMsg(text, kind = '') {
+  const m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + kind;
+}
+
+// ---------- bane 10: sjekk egen bro ----------
+function bridgeProblem() {
+  const row = grid[0];
+  const holes = row.filter(c => c === 'o').length;
+  if (holes < 3) return 'Lag minst tre hull først.';
+  for (let i = 1; i < row.length; i++) if (row[i] === 'o' && row[i - 1] === 'o') return 'To hull på rad er for langt å hoppe.';
+  return null;
+}
+
+// ---------- kjør ----------
+function run() {
+  if (running) return;
+  if (LEVELS[level].build) {
+    const p = bridgeProblem();
+    if (p) { setMsg(p, 'bad'); return; }
+  }
+  const { trace, result } = simulate();
+  running = true;
+  bot = null;
+  cursor = program;
+  render();
+  setMsg('Kjører …');
+  let i = 0;
+  const tick = () => {
+    if (i < trace.length) {
+      const step = trace[i++];
+      mark(step.id, 'active');
+      if (step.kind !== 'mark') moveBot(step);
+      setTimeout(tick, step.kind === 'mark' ? 150 : 380);
+      return;
+    }
+    finish(result);
+  };
+  setTimeout(tick, 200);
+}
+
+function finish(result) {
+  running = false;
+  renderLevels();
+  renderPalette();
+  document.querySelectorAll('#program button').forEach(b => b.disabled = false);
+  if (result.ok) {
+    bot = { ...bot, cls: 'win' };
+    document.getElementById('bot').classList.add('win');
+    mark(-1, 'active');
+    const used = countBlocks(program);
+    const prev = save.best[level];
+    if (!prev || used < prev) save.best[level] = used;
+    if (level === save.unlocked && level < LEVELS.length - 1) save.unlocked = level + 1;
+    persist();
+    renderLevels();
+    document.getElementById('score').textContent = `Rekord: ${save.best[level]} blokker`;
+    setMsg(level === LEVELS.length - 1 ? 'Du bygde broa og koden. Ferdig!' : `Over! ${used} blokker brukt.`, 'good');
+    document.getElementById('next').hidden = level === LEVELS.length - 1;
+  } else {
+    mark(-1, 'active');
+    if (result.id != null) mark(result.id, 'failed');
+    setMsg(result.why, 'bad');
+    setTimeout(() => { if (!running) { bot = null; renderBoard(); } }, 1400);
+  }
+}
+
+document.getElementById('run').onclick = run;
+document.getElementById('clear').onclick = () => { program = []; cursor = program; setMsg(LEVELS[level].intro); render(); };
+document.getElementById('next').onclick = () => startLevel(level + 1);
+window.addEventListener('resize', () => { if (!running) renderBoard(); });
+
+startLevel(level);
+</script>
+</body>
+</html>
