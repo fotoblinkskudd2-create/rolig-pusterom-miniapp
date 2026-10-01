@@ -1,0 +1,5 @@
+---
+description: "Bygg Alexanders 30 appoppgaver med ekte fullstackflyter og testbevis."
+alwaysApply: true
+---
+Les FELLES-KONTRAKT.md og KVALITET.md før kodeendring. Velg bare appen brukeren eller KJOEREPLAN.md angir. Les oppgaver/<app-id>.md. Skriv implementasjon i output/apps/<app-id> og status i rapporter/<app-id>. Gjør kjerneflyten faktisk kjørbar. Ikke kall ekstern integrasjon eller native iOS verifisert uten utført test. Ikke endre andre systemers mapper.

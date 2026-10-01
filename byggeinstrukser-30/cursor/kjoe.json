@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "system": "Cursor",
+  "artifact_type": "instructions",
+  "execution_started": false,
+  "apps": [
+    {
+      "id": "focusdump",
+      "task": "oppgaver/focusdump.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "quotequick",
+      "task": "oppgaver/quotequick.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "workflowroi",
+      "task": "oppgaver/workflowroi.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "leadledger",
+      "task": "oppgaver/leadledger.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "songforge",
+      "task": "oppgaver/songforge.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "gonzodesk",
+      "task": "oppgaver/gonzodesk.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "bomforge",
+      "task": "oppgaver/bomforge.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "experimentlab",
+      "task": "oppgaver/experimentlab.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "claimledger",
+      "task": "oppgaver/claimledger.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "ideaauction",
+      "task": "oppgaver/ideaauction.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "schoolstep",
+      "task": "oppgaver/schoolstep.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "energybudget",
+      "task": "oppgaver/energybudget.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "sleepnotes",
+      "task": "oppgaver/sleepnotes.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "calmcard",
+      "task": "oppgaver/calmcard.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "visitcircle",
+      "task": "oppgaver/visitcircle.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "carehandoff",
+      "task": "oppgaver/carehandoff.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "accesscheck",
+      "task": "oppgaver/accesscheck.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "homecare",
+      "task": "oppgaver/homecare.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "robotservice",
+      "task": "oppgaver/robotservice.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "invoicefollow",
+      "task": "oppgaver/invoicefollow.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "appointment",
+      "task": "oppgaver/appointment.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "stockwatch",
+      "task": "oppgaver/stockwatch.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "marginmap",
+      "task": "oppgaver/marginmap.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "supporttriage",
+      "task": "oppgaver/supporttriage.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "batterybench",
+      "task": "oppgaver/batterybench.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "fieldcheck",
+      "task": "oppgaver/fieldcheck.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "materialcompare",
+      "task": "oppgaver/materialcompare.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "repairguide",
+      "task": "oppgaver/repairguide.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "artseries",
+      "task": "oppgaver/artseries.md",
+      "state": "IKKE_STARTET"
+    },
+    {
+      "id": "releaseplan",
+      "task": "oppgaver/releaseplan.md",
+      "state": "IKKE_STARTET"
+    }
+  ]
+}

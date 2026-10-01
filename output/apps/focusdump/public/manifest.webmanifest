@@ -1,0 +1,12 @@
+{
+  "name": "FocusDump",
+  "short_name": "FocusDump",
+  "description": "Tøm hodet. Velg én handling. Start fem minutter.",
+  "lang": "nb",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#2f6b55",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }],
+  "shortcuts": [{ "name": "Rask fangst", "short_name": "Fang", "url": "/#fang" }]
+}

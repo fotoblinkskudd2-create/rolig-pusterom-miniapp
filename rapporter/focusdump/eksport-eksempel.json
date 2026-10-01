@@ -1,0 +1,78 @@
+{
+  "format": "focusdump-eksport",
+  "format_version": 1,
+  "app_version": "1.0.0",
+  "exported_at": "2026-10-01T16:14:30.788Z",
+  "fields": {
+    "tasks[].id": "Oppgavens id (UUID).",
+    "tasks[].text": "Oppgaveteksten slik brukeren skrev den.",
+    "tasks[].position": "Rekkefølge i innboksen (lavest først).",
+    "tasks[].estimate_minutes": "Valgt øktlengde i minutter (1–120).",
+    "tasks[].state": "inbox | ready | active | paused | done.",
+    "tasks[].archived_at": "Tidspunkt for arkivering, ellers null.",
+    "tasks[].created_at / updated_at": "ISO 8601 i UTC.",
+    "tasks[].revision": "Revisjonsnummer, øker ved hver endring.",
+    "sessions[].task_id": "Oppgaven økten gjelder.",
+    "sessions[].duration_s": "Planlagt varighet i sekunder.",
+    "sessions[].started_at / paused_at / finished_at": "Tidsstempler i UTC. paused_at er satt mens økten står på pause.",
+    "sessions[].paused_ms": "Sum av fullførte pauser i millisekunder.",
+    "sessions[].focus_ms": "Beregnet fokustid = slutt − start − pauser."
+  },
+  "data": {
+    "tasks": [
+      {
+        "id": "8a98dccd-2d8a-4082-9279-2f103e97ee5b",
+        "owner_id": "9d0dbd53-9599-44c6-bb44-1350a1a3f3c9",
+        "text": "Rydde skrivebord",
+        "position": 1,
+        "estimate_minutes": 5,
+        "state": "active",
+        "archived_at": null,
+        "created_at": "2026-10-01T16:14:30.775Z",
+        "updated_at": "2026-10-01T16:14:30.783Z",
+        "revision": 4
+      },
+      {
+        "id": "b23248f8-97ee-4092-a50f-846487994757",
+        "owner_id": "9d0dbd53-9599-44c6-bb44-1350a1a3f3c9",
+        "text": "Sende tilbud",
+        "position": 2,
+        "estimate_minutes": 5,
+        "state": "inbox",
+        "archived_at": null,
+        "created_at": "2026-10-01T16:14:30.775Z",
+        "updated_at": "2026-10-01T16:14:30.775Z",
+        "revision": 1
+      },
+      {
+        "id": "39df5e3e-4307-4edf-ab42-7cb0a557c13f",
+        "owner_id": "9d0dbd53-9599-44c6-bb44-1350a1a3f3c9",
+        "text": "Bestille deler",
+        "position": 3,
+        "estimate_minutes": 5,
+        "state": "inbox",
+        "archived_at": null,
+        "created_at": "2026-10-01T16:14:30.775Z",
+        "updated_at": "2026-10-01T16:14:30.775Z",
+        "revision": 1
+      }
+    ],
+    "sessions": [
+      {
+        "id": "171e5adf-f45e-49fd-a11a-fae4c1f0ab78",
+        "owner_id": "9d0dbd53-9599-44c6-bb44-1350a1a3f3c9",
+        "task_id": "8a98dccd-2d8a-4082-9279-2f103e97ee5b",
+        "duration_s": 300,
+        "started_at": "2026-10-01T16:14:30.783Z",
+        "paused_at": null,
+        "paused_ms": 0,
+        "finished_at": null,
+        "archived_at": null,
+        "created_at": "2026-10-01T16:14:30.783Z",
+        "updated_at": "2026-10-01T16:14:30.783Z",
+        "revision": 1,
+        "focus_ms": 5
+      }
+    ]
+  }
+}

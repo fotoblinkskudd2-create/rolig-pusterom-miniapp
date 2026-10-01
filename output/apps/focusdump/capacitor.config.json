@@ -1,0 +1,6 @@
+{
+  "appId": "no.alexander.focusdump",
+  "appName": "FocusDump",
+  "webDir": "dist",
+  "ios": { "contentInset": "always" }
+}
