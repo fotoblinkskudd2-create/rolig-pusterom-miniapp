@@ -1,0 +1,118 @@
+{
+  "schema_version": 3,
+  "timezone": "Europe/Oslo",
+  "loop_status": "READY",
+  "scheduler_status": "NOT_CONFIGURED",
+  "last_completed_task": {
+    "task_id": "T-000",
+    "modus": "PAKK",
+    "result": "MASTER_PROMPT_V3.md og state.json lagret i repo",
+    "completed_at": "2026-10-03"
+  },
+  "primary_project_id": "P-002",
+  "active_project_ids": ["P-002"],
+  "projects": [
+    {
+      "project_id": "P-001",
+      "name": "Rolig pusterom (dette repoet)",
+      "source_refs": ["R1", "R2", "R3"],
+      "artifact_stage": "BYGGET",
+      "review_status": "IKKE_TESTET",
+      "market_signal": "INGEN",
+      "execution_status": "PARKERT",
+      "latest_artifact": "index.html + isolation-mirror.html (1.1)",
+      "last_verified_result": null,
+      "critical_unknown": "Fungerer appen på ekte iPhone (Safari, hjemskjerm)?",
+      "decision": "PARKER",
+      "next_action": "Åpne index.html på iPhone, sjekk inn, eksporter historikk.",
+      "acceptance": "Innsjekk lagres, overlever omstart av Safari, export gir .txt.",
+      "reactivation_trigger": "FULLFØR rolig-pusterom",
+      "updated_at": "2026-10-03"
+    },
+    {
+      "project_id": "P-002",
+      "name": "Moteksempel",
+      "source_refs": ["S3"],
+      "artifact_stage": "IDE",
+      "review_status": "IKKE_TESTET",
+      "market_signal": "INGEN",
+      "execution_status": "READY",
+      "latest_artifact": null,
+      "last_verified_result": null,
+      "critical_unknown": "Finner differensiell kjøring forståelige minste konflikter utover hardkodede fasiter?",
+      "decision": "TEST",
+      "next_action": "Se next_task.",
+      "acceptance": "Minst 16 av 20 konfliktfixtures funnet, 0 falske varsler på negative kontroller (foreslått krav, ikke oppnådd).",
+      "reactivation_trigger": null,
+      "updated_at": "2026-10-03"
+    },
+    { "project_id": "P-003", "name": "Marginverk", "source_refs": ["S5"], "artifact_stage": "SPESIFISERT", "review_status": "IKKE_TESTET", "market_signal": "INGEN", "execution_status": "PARKERT", "latest_artifact": null, "last_verified_result": null, "critical_unknown": "Etterspørsel uvalidert.", "decision": "PARKER", "next_action": "Avgrenset avstemming med sporbare kilder.", "acceptance": "Én avstemming der hvert avvik peker til kilde.", "reactivation_trigger": "Tilgang til reelle kontrakt-/batch-/oppgjørsdata", "updated_at": "2026-10-03" },
+    { "project_id": "P-004", "name": "Motform", "source_refs": ["S3"], "artifact_stage": "IDE", "review_status": "IKKE_TESTET", "market_signal": "INGEN", "execution_status": "PARKERT", "latest_artifact": null, "last_verified_result": null, "critical_unknown": "Gir emballasje som monteringskontroll færre feil enn vanlig instruksjon?", "decision": "PARKER", "next_action": "Fysisk blindtest mot vanlig instruksjon.", "acceptance": "Målt feilrate i begge armer.", "reactivation_trigger": "UTFORSK med fysisk spor", "updated_at": "2026-10-03" },
+    { "project_id": "P-005", "name": "Fraværsøvelsen", "source_refs": ["S3"], "artifact_stage": "IDE", "review_status": "IKKE_TESTET", "market_signal": "INGEN", "execution_status": "PARKERT", "latest_artifact": null, "last_verified_result": null, "critical_unknown": "Gjennomførbarhet og betalingsvilje.", "decision": "PARKER", "next_action": "Faktisk gjennomføring hos én virksomhet.", "acceptance": "Gjennomført øvelse + separat betalingssignal.", "reactivation_trigger": "En virksomhet sier ja til pilot", "updated_at": "2026-10-03" },
+    { "project_id": "P-006", "name": "Restbevis", "source_refs": ["S3"], "artifact_stage": "IDE", "review_status": "IKKE_TESTET", "market_signal": "INGEN", "execution_status": "PARKERT", "latest_artifact": null, "last_verified_result": null, "critical_unknown": "Kan arbeid gjenopptas fra restkort alene?", "decision": "PARKER", "next_action": "Gjenopptakelse fra restkort, logg det som mangler.", "acceptance": "Liste over manglende informasjon fra én faktisk gjenopptakelse.", "reactivation_trigger": null, "updated_at": "2026-10-03" },
+    { "project_id": "P-007", "name": "Utløpsmontasje", "source_refs": ["S3"], "artifact_stage": "IDE", "review_status": "IKKE_TESTET", "market_signal": "INGEN", "execution_status": "PARKERT", "latest_artifact": null, "last_verified_result": null, "critical_unknown": "Hvordan tolker lesere valgt scenetilgang?", "decision": "PARKER", "next_action": "Ferdige scenetekster.", "acceptance": "Observerte lesertolkninger registrert.", "reactivation_trigger": "UTFORSK kunstspor", "updated_at": "2026-10-03" }
+  ],
+  "portfolio_unregistered": [
+    "Context Clips", "Obligatron", "Counterfactual Clerk", "Exit First",
+    "One Less Promise", "The Wrong Defendant", "The Unfinished World", "The Church of the Next Number",
+    "FocusDump", "NaturFlyr", "Omsorgsboks/HoloHalo", "CoreFlow", "Filmprosjektet"
+  ],
+  "sources": [
+    { "id": "S1", "name": "DAGLIG_MASTERPROMPT_LOOP.md", "status": "IKKE_I_REPO" },
+    { "id": "S2", "name": "OPPFINNERBEDRIFT_MULTIAGENT_PROMPTPAKKE.md", "status": "IKKE_I_REPO" },
+    { "id": "S3", "name": "Master-Innovation-Loop-Round-01.md", "status": "IKKE_I_REPO" },
+    { "id": "S4", "name": "Eight-Original-Concept-Prototypes.md", "status": "IKKE_I_REPO" },
+    { "id": "S5", "name": "AgST-Marginverk-produktstrategi.md", "status": "IKKE_I_REPO" },
+    { "id": "S6", "name": "mr-art/MASTER_PROMPT_V3.md", "status": "I_REPO" },
+    { "id": "R1", "name": "README.md", "status": "I_REPO" },
+    { "id": "R2", "name": "HULL.md", "status": "I_REPO" },
+    { "id": "R3", "name": "RUN.md", "status": "I_REPO" }
+  ],
+  "decisions": [
+    {
+      "id": "D-001",
+      "date": "2026-10-03",
+      "decision": "Moteksempel er primær neste oppgave. Rolig pusterom parkeres.",
+      "reason": "Raskeste avgrensede programvareprøve; trenger ingen eksterne data.",
+      "revisit_when": "Moteksempel består, feiler eller parkeres."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-001",
+      "source": "HULL.md",
+      "date": "2026-09-30",
+      "scope": "Rolig pusterom 1.1",
+      "claim": "Ikke testet på ekte iPhone.",
+      "limit": "Egen kontroll, ingen ekstern bruker."
+    }
+  ],
+  "do_not_repeat": [
+    "Ny etikett på ansvarsoverføring, løftereduksjon eller programvarearv teller ikke som nytt konsept.",
+    "Ikke gjør ideer til chatbot, dashboard eller agentfabrikk som standard.",
+    "Midjourney-prompt uten konkret motiv (slop) – se HULL.md punkt 5."
+  ],
+  "next_task": {
+    "task_id": "T-001",
+    "project_id": "P-002",
+    "modus": "FULLFØR",
+    "objective": "Kjørbar lokal demonstrator som viser reproduserbar konflikt mellom to implementasjoner.",
+    "source_refs": ["S3", "S6#6"],
+    "critical_unknown": "S3 er ikke i repo; originale detaljer om Moteksempel mangler. Startoppgaven i S6 §6 brukes som spesifikasjon.",
+    "artifact_to_deliver": "mr-art/moteksempel/: kildekode, brukseksempel, resultatfil, kort vurdering.",
+    "acceptance": [
+      "20 eksplisitte konfliktfixtures + negative kontroller uten konflikt",
+      "Rapport per fixture: funnet / falskt varsel / ukjent / tidsbruk",
+      "Minste konfliktinput for små endelige rom; ellers merket 'minste blant undersøkte'",
+      "Foreslått krav: >= 16/20 funnet"
+    ],
+    "test_or_review_method": "Kjør demonstratoren lokalt; egen kontroll merkes som egen kontroll.",
+    "time_limit": "Én økt",
+    "cost_limit": "IKKE_KONFIGURERT",
+    "allowed_actions": ["skrive kode i repo", "kjøre lokalt", "commit + push til arbeidsgren"],
+    "repair_limit": 2,
+    "next_on_pass": "Fortsett: utvid med én ekte regelpar.",
+    "next_on_fail": "Endre hvis testene bare gjentar hardkodede fasiter; parker hvis ingen nytte utover direkte tester.",
+    "queued_after": "UTFORSK: KROPP, VARME OG VÆSKE (krever S3 for mutasjonskrav)"
+  }
+}
