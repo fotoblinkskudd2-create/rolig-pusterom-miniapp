@@ -1,0 +1,71 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/v1/contacts/a5be9636-8626-45cb-88b0-d83a43526ddf/observations",
+    "body": {
+      "text": "Inkassobrevet ligger på bordet, gjelden vokser og jeg skammer meg. Får ikke sove.",
+      "source": "samtale",
+      "attributes": {
+        "humør_1_5": 2,
+        "varighet_min": 50
+      }
+    }
+  },
+  "response_status": 201,
+  "response": {
+    "id": "d65111f1-2221-42d8-9d94-5b6112856175",
+    "contact_id": "a5be9636-8626-45cb-88b0-d83a43526ddf",
+    "text": "Inkassobrevet ligger på bordet, gjelden vokser og jeg skammer meg. Får ikke sove.",
+    "source": "samtale",
+    "observed_at": "2026-10-03T15:16:24.981063Z",
+    "attributes": {
+      "humør_1_5": 2,
+      "varighet_min": 50
+    },
+    "created_by": "ola",
+    "suggestions": [
+      {
+        "code_id": "VC-008",
+        "code_version": 1,
+        "score": 0.88,
+        "rule_score": 0.8,
+        "semantic_score": 1.0,
+        "matched_signals": [
+          "gjelden",
+          "Inkassobrevet"
+        ],
+        "negated_signals": [],
+        "escalate": false,
+        "status": "foreslatt"
+      },
+      {
+        "code_id": "VC-006",
+        "code_version": 1,
+        "score": 0.612,
+        "rule_score": 0.6,
+        "semantic_score": 0.63,
+        "matched_signals": [
+          "skammer"
+        ],
+        "negated_signals": [],
+        "escalate": false,
+        "status": "foreslatt"
+      },
+      {
+        "code_id": "VC-010",
+        "code_version": 1,
+        "score": 0.517,
+        "rule_score": 0.6,
+        "semantic_score": 0.392,
+        "matched_signals": [
+          "Får ikke sove"
+        ],
+        "negated_signals": [],
+        "escalate": false,
+        "status": "foreslatt"
+      }
+    ],
+    "classified": true,
+    "embedding_model": "hashing-char345-512"
+  }
+}

@@ -1,0 +1,607 @@
+openapi: 3.1.0
+info:
+  title: Psykologiet Vibe Coding System API
+  version: 0.1.0
+  description: |
+    Vibe Codes er arbeidshypoteser som støtter faglig vurdering, ikke diagnoser.
+    Alle forslag har status `foreslatt` til en fagperson bekrefter eller avviser dem.
+    Feil returneres som `application/problem+json` (RFC 9457).
+    Endepunkter merket `x-implemented: true` finnes i backend/app/main.py.
+servers:
+  - url: https://api.vibe.example/v1
+  - url: http://localhost:8000/v1
+security:
+  - oidc: []
+tags:
+  - name: auth
+  - name: vibe-codes
+  - name: search
+  - name: contacts
+  - name: observations
+  - name: ingest
+  - name: audit
+
+paths:
+  /auth/token:
+    post:
+      tags: [auth]
+      summary: Bytt OIDC-autorisasjonskode mot tilgangstoken (BFF-mønster)
+      description: I produksjon håndteres dette av en Backend-for-Frontend. Nettleseren får kun en HttpOnly sesjonscookie, aldri JWT.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [code, code_verifier, redirect_uri]
+              properties:
+                code: {type: string}
+                code_verifier: {type: string, description: PKCE}
+                redirect_uri: {type: string, format: uri}
+      responses:
+        '204': {description: Sesjonscookie satt}
+        '400': {$ref: '#/components/responses/Problem'}
+  /auth/me:
+    get:
+      tags: [auth]
+      summary: Innlogget bruker og rolle
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Principal'}
+        '401': {$ref: '#/components/responses/Problem'}
+
+  /vibe-codes:
+    get:
+      tags: [vibe-codes]
+      x-implemented: true
+      summary: List gjeldende versjon av alle koder
+      parameters:
+        - {name: status, in: query, schema: {type: string, enum: [draft, active, deprecated]}}
+        - {name: category, in: query, schema: {type: string}}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/VibeCode'}}
+    post:
+      tags: [vibe-codes]
+      x-implemented: true
+      summary: Opprett ny kode (status draft). Krever rolle fagansvarlig.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/VibeCodeIn'}
+            example:
+              id: VC-013
+              slug: arbeidspress
+              name: Arbeidspress
+              definition: Opplevd press fra arbeidsgiver eller kolleger som overstiger kapasitet.
+              category: livssituasjon
+              priority: P3
+              trigger_signals:
+                patterns: ['\bsjefen\b', '\boppsigelse\w*']
+                semantic_examples: [Sjefen krever mer enn jeg klarer]
+              related_codes: [VC-001]
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/VibeCode'}
+        '403': {$ref: '#/components/responses/Problem'}
+        '409': {$ref: '#/components/responses/Problem'}
+        '422': {$ref: '#/components/responses/Problem'}
+  /vibe-codes/{codeId}:
+    parameters:
+      - $ref: '#/components/parameters/CodeId'
+    get:
+      tags: [vibe-codes]
+      x-implemented: true
+      summary: Hent kode (siste versjon, eller ?version=n)
+      parameters:
+        - {name: version, in: query, schema: {type: integer, minimum: 1}}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/VibeCode'}
+        '404': {$ref: '#/components/responses/Problem'}
+    put:
+      tags: [vibe-codes]
+      x-implemented: true
+      summary: Lag ny uforanderlig versjon. Krever fagansvarlig. Aktivering krever godkjenning av en annen person (firøyeprinsipp).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/VibeCodeUpdate'}
+      responses:
+        '200':
+          description: Ny versjon
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/VibeCode'}
+        '404': {$ref: '#/components/responses/Problem'}
+        '422': {$ref: '#/components/responses/Problem'}
+    delete:
+      tags: [vibe-codes]
+      summary: Ikke støttet. Bruk PUT med status=deprecated. Historikk slettes aldri.
+      responses:
+        '405': {$ref: '#/components/responses/Problem'}
+  /vibe-codes/{codeId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/CodeId'
+    get:
+      tags: [vibe-codes]
+      x-implemented: true
+      summary: Full versjonshistorikk
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/VibeCode'}}
+
+  /search/semantic:
+    post:
+      tags: [search]
+      x-implemented: true
+      summary: Semantisk søk i kunnskapsbasen (kandidatsøk + re-rank)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/SearchRequest'}
+            example: {query: ligger våken og tankene går i ring, top_k: 3}
+      responses:
+        '200':
+          description: Rangerte treff
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/SearchHit'}}
+              example:
+                - {code_id: VC-010, name: Søvnforstyrrelse, score: 0.5061, semantic_score: 0.4659, rule_score: 0.6}
+                - {code_id: VC-003, name: Grubling, score: 0.4359, semantic_score: 0.6228, rule_score: 0.0}
+        '422': {$ref: '#/components/responses/Problem'}
+
+  /contacts:
+    get:
+      tags: [contacts]
+      summary: Kontakter tildelt innlogget behandler (RLS)
+      parameters:
+        - {name: cursor, in: query, schema: {type: string}}
+        - {name: limit, in: query, schema: {type: integer, default: 25, maximum: 100}}
+      responses:
+        '200':
+          description: Side med kontakter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {$ref: '#/components/schemas/Contact'}}
+                  next_cursor: {type: [string, 'null']}
+    post:
+      tags: [contacts]
+      x-implemented: true
+      summary: Opprett kontakt med samtykker
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ContactIn'}
+            example: {display_name: Eksempel Person, consents: [behandling_observasjon, ml_klassifisering]}
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Contact'}
+  /contacts/{contactId}:
+    parameters: [{$ref: '#/components/parameters/ContactId'}]
+    get:
+      tags: [contacts]
+      summary: Hent kontakt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Contact'}
+        '404': {$ref: '#/components/responses/Problem'}
+    patch:
+      tags: [contacts]
+      summary: Oppdater fleksible attributter
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema: {type: object, properties: {attributes: {type: object}}}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Contact'}
+    delete:
+      tags: [contacts]
+      summary: Sletting etter GDPR art. 17 (myk sletting, hard sletting etter lovpålagt frist)
+      responses:
+        '202': {description: Slettejobb registrert}
+  /contacts/{contactId}/export:
+    parameters: [{$ref: '#/components/parameters/ContactId'}]
+    get:
+      tags: [contacts]
+      summary: Innsyn og dataportabilitet (GDPR art. 15/20). Alt om kontakten som JSON.
+      responses:
+        '200': {description: Eksport, content: {application/json: {schema: {type: object}}}}
+  /contacts/{contactId}/consents/{purpose}:
+    parameters:
+      - {$ref: '#/components/parameters/ContactId'}
+      - {name: purpose, in: path, required: true, schema: {$ref: '#/components/schemas/ConsentPurpose'}}
+    delete:
+      tags: [contacts]
+      x-implemented: true
+      summary: Trekk samtykke. ml_klassifisering sletter vektorer umiddelbart.
+      responses:
+        '200':
+          description: Oppdatert kontakt
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Contact'}
+        '404': {$ref: '#/components/responses/Problem'}
+  /contacts/{contactId}/interactions:
+    parameters: [{$ref: '#/components/parameters/ContactId'}]
+    get:
+      tags: [contacts]
+      summary: List interaksjoner
+      responses:
+        '200': {description: OK, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Interaction'}}}}}
+    post:
+      tags: [contacts]
+      summary: Registrer interaksjon (time, telefon, chat, innsjekk)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Interaction'}
+      responses:
+        '201': {description: Opprettet, content: {application/json: {schema: {$ref: '#/components/schemas/Interaction'}}}}
+  /contacts/{contactId}/observations:
+    parameters: [{$ref: '#/components/parameters/ContactId'}]
+    post:
+      tags: [observations]
+      x-implemented: true
+      summary: Lagre observasjon. Klassifiseres hvis ML-samtykke finnes. Krise-regler kjøres alltid.
+      parameters:
+        - {name: Idempotency-Key, in: header, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ObservationIn'}
+            example:
+              text: Inkassobrevet ligger på bordet, gjelden vokser og jeg skammer meg. Får ikke sove.
+              source: samtale
+              attributes: {humør_1_5: 2, varighet_min: 50}
+      responses:
+        '201':
+          description: Lagret med kodeforslag
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Observation'}
+        '403':
+          description: Mangler samtykke
+          content:
+            application/problem+json:
+              schema: {$ref: '#/components/schemas/Problem'}
+              example: {type: 'https://vibe.example/problems/403', title: Kontakten har ikke gitt samtykke til lagring av observasjoner, status: 403}
+        '404': {$ref: '#/components/responses/Problem'}
+  /contacts/{contactId}/recommendations:
+    parameters: [{$ref: '#/components/parameters/ContactId'}]
+    get:
+      tags: [observations]
+      x-implemented: true
+      summary: Aggregerte anbefalinger (tidsvektet, komposisjon, eskalering først)
+      parameters:
+        - {name: days, in: query, schema: {type: integer, default: 30, minimum: 1, maximum: 365}}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/Recommendation'}}
+  /observations/{observationId}/suggestions/{codeId}:
+    parameters:
+      - {name: observationId, in: path, required: true, schema: {type: string, format: uuid}}
+      - $ref: '#/components/parameters/CodeId'
+    patch:
+      tags: [observations]
+      x-implemented: true
+      summary: Menneskelig vurdering av et forslag (human-in-the-loop). Gir treningssignal.
+      parameters:
+        - {name: decision, in: query, required: true, schema: {type: string, enum: [bekreftet, avvist]}}
+      responses:
+        '200': {description: OK, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
+        '404': {$ref: '#/components/responses/Problem'}
+
+  /import/contacts:
+    post:
+      tags: [ingest]
+      summary: Batch-import (CSV/NDJSON) fra CRM/EPJ. Asynkron. Idempotent via external_ref.
+      requestBody:
+        required: true
+        content:
+          text/csv:
+            schema: {type: string}
+          application/x-ndjson:
+            schema: {type: string}
+      parameters:
+        - {name: dry_run, in: query, schema: {type: boolean, default: true}}
+      responses:
+        '202':
+          description: Jobb startet
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Job'}
+  /ingest/embed-jobs:
+    post:
+      tags: [ingest]
+      summary: Re-embedding (ny modell) eller backfill. Kun admin. Skriver til ny model_id, bytter atomisk.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [target_model]
+              properties:
+                target_model: {type: string, example: bge-m3@2024-01}
+                scope: {type: string, enum: [prototypes, observations, all], default: prototypes}
+      responses:
+        '202':
+          description: Jobb startet
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Job'}
+  /jobs/{jobId}:
+    get:
+      tags: [ingest]
+      summary: Jobbstatus
+      parameters:
+        - {name: jobId, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200': {description: OK, content: {application/json: {schema: {$ref: '#/components/schemas/Job'}}}}
+
+  /audit-logs:
+    get:
+      tags: [audit]
+      x-implemented: true
+      summary: Revisjonslogg. Personvernombud ser detaljer, admin ser kun metadata.
+      parameters:
+        - {name: resource_prefix, in: query, schema: {type: string}, example: contact/}
+        - {name: limit, in: query, schema: {type: integer, default: 100, maximum: 1000}}
+      responses:
+        '200':
+          description: Nyeste først
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/AuditEvent'}}
+        '403': {$ref: '#/components/responses/Problem'}
+
+components:
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: https://idp.vibe.example/.well-known/openid-configuration
+  parameters:
+    CodeId:
+      name: codeId
+      in: path
+      required: true
+      schema: {type: string, pattern: '^VC-\d{3}$'}
+    ContactId:
+      name: contactId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+  responses:
+    Problem:
+      description: Feil (RFC 9457)
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: {type: string, format: uri}
+        title: {type: string}
+        status: {type: integer}
+        detail: {}
+        trace_id: {type: string}
+    Principal:
+      type: object
+      properties:
+        user_id: {type: string}
+        role: {$ref: '#/components/schemas/Role'}
+    Role:
+      type: string
+      enum: [terapeut, fagansvarlig, admin, personvernombud, sluttbruker]
+    Priority:
+      type: string
+      enum: [P0, P1, P2, P3]
+      description: P0 = sikkerhet/krise (alltid eskalering), P3 = lav
+    ConsentPurpose:
+      type: string
+      enum: [behandling_observasjon, ml_klassifisering, forskning_anonymisert]
+    Action:
+      type: object
+      required: [audience, type, text]
+      properties:
+        audience: {type: string, enum: [fagperson, sluttbruker]}
+        type: {type: string, examples: [utforsk, selvhjelp, regulering, intervensjon, henvisning, eskalering, krise, forsterk]}
+        text: {type: string}
+    TriggerSignals:
+      type: object
+      properties:
+        patterns: {type: array, items: {type: string}, description: Python/PCRE-regex, case-insensitive}
+        semantic_examples: {type: array, items: {type: string}}
+    VibeCodeIn:
+      type: object
+      required: [id, slug, name, definition, category, priority, trigger_signals]
+      properties:
+        id: {type: string, pattern: '^VC-\d{3}$'}
+        slug: {type: string, pattern: '^[a-z0-9-]+$'}
+        name: {type: string, minLength: 2, maxLength: 80}
+        definition: {type: string, minLength: 10}
+        category: {type: string}
+        priority: {$ref: '#/components/schemas/Priority'}
+        trigger_signals: {$ref: '#/components/schemas/TriggerSignals'}
+        counter_examples: {type: array, items: {type: string}}
+        recommended_actions: {type: array, items: {$ref: '#/components/schemas/Action'}}
+        related_codes: {type: array, items: {type: string}}
+        composition:
+          type: object
+          properties:
+            amplified_by: {type: array, items: {type: string}}
+            note: {type: string}
+        safeguards: {type: array, items: {type: string}}
+        escalation: {type: [string, 'null']}
+    VibeCode:
+      allOf:
+        - $ref: '#/components/schemas/VibeCodeIn'
+        - type: object
+          properties:
+            version: {type: integer}
+            status: {type: string, enum: [draft, active, deprecated]}
+            created_at: {type: string, format: date-time}
+            created_by: {type: string}
+            change_note: {type: string}
+    VibeCodeUpdate:
+      type: object
+      required: [change_note]
+      properties:
+        definition: {type: string}
+        priority: {$ref: '#/components/schemas/Priority'}
+        trigger_signals: {$ref: '#/components/schemas/TriggerSignals'}
+        counter_examples: {type: array, items: {type: string}}
+        recommended_actions: {type: array, items: {$ref: '#/components/schemas/Action'}}
+        status: {type: string, enum: [draft, active, deprecated]}
+        change_note: {type: string, minLength: 3}
+    SearchRequest:
+      type: object
+      required: [query]
+      properties:
+        query: {type: string, minLength: 2, maxLength: 1000}
+        top_k: {type: integer, minimum: 1, maximum: 50, default: 5}
+    SearchHit:
+      type: object
+      properties:
+        code_id: {type: string}
+        name: {type: string}
+        score: {type: number}
+        semantic_score: {type: number}
+        rule_score: {type: number}
+    Consent:
+      type: object
+      properties:
+        purpose: {$ref: '#/components/schemas/ConsentPurpose'}
+        granted_at: {type: string, format: date-time}
+        withdrawn_at: {type: [string, 'null'], format: date-time}
+        text_version: {type: string}
+    ContactIn:
+      type: object
+      required: [display_name]
+      properties:
+        display_name: {type: string, maxLength: 120}
+        consents: {type: array, items: {$ref: '#/components/schemas/ConsentPurpose'}}
+    Contact:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        pseudonym: {type: string, example: K-7F3A21}
+        display_name: {type: string}
+        owner_ids: {type: array, items: {type: string}}
+        consents: {type: array, items: {$ref: '#/components/schemas/Consent'}}
+        created_at: {type: string, format: date-time}
+    Interaction:
+      type: object
+      required: [kind, started_at]
+      properties:
+        id: {type: string, format: uuid, readOnly: true}
+        kind: {type: string, enum: [time, telefon, chat, innsjekk, gruppe]}
+        started_at: {type: string, format: date-time}
+        ended_at: {type: string, format: date-time}
+        attributes: {type: object}
+    ObservationIn:
+      type: object
+      required: [text]
+      properties:
+        text: {type: string, minLength: 1, maxLength: 5000}
+        source: {type: string, enum: [samtale, innsjekk, notat, import], default: notat}
+        observed_at: {type: string, format: date-time}
+        attributes: {type: object, description: Fleksible felter (JSONB)}
+    CodeSuggestion:
+      type: object
+      properties:
+        code_id: {type: string}
+        code_version: {type: integer}
+        score: {type: number, minimum: 0, maximum: 1}
+        rule_score: {type: number}
+        semantic_score: {type: number}
+        matched_signals: {type: array, items: {type: string}, description: Forklarbarhet. Viser hvilke ord som utløste koden.}
+        negated_signals: {type: array, items: {type: string}}
+        escalate: {type: boolean}
+        status: {type: string, enum: [foreslatt, bekreftet, avvist]}
+    Observation:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        contact_id: {type: string, format: uuid}
+        text: {type: string}
+        source: {type: string}
+        observed_at: {type: string, format: date-time}
+        attributes: {type: object}
+        created_by: {type: string}
+        suggestions: {type: array, items: {$ref: '#/components/schemas/CodeSuggestion'}}
+        classified: {type: boolean}
+        embedding_model: {type: [string, 'null']}
+    Recommendation:
+      type: object
+      properties:
+        code_id: {type: string}
+        name: {type: string}
+        priority: {$ref: '#/components/schemas/Priority'}
+        weight: {type: number}
+        evidence_count: {type: integer}
+        escalate: {type: boolean}
+        amplified_by: {type: array, items: {type: string}}
+        note: {type: string}
+        actions: {type: array, items: {$ref: '#/components/schemas/Action'}}
+    Job:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        kind: {type: string}
+        status: {type: string, enum: [queued, running, succeeded, failed]}
+        progress: {type: number}
+        report: {type: object, description: 'Ved import: {created, updated, skipped, errors[]}'}
+    AuditEvent:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        at: {type: string, format: date-time}
+        actor: {type: string}
+        role: {$ref: '#/components/schemas/Role'}
+        action: {type: string, examples: [observation.create, consent.withdraw, contact.read]}
+        resource: {type: string}
+        outcome: {type: string, enum: [ok, denied, error]}
+        detail: {type: object}

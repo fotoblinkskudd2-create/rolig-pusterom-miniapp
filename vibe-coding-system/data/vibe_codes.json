@@ -1,0 +1,320 @@
+{
+  "taxonomy_version": "2026.10.0",
+  "language": "nb",
+  "disclaimer": "Vibe Codes er arbeidshypoteser som støtter faglig vurdering. De er ikke diagnoser og skal alltid bekreftes eller avvises av et menneske.",
+  "codes": [
+    {
+      "id": "VC-001",
+      "slug": "overveldet",
+      "name": "Overveldet",
+      "definition": "Personen beskriver at krav, oppgaver eller inntrykk overstiger opplevd kapasitet akkurat nå.",
+      "category": "belastning",
+      "priority": "P2",
+      "trigger_signals": {
+        "patterns": ["\\bfor mye\\b", "\\boverveld\\w*", "\\brekker ikke\\b", "\\bdrukner\\b", "\\bklarer ikke mer\\b", "\\bkaos\\b"],
+        "semantic_examples": [
+          "Alt kommer på en gang og jeg rekker ingenting",
+          "Jeg drukner i oppgaver og vet ikke hvor jeg skal begynne",
+          "Det er for mye nå, hodet er fullt"
+        ]
+      },
+      "counter_examples": [
+        "Jeg har mye å gjøre, men har god oversikt",
+        "Det var mye i dag, og det gikk fint"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "utforsk", "text": "Spør hva som er mest presserende de neste 24 timene. Hjelp med å sortere, ikke løse alt."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Skriv ned tre ting. Velg én. Resten kan vente til i morgen."},
+        {"audience": "sluttbruker", "type": "regulering", "text": "Pusterom: 4 sekunder inn, 6 sekunder ut, i to minutter."}
+      ],
+      "related_codes": ["VC-004", "VC-010"],
+      "composition": {"amplified_by": ["VC-010", "VC-008"], "note": "Overveldelse sammen med søvnmangel eller økonomisk press gir raskere utmattelse."}
+    },
+    {
+      "id": "VC-002",
+      "slug": "tilbaketrekning",
+      "name": "Tilbaketrekning",
+      "definition": "Personen beskriver at hen unngår kontakt, avlyser sosiale avtaler eller isolerer seg mer enn vanlig.",
+      "category": "atferd",
+      "priority": "P2",
+      "trigger_signals": {
+        "patterns": ["\\bisoler\\w*", "\\bavlys\\w*", "\\borker ikke (å )?(møte|treffe|svare)\\b", "\\bholder meg (hjemme|inne)\\b", "\\bhar ikke snakket med noen\\b", "\\balene\\b"],
+        "semantic_examples": [
+          "Jeg har ikke svart på meldinger på en uke",
+          "Avlyste middagen igjen, orket ikke folk",
+          "Jeg holder meg inne og snakker ikke med noen"
+        ]
+      },
+      "counter_examples": [
+        "Jeg trengte en rolig kveld alene og det var godt",
+        "Valgte å være hjemme for å hvile, gleder meg til helgen"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "utforsk", "text": "Kartlegg om tilbaketrekningen er valgt hvile eller unngåelse. Spør etter én trygg person."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Send én kort melding til én person. Den trenger ikke handle om hvordan du har det."}
+      ],
+      "related_codes": ["VC-005", "VC-006"],
+      "composition": {"amplified_by": ["VC-005"], "note": "Tilbaketrekning sammen med lav energi bør følges tettere opp."}
+    },
+    {
+      "id": "VC-003",
+      "slug": "grubling",
+      "name": "Grubling",
+      "definition": "Gjentatt, låst tenkning om fortid eller fremtid som personen opplever som vanskelig å stoppe.",
+      "category": "kognisjon",
+      "priority": "P3",
+      "trigger_signals": {
+        "patterns": ["\\bgrubl\\w*", "\\bkverne\\w*", "\\btenker på det hele tiden\\b", "\\bfår det ikke ut av hodet\\b", "\\bhva om\\b"],
+        "semantic_examples": [
+          "Jeg kverner på den samtalen om og om igjen",
+          "Tankene går i ring og jeg får ikke sove",
+          "Hva om det går galt, jeg klarer ikke slutte å tenke på det"
+        ]
+      },
+      "counter_examples": [
+        "Jeg tenkte gjennom saken og bestemte meg",
+        "Reflekterte litt over uka, kjentes nyttig"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "intervensjon", "text": "Skill mellom problemløsning og grubling. Vurder fast «bekymringstid» som øvelse."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Sett en timer på 10 minutter. Skriv tankene ned. Når timeren ringer, gjør noe med hendene."}
+      ],
+      "related_codes": ["VC-010", "VC-006"],
+      "composition": {"amplified_by": ["VC-010"], "note": "Grubling om natten forsterker søvnproblemer."}
+    },
+    {
+      "id": "VC-004",
+      "slug": "hoy-aktivering",
+      "name": "Høy aktivering",
+      "definition": "Kroppslig og mental uro: hjertebank, rask pust, rastløshet, panikkfølelse.",
+      "category": "fysiologi",
+      "priority": "P1",
+      "trigger_signals": {
+        "patterns": ["\\bpanikk\\w*", "\\bhjertebank\\w*", "\\bfår ikke puste\\b", "\\brastløs\\w*", "\\bskjelv\\w*", "\\buro\\b", "\\bangstanfall\\b"],
+        "semantic_examples": [
+          "Hjertet hamret og jeg fikk ikke puste på bussen",
+          "Jeg er så rastløs at jeg ikke klarer å sitte stille",
+          "Fikk et angstanfall i butikken"
+        ]
+      },
+      "counter_examples": [
+        "Hjertet banket etter løpeturen",
+        "Jeg var spent før konserten, på en god måte"
+      ],
+      "recommended_actions": [
+        {"audience": "sluttbruker", "type": "regulering", "text": "Lang utpust: 4 inn, 6–8 ut. Kjenn føttene mot gulvet. Navngi fem ting du ser."},
+        {"audience": "fagperson", "type": "utforsk", "text": "Kartlegg frekvens, situasjoner og varighet. Vurder psykoedukasjon om stressresponsen."}
+      ],
+      "related_codes": ["VC-001", "VC-010"],
+      "composition": {"amplified_by": ["VC-010"], "note": "Søvnmangel senker terskelen for høy aktivering."}
+    },
+    {
+      "id": "VC-005",
+      "slug": "lav-energi",
+      "name": "Lav energi / nedstemthet",
+      "definition": "Vedvarende tretthet, tomhet, lite glede eller tiltak, beskrevet over flere dager.",
+      "category": "stemningsleie",
+      "priority": "P1",
+      "trigger_signals": {
+        "patterns": ["\\bnedstemt\\w*", "\\btom(het)?\\b", "\\borker ingenting\\b", "\\bgleder meg ikke\\b", "\\bingen energi\\b", "\\bklarer ikke å stå opp\\b", "\\bmeningsløs\\w*"],
+        "semantic_examples": [
+          "Jeg orker ingenting og ligger bare i senga",
+          "Alt føles grått og tomt, ingenting gir glede",
+          "Har ikke energi til å lage mat engang"
+        ]
+      },
+      "counter_examples": [
+        "Litt sliten etter en lang dag, men fornøyd",
+        "Lav energi i dag fordi jeg trente hardt i går"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "utforsk", "text": "Kartlegg varighet (>2 uker?), søvn, matlyst og håpløshet. Vurder strukturert screening ved behov."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Én liten ting som pleide å gi litt: ti minutter ute, en dusj, en kopp te."}
+      ],
+      "related_codes": ["VC-002", "VC-010", "VC-012"],
+      "composition": {"amplified_by": ["VC-002", "VC-006"], "note": "Nedstemthet med isolasjon eller skam: øk oppfølgingsfrekvens og sjekk sikkerhet."}
+    },
+    {
+      "id": "VC-006",
+      "slug": "selvkritikk-skam",
+      "name": "Selvkritikk og skam",
+      "definition": "Hard indre dømming, opplevelse av å være feil, verdiløs eller en byrde.",
+      "category": "kognisjon",
+      "priority": "P2",
+      "trigger_signals": {
+        "patterns": ["\\bskam\\w*", "\\bverdiløs\\b", "\\bidiot\\b", "\\bjeg er (så )?(dum|håpløs|feil)\\b", "\\bhater meg selv\\b", "\\ben byrde\\b"],
+        "semantic_examples": [
+          "Jeg er så dum, jeg ødelegger alt",
+          "Skammer meg over at jeg ikke får til noe",
+          "Føler meg som en byrde for alle"
+        ]
+      },
+      "counter_examples": [
+        "Jeg gjorde en feil og har lært av det",
+        "Litt flau over det i dag, men det går over"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "intervensjon", "text": "Utforsk den indre kritikerens stemme. Vurder selvmedfølelsesøvelser. «En byrde»-utsagn: sjekk sikkerhet."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Hva ville du sagt til en venn som sa dette om seg selv? Skriv det ned til deg selv."}
+      ],
+      "related_codes": ["VC-005", "VC-012"],
+      "composition": {"amplified_by": ["VC-005"], "note": "Skam og nedstemthet sammen er et kjent risikomønster."}
+    },
+    {
+      "id": "VC-007",
+      "slug": "relasjonell-spenning",
+      "name": "Relasjonell spenning",
+      "definition": "Konflikt, mistillit eller brudd i nære relasjoner som opptar personen.",
+      "category": "relasjon",
+      "priority": "P3",
+      "trigger_signals": {
+        "patterns": ["\\bkrangl\\w*", "\\bkonflikt\\w*", "\\bsvik\\w*", "\\bslo opp\\b", "\\bbrudd\\b", "\\bsint på (meg|henne|ham|dem|hen)\\b"],
+        "semantic_examples": [
+          "Vi kranglet igjen i går og han flyttet ut",
+          "Føler meg sviktet av familien",
+          "Det er bare konflikt hjemme for tiden"
+        ]
+      },
+      "counter_examples": [
+        "Vi var uenige, men snakket det ut",
+        "Konflikten på jobben er løst"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "utforsk", "text": "Kartlegg trygghet i relasjonen. Ved tegn på vold: følg rutine for vold i nære relasjoner."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Skriv hva du trenger fra den andre, i én setning. Du bestemmer selv om du sender den."}
+      ],
+      "related_codes": ["VC-002", "VC-004"],
+      "composition": {"amplified_by": [], "note": ""}
+    },
+    {
+      "id": "VC-008",
+      "slug": "okonomisk-stress",
+      "name": "Økonomisk stress",
+      "definition": "Gjeld, inkasso, regninger eller inntektstap som kilde til vedvarende belastning.",
+      "category": "livssituasjon",
+      "priority": "P2",
+      "trigger_signals": {
+        "patterns": ["\\bgjeld\\w*", "\\binkasso\\w*", "\\bregning\\w*", "\\bnamsmann\\w*", "\\bhusleie\\b", "\\bhar ikke råd\\b", "\\bklarna\\b", "\\bpurring\\w*"],
+        "semantic_examples": [
+          "Inkassobrevet ligger på bordet og jeg tør ikke åpne det",
+          "Gjelden vokser og jeg får ikke sove av det",
+          "Har ikke råd til husleia denne måneden"
+        ]
+      },
+      "counter_examples": [
+        "Betalte ned siste del av lånet i dag",
+        "Har lagt et budsjett og har kontroll"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "henvisning", "text": "Informer om gratis gjeldsrådgivning hos NAV og NAVs økonomitelefon 55 55 33 39."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Åpne ett brev. Bare ett. Skriv ned beløp og frist. Det er et tall, ikke en dom over deg."}
+      ],
+      "related_codes": ["VC-001", "VC-010", "VC-006"],
+      "composition": {"amplified_by": ["VC-006"], "note": "Økonomisk stress med skam fører ofte til at brev forblir uåpnet: unngåelsessløyfe."}
+    },
+    {
+      "id": "VC-009",
+      "slug": "tidstap-frakobling",
+      "name": "Tidstap / frakobling",
+      "definition": "Personen beskriver hull i hukommelsen, at tiden «forsvant», uvirkelighetsfølelse eller å oppdage handlinger hen ikke husker.",
+      "category": "bevissthet",
+      "priority": "P1",
+      "trigger_signals": {
+        "patterns": ["\\bhusker ikke\\b", "\\btiden forsvant\\b", "\\buvirkelig\\w*", "\\bsom i en boble\\b", "\\bmistet tid\\b", "\\bvåknet opp (med|og)\\b", "\\bkjente meg ikke igjen\\b"],
+        "semantic_examples": [
+          "Plutselig var det kveld og jeg husker ikke hva jeg gjorde",
+          "Fant pakker på døra som jeg ikke husker å ha bestilt",
+          "Alt føltes uvirkelig, som om jeg så meg selv utenfra"
+        ]
+      },
+      "counter_examples": [
+        "Glemte nøklene igjen, typisk meg",
+        "Tiden fløy fordi jeg hadde det gøy"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "utforsk", "text": "Utforsk uten å konkludere. Dokumenter opplevelsen med personens egne ord. Vurder henvisning til traumekompetent behandler."},
+        {"audience": "sluttbruker", "type": "regulering", "text": "Jording: si høyt dato, sted og tre ting du ser. Hold noe kaldt i hånden."}
+      ],
+      "related_codes": ["VC-004", "VC-012"],
+      "composition": {"amplified_by": ["VC-004"], "note": "Frakobling etter høy aktivering kan tyde på overveldende stress."},
+      "safeguards": ["Aldri foreslå diagnose. Koden beskriver opplevelse, ikke tilstand."]
+    },
+    {
+      "id": "VC-010",
+      "slug": "sovnforstyrrelse",
+      "name": "Søvnforstyrrelse",
+      "definition": "Problemer med å sovne, våkne om natten eller tidlig, eller lite hvile over tid.",
+      "category": "fysiologi",
+      "priority": "P2",
+      "trigger_signals": {
+        "patterns": ["\\bfår ikke sove\\b", "\\bsøvnløs\\w*", "\\bvåkner (hele tiden|om natten|klokka)\\b", "\\bsov (nesten )?ingenting\\b", "\\binsomni\\w*", "\\bligger våken\\b"],
+        "semantic_examples": [
+          "Ligger våken til fire hver natt",
+          "Sov bare to timer i natt",
+          "Våkner klokka tre og får ikke sove igjen"
+        ]
+      },
+      "counter_examples": [
+        "Sov dårlig én natt fordi naboen festet",
+        "Sov lenge i dag, deilig"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "intervensjon", "text": "Kartlegg søvnmønster over to uker med søvndagbok. Vurder søvnhygiene og stimuluskontroll."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Stå opp til samme tid i morgen, uansett hvordan natten var. Skjerm ned 30 minutter før du legger deg."}
+      ],
+      "related_codes": ["VC-003", "VC-004", "VC-001"],
+      "composition": {"amplified_by": ["VC-003"], "note": "Søvnløshet med grubling: prioriter tiltak mot nattlig grubling."}
+    },
+    {
+      "id": "VC-011",
+      "slug": "ressurs-mestring",
+      "name": "Ressurs og mestring",
+      "definition": "Personen beskriver noe som hjalp, en mestringsopplevelse, støtte eller håp. Positiv kode som balanserer et underskuddsfokus.",
+      "category": "ressurs",
+      "priority": "P3",
+      "trigger_signals": {
+        "patterns": ["\\bklarte (det|å)\\b", "\\bhjalp\\b", "\\bmestr\\w*", "\\bstolt\\b", "\\blettet\\b", "\\bgikk bedre\\b", "\\bfikk til\\b"],
+        "semantic_examples": [
+          "Jeg klarte å gå en tur i dag og det hjalp",
+          "Ringte søsteren min og ble lettet",
+          "Fikk til å åpne brevet, var stolt av meg selv"
+        ]
+      },
+      "counter_examples": [
+        "Ingenting hjelper",
+        "Jeg klarte ikke å gå ut"
+      ],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "forsterk", "text": "Speil mestringen konkret. Spør hva som gjorde det mulig og hvordan det kan gjentas."},
+        {"audience": "sluttbruker", "type": "selvhjelp", "text": "Skriv ned hva du gjorde. Neste gang det butter, kan du lese det."}
+      ],
+      "related_codes": [],
+      "composition": {"amplified_by": [], "note": ""}
+    },
+    {
+      "id": "VC-012",
+      "slug": "krise-sikkerhet",
+      "name": "Sikkerhet: mulig krise",
+      "definition": "Utsagn som kan tyde på selvmordstanker, selvskading eller akutt fare. Regelstyrt, høy sensitivitet, alltid menneskelig vurdering.",
+      "category": "sikkerhet",
+      "priority": "P0",
+      "escalation": "immediate_human_review",
+      "trigger_signals": {
+        "patterns": ["\\bselvmord\\w*", "\\bta livet (mitt|av meg)\\b", "\\bikke orke å leve\\b", "\\borker ikke å leve\\b", "\\bvil ikke leve\\b", "\\bbedre om jeg ikke fantes\\b", "\\bskade meg selv\\b", "\\bkutte meg\\b", "\\bvil dø\\b", "\\bse(r)? ingen vei ut\\b"],
+        "semantic_examples": [
+          "Jeg orker ikke å leve sånn lenger",
+          "Det hadde vært bedre for alle om jeg ikke fantes",
+          "Har tenkt på å skade meg selv"
+        ]
+      },
+      "counter_examples": [],
+      "recommended_actions": [
+        {"audience": "fagperson", "type": "eskalering", "text": "Ta kontakt i dag. Gjør selvmordsrisikovurdering etter virksomhetens prosedyre. Dokumenter."},
+        {"audience": "sluttbruker", "type": "krise", "text": "Du fortjener hjelp nå. Ring 113 ved akutt fare, legevakt 116 117, eller Mental Helse Hjelpetelefonen 116 123 (døgnåpen)."}
+      ],
+      "related_codes": ["VC-005", "VC-006"],
+      "composition": {"amplified_by": [], "note": "Undertrykkes aldri av ML eller negasjon. Alltid synlig øverst."},
+      "safeguards": ["Negasjon ignoreres for denne koden.", "ML kan aldri senke scoren.", "Kan ikke deaktiveres av sluttbruker."]
+    }
+  ]
+}

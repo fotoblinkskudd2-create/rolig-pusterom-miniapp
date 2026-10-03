@@ -1,0 +1,78 @@
+# Mal. Aktiveres ved å kopiere til .github/workflows/vibe-ci.yml i repo-roten.
+name: vibe-ci
+on:
+  pull_request:
+    paths: ["vibe-coding-system/**"]
+  push:
+    branches: [main]
+    paths: ["vibe-coding-system/**"]
+
+defaults:
+  run:
+    working-directory: vibe-coding-system
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env: {POSTGRES_PASSWORD: ci}
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip, cache-dependency-path: vibe-coding-system/backend/requirements.txt}
+      - run: pip install -r backend/requirements.txt ruff openapi-spec-validator
+      - name: Lint
+        run: ruff check backend
+      - name: Skjema-migrasjon mot ekte Postgres
+        run: psql postgresql://postgres:ci@localhost:5432/postgres -v ON_ERROR_STOP=1 -f db/schema.sql
+      - name: OpenAPI-kontrakt
+        run: python -c "import yaml,openapi_spec_validator as v; v.validate(yaml.safe_load(open('api/openapi.yaml')))"
+      - name: Enhet, integrasjon og ML-regresjon (krise-recall = 1.0)
+        working-directory: vibe-coding-system/backend
+        run: pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm, cache-dependency-path: vibe-coding-system/frontend/package-lock.json}
+      - working-directory: vibe-coding-system/frontend
+        run: npm ci && npm run typecheck
+
+  image:
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write, id-token: write}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
+      - uses: docker/build-push-action@v6
+        with:
+          context: vibe-coding-system
+          file: vibe-coding-system/backend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/vibe-api:${{ github.sha }}
+      - name: Sårbarhetsskann
+        uses: aquasecurity/trivy-action@0.24.0
+        with: {image-ref: "ghcr.io/${{ github.repository }}/vibe-api:${{ github.sha }}", severity: "CRITICAL,HIGH", exit-code: "1"}
+
+  deploy-staging:
+    needs: image
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: echo "Deploy ghcr.io/${{ github.repository }}/vibe-api:${{ github.sha }} til staging (helm upgrade / az containerapp update)"
+
+  deploy-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production   # krever manuell godkjenning i GitHub Environments
+    steps:
+      - run: echo "Canary 10 % -> overvåk 30 min -> 100 %"

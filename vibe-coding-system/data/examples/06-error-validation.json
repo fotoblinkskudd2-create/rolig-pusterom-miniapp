@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/v1/search/semantic",
+    "body": {
+      "query": "x"
+    }
+  },
+  "response_status": 422,
+  "response": {
+    "type": "https://vibe.example/problems/422",
+    "title": "Ugyldig forespørsel",
+    "status": 422,
+    "detail": [
+      {
+        "loc": [
+          "body",
+          "query"
+        ],
+        "msg": "String should have at least 2 characters"
+      }
+    ]
+  }
+}

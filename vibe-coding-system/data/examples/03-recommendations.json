@@ -1,0 +1,62 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/v1/contacts/a5be9636-8626-45cb-88b0-d83a43526ddf/recommendations"
+  },
+  "response_status": 200,
+  "response": [
+    {
+      "code_id": "VC-008",
+      "name": "Økonomisk stress",
+      "priority": "P2",
+      "weight": 2.2,
+      "evidence_count": 1,
+      "escalate": false,
+      "amplified_by": [
+        "VC-006"
+      ],
+      "note": "Økonomisk stress med skam fører ofte til at brev forblir uåpnet: unngåelsessløyfe.",
+      "actions": [
+        {
+          "audience": "fagperson",
+          "type": "henvisning",
+          "text": "Informer om gratis gjeldsrådgivning hos NAV og NAVs økonomitelefon 55 55 33 39."
+        }
+      ]
+    },
+    {
+      "code_id": "VC-006",
+      "name": "Selvkritikk og skam",
+      "priority": "P2",
+      "weight": 1.224,
+      "evidence_count": 1,
+      "escalate": false,
+      "amplified_by": [],
+      "note": "",
+      "actions": [
+        {
+          "audience": "fagperson",
+          "type": "intervensjon",
+          "text": "Utforsk den indre kritikerens stemme. Vurder selvmedfølelsesøvelser. «En byrde»-utsagn: sjekk sikkerhet."
+        }
+      ]
+    },
+    {
+      "code_id": "VC-010",
+      "name": "Søvnforstyrrelse",
+      "priority": "P2",
+      "weight": 1.034,
+      "evidence_count": 1,
+      "escalate": false,
+      "amplified_by": [],
+      "note": "",
+      "actions": [
+        {
+          "audience": "fagperson",
+          "type": "intervensjon",
+          "text": "Kartlegg søvnmønster over to uker med søvndagbok. Vurder søvnhygiene og stimuluskontroll."
+        }
+      ]
+    }
+  ]
+}

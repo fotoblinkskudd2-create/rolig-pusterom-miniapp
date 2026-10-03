@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/v1/contacts/1d0d3bad-f172-4a75-8768-30f1019ee086/observations",
+    "body": {
+      "text": "Alt er kaos"
+    }
+  },
+  "response_status": 403,
+  "response": {
+    "type": "https://vibe.example/problems/403",
+    "title": "Kontakten har ikke gitt samtykke til lagring av observasjoner",
+    "status": 403
+  }
+}

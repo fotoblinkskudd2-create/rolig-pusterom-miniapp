@@ -1,0 +1,34 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/v1/search/semantic",
+    "body": {
+      "query": "ligger våken og tankene går i ring",
+      "top_k": 3
+    }
+  },
+  "response_status": 200,
+  "response": [
+    {
+      "code_id": "VC-010",
+      "name": "Søvnforstyrrelse",
+      "score": 0.5061,
+      "semantic_score": 0.4659,
+      "rule_score": 0.6
+    },
+    {
+      "code_id": "VC-003",
+      "name": "Grubling",
+      "score": 0.4359,
+      "semantic_score": 0.6228,
+      "rule_score": 0.0
+    },
+    {
+      "code_id": "VC-005",
+      "name": "Lav energi / nedstemthet",
+      "score": 0.2434,
+      "semantic_score": 0.3478,
+      "rule_score": 0.0
+    }
+  ]
+}
