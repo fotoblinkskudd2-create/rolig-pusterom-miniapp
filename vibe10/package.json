@@ -1,0 +1,20 @@
+{
+  "name": "vibe10",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/prebuild.mjs && vite",
+    "build": "node scripts/prebuild.mjs && vite build && node scripts/gen-sw.mjs",
+    "preview": "vite preview",
+    "zip": "cd dist && rm -f ../vibe10.zip && zip -qr ../vibe10.zip ."
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2"
+  }
+}

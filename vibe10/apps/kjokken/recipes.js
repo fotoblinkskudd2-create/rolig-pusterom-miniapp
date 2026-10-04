@@ -1,0 +1,40 @@
+// Billige hverdagsoppskrifter. Ingrediensnavn må matche INGREDIENTS under.
+// Basisvarer (salt, pepper, olje, vann) antas å finnes og står ikke i lista.
+export const INGREDIENTS = {
+  'Kjøleskap': ['egg', 'melk', 'smør', 'ost', 'rømme', 'yoghurt', 'skinke', 'bacon', 'pølser', 'kjøttdeig', 'kylling', 'fisk', 'fiskekaker', 'fløte', 'tortillalefser', 'pesto'],
+  'Grønt': ['løk', 'hvitløk', 'poteter', 'gulrot', 'paprika', 'tomat', 'agurk', 'salat', 'brokkoli', 'spinat', 'sopp', 'mais', 'banan', 'eple', 'sitron', 'avokado', 'frosne grønnsaker'],
+  'Skap': ['pasta', 'ris', 'nudler', 'havregryn', 'mel', 'brød', 'hermetiske tomater', 'bønner', 'kikerter', 'tomatpuré', 'buljong', 'soyasaus', 'tacokrydder', 'karri', 'peanøttsmør', 'tunfisk', 'kokosmelk', 'sukker', 'honning'],
+}
+
+export const RECIPES = [
+  { name: 'Eggerøre på brød', time: 8, ing: ['egg', 'smør', 'brød'], steps: 'Visp egg med en skvett vann og salt. Smelt smør på lav varme, rør forsiktig til det stivner. På brødet.' },
+  { name: 'Omelett med det du har', time: 10, ing: ['egg', 'ost'], extra: ['skinke', 'paprika', 'løk', 'sopp'], steps: 'Visp 3 egg. Stek fyll i panna, hell over eggene, dryss ost, brett.' },
+  { name: 'Pasta aglio e olio', time: 15, ing: ['pasta', 'hvitløk'], steps: 'Kok pasta. Fres finhakket hvitløk mykt i rikelig olje. Vend inn pasta og litt kokevann. Salt, pepper.' },
+  { name: 'Pasta pesto', time: 12, ing: ['pasta', 'pesto'], extra: ['ost', 'tomat'], steps: 'Kok pasta, vend inn pesto og en skvett kokevann. Ost over.' },
+  { name: 'Tomatsuppe med makaroni', time: 20, ing: ['hermetiske tomater', 'løk', 'buljong', 'pasta'], steps: 'Fres løk, tilsett tomater, vann og buljong. Kok 10 min, mos. Kok pasta i suppa.' },
+  { name: 'Kjøttdeigsaus', time: 25, ing: ['kjøttdeig', 'løk', 'hermetiske tomater', 'pasta'], extra: ['gulrot', 'hvitløk'], steps: 'Brun kjøttdeig og løk. Tilsett tomater, salt, pepper. Småkok 15 min. Server med pasta.' },
+  { name: 'Taco', time: 20, ing: ['kjøttdeig', 'tacokrydder', 'tortillalefser'], extra: ['ost', 'salat', 'tomat', 'agurk', 'mais', 'rømme'], steps: 'Brun kjøttdeig, tilsett krydder og vann. Fyll lefser med det du har.' },
+  { name: 'Bønnetaco (vegetar)', time: 15, ing: ['bønner', 'tacokrydder', 'tortillalefser'], extra: ['ost', 'mais', 'rømme'], steps: 'Varm bønner med krydder og en skvett vann, mos lett. I lefser.' },
+  { name: 'Stekt ris', time: 15, ing: ['ris', 'egg', 'soyasaus'], extra: ['frosne grønnsaker', 'skinke'], steps: 'Best med kald ris. Stek grønnsaker, skyv til siden, rør egg. Ris og soya inn, høy varme.' },
+  { name: 'Nudelsuppe', time: 10, ing: ['nudler', 'buljong'], extra: ['egg', 'frosne grønnsaker', 'soyasaus'], steps: 'Kok buljong, nudler og grønnsaker. Knekk et egg oppi helt til slutt.' },
+  { name: 'Peanøttnudler', time: 12, ing: ['nudler', 'peanøttsmør', 'soyasaus'], extra: ['hvitløk', 'honning'], steps: 'Rør peanøttsmør, soya og varmt vann til saus. Vend inn kokte nudler.' },
+  { name: 'Kyllingkarri', time: 30, ing: ['kylling', 'karri', 'kokosmelk', 'ris'], extra: ['løk', 'paprika'], steps: 'Stek kylling og løk, tilsett karri. Hell over kokosmelk, kok 15 min. Med ris.' },
+  { name: 'Kikertkarri', time: 25, ing: ['kikerter', 'karri', 'hermetiske tomater', 'ris'], extra: ['løk', 'spinat', 'kokosmelk'], steps: 'Fres løk og karri, tilsett tomater og kikerter. Kok 15 min. Spinat inn til slutt.' },
+  { name: 'Fiskekaker med poteter', time: 25, ing: ['fiskekaker', 'poteter'], extra: ['gulrot', 'løk'], steps: 'Kok poteter 20 min. Stek fiskekaker og løk i smør.' },
+  { name: 'Pølse og potetmos', time: 25, ing: ['pølser', 'poteter', 'melk', 'smør'], steps: 'Kok poteter, mos med melk og smør. Varm pølsene.' },
+  { name: 'Ovnsbakt fisk', time: 25, ing: ['fisk', 'sitron'], extra: ['poteter', 'brokkoli'], steps: 'Fisk i form med olje, salt, sitron. 200 °C i 15–18 min.' },
+  { name: 'Grøt', time: 8, ing: ['havregryn', 'melk'], extra: ['banan', 'eple', 'honning', 'peanøttsmør'], steps: '1 del havregryn, 2 deler melk/vann. Kok opp under omrøring. Topp med det du har.' },
+  { name: 'Pannekaker', time: 25, ing: ['mel', 'egg', 'melk', 'smør'], extra: ['sukker'], steps: '3 egg, 5 dl melk, 2,5 dl mel, klype salt. Hvil 10 min. Stek tynne i smør.' },
+  { name: 'Bananpannekaker (2 ingredienser)', time: 10, ing: ['banan', 'egg'], steps: 'Mos 1 banan med 2 egg. Stek små lapper på middels varme.' },
+  { name: 'Toast skinke og ost', time: 8, ing: ['brød', 'skinke', 'ost'], steps: 'Smør utsiden, skinke og ost imellom. Stek i panna til gyllen.' },
+  { name: 'Tunfisksalat', time: 10, ing: ['tunfisk', 'salat'], extra: ['mais', 'tomat', 'agurk', 'egg', 'pasta'], steps: 'Bland alt. Olje, salt, pepper. Pasta inn = middag.' },
+  { name: 'Tunfiskpasta', time: 15, ing: ['tunfisk', 'pasta', 'hermetiske tomater'], extra: ['løk', 'hvitløk'], steps: 'Kok pasta. Varm tomater med løk, vend inn tunfisk og pasta.' },
+  { name: 'Ovnsbakte grønnsaker', time: 35, ing: ['poteter', 'gulrot', 'løk'], extra: ['paprika', 'brokkoli', 'pølser'], steps: 'Kutt i biter, olje og salt. 220 °C i 30 min. Pølser inn de siste 10.' },
+  { name: 'Bacon og egg', time: 10, ing: ['bacon', 'egg'], extra: ['brød', 'tomat'], steps: 'Stek bacon sprøtt, stek egg i fettet.' },
+  { name: 'Quesadilla', time: 10, ing: ['tortillalefser', 'ost'], extra: ['bønner', 'kylling', 'mais', 'paprika'], steps: 'Ost og fyll på halve lefsa, brett, stek begge sider.' },
+  { name: 'Soppstuing på brød', time: 15, ing: ['sopp', 'smør', 'fløte', 'brød'], extra: ['løk', 'hvitløk'], steps: 'Stek sopp i smør, tilsett fløte, kok inn. Salt og pepper. På ristet brød.' },
+  { name: 'Kremet kyllingpasta', time: 25, ing: ['kylling', 'pasta', 'fløte'], extra: ['spinat', 'sopp', 'hvitløk', 'ost'], steps: 'Stek kylling, tilsett fløte og hvitløk, kok inn. Vend inn pasta.' },
+  { name: 'Shakshuka', time: 20, ing: ['egg', 'hermetiske tomater', 'løk'], extra: ['paprika', 'hvitløk'], steps: 'Fres løk og paprika, tomater inn, kok 5 min. Lag groper, knekk egg oppi, lokk på til eggene stivner.' },
+  { name: 'Avokadotoast', time: 5, ing: ['avokado', 'brød'], extra: ['egg', 'sitron', 'tomat'], steps: 'Mos avokado med salt og sitron. På ristet brød.' },
+  { name: 'Yoghurt-bowl', time: 3, ing: ['yoghurt'], extra: ['havregryn', 'banan', 'eple', 'honning'], steps: 'Yoghurt i bolle, topp med det du har.' },
+]
