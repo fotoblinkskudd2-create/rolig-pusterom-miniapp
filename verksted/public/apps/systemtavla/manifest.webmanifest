@@ -1,0 +1,25 @@
+{
+  "name": "Systemtavla",
+  "short_name": "Systemtavla",
+  "description": "For systemer: hvem er fremme, beskjeder, tapt tid.",
+  "id": "./apps/systemtavla/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#d6409f",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/systemtavla-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/systemtavla-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

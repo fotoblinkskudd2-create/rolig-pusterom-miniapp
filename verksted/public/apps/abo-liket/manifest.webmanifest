@@ -1,0 +1,25 @@
+{
+  "name": "Abo-Liket",
+  "short_name": "Abo-Liket",
+  "description": "Abonnementene som spiser deg levende. Drep dem.",
+  "id": "./apps/abo-liket/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#e5484d",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/abo-liket-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/abo-liket-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

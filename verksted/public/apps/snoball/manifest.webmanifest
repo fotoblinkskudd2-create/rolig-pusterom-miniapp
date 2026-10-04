@@ -1,0 +1,25 @@
+{
+  "name": "Gjeld-Snøball",
+  "short_name": "Gjeld-Snøball",
+  "description": "Snøball mot skred. Se datoen du blir gjeldfri.",
+  "id": "./apps/snoball/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#0090ff",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/snoball-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/snoball-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

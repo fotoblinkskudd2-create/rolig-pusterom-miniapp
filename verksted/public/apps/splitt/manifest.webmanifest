@@ -1,0 +1,25 @@
+{
+  "name": "Splitt",
+  "short_name": "Splitt",
+  "description": "Del regninga uten konto, uten paywall, uten dagsgrense.",
+  "id": "./apps/splitt/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#3e63dd",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/splitt-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/splitt-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "verksted",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/build-sw.mjs",
+    "preview": "vite preview",
+    "icons": "node scripts/make-icons.mjs",
+    "zip": "node scripts/zip.mjs",
+    "generate": "node scripts/generate.mjs",
+    "test": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2"
+  }
+}

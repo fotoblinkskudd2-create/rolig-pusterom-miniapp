@@ -1,0 +1,25 @@
+{
+  "name": "Kjøpekarantene",
+  "short_name": "Kjøpekarantene",
+  "description": "Impulskjøp i bur. Vil du fortsatt ha det om 72 timer?",
+  "id": "./apps/karantene/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#f76b15",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/karantene-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/karantene-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

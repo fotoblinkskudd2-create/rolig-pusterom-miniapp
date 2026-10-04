@@ -1,0 +1,25 @@
+{
+  "name": "Brunstøy",
+  "short_name": "Brunstøy",
+  "description": "Brun støy, fokus-timer og en kropp ved siden av deg.",
+  "id": "./apps/brunstoy/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#a18072",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "../../icons/brunstoy-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icons/brunstoy-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
