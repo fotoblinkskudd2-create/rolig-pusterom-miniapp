@@ -5,3 +5,5 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
 Åpne `index.html`. Les `RUN.md`.
+
+**Sprint (04.10.2026):** `SPRINT.md`: vibe code, 20 konsepter, topp 3, 90-dagers plan.
