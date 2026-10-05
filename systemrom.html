@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systemrommet</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#a8c5b0">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+  }
+  main { max-width: var(--page-max); margin: 0 auto; padding: 20px 20px 60px; }
+  a.back { color: var(--muted); font-size: 0.82rem; display: inline-block; margin-bottom: 12px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; font-weight: 600; }
+  h2 { font-size: 1.1rem; margin: 0 0 4px; font-weight: 600; }
+  p, .muted { color: var(--muted); font-size: 0.9rem; margin: 0 0 12px; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-m);
+    padding: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  input, textarea, select {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    padding: 10px 12px;
+    margin-bottom: var(--space-1);
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  .row { display: flex; gap: var(--space-1); }
+  .row > * { flex: 1; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-s);
+    padding: 12px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    cursor: pointer;
+    width: 100%;
+  }
+  button.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); font-weight: 500; }
+  button.small { width: auto; padding: 6px 10px; font-size: 0.82rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-1); }
+  .chip {
+    width: auto;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--soft-green);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+  .now {
+    background: var(--soft-blue);
+    border-radius: var(--radius-s);
+    padding: 10px 12px;
+    margin-bottom: var(--space-2);
+    font-size: 0.95rem;
+  }
+  .item {
+    border-top: 1px solid var(--line);
+    padding: 10px 0;
+    font-size: 0.92rem;
+  }
+  .item:first-child { border-top: none; }
+  .item .meta { color: var(--muted); font-size: 0.78rem; }
+  .item .actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .item.read { opacity: 0.6; }
+  .lock { font-variant-numeric: tabular-nums; }
+  .ripe { background: var(--warn); color: var(--warn-ink); border-radius: var(--radius-s); padding: 8px 10px; margin-top: 6px; }
+  .tally {
+    background: var(--soft-beige);
+    border-radius: var(--radius-s);
+    padding: 10px 12px;
+    margin-top: var(--space-2);
+    font-size: 0.9rem;
+  }
+  .gap { background: var(--soft-beige); border-radius: var(--radius-s); padding: 10px 12px; margin: 6px 0; font-size: 0.88rem; }
+  .empty { color: var(--muted); font-size: 0.88rem; font-style: italic; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; margin-top: var(--space-2); }
+  .local-line { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: var(--space-4); }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: var(--text); color: var(--bg);
+    padding: 10px 16px; border-radius: 999px; font-size: 0.88rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Systemrommet</h1>
+  <p>For et hode med flere i. Hvem er her, beskjeder mellom dere, og en brems på kjøp. Alt lokalt.</p>
+
+  <!-- MENS DU VAR BORTE -->
+  <section id="awaySection">
+    <h2>Mens du var borte</h2>
+    <p>Skriv hvem du er nå. Du får se hva som skjedde siden sist du var her.</p>
+    <div id="away"></div>
+  </section>
+
+  <!-- HVEM ER HER -->
+  <section>
+    <h2>Hvem er her nå?</h2>
+    <div class="now" id="nowLine">Ingen logget ennå.</div>
+    <div class="chips" id="knownChips"></div>
+    <div class="row">
+      <input id="frontName" placeholder="Navn, alder, eller «vet ikke»" maxlength="40" autocomplete="off">
+    </div>
+    <input id="frontNote" placeholder="Hvordan er det her? (valgfritt)" maxlength="140" autocomplete="off">
+    <button onclick="logFront()">Logg at jeg er her</button>
+    <details>
+      <summary>Siste bytter</summary>
+      <div id="frontLog"></div>
+    </details>
+  </section>
+
+  <!-- LAPPER -->
+  <section>
+    <h2>Lapper</h2>
+    <p>Beskjed til den som kommer etter deg. Eller til alle.</p>
+    <div class="row">
+      <input id="noteTo" placeholder="Til (tomt = alle)" maxlength="40" autocomplete="off">
+    </div>
+    <textarea id="noteText" placeholder="Jeg spiste klokka 12. Pakken på døra er min, ikke åpne den før fredag." maxlength="600"></textarea>
+    <button onclick="addNote()">Legg igjen lapp</button>
+    <div id="notes" style="margin-top:12px"></div>
+  </section>
+
+  <!-- KJØPSBREMS -->
+  <section>
+    <h2>Kjøpsbrems · 48 timer</h2>
+    <p>Lyst på noe? Skriv det her i stedet for å trykke kjøp. Det låses i 48 timer. Så får alle si sitt.</p>
+    <input id="buyWhat" placeholder="Hva (f.eks. Lego Technic, robotstøvsuger)" maxlength="80" autocomplete="off">
+    <div class="row">
+      <input id="buyPrice" type="number" inputmode="numeric" min="0" step="1" placeholder="Pris i kr">
+      <select id="buyHow">
+        <option value="direkte">Betale nå</option>
+        <option value="avbetaling">Avbetaling / Klarna</option>
+        <option value="kreditt">Kredittkort</option>
+      </select>
+    </div>
+    <input id="buyWhy" placeholder="Hvorfor akkurat nå? (valgfritt)" maxlength="140" autocomplete="off">
+    <button onclick="addBrake()">Lås i 48 timer</button>
+    <div id="brakes" style="margin-top:12px"></div>
+    <div class="tally" id="tally"></div>
+  </section>
+
+  <section>
+    <h2>Ta det med deg</h2>
+    <p>Last ned alt fra Systemrommet og Pusterom som én fil. Den kan leses i hvilken som helst teksteditor.</p>
+    <button class="ghost" onclick="exportAll()">Last ned (.json)</button>
+  </section>
+
+  <p class="local-line">Alt blir på denne enheten. Ingen konto. Ingen sky.<br>Dette er et verktøy, ikke behandling.</p>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const KEY = { front: 'systemrom.front', notes: 'systemrom.lapper', brakes: 'systemrom.brems', seen: 'systemrom.sett' };
+const LOCK_MS = 48 * 60 * 60 * 1000;
+
+function load(k, fallback) {
+  try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch (e) { return fallback; }
+}
+function save(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function when(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString('no-NO', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+function span(ms) {
+  const m = Math.max(0, Math.round(ms / 60000));
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60);
+  if (h < 48) return h + ' t ' + (m % 60) + ' min';
+  return Math.floor(h / 24) + ' døgn ' + (h % 24) + ' t';
+}
+function kr(n) { return (Number(n) || 0).toLocaleString('no-NO') + ' kr'; }
+function norm(name) { return String(name || '').trim().toLowerCase(); }
+function currentFront() { return load(KEY.front, [])[0] || null; }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+/* ---------- Hvem er her ---------- */
+function logFront(nameArg) {
+  const input = document.getElementById('frontName');
+  const name = (nameArg ?? input.value).trim() || 'vet ikke';
+  const note = document.getElementById('frontNote').value.trim();
+  const list = load(KEY.front, []);
+  list.unshift({ id: newId(), at: new Date().toISOString(), name, note });
+  save(KEY.front, list.slice(0, 500));
+  input.value = '';
+  document.getElementById('frontNote').value = '';
+  renderAll();
+  showAway(name);
+  toast('Logget: ' + name);
+}
+
+function knownNames() {
+  const seen = new Map();
+  load(KEY.front, []).forEach(e => { if (!seen.has(norm(e.name))) seen.set(norm(e.name), e.name); });
+  return [...seen.values()].slice(0, 10);
+}
+
+function renderFront() {
+  const list = load(KEY.front, []);
+  const now = list[0];
+  document.getElementById('nowLine').innerHTML = now
+    ? `<b>${esc(now.name)}</b> har vært her siden ${when(now.at)} (${span(Date.now() - new Date(now.at))}).${now.note ? '<br><span class="muted">' + esc(now.note) + '</span>' : ''}`
+    : 'Ingen logget ennå. Det er greit å skrive «vet ikke».';
+  const chips = document.getElementById('knownChips');
+  chips.innerHTML = '';
+  knownNames().forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = n;
+    b.onclick = () => logFront(n);
+    chips.appendChild(b);
+  });
+  const log = document.getElementById('frontLog');
+  log.innerHTML = list.length
+    ? list.slice(0, 25).map(e => `<div class="item"><div class="meta">${when(e.at)}</div>${esc(e.name)}${e.note ? ' · <span class="muted">' + esc(e.note) + '</span>' : ''}</div>`).join('')
+    : '<div class="empty">Ingen bytter logget.</div>';
+}
+
+/* ---------- Mens du var borte ---------- */
+function events() {
+  const out = [];
+  load(KEY.front, []).forEach(e => out.push({ at: e.at, text: `<b>${esc(e.name)}</b> var her${e.note ? ': ' + esc(e.note) : ''}` }));
+  load(KEY.notes, []).forEach(n => out.push({ at: n.at, text: `Lapp fra ${esc(n.from)} til ${esc(n.to || 'alle')}: «${esc(n.text)}»` }));
+  load(KEY.brakes, []).forEach(b => {
+    out.push({ at: b.at, text: `${esc(b.by)} ville kjøpe <b>${esc(b.what)}</b> (${kr(b.price)}, ${esc(b.how)})` });
+    if (b.decidedAt) out.push({ at: b.decidedAt, text: `${esc(b.decidedBy || 'noen')} ${b.decision === 'kjøpt' ? 'kjøpte' : 'slapp'} <b>${esc(b.what)}</b>` });
+  });
+  load('checkins', []).forEach(c => out.push({ at: c.date, text: `Sjekk-inn i Pusterom, humør ${esc(c.mood)}/5${c.note ? ': ' + esc(c.note) : ''}` }));
+  return out.sort((a, b) => new Date(b.at) - new Date(a.at));
+}
+
+function showAway(name) {
+  const box = document.getElementById('away');
+  box.dataset.shown = '1';
+  const who = norm(name);
+  const fronts = load(KEY.front, []);
+  // Siste gang denne var her FØR innloggingen som nettopp skjedde
+  const mine = fronts.filter(e => norm(e.name) === who);
+  const prev = mine[1];
+  if (!prev) {
+    box.innerHTML = `<div class="gap">Første gang ${esc(name)} logger seg her. Velkommen. Se gjerne lappene under.</div>`;
+    return;
+  }
+  const since = new Date(prev.at);
+  const latest = new Date(mine[0].at);
+  const evs = events().filter(e => new Date(e.at) > since && new Date(e.at) < latest);
+  const ripe = load(KEY.brakes, []).filter(b => !b.decision && Date.now() - new Date(b.at) >= LOCK_MS);
+  box.innerHTML =
+    `<div class="gap">${esc(name)} var sist her ${when(prev.at)}. Det er ${span(latest - since)} siden.</div>` +
+    (evs.length ? evs.slice(0, 30).map(e => `<div class="item"><div class="meta">${when(e.at)}</div>${e.text}</div>`).join('')
+                : '<div class="empty">Ingenting ble logget i mellomtiden. Det betyr ikke at ingenting skjedde.</div>') +
+    (ripe.length ? `<div class="ripe">${ripe.length} kjøp venter på avgjørelse i Kjøpsbrems.</div>` : '');
+}
+
+function renderAwayDefault() {
+  const box = document.getElementById('away');
+  if (box.dataset.shown) return;
+  const now = currentFront();
+  if (!now) {
+    box.innerHTML = '<div class="empty">Logg hvem som er her under, så viser jeg hva som har skjedd siden sist.</div>';
+    return;
+  }
+  const evs = events().slice(0, 5);
+  box.innerHTML = '<div class="muted">Siste som skjedde:</div>' + evs.map(e => `<div class="item"><div class="meta">${when(e.at)}</div>${e.text}</div>`).join('');
+}
+
+/* ---------- Lapper ---------- */
+function addNote() {
+  const text = document.getElementById('noteText').value.trim();
+  if (!text) { toast('Lappen er tom.'); return; }
+  const from = currentFront()?.name || 'ukjent';
+  const to = document.getElementById('noteTo').value.trim();
+  const list = load(KEY.notes, []);
+  list.unshift({ id: newId(), at: new Date().toISOString(), from, to, text, readBy: [] });
+  save(KEY.notes, list.slice(0, 300));
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteTo').value = '';
+  renderAll();
+  toast('Lapp lagt igjen.');
+}
+
+function markRead(id) {
+  const reader = currentFront()?.name || 'ukjent';
+  const list = load(KEY.notes, []);
+  const n = list.find(x => x.id === id);
+  if (n && !n.readBy.some(r => norm(r.name) === norm(reader))) n.readBy.push({ name: reader, at: new Date().toISOString() });
+  save(KEY.notes, list);
+  renderAll();
+}
+
+function deleteNote(id) {
+  save(KEY.notes, load(KEY.notes, []).filter(x => x.id !== id));
+  renderAll();
+}
+
+function renderNotes() {
+  const me = norm(currentFront()?.name);
+  const list = load(KEY.notes, []);
+  const box = document.getElementById('notes');
+  if (!list.length) { box.innerHTML = '<div class="empty">Ingen lapper.</div>'; return; }
+  box.innerHTML = list.slice(0, 40).map(n => {
+    const forMe = !n.to || norm(n.to) === me;
+    const readByMe = n.readBy.some(r => norm(r.name) === me);
+    const readers = n.readBy.length ? 'Sett av ' + n.readBy.map(r => esc(r.name)).join(', ') : 'Ikke sett ennå';
+    return `<div class="item ${readByMe ? 'read' : ''}">
+      <div class="meta">${when(n.at)} · fra ${esc(n.from)} til ${esc(n.to || 'alle')}${forMe && !readByMe ? ' · <b>til deg</b>' : ''}</div>
+      ${esc(n.text).replace(/\n/g, '<br>')}
+      <div class="meta">${readers}</div>
+      <div class="actions">
+        ${readByMe ? '' : `<button class="small" onclick="markRead('${n.id}')">Jeg har sett den</button>`}
+        <button class="small ghost" onclick="deleteNote('${n.id}')">Fjern</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Kjøpsbrems ---------- */
+function addBrake() {
+  const what = document.getElementById('buyWhat').value.trim();
+  if (!what) { toast('Skriv hva du har lyst på.'); return; }
+  const price = Math.max(0, Math.round(Number(document.getElementById('buyPrice').value) || 0));
+  const how = document.getElementById('buyHow').value;
+  const why = document.getElementById('buyWhy').value.trim();
+  const list = load(KEY.brakes, []);
+  list.unshift({ id: newId(), at: new Date().toISOString(), by: currentFront()?.name || 'ukjent', what, price, how, why, votes: [] });
+  save(KEY.brakes, list.slice(0, 300));
+  ['buyWhat', 'buyPrice', 'buyWhy'].forEach(id => document.getElementById(id).value = '');
+  renderAll();
+  toast('Låst. Vi ses om 48 timer.');
+}
+
+function vote(id, yes) {
+  const name = currentFront()?.name || 'ukjent';
+  const list = load(KEY.brakes, []);
+  const b = list.find(x => x.id === id);
+  if (!b) return;
+  b.votes = b.votes.filter(v => norm(v.name) !== norm(name));
+  b.votes.push({ name, yes, at: new Date().toISOString() });
+  save(KEY.brakes, list);
+  renderAll();
+}
+
+function decide(id, decision) {
+  const list = load(KEY.brakes, []);
+  const b = list.find(x => x.id === id);
+  if (!b) return;
+  b.decision = decision;
+  b.decidedAt = new Date().toISOString();
+  b.decidedBy = currentFront()?.name || 'ukjent';
+  save(KEY.brakes, list);
+  renderAll();
+  toast(decision === 'sluppet' ? kr(b.price) + ' ble værende hos deg.' : 'Notert. Ingen skam.');
+}
+
+function renderBrakes() {
+  const list = load(KEY.brakes, []);
+  const box = document.getElementById('brakes');
+  const open = list.filter(b => !b.decision);
+  box.innerHTML = open.length ? open.map(b => {
+    const left = LOCK_MS - (Date.now() - new Date(b.at));
+    const ripe = left <= 0;
+    const yes = b.votes.filter(v => v.yes).map(v => esc(v.name));
+    const no = b.votes.filter(v => !v.yes).map(v => esc(v.name));
+    return `<div class="item">
+      <div class="meta">${when(b.at)} · ${esc(b.by)} · ${esc(b.how)}</div>
+      <b>${esc(b.what)}</b> · ${kr(b.price)}${b.why ? '<br><span class="muted">«' + esc(b.why) + '»</span>' : ''}
+      <div class="meta">Vil ha: ${yes.join(', ') || '–'} · Vil ikke: ${no.join(', ') || '–'}</div>
+      ${ripe
+        ? `<div class="ripe">48 timer har gått. Har dere fortsatt lyst?</div>
+           <div class="actions">
+             <button class="small" onclick="decide('${b.id}','sluppet')">Slipp det</button>
+             <button class="small ghost" onclick="decide('${b.id}','kjøpt')">Kjøp</button>
+           </div>`
+        : `<div class="meta lock">Låses opp om ${span(left)}</div>
+           <div class="actions">
+             <button class="small ghost" onclick="vote('${b.id}', true)">Jeg vil ha den</button>
+             <button class="small ghost" onclick="vote('${b.id}', false)">Jeg vil ikke</button>
+             <button class="small ghost" onclick="decide('${b.id}','sluppet')">Slipp nå</button>
+           </div>`}
+    </div>`;
+  }).join('') : '<div class="empty">Ingenting låst. Godt.</div>';
+
+  const released = list.filter(b => b.decision === 'sluppet');
+  const bought = list.filter(b => b.decision === 'kjøpt');
+  const sum = arr => arr.reduce((s, b) => s + (Number(b.price) || 0), 0);
+  const credit = released.filter(b => b.how !== 'direkte');
+  document.getElementById('tally').innerHTML = list.length
+    ? `Sluppet: <b>${released.length}</b> ting, <b>${kr(sum(released))}</b> ble værende.` +
+      (credit.length ? `<br>${credit.length} av dem var på avbetaling eller kreditt, ${kr(sum(credit))} ny gjeld som aldri ble til.` : '') +
+      (bought.length ? `<br>Kjøpt etter 48 t: ${bought.length} (${kr(sum(bought))}). Det var et valg, ikke en impuls.` : '')
+    : 'Når noe slippes, telles pengene som ble værende her.';
+}
+
+/* ---------- Export ---------- */
+function exportAll() {
+  const data = {
+    app: 'rolig-pusterom',
+    exported: new Date().toISOString(),
+    front: load(KEY.front, []),
+    lapper: load(KEY.notes, []),
+    kjopsbrems: load(KEY.brakes, []),
+    checkins: load('checkins', [])
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'systemrom-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function renderAll() {
+  renderFront();
+  renderNotes();
+  renderBrakes();
+  renderAwayDefault();
+}
+
+document.getElementById('frontName').addEventListener('keydown', e => { if (e.key === 'Enter') logFront(); });
+renderAll();
+setInterval(renderBrakes, 60 * 1000);
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
