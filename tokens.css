@@ -1,0 +1,70 @@
+/*
+  Rolig design tokens. Én kilde for farge, rom og form.
+  Alle sider laster denne. Endre her, ikke i hver fil.
+  Mørk modus følger systemet, men kan overstyres med <html data-theme="light|dark">.
+*/
+:root {
+  color-scheme: light;
+  --bg: #f5f7f4;
+  --card: #ffffff;
+  --text: #3a4a3f;
+  --muted: #6b7b70;
+  --accent: #a8c5b0;
+  --accent-ink: #2a3a2f;
+  --line: #e2e8e3;
+  --soft-blue: #d4e4f0;
+  --soft-beige: #f0e9df;
+  --soft-green: #e0ebe3;
+  --warn: #f3e3c8;
+  --warn-ink: #6a4a12;
+  --shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+
+  --radius-s: 12px;
+  --radius-m: 16px;
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --page-max: 440px;
+  --font: system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #161b18;
+    --card: #222a25;
+    --text: #e0ebe3;
+    --muted: #93a398;
+    --accent: #8fb59a;
+    --accent-ink: #132018;
+    --line: #34403a;
+    --soft-blue: #263644;
+    --soft-beige: #3a342b;
+    --soft-green: #2a3a30;
+    --warn: #4a3b1f;
+    --warn-ink: #f3dcae;
+    --shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #161b18;
+  --card: #222a25;
+  --text: #e0ebe3;
+  --muted: #93a398;
+  --accent: #8fb59a;
+  --accent-ink: #132018;
+  --line: #34403a;
+  --soft-blue: #263644;
+  --soft-beige: #3a342b;
+  --soft-green: #2a3a30;
+  --warn: #4a3b1f;
+  --warn-ink: #f3dcae;
+  --shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

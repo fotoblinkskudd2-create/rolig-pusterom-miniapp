@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  k8s:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kustomize + kubeconform
+        run: |
+          curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz -C /usr/local/bin
+      - name: Validate manifests
+        run: |
+          for o in k8s/base k8s/overlays/prod; do
+            kustomize build "$o" | kubeconform -strict -summary -kubernetes-version 1.30.0 -
+          done
+
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build image
+        run: docker build -t pusterom:ci .
+      - name: Run like Kubernetes does (read-only, no caps, non-root)
+        run: |
+          docker run -d --name pt --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
+            --cap-drop ALL --security-opt no-new-privileges -p 8080:8080 pusterom:ci
+          for i in $(seq 1 20); do curl -fsS localhost:8080/healthz && break; sleep 1; done
+      - name: Browser smoke test
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npm run smoke -- http://localhost:8080
+      - name: Container logs
+        if: failure()
+        run: docker logs pt
+      - name: Push to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          IMG=ghcr.io/${GITHUB_REPOSITORY,,}
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag pusterom:ci "$IMG:${GITHUB_SHA::7}"
+          docker tag pusterom:ci "$IMG:latest"
+          docker push "$IMG:${GITHUB_SHA::7}"
+          docker push "$IMG:latest"

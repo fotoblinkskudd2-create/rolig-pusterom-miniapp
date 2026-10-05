@@ -1,0 +1,16 @@
+# Inn: bare HTTP på 8080. Ut: ingenting. Ikke engang DNS.
+# Podden kan ikke ringe hjem, fordi det ikke finnes noe hjem å ringe.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pusterom-ingen-utgang
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pusterom
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8080
+  egress: []

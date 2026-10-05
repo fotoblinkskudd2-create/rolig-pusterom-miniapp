@@ -1,0 +1,10 @@
+# Bytt host i ingress.yaml og tag under før deploy.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - ingress.yaml
+namespace: pusterom
+images:
+  - name: ghcr.io/fotoblinkskudd2-create/rolig-pusterom-miniapp
+    newTag: latest

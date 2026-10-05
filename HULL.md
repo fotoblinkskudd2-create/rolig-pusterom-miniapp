@@ -1,22 +1,27 @@
 # HULL — 60 sekunder for en fremmed
 
-Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
+## 2.0: hva som faktisk var galt
 
-## Hva som blokkerte første minutt
+Commiten for 1.1 endret bare README, RUN og HULL. `index.html` var urørt. Alle fem hullene under sto fortsatt åpne. De er lukket nå:
 
-1. `switchPage` brukte `event.currentTarget`. «Pust med meg» byttet side, men nav ble stående på Hjem.
-2. Ingen setning om at data blir på enheten. For en stress-app er det tillitsbrudd.
-3. `alert()` hvis humør ikke var valgt.
-4. Historikk kunne ikke tas med. localStorage dør med nettleserdata.
-5. `isolation-mirror.html` var en løs fil. Filvelgeren gjorde ingenting. Midjourney-prompten var slop.
+1. ✅ `switchPage` brukte `event.currentTarget`. Nå styrer `data-page` hvilken knapp som er aktiv.
+2. ✅ Linjen «Alt blir på denne enheten» står på forsiden og i Historikk.
+3. ✅ `alert()` er byttet ut med et rolig hint.
+4. ✅ Historikk kan eksporteres som `.txt`. Systemrommet eksporterer alt som `.json`.
+5. ✅ Isolation Mirror kan nås fra forsiden.
+
+Også lukket:
+
+- Noter ble satt inn med `innerHTML` uten escaping. Nå escapes all brukertekst.
+- Mørk modus via `tokens.css`. Følger systemet.
+- PWA: manifest, ikon og offline-skall.
 
 ## Hva som er greit
 
-- Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
-- Ingen sky. Det skal bli slik.
+- Lokal lagring. Ingen sky. Det skal bli slik. Nå er det håndhevet av CSP og NetworkPolicy, ikke bare lovet.
 
-## Etter 1.1
+## Mangler fortsatt
 
-En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
-
-Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+- Test på ekte iPhone (hjemskjerm og offline).
+- PNG-ikoner for eldre iOS (SVG-ikonet dekker moderne nettlesere).
+- Import av `.json`-eksport tilbake til en ny enhet.
