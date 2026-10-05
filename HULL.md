@@ -1,22 +1,37 @@
 # HULL — 60 sekunder for en fremmed
 
-Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
+## Rettelse til 1.1
 
-## Hva som blokkerte første minutt
+1.1-commiten (`3cc07de`, «nav-fix, lokal-first, historikk-export») endret bare `.md`-filene. `index.html` ble ikke rørt. Kontrollert 05.10.2026 i Chromium mot 1.1-filene:
 
-1. `switchPage` brukte `event.currentTarget`. «Pust med meg» byttet side, men nav ble stående på Hjem.
-2. Ingen setning om at data blir på enheten. For en stress-app er det tillitsbrudd.
-3. `alert()` hvis humør ikke var valgt.
-4. Historikk kunne ikke tas med. localStorage dør med nettleserdata.
-5. `isolation-mirror.html` var en løs fil. Filvelgeren gjorde ingenting. Midjourney-prompten var slop.
+| 1.1 påsto | Faktisk i 1.1 |
+|-----------|---------------|
+| nav-fix | «Pust med meg» ga **ingen** aktiv menyknapp |
+| `alert()` fjernet | `alert('Velg hvordan du har det først.')` fortsatt der |
+| «Alt blir på denne enheten» | Setningen fantes ikke på siden |
+| Export av historikk | Ingen knapp, ingen funksjon |
+| Isolation Mirror åpnes «fra bunnen» | Ingen lenke fra appen |
 
-## Hva som er greit
+Funnet ved samme kontroll:
 
-- Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
-- Ingen sky. Det skal bli slik.
+- Notatet ble satt inn som HTML. `<img onerror=…>` i notatet ble kjørt.
+- Pustesirkelen brukte 4 s på en utpust som varer 6 s.
 
-## Etter 1.1
+Alt over er rettet i 1.2 og låst med tester. Kjører du testpakken mot 1.1-filene, feiler 23 av 27 app-tester. De fire som passerer, gjelder ting 1.1 allerede gjorde riktig: ingen nettverkskall, egne gamle data og bredde.
 
-En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
+## Etter 1.2
 
-Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+En fremmed kan:
+
+1. åpne `index.html` og lese «Alt du skriver blir på denne enheten»;
+2. sjekke inn uten popup, eller puste med en sirkel som følger teksten;
+3. se hjelpenumre som kan ringes med ett trykk;
+4. ta historikken med som `.txt`, lage sikkerhetskopi og hente den inn igjen;
+5. åpne Isolation Mirror fra Historikk og kopiere Labben-prompten;
+6. installere appen på hjemskjermen og bruke den uten nett, når den kjøres fra en webadresse.
+
+## Mangler fortsatt
+
+- Test på ekte iPhone (Safari og hjemskjerm-modus). Ikke gjort: ingen enhet i denne økten.
+- Bruksprøve med mennesker. Plan i `LOGG.md`.
+- Appen er ikke publisert på en https-adresse. Det er en beslutning som ikke er tatt.
