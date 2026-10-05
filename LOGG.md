@@ -36,9 +36,10 @@
 | Uten nett | `tests/pwa.test.mjs`: last over http, vent på service worker, slå av nett, last på nytt | Appen, Isolation Mirror og `#pusterom` åpner; sjekk-inn lagres |
 | Visuell inspeksjon | Skjermbilder 390 × 844, lys og mørk modus, alle sider | Én feil funnet og rettet: oppsummeringen ramset opp «0 pusteøkter» |
 | Bredde | 320 px og 390 px, langt notat | Ingen sideveis scrolling; menyen dekker ikke innhold |
+| CI på GitHub | `.github/workflows/test.yml`, kjøring [37253834440](https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/actions/runs/37253834440) på `700b746` | success |
 | JS-lint | eslint 10 på skriptene og `sw.js` | 0 feil |
 | Hjelpenumre | Websøk 05.10.2026 (kilder under) | 116 123 og 22 40 00 40 er døgnåpne og gratis |
-| **Ikke kontrollert** | — | Ekte iPhone/Safari, skjermleser (VoiceOver), bruk med mennesker, GitHub Actions-kjøringen før første push |
+| **Ikke kontrollert** | — | Ekte iPhone/Safari, skjermleser (VoiceOver), bruk med mennesker |
 
 ## Kilder
 
