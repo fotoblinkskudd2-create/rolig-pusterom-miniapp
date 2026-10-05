@@ -15,7 +15,21 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 - Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
 - Ingen sky. Det skal bli slik.
 
-## Etter 1.1
+## 1.2 (05.10.2026) – koden tar igjen dokumentasjonen
+
+1.1-commiten (`3cc07de`) beskrev fiksene over, men endret bare `.md`-filer. `index.html` var urørt: `event.currentTarget`, `alert()`, ingen eksport, ingen lenke. 1.2 legger inn koden:
+
+- Nav markeres via `data-page`, ikke `event` → «Pust med meg» aktiverer Pusterom i nav.
+- «🔒 Alt blir på denne enheten» på Hjem.
+- `alert()` erstattet med rolig inline-melding.
+- «Ta historikken med deg (.txt)» → `pusterom-historikk.txt`. Skjult når historikken er tom.
+- Lenke til Isolation Mirror nederst på Hjem.
+- Notater vises med `textContent` (HTML i notat kjøres ikke lenger).
+- «1 gang» / «N ganger».
+
+Kontroll: Playwright/Chromium 390×844, `file://`. Alle punktene over sjekket, ingen JS-feil. Ikke testet: ekte iPhone/Safari, nedlasting av `.txt` i iOS hjemskjerm-modus (eple: iOS-standalone kan håndtere `download` annerledes – må prøves på telefon).
+
+## Etter 1.2
 
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 

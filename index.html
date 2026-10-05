@@ -194,6 +194,18 @@
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
+  .message.warn { background: var(--soft-beige); }
+  .local-note {
+    font-size: 0.82rem;
+    margin: -8px 0 4px;
+  }
+  .footer-link {
+    display: block;
+    text-align: center;
+    margin-top: 28px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
   .summary {
     background: var(--soft-beige);
     border-radius: 16px;
@@ -208,6 +220,7 @@
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
   <p class="support">Hvordan har du det akkurat nå?</p>
+  <p class="support local-note">🔒 Alt blir på denne enheten. Ingen konto, ingen sky.</p>
   <div class="mood-scale" id="moodScale">
     <button class="mood-btn" data-mood="1">😔</button>
     <button class="mood-btn" data-mood="2">😕</button>
@@ -217,8 +230,10 @@
   </div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+  <div class="message warn" id="moodMsg" role="status">Velg et fjes først – det holder.</div>
+  <div class="message" id="saveMsg" role="status">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <a class="footer-link" href="isolation-mirror.html">Isolation Mirror →</a>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -241,13 +256,14 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" id="exportBtn" onclick="exportHistory()">Ta historikken med deg (.txt)</button>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -271,12 +287,13 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedMood = btn.dataset.mood;
+    document.getElementById('moodMsg').classList.remove('show');
   });
 });
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    document.getElementById('moodMsg').classList.add('show');
     return;
   }
   const note = document.getElementById('note').value.trim();
@@ -299,8 +316,9 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === name);
+  });
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -378,7 +396,15 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      const date = document.createElement('div');
+      date.className = 'date';
+      date.textContent = `${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}`;
+      item.appendChild(date);
+      if (e.note) {
+        const note = document.createElement('div');
+        note.textContent = e.note;
+        item.appendChild(note);
+      }
       container.appendChild(item);
     });
   }
@@ -386,7 +412,26 @@ function renderHistory() {
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ${weekCount === 1 ? 'gang' : 'ganger'} denne uken. Det er fint.`;
+  document.getElementById('exportBtn').style.display = list.length ? 'block' : 'none';
+}
+
+function exportHistory() {
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const words = ['', 'tungt', 'litt tungt', 'midt i', 'ok', 'rolig'];
+  const lines = ['Pusterom – historikk', 'Eksportert ' + new Date().toLocaleString('no-NO'), ''];
+  list.forEach(e => {
+    lines.push(`${new Date(e.date).toLocaleString('no-NO')} · humør ${e.mood}/5 (${words[e.mood] || '?'})`);
+    if (e.note) lines.push('  ' + e.note);
+  });
+  const url = URL.createObjectURL(new Blob([lines.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pusterom-historikk.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // init
