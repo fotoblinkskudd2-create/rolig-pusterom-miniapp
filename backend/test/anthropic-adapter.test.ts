@@ -110,6 +110,13 @@ describe("Anthropic-adapter (falsk lokal server)", () => {
     expect(f.bodies[0].fallbacks).toBeUndefined();
   });
 
+  it("tomme verdier fra .env.example tolkes som ikke satt", () => {
+    const cfg = testConfig({ ANTHROPIC_BASE_URL: "", APPLE_BUNDLE_ID: "" });
+    expect(cfg.ANTHROPIC_BASE_URL).toBeUndefined();
+    expect(cfg.APPLE_BUNDLE_ID).toBeUndefined();
+    expect(() => testConfig({ MODEL_PROVIDER: "anthropic", ANTHROPIC_API_KEY: "" })).toThrow(/ANTHROPIC_API_KEY mangler/);
+  });
+
   it("konfigurasjon nekter oppstart uten nøkkel, og mock i produksjon", () => {
     expect(() => testConfig({ MODEL_PROVIDER: "anthropic", ANTHROPIC_API_KEY: undefined as unknown as string })).toThrow(/ANTHROPIC_API_KEY mangler/);
     expect(() => testConfig({ NODE_ENV: "production" })).toThrow(/ikke tillatt i produksjon/);

@@ -75,7 +75,9 @@ const schema = z
 export type Config = z.infer<typeof schema>;
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
-  const parsed = schema.safeParse(env);
+  // Tomme verdier fra .env (f.eks. `ANTHROPIC_BASE_URL=`) betyr «ikke satt».
+  const cleaned = Object.fromEntries(Object.entries(env).filter(([, v]) => v !== undefined && v !== ""));
+  const parsed = schema.safeParse(cleaned);
   if (!parsed.success) {
     const msg = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("\n");
     throw new Error(`Ugyldig konfigurasjon:\n${msg}`);

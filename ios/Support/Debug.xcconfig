@@ -1,0 +1,4 @@
+// Lokal backend. På fysisk iPhone: bruk Mac-ens .local-navn eller en HTTPS-tunnel.
+// (// starter en kommentar i xcconfig, derfor $() mellom skråstrekene.)
+API_BASE_URL = http:/$()/localhost:8080
+APPLE_SIGN_IN_ENABLED = NO
