@@ -1,0 +1,1040 @@
+{
+ "antakelser": {
+  "valuta": "1 USD = 10.5 NOK, 1 EUR = 11.5 NOK (planleggingskurs)",
+  "bom_faktor": {
+   "1k": 1.38,
+   "10k": 1.0,
+   "50k": 0.86
+  },
+  "kassasjon": 0.03,
+  "cm_paslag": 0.2,
+  "qc_sert_per_enhet_usd": 0.4,
+  "d2c_betalingsgebyr": 0.025,
+  "garantiavsetning": 0.03,
+  "grossist_divisor": 2.0,
+  "kanalmiks": {
+   "år1": [
+    0.7,
+    0.3
+   ],
+   "år2": [
+    0.6,
+    0.4
+   ],
+   "år3": [
+    0.55,
+    0.45
+   ]
+  },
+  "markedsforing_år2_3_andel": 0.18
+ },
+ "produkter": [
+  {
+   "id": "glod",
+   "navn": "GLØD",
+   "undertittel": "Termo-peristaltisk stimulator",
+   "pris": 2990,
+   "segment": "Premium",
+   "logistikk": 0.08,
+   "fulfil": 55,
+   "b2b_frakt": 15,
+   "montasje": {
+    "1k": 5.2,
+    "10k": 3.4,
+    "50k": 2.7
+   },
+   "bom": [
+    [
+     "Ytterhud, medisinsk LSR Shore 10A, 42 g",
+     1.7
+    ],
+    [
+     "Gelpute 8 ml + 0,8 mm membran (LSR)",
+     0.65
+    ],
+    [
+     "Indre chassis PC/ABS, topp + bunn",
+     0.95
+    ],
+    [
+     "Girmotor N20 1:150, 3 V",
+     1.45
+    ],
+    [
+     "Rullevogn, kamskinne, 2 ruller (POM) + 2 minilager",
+     0.85
+    ],
+    [
+     "Polyimid varmefolie 3 W, 60 x 30 mm",
+     0.95
+    ],
+    [
+     "2x NTC 10k + bimetall termosikring 45 °C",
+     0.4
+    ],
+    [
+     "LRA pulsaktuator 0815",
+     0.75
+    ],
+    [
+     "Li-ion polymer 3,7 V 2000 mAh m/ PCM",
+     3.1
+    ],
+    [
+     "PCBA: Cortex-M0+, lader 1 A, H-bro, varmedriver, fuel gauge",
+     3.4
+    ],
+    [
+     "Magnetisk 2-pins ladekontakt + USB-C-kabel",
+     1.1
+    ],
+    [
+     "Knappemembran, lysleder, 2 LED",
+     0.45
+    ],
+    [
+     "O-ringer, skruer, lim, smådeler",
+     0.4
+    ],
+    [
+     "Emballasje: FSC-eske, bomullspose, manual, materialpass",
+     2.6
+    ]
+   ],
+   "verktoy_usd": 63000,
+   "sert_usd": 35000,
+   "utvikling_nok": 1100000,
+   "ip_nok": 250000,
+   "lansering_nok": 1200000,
+   "scenario": {
+    "Konservativ": [
+     1500,
+     3500,
+     6000
+    ],
+    "Sannsynlig": [
+     3000,
+     8000,
+     15000
+    ],
+    "Aggressiv": [
+     6000,
+     18000,
+     35000
+    ]
+   },
+   "uker_prototype": 16,
+   "mnd_lansering": 15,
+   "bom_sum_10k": 18.75,
+   "cogs": {
+    "1k": {
+     "bom_usd": 25.87,
+     "landet_usd": 41.91,
+     "landet_nok": 440
+    },
+    "10k": {
+     "bom_usd": 18.75,
+     "landet_usd": 30.0,
+     "landet_nok": 315
+    },
+    "50k": {
+     "bom_usd": 16.12,
+     "landet_usd": 25.56,
+     "landet_nok": 268
+    }
+   },
+   "netto_pris": 2392,
+   "engros_pris": 1196,
+   "bm_d2c": 86.8,
+   "bm_engros": 73.7,
+   "db_d2c": 1890,
+   "db_engros": 830,
+   "fast_kost_nok": 3579000,
+   "tilbehor_bidrag_per_kjerne": 0,
+   "db_blandet_1k": 1447,
+   "db_blandet_10k": 1572,
+   "breakeven_1k": 2473,
+   "breakeven_10k": 2277,
+   "scen": {
+    "Konservativ": [
+     {
+      "enheter": 1500,
+      "omsetning": 3049800,
+      "db": 2171016,
+      "markedsforing": 1200000,
+      "resultat": 971016,
+      "akkumulert": -1407984
+     },
+     {
+      "enheter": 3500,
+      "omsetning": 6697600,
+      "db": 4694592,
+      "markedsforing": 1205568,
+      "resultat": 3489024,
+      "akkumulert": 2081040
+     },
+     {
+      "enheter": 6000,
+      "omsetning": 11122800,
+      "db": 8479776,
+      "markedsforing": 2002104,
+      "resultat": 6477672,
+      "akkumulert": 8558712
+     }
+    ],
+    "Sannsynlig": [
+     {
+      "enheter": 3000,
+      "omsetning": 6099600,
+      "db": 4342032,
+      "markedsforing": 1200000,
+      "resultat": 3142032,
+      "akkumulert": 763032
+     },
+     {
+      "enheter": 8000,
+      "omsetning": 15308800,
+      "db": 11730496,
+      "markedsforing": 2755584,
+      "resultat": 8974912,
+      "akkumulert": 9737944
+     },
+     {
+      "enheter": 15000,
+      "omsetning": 27807000,
+      "db": 21199440,
+      "markedsforing": 5005260,
+      "resultat": 16194180,
+      "akkumulert": 25932124
+     }
+    ],
+    "Aggressiv": [
+     {
+      "enheter": 6000,
+      "omsetning": 12199200,
+      "db": 9434064,
+      "markedsforing": 1200000,
+      "resultat": 8234064,
+      "akkumulert": 5855064
+     },
+     {
+      "enheter": 18000,
+      "omsetning": 34444800,
+      "db": 26393616,
+      "markedsforing": 6200064,
+      "resultat": 20193552,
+      "akkumulert": 26048616
+     },
+     {
+      "enheter": 35000,
+      "omsetning": 64883000,
+      "db": 51110360,
+      "markedsforing": 11678940,
+      "resultat": 39431420,
+      "akkumulert": 65480036
+     }
+    ]
+   }
+  },
+  {
+   "id": "avtrykk",
+   "navn": "AVTRYKK",
+   "undertittel": "Selvformende stimulator med formlås",
+   "pris": 2690,
+   "segment": "Premium",
+   "logistikk": 0.08,
+   "fulfil": 55,
+   "b2b_frakt": 15,
+   "montasje": {
+    "1k": 6.5,
+    "10k": 4.3,
+    "50k": 3.4
+   },
+   "bom": [
+    [
+     "Ytterhud, medisinsk LSR Shore 5A, 55 g",
+     2.1
+    ],
+    [
+     "Jamming-blære, LSR 0,6 mm vegg",
+     0.9
+    ],
+    [
+     "PP-mikroperler 1,5 mm, 18 g (granulat)",
+     0.12
+    ],
+    [
+     "Partikkelfilter / nett, rustfritt 100 µm",
+     0.15
+    ],
+    [
+     "Mikro membran-vakuumpumpe 3 V (-70 kPa)",
+     2.4
+    ],
+    [
+     "Magnetventil 3 V + tilbakeslagsventil",
+     1.6
+    ],
+    [
+     "MEMS trykksensor (absolutt)",
+     0.85
+    ],
+    [
+     "4 haptiske noder (LRA) på flex-PCB-ryggrad",
+     3.2
+    ],
+    [
+     "4-sone kapasitiv kontaktsensor (i flex)",
+     0.3
+    ],
+    [
+     "Stivt håndtak/chassis PC",
+     0.9
+    ],
+    [
+     "Li-ion polymer 3,7 V 1500 mAh m/ PCM",
+     2.6
+    ],
+    [
+     "PCBA: MCU, lader, 4-kan. driver, pumpedriver",
+     3.6
+    ],
+    [
+     "Magnetisk ladekontakt + kabel",
+     1.1
+    ],
+    [
+     "Knapper, LED, smådeler",
+     0.6
+    ],
+    [
+     "Emballasje: FSC-eske, pose, manual, materialpass",
+     2.6
+    ]
+   ],
+   "verktoy_usd": 72000,
+   "sert_usd": 30000,
+   "utvikling_nok": 1500000,
+   "ip_nok": 300000,
+   "lansering_nok": 1000000,
+   "scenario": {
+    "Konservativ": [
+     1000,
+     3000,
+     5000
+    ],
+    "Sannsynlig": [
+     2500,
+     7000,
+     13000
+    ],
+    "Aggressiv": [
+     5000,
+     15000,
+     30000
+    ]
+   },
+   "uker_prototype": 20,
+   "mnd_lansering": 18,
+   "bom_sum_10k": 23.02,
+   "cogs": {
+    "1k": {
+     "bom_usd": 31.77,
+     "landet_usd": 51.51,
+     "landet_nok": 541
+    },
+    "10k": {
+     "bom_usd": 23.02,
+     "landet_usd": 36.9,
+     "landet_nok": 387
+    },
+    "50k": {
+     "bom_usd": 19.8,
+     "landet_usd": 31.4,
+     "landet_nok": 330
+    }
+   },
+   "netto_pris": 2152,
+   "engros_pris": 1076,
+   "bm_d2c": 82.0,
+   "bm_engros": 64.0,
+   "db_d2c": 1592,
+   "db_engros": 642,
+   "fast_kost_nok": 3871000,
+   "tilbehor_bidrag_per_kjerne": 0,
+   "db_blandet_1k": 1153,
+   "db_blandet_10k": 1307,
+   "breakeven_1k": 3359,
+   "breakeven_10k": 2963,
+   "scen": {
+    "Konservativ": [
+     {
+      "enheter": 1000,
+      "omsetning": 1829200,
+      "db": 1152664,
+      "markedsforing": 1000000,
+      "resultat": 152664,
+      "akkumulert": -2718336
+     },
+     {
+      "enheter": 3000,
+      "omsetning": 5164800,
+      "db": 3173016,
+      "markedsforing": 929664,
+      "resultat": 2243352,
+      "akkumulert": -474984
+     },
+     {
+      "enheter": 5000,
+      "omsetning": 8339000,
+      "db": 5820880,
+      "markedsforing": 1501020,
+      "resultat": 4319860,
+      "akkumulert": 3844876
+     }
+    ],
+    "Sannsynlig": [
+     {
+      "enheter": 2500,
+      "omsetning": 4573000,
+      "db": 2881660,
+      "markedsforing": 1000000,
+      "resultat": 1881660,
+      "akkumulert": -989340
+     },
+     {
+      "enheter": 7000,
+      "omsetning": 12051200,
+      "db": 8481704,
+      "markedsforing": 2169216,
+      "resultat": 6312488,
+      "akkumulert": 5323148
+     },
+     {
+      "enheter": 13000,
+      "omsetning": 21681400,
+      "db": 15134288,
+      "markedsforing": 3902652,
+      "resultat": 11231636,
+      "akkumulert": 16554784
+     }
+    ],
+    "Aggressiv": [
+     {
+      "enheter": 5000,
+      "omsetning": 9146000,
+      "db": 6533320,
+      "markedsforing": 1000000,
+      "resultat": 5533320,
+      "akkumulert": 2662320
+     },
+     {
+      "enheter": 15000,
+      "omsetning": 25824000,
+      "db": 18175080,
+      "markedsforing": 4648320,
+      "resultat": 13526760,
+      "akkumulert": 16189080
+     },
+     {
+      "enheter": 30000,
+      "omsetning": 50034000,
+      "db": 36635280,
+      "markedsforing": 9006120,
+      "resultat": 27629160,
+      "akkumulert": 43818240
+     }
+    ]
+   }
+  },
+  {
+   "id": "samklang",
+   "navn": "SAMKLANG",
+   "undertittel": "Bærbar parpute med mikro-sugefeste",
+   "pris": 1890,
+   "segment": "Mellom/premium",
+   "logistikk": 0.07,
+   "fulfil": 55,
+   "b2b_frakt": 15,
+   "montasje": {
+    "1k": 5.8,
+    "10k": 3.6,
+    "50k": 2.9
+   },
+   "bom": [
+    [
+     "Putehud LSR m/ mikro-sugekopptekstur, 24 g",
+     1.6
+    ],
+    [
+     "Indre fleksramme TPU (overstøpt)",
+     0.55
+    ],
+    [
+     "2x flate LRA 10 mm",
+     1.3
+    ],
+    [
+     "Trykksensor-array, 4 soner (kapasitiv)",
+     1.2
+    ],
+    [
+     "IMU 6-akse",
+     0.7
+    ],
+    [
+     "Rigid-flex PCBA m/ BLE-SoC (nRF52805-klasse)",
+     4.2
+    ],
+    [
+     "Kurvet LiPo 3,7 V 180 mAh",
+     1.5
+    ],
+    [
+     "Magnetiske pogo-pinner (lading)",
+     0.8
+    ],
+    [
+     "Fjernkontroll: skall, BLE-PCBA, 100 mAh, knapper",
+     3.4
+    ],
+    [
+     "Felles magnetisk ladedokk + kabel",
+     1.8
+    ],
+    [
+     "Emballasje + reiseetui",
+     2.9
+    ]
+   ],
+   "verktoy_usd": 62000,
+   "sert_usd": 38000,
+   "utvikling_nok": 1350000,
+   "ip_nok": 280000,
+   "lansering_nok": 900000,
+   "scenario": {
+    "Konservativ": [
+     1200,
+     3000,
+     5000
+    ],
+    "Sannsynlig": [
+     3000,
+     7500,
+     14000
+    ],
+    "Aggressiv": [
+     6000,
+     16000,
+     32000
+    ]
+   },
+   "uker_prototype": 18,
+   "mnd_lansering": 17,
+   "bom_sum_10k": 19.95,
+   "cogs": {
+    "1k": {
+     "bom_usd": 27.53,
+     "landet_usd": 44.51,
+     "landet_nok": 467
+    },
+    "10k": {
+     "bom_usd": 19.95,
+     "landet_usd": 31.57,
+     "landet_nok": 332
+    },
+    "50k": {
+     "bom_usd": 17.16,
+     "landet_usd": 26.95,
+     "landet_nok": 283
+    }
+   },
+   "netto_pris": 1512,
+   "engros_pris": 756,
+   "bm_d2c": 78.0,
+   "bm_engros": 56.1,
+   "db_d2c": 1042,
+   "db_engros": 386,
+   "fast_kost_nok": 3580000,
+   "tilbehor_bidrag_per_kjerne": 0,
+   "db_blandet_1k": 710,
+   "db_blandet_10k": 845,
+   "breakeven_1k": 5041,
+   "breakeven_10k": 4236,
+   "scen": {
+    "Konservativ": [
+     {
+      "enheter": 1200,
+      "omsetning": 1542240,
+      "db": 852221,
+      "markedsforing": 900000,
+      "resultat": -47779,
+      "akkumulert": -2727779
+     },
+     {
+      "enheter": 3000,
+      "omsetning": 3628800,
+      "db": 1933896,
+      "markedsforing": 653184,
+      "resultat": 1280712,
+      "akkumulert": -1447067
+     },
+     {
+      "enheter": 5000,
+      "omsetning": 5859000,
+      "db": 3734280,
+      "markedsforing": 1054620,
+      "resultat": 2679660,
+      "akkumulert": 1232593
+     }
+    ],
+    "Sannsynlig": [
+     {
+      "enheter": 3000,
+      "omsetning": 3855600,
+      "db": 2130552,
+      "markedsforing": 900000,
+      "resultat": 1230552,
+      "akkumulert": -1449448
+     },
+     {
+      "enheter": 7500,
+      "omsetning": 9072000,
+      "db": 5847240,
+      "markedsforing": 1632960,
+      "resultat": 4214280,
+      "akkumulert": 2764832
+     },
+     {
+      "enheter": 14000,
+      "omsetning": 16405200,
+      "db": 10455984,
+      "markedsforing": 2952936,
+      "resultat": 7503048,
+      "akkumulert": 10267880
+     }
+    ],
+    "Aggressiv": [
+     {
+      "enheter": 6000,
+      "omsetning": 7711200,
+      "db": 5071104,
+      "markedsforing": 900000,
+      "resultat": 4171104,
+      "akkumulert": 1491104
+     },
+     {
+      "enheter": 16000,
+      "omsetning": 19353600,
+      "db": 12474112,
+      "markedsforing": 3483648,
+      "resultat": 8990464,
+      "akkumulert": 10481568
+     },
+     {
+      "enheter": 32000,
+      "omsetning": 37497600,
+      "db": 25467392,
+      "markedsforing": 6749568,
+      "resultat": 18717824,
+      "akkumulert": 29199392
+     }
+    ]
+   }
+  },
+  {
+   "id": "lene",
+   "navn": "LENE",
+   "undertittel": "Grepsfri støttepute med magnetstyrt modul",
+   "pris": 1990,
+   "segment": "Mellom",
+   "logistikk": 0.14,
+   "fulfil": 120,
+   "b2b_frakt": 40,
+   "montasje": {
+    "1k": 7.5,
+    "10k": 5.0,
+    "50k": 4.0
+   },
+   "bom": [
+    [
+     "Kilepute HR-kaldskum 38x30x18 cm (CertiPUR)",
+     6.5
+    ],
+    [
+     "Vaskbart trekk 60 °C + vanntett TPU-innertrekk",
+     5.2
+    ],
+    [
+     "Skinne, glider og magnetbærer (ABS + 4x N52)",
+     2.1
+    ],
+    [
+     "Puck: LSR-hud 38 g",
+     1.5
+    ],
+    [
+     "Puck: chassis PC + magnetring",
+     0.9
+    ],
+    [
+     "Puck: lavfrekvent ERM Ø24 + LRA",
+     1.9
+    ],
+    [
+     "Puck: luftpute + barometersensor",
+     0.95
+    ],
+    [
+     "Puck: Li-ion 1200 mAh m/ PCM",
+     2.3
+    ],
+    [
+     "Puck: PCBA m/ BLE",
+     3.8
+    ],
+    [
+     "Fjernkontroll «Stein» Ø90, 3 taktile knapper, BLE",
+     4.2
+    ],
+    [
+     "Ladeplate + kabel",
+     1.4
+    ],
+    [
+     "Emballasje (vakuumpakket skum, stor eske)",
+     4.8
+    ]
+   ],
+   "verktoy_usd": 58000,
+   "sert_usd": 38000,
+   "utvikling_nok": 850000,
+   "ip_nok": 150000,
+   "lansering_nok": 600000,
+   "scenario": {
+    "Konservativ": [
+     600,
+     1500,
+     2500
+    ],
+    "Sannsynlig": [
+     1500,
+     3500,
+     6000
+    ],
+    "Aggressiv": [
+     3000,
+     7000,
+     12000
+    ]
+   },
+   "uker_prototype": 10,
+   "mnd_lansering": 12,
+   "bom_sum_10k": 35.55,
+   "cogs": {
+    "1k": {
+     "bom_usd": 49.06,
+     "landet_usd": 80.15,
+     "landet_nok": 842
+    },
+    "10k": {
+     "bom_usd": 35.55,
+     "landet_usd": 57.59,
+     "landet_nok": 605
+    },
+    "50k": {
+     "bom_usd": 30.57,
+     "landet_usd": 49.17,
+     "landet_nok": 516
+    }
+   },
+   "netto_pris": 1592,
+   "engros_pris": 796,
+   "bm_d2c": 62.0,
+   "bm_engros": 24.0,
+   "db_d2c": 779,
+   "db_engros": 127,
+   "fast_kost_nok": 2608000,
+   "tilbehor_bidrag_per_kjerne": 0,
+   "db_blandet_1k": 347,
+   "db_blandet_10k": 584,
+   "breakeven_1k": 7522,
+   "breakeven_10k": 4468,
+   "scen": {
+    "Konservativ": [
+     {
+      "enheter": 600,
+      "omsetning": 811920,
+      "db": 208046,
+      "markedsforing": 600000,
+      "resultat": -391954,
+      "akkumulert": -2399954
+     },
+     {
+      "enheter": 1500,
+      "omsetning": 1910400,
+      "db": 422268,
+      "markedsforing": 343872,
+      "resultat": 78396,
+      "akkumulert": -2321558
+     },
+     {
+      "enheter": 2500,
+      "omsetning": 3084500,
+      "db": 622240,
+      "markedsforing": 555210,
+      "resultat": 67030,
+      "akkumulert": -2254528
+     }
+    ],
+    "Sannsynlig": [
+     {
+      "enheter": 1500,
+      "omsetning": 2029800,
+      "db": 520116,
+      "markedsforing": 600000,
+      "resultat": -79884,
+      "akkumulert": -2087884
+     },
+     {
+      "enheter": 3500,
+      "omsetning": 4457600,
+      "db": 985292,
+      "markedsforing": 802368,
+      "resultat": 182924,
+      "akkumulert": -1904960
+     },
+     {
+      "enheter": 6000,
+      "omsetning": 7402800,
+      "db": 2915376,
+      "markedsforing": 1332504,
+      "resultat": 1582872,
+      "akkumulert": -322088
+     }
+    ],
+    "Aggressiv": [
+     {
+      "enheter": 3000,
+      "omsetning": 4059600,
+      "db": 1040232,
+      "markedsforing": 600000,
+      "resultat": 440232,
+      "akkumulert": -1567768
+     },
+     {
+      "enheter": 7000,
+      "omsetning": 8915200,
+      "db": 3629584,
+      "markedsforing": 1604736,
+      "resultat": 2024848,
+      "akkumulert": 457080
+     },
+     {
+      "enheter": 12000,
+      "omsetning": 14805600,
+      "db": 5830752,
+      "markedsforing": 2665008,
+      "resultat": 3165744,
+      "akkumulert": 3622824
+     }
+    ]
+   }
+  },
+  {
+   "id": "kjerne",
+   "navn": "KJERNE",
+   "undertittel": "Reparerbar kjerne med utskiftbare skall",
+   "pris": 990,
+   "segment": "Lav/mellom (startsett)",
+   "logistikk": 0.07,
+   "fulfil": 55,
+   "b2b_frakt": 15,
+   "montasje": {
+    "1k": 3.8,
+    "10k": 2.4,
+    "50k": 1.9
+   },
+   "bom": [
+    [
+     "Kjernehus PC-GF + aluminiumshylse",
+     1.6
+    ],
+    [
+     "Bajonettlokk m/ dobbel O-ring",
+     0.55
+    ],
+    [
+     "Bredbånds voice-coil aktuator 20-250 Hz",
+     2.8
+    ],
+    [
+     "Li-ion 14500 800 mAh, beskyttet, utskiftbar",
+     1.3
+    ],
+    [
+     "PCBA: MCU, lader, klasse-D driver, 2x Hall (skall-ID)",
+     2.6
+    ],
+    [
+     "Magnetiske pogo-pinner, IP67-forseglet",
+     0.35
+    ],
+    [
+     "Skall «Kuppel», LSR 48 g + 2 kodemagneter",
+     1.7
+    ],
+    [
+     "Knappemembran + LED",
+     0.4
+    ],
+    [
+     "Emballasje: resirkulert papp, minimal",
+     1.6
+    ]
+   ],
+   "verktoy_usd": 79000,
+   "sert_usd": 32000,
+   "utvikling_nok": 950000,
+   "ip_nok": 220000,
+   "lansering_nok": 1000000,
+   "scenario": {
+    "Konservativ": [
+     3000,
+     7000,
+     12000
+    ],
+    "Sannsynlig": [
+     5000,
+     12000,
+     22000
+    ],
+    "Aggressiv": [
+     12000,
+     30000,
+     60000
+    ]
+   },
+   "uker_prototype": 12,
+   "mnd_lansering": 12,
+   "tilbehor": {
+    "skall_pris": 390,
+    "skall_cogs_usd": 3.3,
+    "skall_per_kjerne": 0.6,
+    "batteri_pris": 149,
+    "batteri_cogs_usd": 1.9,
+    "batteri_per_kjerne": 0.15
+   },
+   "bom_sum_10k": 12.9,
+   "cogs": {
+    "1k": {
+     "bom_usd": 17.8,
+     "landet_usd": 29.0,
+     "landet_nok": 304
+    },
+    "10k": {
+     "bom_usd": 12.9,
+     "landet_usd": 20.66,
+     "landet_nok": 217
+    },
+    "50k": {
+     "bom_usd": 11.09,
+     "landet_usd": 17.61,
+     "landet_nok": 185
+    }
+   },
+   "netto_pris": 792,
+   "engros_pris": 396,
+   "bm_d2c": 72.6,
+   "bm_engros": 45.2,
+   "db_d2c": 476,
+   "db_engros": 152,
+   "fast_kost_nok": 3335500,
+   "tilbehor_bidrag_per_kjerne": 165,
+   "db_blandet_1k": 457,
+   "db_blandet_10k": 544,
+   "breakeven_1k": 7299,
+   "breakeven_10k": 6132,
+   "scen": {
+    "Konservativ": [
+     {
+      "enheter": 3000,
+      "omsetning": 2634840,
+      "db": 1371105,
+      "markedsforing": 1000000,
+      "resultat": 371105,
+      "akkumulert": -1964395
+     },
+     {
+      "enheter": 7000,
+      "omsetning": 5870760,
+      "db": 3581222,
+      "markedsforing": 1056737,
+      "resultat": 2524485,
+      "akkumulert": 560090
+     },
+     {
+      "enheter": 12000,
+      "omsetning": 9826560,
+      "db": 5944645,
+      "markedsforing": 1768781,
+      "resultat": 4175864,
+      "akkumulert": 4735955
+     }
+    ],
+    "Sannsynlig": [
+     {
+      "enheter": 5000,
+      "omsetning": 4391400,
+      "db": 2720176,
+      "markedsforing": 1000000,
+      "resultat": 1720176,
+      "akkumulert": -615324
+     },
+     {
+      "enheter": 12000,
+      "omsetning": 10064160,
+      "db": 6139237,
+      "markedsforing": 1811549,
+      "resultat": 4327688,
+      "akkumulert": 3712364
+     },
+     {
+      "enheter": 22000,
+      "omsetning": 18015360,
+      "db": 10898516,
+      "markedsforing": 3242765,
+      "resultat": 7655751,
+      "akkumulert": 11368115
+     }
+    ],
+    "Aggressiv": [
+     {
+      "enheter": 12000,
+      "omsetning": 10539360,
+      "db": 6528421,
+      "markedsforing": 1000000,
+      "resultat": 5528421,
+      "akkumulert": 3192921
+     },
+     {
+      "enheter": 30000,
+      "omsetning": 25160400,
+      "db": 16308093,
+      "markedsforing": 4528872,
+      "resultat": 11779221,
+      "akkumulert": 14972142
+     },
+     {
+      "enheter": 60000,
+      "omsetning": 49132800,
+      "db": 31643226,
+      "markedsforing": 8843904,
+      "resultat": 22799322,
+      "akkumulert": 37771464
+     }
+    ]
+   }
+  }
+ ]
+}
