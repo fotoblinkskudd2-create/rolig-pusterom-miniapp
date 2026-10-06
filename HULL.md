@@ -15,7 +15,13 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 - Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
 - Ingen sky. Det skal bli slik.
 
-## Etter 1.1
+## 1.2 — hullet i 1.1
+
+1.1-commiten endret bare README, RUN og HULL. `index.html` var urørt. Alle fem punktene over sto fortsatt åpne.
+1.2 lukker 1–4 i koden, legger til lenke til Isolation Mirror fra Hjem, og viser notater med `textContent` (før: `innerHTML`, så HTML i en note ble kjørt).
+Testet i Chromium: ingen dialog, nav følger «Pust med meg», eksport gir `.txt`.
+
+## Etter 1.2
 
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 
