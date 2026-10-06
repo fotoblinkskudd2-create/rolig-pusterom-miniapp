@@ -38,7 +38,7 @@ ConversationModel                    ├ sikkerhet: screener + klassifisering �
 | Hva | Bevis |
 |---|---|
 | Backend typesjekker | `npx tsc --noEmit` uten feil |
-| 93 automatiske tester grønne mot ekte PostgreSQL 16 og ekte HTTP/SSE | `docs/TEST-RESULTS.md` |
+| 94 automatiske tester grønne mot ekte PostgreSQL 16 og ekte HTTP/SSE | `docs/TEST-RESULTS.md` |
 | De ti spesifiserte testene (1–10) | `backend/test/01-…` til `10-…`; klientdelen av 3 og 10 også i `ios/AntipsykologenTests` (ikke kjørt) |
 | Anthropic-adapteren sender riktig forespørsel (modell, effort, fallback-header, cache_control på stabil systemdel), parser strømmen, kartlegger stop-reason/feil og avbryter | `backend/test/anthropic-adapter.test.ts` – mot en **lokal falsk** server med Anthropic-formatert SSE, med den ekte SDK-en |
 | Sign in with Apple-verifisering (signatur, iss, aud, utløp, nonce) | `backend/test/apple-auth.test.ts` – med lokalt genererte nøkler, ikke Apples |

@@ -17,6 +17,7 @@ Kommandoer: `cd backend && npm run typecheck && npm test`
 ✓ test/03-streaming-abort.test.ts > 3. Avbrutt strømming vises som avbrutt > modellfeil midt i: delvis tekst blir cancelled med provider_error, ikke fullført
 ✓ test/03-streaming-abort.test.ts > 3. Avbrutt strømming vises som avbrutt > stopp-knappen (cancel-endepunkt) gir cancelled/user_cancelled og done-hendelse
 ✓ test/03-streaming-abort.test.ts > 3. Avbrutt strømming vises som avbrutt > tidsavbrudd før første tekst gir failed/timeout med forståelig feilmelding
+✓ test/04-idempotency.test.ts > 4. Gjentatt forespørsel skaper ikke doble meldinger > mange samtidige like forespørsler med raskt svar: aldri 500, alltid én brukermelding
 ✓ test/04-idempotency.test.ts > 4. Gjentatt forespørsel skaper ikke doble meldinger > ny melding mens et svar genereres avvises med 409
 ✓ test/04-idempotency.test.ts > 4. Gjentatt forespørsel skaper ikke doble meldinger > nytt forsøk etter avbrudd: samme brukermelding, nytt svar
 ✓ test/04-idempotency.test.ts > 4. Gjentatt forespørsel skaper ikke doble meldinger > samme ID med annen tekst avvises
@@ -100,7 +101,7 @@ Kommandoer: `cd backend && npm run typecheck && npm test`
 ✓ test/summary.test.ts > lange tråder sammendras strukturert > sammendrag lages over budsjett, gamle meldinger byttes ut, siste beholdes
 
 Test Files  15 passed (15)
-Tests  93 passed (93)
+Tests  94 passed (94)
 ```
 
 Andre sjekker kjørt:

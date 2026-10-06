@@ -6,7 +6,7 @@ Et norsk refleksjonsverktøy med tørr humor, direkte spørsmål og konkrete han
 med egen backend (TypeScript + PostgreSQL) og strømmet samtale fra en språkmodell (Anthropic) via serveren.
 Ikke en psykolog. Ikke en krisetjeneste.
 
-**Status:** backend er bygget og testet (93 automatiske tester). iOS-appen er skrevet, men **ikke kompilert
+**Status:** backend er bygget og testet (94 automatiske tester). iOS-appen er skrevet, men **ikke kompilert
 eller kjørt** – byggemiljøet hadde ikke Xcode. **Ingen kall mot ekte modell er gjort** – ingen API-nøkkel var
 tilgjengelig. Se [docs/STATUS.md](docs/STATUS.md) for nøyaktig hva som er verifisert.
 

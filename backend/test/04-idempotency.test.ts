@@ -75,6 +75,19 @@ describe("4. Gjentatt forespørsel skaper ikke doble meldinger", () => {
     expect(r.json.error.code).toBe("idempotency_conflict");
   });
 
+  it("mange samtidige like forespørsler med raskt svar: aldri 500, alltid én brukermelding", async () => {
+    s = await startServer({ mock: { reply: () => ["kjapt"] }, cfg: { RATE_LIMIT_MESSAGES_PER_MINUTE: "100" } });
+    const c = await Client.anonymous(s.url);
+    const conv = await c.newConversation();
+    for (let round = 0; round < 5; round++) {
+      const id = randomUUID();
+      const results = await Promise.all(Array.from({ length: 10 }, () => c.send(conv, `Runde ${round}`, { clientMessageId: id })));
+      for (const r of results) expect([200, 409]).toContain(r.status);
+      const { rows } = await s.db.query("SELECT count(*)::int AS n FROM messages WHERE client_message_id = $1", [id]);
+      expect(rows[0].n).toBe(1);
+    }
+  });
+
   it("ny melding mens et svar genereres avvises med 409", async () => {
     s = await startServer({ mock: { reply: () => ["a", "b", "c"], delayMs: 150 } });
     const c = await Client.anonymous(s.url);

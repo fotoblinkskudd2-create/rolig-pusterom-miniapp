@@ -141,6 +141,13 @@ export async function conversationRoutes(app: FastifyInstance, ctx: AppContext) 
     );
     let userMessage: DbMessage;
     let isNew = false;
+    const replay = (u: DbMessage, a: DbMessage) => {
+      const sse = new SseStream(reply);
+      sse.send("user_message", { message: messageView(u), replay: true });
+      sse.send("assistant_message", { message: messageView(a), replay: true });
+      sse.send("done", { message: messageView(a), replay: true });
+      sse.end();
+    };
     if (existing.rows[0]) {
       userMessage = existing.rows[0];
       if (!existing.rows[0].content_sha256.equals(contentHash)) throw Errors.idempotencyConflict();
@@ -151,11 +158,7 @@ export async function conversationRoutes(app: FastifyInstance, ctx: AppContext) 
       const last = replies[0];
       if (last?.status === "completed") {
         // Ingen nytt modellkall: spill av det lagrede svaret.
-        const sse = new SseStream(reply);
-        sse.send("user_message", { message: messageView(userMessage), replay: true });
-        sse.send("assistant_message", { message: messageView(last), replay: true });
-        sse.send("done", { message: messageView(last), replay: true });
-        sse.end();
+        replay(userMessage, last);
         return;
       }
       if (last && (last.status === "generating" || last.status === "created")) {
@@ -182,6 +185,21 @@ export async function conversationRoutes(app: FastifyInstance, ctx: AppContext) 
       if (busy.rows.length) throw Errors.generationInProgress();
       let seq = conv.next_seq;
       let um: DbMessage | undefined = existing.rows[0];
+      if (!um) {
+        // En samtidig forespørsel med samme ID kan ha kommet først. Under låsen er sjekken sikker.
+        const again = await tx.query<DbMessage & { content_sha256: Buffer }>(
+          "SELECT * FROM messages WHERE conversation_id = $1 AND client_message_id = $2",
+          [conv.id, body.clientMessageId],
+        );
+        if (again.rows[0]) {
+          if (!again.rows[0].content_sha256.equals(contentHash)) throw Errors.idempotencyConflict();
+          const r = await tx.query<DbMessage>("SELECT * FROM messages WHERE reply_to = $1 ORDER BY seq DESC LIMIT 1", [
+            again.rows[0].id,
+          ]);
+          if (r.rows[0]?.status === "completed") return { replayOf: { user: again.rows[0], assistant: r.rows[0] } };
+          um = again.rows[0];
+        }
+      }
       if (!um) {
         um = (
           await tx.query<DbMessage>(
@@ -227,8 +245,12 @@ export async function conversationRoutes(app: FastifyInstance, ctx: AppContext) 
          WHERE id = $1`,
         [conv.id, seq, ttlHours],
       );
-      return { conv, userMessage: um, assistant };
+      return { conv, userMessage: um, assistant, replayOf: null };
     });
+    if (created.replayOf) {
+      replay(created.replayOf.user, created.replayOf.assistant);
+      return;
+    }
     userMessage = created.userMessage;
 
     const sse = new SseStream(reply);
