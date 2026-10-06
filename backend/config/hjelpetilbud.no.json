@@ -1,0 +1,86 @@
+{
+  "country": "NO",
+  "checkedDate": "2026-10-06",
+  "verification": {
+    "method": "Kontrollert mot søketreff fra offisielle domener (helsenorge.no, mentalhelse.no, kirkens-sos.no, dinutvei.no, 116111.no via kommunale sider). Direkte innhenting av sidene var blokkert i byggemiljøet.",
+    "beforeRelease": "Åpne hver kilde-URL manuelt, bekreft nummer og åpningstid, og oppdater checkedDate. Sett verifiedBy."
+  },
+  "verifiedBy": null,
+  "outsideNorway": "Tallene gjelder Norge. Er du i et annet land, bruk landets nødnumre. Appen oppgir ikke numre for andre land.",
+  "resources": [
+    {
+      "id": "nod_113",
+      "name": "Medisinsk nødhjelp",
+      "phone": "113",
+      "hours": "Døgnåpent",
+      "description": "Når liv og helse er i fare akkurat nå.",
+      "categories": ["self_harm", "self_harm_other_person", "acute_medical", "violence_victim", "minor_at_risk"],
+      "minLevel": "concern",
+      "source": "https://www.helsenorge.no/forstehjelp/ring-113/"
+    },
+    {
+      "id": "nod_112",
+      "name": "Politi",
+      "phone": "112",
+      "hours": "Døgnåpent",
+      "description": "Ved vold, trusler eller når noen er i umiddelbar fare.",
+      "categories": ["violence_victim", "coercion", "violence_to_others", "minor_at_risk"],
+      "minLevel": "concern",
+      "source": "https://www.dsb.no/brannsikkerhet/nodmelding/nodmeldetjenesten/"
+    },
+    {
+      "id": "legevakt",
+      "name": "Legevakt",
+      "phone": "116 117",
+      "hours": "Døgnåpent",
+      "description": "Når det haster, men ikke er livstruende.",
+      "categories": ["self_harm", "acute_medical"],
+      "minLevel": "concern",
+      "source": "https://www.helsenorge.no/en/help-services-in-the-municipalities/out-of-hours-medical-service/"
+    },
+    {
+      "id": "mental_helse",
+      "name": "Hjelpetelefonen (Mental Helse)",
+      "phone": "116 123",
+      "chatUrl": "https://sidetmedord.no",
+      "hours": "Døgnåpent, også chat",
+      "description": "Noen å snakke med. Gratis, anonymt.",
+      "categories": ["self_harm", "self_harm_other_person", "violence_to_others", "coercion", "violence_victim"],
+      "minLevel": "concern",
+      "source": "https://mentalhelse.no/fa-hjelp/hjelpetelefonen/"
+    },
+    {
+      "id": "kirkens_sos",
+      "name": "Kirkens SOS",
+      "phone": "22 40 00 40",
+      "chatUrl": "https://soschat.no",
+      "hours": "Telefon døgnåpent. Chat har egne åpningstider.",
+      "description": "Krisetelefon. Anonymt, uten nummervisning.",
+      "categories": ["self_harm", "self_harm_other_person"],
+      "minLevel": "concern",
+      "source": "https://www.kirkens-sos.no/telefon"
+    },
+    {
+      "id": "vo_linjen",
+      "name": "Vold- og overgrepslinjen (VO-linjen)",
+      "phone": "116 006",
+      "chatUrl": "https://dinutvei.no",
+      "hours": "Telefon døgnåpent. Chat hverdager 09–20.",
+      "description": "For deg over 18 som opplever vold eller overgrep i nære relasjoner. Gratis, anonymt.",
+      "categories": ["violence_victim", "coercion"],
+      "minLevel": "concern",
+      "source": "https://dinutvei.no/en/english/the-vo-helpline-116-006/"
+    },
+    {
+      "id": "alarmtelefonen",
+      "name": "Alarmtelefonen for barn og unge",
+      "phone": "116 111",
+      "chatUrl": "https://116111.no",
+      "hours": "Døgnåpent",
+      "description": "For barn og unge som opplever vold, overgrep eller omsorgssvikt – og voksne som er bekymret.",
+      "categories": ["minor_at_risk"],
+      "minLevel": "concern",
+      "source": "https://www.ung.no/om/4649_Young_resident_in_Norway_and_in_need_of_help.html"
+    }
+  ]
+}

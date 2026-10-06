@@ -1,0 +1,35 @@
+# Lokalt utviklingsmiljø: PostgreSQL + backend.
+#   cp backend/.env.example backend/.env   (fyll inn ANTHROPIC_API_KEY)
+#   docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: antipsykologen
+      POSTGRES_PASSWORD: antipsykologen
+      POSTGRES_DB: antipsykologen
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U antipsykologen"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgres://antipsykologen:antipsykologen@db:5432/antipsykologen
+      # Compose kjører lokalt; ikke produksjon.
+      NODE_ENV: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
