@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verksted</title>
+<style>
+  :root { --bg:#f5f7f4; --card:#fff; --text:#3a4a3f; --muted:#7a8a7f; --accent:#a8c5b0; --line:#e5ebe6; --warn:#c9a26b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --line:#3a4a3f; }
+  }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); margin:0; padding:20px 16px 60px; line-height:1.45; }
+  main { max-width:1100px; margin:0 auto; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:.9rem; margin:0 0 16px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  input, select, textarea { font:inherit; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  textarea { width:100%; }
+  button { font:inherit; background:var(--accent); color:#1a1f1c; border:none; border-radius:10px; padding:10px 14px; font-weight:600; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--text); border:1px solid var(--line); font-weight:500; }
+  button.small { padding:4px 10px; font-size:.85rem; }
+  .board { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .col { background:transparent; border:1px dashed var(--line); border-radius:12px; padding:8px; min-height:80px; }
+  .col h2 { font-size:.8rem; letter-spacing:.06em; color:var(--muted); margin:2px 4px 8px; }
+  .chip { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px; margin-bottom:6px; cursor:pointer; font-size:.9rem; }
+  .chip.sel { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+  .chip small { display:block; color:var(--muted); font-size:.75rem; }
+  .detail { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin-top:16px; }
+  .detail h3 { margin:0 0 8px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0; }
+  .check label { display:flex; gap:8px; align-items:flex-start; margin:4px 0; font-size:.92rem; }
+  pre { white-space:pre-wrap; background:var(--bg); border-radius:10px; padding:10px; font-size:.82rem; }
+  .muted { color:var(--muted); font-size:.85rem; }
+  .log li { font-size:.85rem; margin:2px 0; }
+  .toast { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:8px 14px; border-radius:10px; font-size:.9rem; display:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Verksted</h1>
+  <p class="sub">Idé → ferdig produkt. Alt blir på denne enheten. Eksporter for å ta det med deg.</p>
+
+  <div class="bar">
+    <input id="newTitle" placeholder="Ny idé (fang den nå)" style="flex:1;min-width:180px">
+    <select id="newFormat"></select>
+    <button onclick="addCard()">Fang</button>
+    <button class="ghost" onclick="exportJSON()">Eksporter</button>
+    <label class="ghost" style="border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer">Importer<input type="file" accept="application/json" id="imp" hidden></label>
+  </div>
+
+  <div class="board" id="board"></div>
+  <div id="detail"></div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const STEPS = ['FANG','LAB','BRIEF','LAG','HULL','LEVER','SPRE','LOGG'];
+const FORMATS = ['tekst','vibecode','kode','bilde','video','lyd','annet'];
+
+// Sjekkliste per steg (felles) + tillegg per format i LAG/HULL. Speiler workflow/formater/*.md
+const CHECK = {
+  FANG:['Rått notat limt inn ordrett','Problem i én setning','For hvem (én konkret person)'],
+  LAB:['Lab-prompt kjørt','Minst 3 idéer drept med grunn','Overlevende #1 skrevet (≤3 setninger)','IRP: hva kan gå galt'],
+  BRIEF:['Format bestemt','Ramme satt (48t?)','Data og personvern avklart','«Ferdig når» = 3 sjekkbare punkt','Kanal for SPRE valgt'],
+  LAG:['Utkast laget etter formatløypa'],
+  HULL:['60-sekunders-test med fremmed (eller frisk nettleser)','Blokkere listet','Fikset eller parkert under «Mangler fortsatt»'],
+  LEVER:['Versjon + dato','RUN/README: åpne, hva lagres','Filer på plass i repo/mappe'],
+  SPRE:['Kanal-versjoner laget','Publisert eller bevisst lagt i skuffen','Lenker lagret'],
+  LOGG:['Linje i LOGG.md','Neste steg skrevet']
+};
+const FMT = {
+  tekst:{LAG:['Råutkast i én økt','Fakta-pass: kilde på hvert tall','Kutt første avsnitt','Slutt uten oppsummering'],HULL:['Første setning sier hva det handler om','Påstander om navngitte personer dokumentert']},
+  vibecode:{LAG:['Én fil, inline CSS/JS','Prompt-kjede lagret','localStorage, ingen sky','«Alt blir på denne enheten» i UI','Commit per fungerende bit'],HULL:['Frisk nettleser uten data','Ingen alert()/døde knapper','Export av data finnes','Testet på ekte iPhone']},
+  kode:{LAG:['Egen branch','Røyktest i CI','Nye pakker begrunnet','Ingen hemmeligheter i repo'],HULL:['Fersk klon → README → kjører','Lint/typer/tester grønt','Egen diff lest fiendtlig']},
+  bilde:{LAG:['Motiv i én setning','Kilde valgt (eget > skisse > AI)','Format per kanal','Prompt/kilde lagret ved siden av'],HULL:['2-sekunders telefontest','Tekst lesbar smått','Rettigheter/samtykke','Alt-tekst']},
+  video:{LAG:['Manus: krok, poeng, slutt','Opptak med god lyd','Klippet i Descript','Teksting'],HULL:['Første 2 sekunder holder','Forståelig uten lyd','Private data blurret','Musikklisens']},
+  lyd:{LAG:['Manus/stikkord','Opptak i stille rom','Fyllord fjernet, normalisert'],HULL:['Mobilhøyttaler-test','Første 10 sek forklarer']},
+  annet:{LAG:['Mottaker og filformat avklart'],HULL:['Testet med én som ikke har sett det']}
+};
+
+let state = load();
+let selected = null;
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem('verksted') || 'null');
+    if (s && Array.isArray(s.cards)) return s;
+  } catch (e) {}
+  const today = new Date().toISOString().slice(0,10);
+  return { cards:[
+    { id:'pusterom', title:'Rolig Pusterom 1.2', format:'vibecode', step:'BRIEF', notes:'PWA/ikon, dark mode, iPhone-test. SPRE: demo-video 9:16.', checks:{}, log:[[ '2026-08-29','LEVER','1.1 levert' ]] },
+    { id:'bule', title:'Bule og motstand', format:'annet', step:'FANG', notes:'Xff talenotat 04.10: «Lag en liste som heter Bule og motstand.»', checks:{}, log:[[ '2026-10-04','FANG','Talenotat' ]] }
+  ], created: today };
+}
+function save() { try { localStorage.setItem('verksted', JSON.stringify(state)); } catch (e) { toast('Kunne ikke lagre lokalt'); } }
+function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(()=>el.style.display='none', 1800); }
+function el(tag, props, ...kids) { const e = document.createElement(tag); Object.assign(e, props||{}); kids.flat().forEach(k => e.append(k)); return e; }
+function today() { return new Date().toISOString().slice(0,10); }
+
+function render() {
+  const board = document.getElementById('board');
+  board.replaceChildren(...STEPS.map(step => {
+    const col = el('div', {className:'col'}, el('h2', {textContent:step}));
+    state.cards.filter(c => c.step === step).forEach(c => {
+      const chip = el('div', {className:'chip' + (c.id === selected ? ' sel' : ''), onclick:()=>{ selected = c.id; render(); }},
+        c.title, el('small', {textContent:c.format}));
+      col.append(chip);
+    });
+    return col;
+  }));
+  renderDetail();
+}
+
+function itemsFor(c) { return [...CHECK[c.step], ...((FMT[c.format]||{})[c.step] || [])]; }
+
+function renderDetail() {
+  const d = document.getElementById('detail');
+  const c = state.cards.find(x => x.id === selected);
+  if (!c) { d.replaceChildren(el('p', {className:'muted', textContent:'Velg et kort. Flytt ett kort ett steg i dag. Det er nok.'})); return; }
+  const i = STEPS.indexOf(c.step);
+  const fmt = el('select', {onchange:e=>{ c.format = e.target.value; save(); render(); }}, FORMATS.map(f => el('option', {value:f, textContent:f, selected:f===c.format})));
+  const notes = el('textarea', {rows:4, value:c.notes||'', placeholder:'Notater, brief, lenker…', oninput:e=>{ c.notes = e.target.value; save(); }});
+  const key = c.step + ':' + c.format;
+  c.checks[key] = c.checks[key] || {};
+  const items = itemsFor(c);
+  const check = el('div', {className:'check'}, items.map((t, n) => {
+    const cb = el('input', {type:'checkbox', checked:!!c.checks[key][n], onchange:e=>{ c.checks[key][n] = e.target.checked; save(); }});
+    return el('label', {}, cb, el('span', {textContent:t}));
+  }));
+  const log = el('ul', {className:'log'}, (c.log||[]).slice().reverse().map(l => el('li', {textContent:l.join(' · ')})));
+  const parts = [
+    el('h3', {textContent:c.title}),
+    el('div', {className:'row'},
+      el('button', {className:'ghost small', textContent:'← ' + (STEPS[i-1]||''), disabled:i===0, onclick:()=>move(c,-1)}),
+      el('strong', {textContent:c.step}),
+      el('button', {className:'small', textContent:(STEPS[i+1]||'') + ' →', disabled:i===STEPS.length-1, onclick:()=>move(c,1)}),
+      fmt),
+    el('p', {className:'muted', textContent:'Sjekkliste for ' + c.step + ' (' + c.format + ') — se workflow/formater/' + c.format + '.md'}),
+    check,
+    notes
+  ];
+  if (c.step === 'LAB' || c.step === 'FANG') {
+    parts.push(el('div', {className:'row'}, el('button', {className:'ghost small', textContent:'Lag lab-prompt', onclick:()=>copy(labPrompt(c), 'Lab-prompt kopiert')})));
+  }
+  parts.push(el('div', {className:'row'},
+    el('button', {className:'ghost small', textContent:'Kopier logglinje', onclick:()=>copy(logLine(c), 'Logglinje kopiert — lim i LOGG.md')}),
+    el('button', {className:'ghost small', textContent:'Slett kort', onclick:()=>del(c)})));
+  parts.push(el('p', {className:'muted', textContent:'Logg'}), log);
+  d.replaceChildren(el('div', {className:'detail'}, parts));
+}
+
+function move(c, dir) {
+  const i = STEPS.indexOf(c.step) + dir;
+  if (i < 0 || i >= STEPS.length) return;
+  c.log = c.log || [];
+  c.log.push([today(), STEPS[i], (dir > 0 ? 'fra ' : 'tilbake fra ') + c.step]);
+  c.step = STEPS[i];
+  save(); render();
+}
+function addCard() {
+  const inp = document.getElementById('newTitle');
+  const title = inp.value.trim();
+  if (!title) { inp.focus(); return; }
+  const c = { id: Date.now().toString(36), title, format: document.getElementById('newFormat').value, step:'FANG', notes:'', checks:{}, log:[[today(),'FANG','Fanget']] };
+  state.cards.push(c); selected = c.id; inp.value = '';
+  save(); render();
+}
+function del(c) {
+  if (!confirm('Slette «' + c.title + '»?')) return;
+  state.cards = state.cards.filter(x => x !== c); selected = null; save(); render();
+}
+function labPrompt(c) {
+  const problem = (c.notes || c.title).replace(/\s+/g,' ').slice(0,180);
+  return 'Grok-bot runtime. /lab. Klasse M.\nPROBLEM: ' + c.title + '. ' + problem +
+    '\nBRUKER: én person, lokal, ingen sky\nRAMMER: 48t, lokal-first, ingen marketplace, ingen app+sky\nDNA: <fyll inn>\nLEVERANSE: ideer\nFORMAT: ' + c.format +
+    '\nSeed 7. Drepe minst 3. IRP på overlevende #1.\nSkriv IDE ≤3 setninger på nynorsk. Stopp.\nIkke nytt OS.';
+}
+function logLine(c) {
+  const last = (c.log||[]).slice(-1)[0] || [today(), c.step, ''];
+  return '- ' + today() + ' · ' + c.title + ' · ' + c.step + ' · ' + last[2] + ' · Neste: ';
+}
+function copy(text, msg) {
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast(msg), ()=>prompt('Kopier:', text));
+  else prompt('Kopier:', text);
+}
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = el('a', {href:URL.createObjectURL(blob), download:'verksted-' + today() + '.json'});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+document.getElementById('imp').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  f.text().then(t => {
+    const s = JSON.parse(t);
+    if (!Array.isArray(s.cards)) throw new Error();
+    state = s; selected = null; save(); render(); toast('Importert');
+  }).catch(()=>toast('Fila var ikke en verksted-eksport'));
+  e.target.value = '';
+});
+document.getElementById('newTitle').addEventListener('keydown', e => { if (e.key === 'Enter') addCard(); });
+document.getElementById('newFormat').replaceChildren(...FORMATS.map(f => el('option', {value:f, textContent:f})));
+render();
+</script>
+</body>
+</html>
