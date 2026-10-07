@@ -194,6 +194,76 @@
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
+  .reminder {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: 440px;
+    margin: 0 auto;
+    background: var(--soft-beige);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    display: none;
+    z-index: 10;
+  }
+  .reminder.show { display: block; }
+  .reminder-body { color: var(--muted); font-size: 0.9rem; margin: 2px 0 10px; }
+  .reminder-actions { display: flex; gap: 8px; }
+  .reminder-actions button {
+    flex: 1;
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: var(--accent);
+    color: #2a3a2f;
+  }
+  .reminder-actions button + button { background: var(--card); }
+  .next-up {
+    background: var(--soft-blue);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  .plan-row {
+    background: var(--card);
+    border: 1px solid #e8eee9;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+  }
+  .plan-row.off { opacity: 0.55; }
+  .plan-row input[type=time],
+  .plan-row input[type=text],
+  .plan-row select {
+    border: 1px solid #e0e6e1;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    min-width: 0;
+  }
+  .plan-row select { grid-column: 1 / 3; }
+  .plan-row .row-tools { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+  .plan-row .row-tools button {
+    background: none;
+    border: 1px solid #e0e6e1;
+    border-radius: 10px;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .plan-status { font-size: 0.8rem; color: var(--muted); grid-column: 1 / -1; }
   .summary {
     background: var(--soft-beige);
     border-radius: 16px;
@@ -205,8 +275,18 @@
 </head>
 <body>
 
+<div class="reminder" id="reminder" role="status" aria-live="polite">
+  <strong id="reminderTitle"></strong>
+  <div class="reminder-body" id="reminderBody"></div>
+  <div class="reminder-actions">
+    <button id="reminderGo">Gjør nå</button>
+    <button id="reminderLater">Om 10 min</button>
+  </div>
+</div>
+
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
+  <div class="next-up" id="nextUp"></div>
   <p class="support">Hvordan har du det akkurat nå?</p>
   <div class="mood-scale" id="moodScale">
     <button class="mood-btn" data-mood="1">😔</button>
@@ -243,11 +323,22 @@
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
 
+<div id="page-plan" class="page">
+  <h1>Faste tider</h1>
+  <p class="support">Små ting, samme tid hver dag. Appen minner deg når klokka slår.</p>
+  <div id="planList"></div>
+  <button class="btn btn-secondary" onclick="addPlanItem()">+ Legg til tid</button>
+  <button class="btn btn-secondary" id="notifyBtn" onclick="enableNotifications()">Slå på varsler</button>
+  <button class="btn" style="margin-top:12px" onclick="exportIcs()">Legg i kalenderen (.ics)</button>
+  <p class="support" style="margin-top:16px;font-size:0.85rem">Varsler i appen kommer bare mens den er åpen. Kalenderfila varsler hver dag selv om appen er lukket. Lag den på nytt når du endrer tider.</p>
+</div>
+
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="plan" onclick="switchPage('plan')"><span>⏰</span>Plan</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -299,10 +390,10 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  if (name === 'plan') renderPlan();
 }
 
 function toggleBreath() {
@@ -389,9 +480,210 @@ function renderHistory() {
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
+// --- Faste tider ---
+const PLAN_TYPES = {
+  checkin: { label: 'Sjekk inn', page: 'hjem', body: 'Hvordan har du det nå?' },
+  pust: { label: 'Pust', page: 'pusterom', body: 'To minutter. Følg sirkelen.' },
+  grep: { label: 'Små grep', page: 'grep', body: 'Velg ett lite grep.' },
+  egen: { label: 'Egen', page: 'hjem', body: 'Det er tid.' }
+};
+const DEFAULT_PLAN = [
+  { id: 'p1', time: '08:00', type: 'checkin', label: 'Morgen-sjekk', on: true },
+  { id: 'p2', time: '12:30', type: 'pust', label: 'Pust midt på dagen', on: true },
+  { id: 'p3', time: '15:00', type: 'grep', label: 'Ett lite grep', on: true },
+  { id: 'p4', time: '21:30', type: 'checkin', label: 'Kvelds-sjekk', on: true }
+];
+const GRACE_MIN = 30; // åpner du appen senere enn dette, blir varselet hoppet over
+const SNOOZE_MIN = 10;
+let snoozed = {}; // id -> minutt på døgnet
+let activeReminder = null;
+
+function loadPlan() {
+  const raw = localStorage.getItem('plan');
+  const plan = raw ? JSON.parse(raw) : DEFAULT_PLAN.map(p => ({ ...p }));
+  return plan.sort((a, b) => a.time.localeCompare(b.time));
+}
+function savePlan(plan) { localStorage.setItem('plan', JSON.stringify(plan)); }
+function toMin(hhmm) { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; }
+function nowMin() { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+function getFired() {
+  const f = JSON.parse(localStorage.getItem('planFired') || '{}');
+  return f.day === new Date().toDateString() ? f : { day: new Date().toDateString(), ids: [] };
+}
+function setFired(id, fired) {
+  const f = getFired();
+  f.ids = f.ids.filter(x => x !== id);
+  if (fired) f.ids.push(id);
+  localStorage.setItem('planFired', JSON.stringify(f));
+}
+function planTitle(p) { return p.label || PLAN_TYPES[p.type].label; }
+
+function checkPlan() {
+  const now = nowMin();
+  const fired = getFired();
+  for (const p of loadPlan()) {
+    if (!p.on || fired.ids.includes(p.id)) continue;
+    const due = snoozed[p.id] ?? toMin(p.time);
+    if (now >= due && now - due <= GRACE_MIN) {
+      setFired(p.id, true);
+      delete snoozed[p.id];
+      remind(p);
+      break;
+    }
+  }
+  renderNext();
+}
+
+function remind(p) {
+  const t = PLAN_TYPES[p.type];
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+    try {
+      const n = new Notification(planTitle(p), { body: t.body, tag: p.id });
+      n.onclick = () => { window.focus(); switchPage(t.page); hideReminder(); n.close(); };
+    } catch (e) { /* iOS utenfor hjemskjerm: kun banner */ }
+  }
+  activeReminder = p;
+  document.getElementById('reminderTitle').textContent = p.time + ' · ' + planTitle(p);
+  document.getElementById('reminderBody').textContent = t.body;
+  document.getElementById('reminder').classList.add('show');
+}
+function hideReminder() {
+  activeReminder = null;
+  document.getElementById('reminder').classList.remove('show');
+}
+document.getElementById('reminderGo').addEventListener('click', () => {
+  if (activeReminder) switchPage(PLAN_TYPES[activeReminder.type].page);
+  hideReminder();
+});
+document.getElementById('reminderLater').addEventListener('click', () => {
+  if (activeReminder) {
+    snoozed[activeReminder.id] = nowMin() + SNOOZE_MIN;
+    setFired(activeReminder.id, false);
+  }
+  hideReminder();
+  renderNext();
+});
+
+function renderNext() {
+  const now = nowMin();
+  const fired = getFired();
+  const next = loadPlan().find(p => p.on && !fired.ids.includes(p.id) && toMin(p.time) >= now);
+  document.getElementById('nextUp').textContent = next
+    ? 'Neste: ' + next.time + ' · ' + planTitle(next)
+    : 'Ingen flere faste tider i dag.';
+}
+
+function renderPlan() {
+  const plan = loadPlan();
+  const fired = getFired();
+  const list = document.getElementById('planList');
+  list.innerHTML = '';
+  plan.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'plan-row' + (p.on ? '' : ' off');
+
+    const time = document.createElement('input');
+    time.type = 'time';
+    time.value = p.time;
+    time.addEventListener('change', () => { if (time.value) updatePlanItem(p.id, { time: time.value }); });
+
+    const label = document.createElement('input');
+    label.type = 'text';
+    label.value = p.label;
+    label.placeholder = PLAN_TYPES[p.type].label;
+    label.addEventListener('change', () => updatePlanItem(p.id, { label: label.value.trim() }));
+
+    const tools = document.createElement('div');
+    tools.className = 'row-tools';
+    const toggle = document.createElement('button');
+    toggle.textContent = p.on ? 'På' : 'Av';
+    toggle.addEventListener('click', () => updatePlanItem(p.id, { on: !p.on }));
+    const del = document.createElement('button');
+    del.textContent = '✕';
+    del.setAttribute('aria-label', 'Slett');
+    del.addEventListener('click', () => { savePlan(loadPlan().filter(x => x.id !== p.id)); renderPlan(); renderNext(); });
+    tools.append(toggle, del);
+
+    const type = document.createElement('select');
+    Object.entries(PLAN_TYPES).forEach(([k, t]) => {
+      const o = document.createElement('option');
+      o.value = k;
+      o.textContent = t.label;
+      o.selected = k === p.type;
+      type.appendChild(o);
+    });
+    type.addEventListener('change', () => updatePlanItem(p.id, { type: type.value }));
+
+    const status = document.createElement('div');
+    status.className = 'plan-status';
+    status.textContent = !p.on ? 'Av' : fired.ids.includes(p.id) ? 'Varslet i dag' : toMin(p.time) < nowMin() ? 'Passert i dag' : 'Kommer i dag';
+
+    row.append(time, label, tools, type, status);
+    list.appendChild(row);
+  });
+  updateNotifyBtn();
+}
+function updatePlanItem(id, patch) {
+  savePlan(loadPlan().map(p => p.id === id ? { ...p, ...patch } : p));
+  renderPlan();
+  renderNext();
+}
+function addPlanItem() {
+  const plan = loadPlan();
+  plan.push({ id: 'p' + Date.now().toString(36), time: '18:00', type: 'pust', label: '', on: true });
+  savePlan(plan);
+  renderPlan();
+  renderNext();
+}
+
+function updateNotifyBtn() {
+  const btn = document.getElementById('notifyBtn');
+  if (!('Notification' in window)) { btn.textContent = 'Varsler støttes ikke her'; btn.disabled = true; return; }
+  if (Notification.permission === 'granted') { btn.textContent = 'Varsler er på'; btn.disabled = true; }
+  else if (Notification.permission === 'denied') { btn.textContent = 'Varsler er blokkert i nettleseren'; btn.disabled = true; }
+}
+function enableNotifications() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(updateNotifyBtn);
+}
+
+function exportIcs() {
+  const pad = n => String(n).padStart(2, '0');
+  const d = new Date();
+  const ymd = '' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate());
+  const stamp = d.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const esc = s => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Pusterom//Faste tider//NO', 'CALSCALE:GREGORIAN'];
+  loadPlan().filter(p => p.on).forEach(p => {
+    const t = PLAN_TYPES[p.type];
+    lines.push(
+      'BEGIN:VEVENT',
+      'UID:' + p.id + '@pusterom.local',
+      'DTSTAMP:' + stamp,
+      'DTSTART:' + ymd + 'T' + p.time.replace(':', '') + '00',
+      'DURATION:PT5M',
+      'RRULE:FREQ=DAILY',
+      'SUMMARY:' + esc(planTitle(p)),
+      'DESCRIPTION:' + esc(t.body),
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(planTitle(p)), 'TRIGGER:PT0M', 'END:VALARM',
+      'END:VEVENT'
+    );
+  });
+  lines.push('END:VCALENDAR');
+  const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-plan.ics';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
 // init
 renderActions();
 renderHistory();
+checkPlan();
+setInterval(checkPlan, 20000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkPlan(); });
 </script>
 </body>
 </html>
