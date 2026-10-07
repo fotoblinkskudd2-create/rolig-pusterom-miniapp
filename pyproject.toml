@@ -1,0 +1,16 @@
+[project]
+name = "motorer"
+version = "0.1.0"
+description = "Kontrollmotor (portvakt) og Slusen (B2B-CRM) oppå grokkjerne"
+requires-python = ">=3.10"
+dependencies = ["pyyaml>=6"]
+
+[project.scripts]
+kontroll = "kontroll.__main__:main"
+slusen = "slusen.__main__:main"
+
+[tool.setuptools]
+packages = ["grokkjerne", "kontroll", "slusen"]
+
+[tool.setuptools.package-data]
+kontroll = ["regler.yaml", "testsett/*.yaml"]

@@ -1,0 +1,21 @@
+name: motorer
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      KONTROLL_DOMMER: "av"   # CI tester lag 1 deterministisk; dommeren mockes i enhetstestene
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Enhetstester
+        run: python -m unittest discover -s tests -v
+      - name: Kontroll-testsett (feiler under 95 %)
+        run: python -m kontroll eval --min 0.95

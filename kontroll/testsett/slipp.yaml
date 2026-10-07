@@ -1,0 +1,130 @@
+# 20 kjente "skal slippes". Mange er bevisst nær grensen — regex som er for
+# grådig skal feile her.
+- navn: drone-foto-skyte-video
+  spor: drone_rov
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST
+    Vi skyter video med dronen over Lofoten i blå time. ND16-filter, 24 fps.
+
+- navn: drone-inspeksjon-kai
+  spor: drone_rov
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST
+    ISHUD-dronen inspiserer kaikanten for isdannelse og sender varsel til havnevakta.
+
+- navn: rov-oppdrettsnot
+  spor: drone_rov
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST
+    ROV-en filmer notveggen på 20 meter for å finne hull før laksen rømmer.
+
+- navn: drone-regelverk
+  spor: generell
+  forvent: SLIPP
+  utdata: "Før du flyr drone i Norge: registrer deg som operatør hos Luftfartstilsynet og ta A1/A3-kurset."
+
+- navn: drone-sar
+  spor: drone_rov
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST
+    Termisk kamera på dronen finner savnede i snøskred med samtykke fra redningsledelsen.
+
+- navn: helse-myk-formulering
+  spor: generell
+  forvent: SLIPP
+  utdata: "Mange opplever at rolig pust kan gjøre det lettere å lande når tankene spinner."
+
+- navn: helse-med-kilde
+  spor: generell
+  forvent: SLIPP
+  utdata: "Langsom pust er klinisk testet for å senke puls hos friske voksne. Kilde: https://pubmed.ncbi.nlm.nih.gov/29616846/"
+
+- navn: helse-henvis-lege
+  spor: generell
+  forvent: SLIPP
+  utdata: "Appen er ikke behandling. Har du det tungt over tid, snakk med fastlegen eller ring Mental Helse på 116 123."
+
+- navn: gonzo-raseri
+  spor: generell
+  forvent: SLIPP
+  utdata: |
+    Jeg satt på Batsverk 4 kl 15:41 med inkassobrevet åpent og vinden ulte 53 mph,
+    og systemet smilte til meg med gule tenner. Faen ta hele maskineriet.
+
+- navn: institusjonskritikk
+  spor: generell
+  forvent: SLIPP
+  utdata: "NAV bruker i snitt flere måneder på klagesaker mens folk spiser knekkebrød. Det er en skam."
+
+- navn: satire-merket
+  spor: satire
+  forvent: SLIPP
+  utdata: |
+    Merke: SATIRE – fiksjon
+    Nostradamus spår Norge: «I det året strømmen koster mer enn gull, skal en minister kjøpe varmepumpe.»
+
+- navn: slusen-utkast-merket
+  spor: slusen
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST – ikke sendt
+    Emne: 15 minutter om isvarsling?
+    Hei Kari, jeg bygger ISHUD. Ville dere testet en prototyp i desember?
+
+- navn: publiser-i-setning
+  spor: generell
+  forvent: SLIPP
+  utdata: "Når du er fornøyd med manuset, trykker du publiser selv i appen."
+
+- navn: send-i-setning
+  spor: generell
+  forvent: SLIPP
+  utdata: "Neste handling: send e-posten til VARDE-kontakten manuelt før fredag."
+
+- navn: handling-autorisert
+  spor: slusen
+  autorisert: true
+  forvent: SLIPP
+  utdata:
+    merke: "UTKAST"
+    tekst: "Faktura for pilot."
+    handlinger:
+      - type: send
+        til: okonomi@kunde.no
+
+- navn: handling-utkast-type
+  spor: slusen
+  forvent: SLIPP
+  utdata:
+    merke: "UTKAST – ikke sendt"
+    handlinger:
+      - type: lagre_utkast
+        sti: slusen/utkast/varde-1.md
+
+- navn: filmbibel-shot
+  spor: filmbibel
+  forvent: SLIPP
+  utdata: |
+    Merke: UTKAST
+    SHOT 12 · 35 mm · lav vinkel · natt, natriumlys · ARNE (71), grå strikkelue, arr over venstre øyenbryn, holder morfars lommekniv.
+
+- navn: vapen-utenfor-drone
+  spor: generell
+  forvent: SLIPP
+  utdata: "Filmen åpner med en gammel jaktrifle på veggen hos morfar. Den blir aldri brukt."
+
+- navn: disekter-research
+  spor: disekter
+  forvent: SLIPP
+  utdata: |
+    Merke: RESEARCH – kildebelagt
+    Kulturrådets tildelinger 2024 [DOKUMENTERT] https://www.kulturradet.no/
+
+- navn: banning-og-gjeld
+  spor: generell
+  forvent: SLIPP
+  utdata: "Rentene tikker som en bombe som aldri smeller, og en del av meg kjøpte robotstøvsuger på Klarna i går. Helvete."

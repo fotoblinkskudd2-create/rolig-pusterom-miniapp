@@ -1,0 +1,115 @@
+# KONTROLLMOTOR — regelsett
+# Reglene ligger HER, ikke i prompten. Dommeren (lag 2) får dem lest opp herfra.
+# Alle mønstre er Python-regex, matches case-insensitivt, linje for linje.
+#
+# utfall:  STOPP  → avvises, logges til kontroll/avvist.jsonl
+#          RETT   → returnerer foreslått fiks, ingenting lagres før det er rettet
+# gjelder: "alle", et spor-navn, eller en liste spor. Et spor kan også slås på
+#          av innholdet selv (se kontekster) — droneprat i et "generell"-spor er
+#          fortsatt droneprat.
+
+versjon: 1
+
+kontekster:
+  drone_rov: 'drone|\brov\b|\buav\b|\buas\b|quadcopter|multirotor|\bfpv\b|undervannsfarkost'
+
+merke:
+  felt: Merke
+  # Spor der output MÅ ha et Merke-felt (tekst: linje "Merke: ...", dict: nøkkel "merke").
+  # Gjelder kun sporet motoren oppgir — ikke spor som slås på av innholdet.
+  paakrevd_for: [satire, disekter, slusen, filmbibel, drone_rov]
+  standard: "UTKAST – ikke publisert, ikke sendt"
+  # Spor der Merke-feltet i tillegg må inneholde et bestemt ord.
+  maa_inneholde:
+    satire: SATIRE
+
+regler:
+  # ── Drone / ROV ────────────────────────────────────────────────
+  - id: drone-vapen
+    gjelder: drone_rov
+    utfall: STOPP
+    grunn: Våpen, eksplosiver eller skadelig nyttelast i drone/ROV-spor.
+    monstre:
+      - 'v[åa]pen'
+      - 'bev[æa]pn'
+      - 'weapon'
+      - 'sprengst'
+      - 'eksplosiv'
+      - 'explosive'
+      - 'granat'
+      - 'grenade'
+      - '\bbomb'
+      - 'skytev[åa]pen'
+      - 'ammunisjon'
+      - 'slipp\w* .{0,30}(over|p[åa]) (folk|mennesker|personer|demonstranter)'
+
+  - id: drone-jamming
+    gjelder: drone_rov
+    utfall: STOPP
+    grunn: Jamming, spoofing eller forstyrrelse av radio/GNSS i drone/ROV-spor.
+    monstre:
+      - 'jamm'
+      - 'st[øo]ysend'
+      - 'spoof'
+      - 'deauth'
+      - 'signalblokk'
+      - 'forstyrr\w* .{0,25}(gps|gnss|radio|signal|sambands|kontrollsignal)'
+      - '(sl[åa]|ta) ut .{0,20}(gps|gnss|radio|signal)'
+
+  - id: drone-skjult-sporing
+    gjelder: drone_rov
+    utfall: STOPP
+    grunn: Skjult sporing eller overvåking av personer i drone/ROV-spor.
+    monstre:
+      - 'skjult (sporing|overv[åa]k|gps|sender|tracker|kamera)'
+      - 'hemmelig (sporing|overv[åa]k|f[øo]lg)'
+      - 'covert (tracking|surveillance)'
+      - 'uten at (han|hun|hen|de|naboen|personen|m[åa]let) (vet|merker|oppdager)'
+      - 'uten (deres|hans|hennes|personens) (samtykke|viten)'
+      - 'f[øo]lg\w* etter .{0,25}(person|naboen|eks|kona|mannen|kj[æa]resten)'
+
+  # ── Helse ──────────────────────────────────────────────────────
+  - id: helse-udokumentert
+    gjelder: alle
+    utfall: STOPP
+    unntak: kilde_i_linje      # en URL eller "Kilde:" på samme linje løfter påstanden til lag 2
+    grunn: Udokumentert helsepåstand. Legg ved kilde eller fjern påstanden.
+    monstre:
+      - 'kurer(er|e|t)\b'
+      - 'helbred(er|e)\b'
+      - '(fjerner|eliminerer|stopper|kurerer) (all |din )?(angst|depresjon|ptsd|kreft|adhd|smerte|stress|panikk)'
+      - 'behandl(er|e) (angst|depresjon|ptsd|kreft|adhd|did|spiseforstyrr)'
+      - '(klinisk|vitenskapelig|medisinsk) (bevist|dokumentert|testet|godkjent)'
+      - 'erstatt\w* (medisin|terapi|psykolog|lege|behandling|antidepressiva)'
+      - '100 ?% (effektiv|sikker|garantert|virkning)'
+      - 'garantert (bedring|effekt|resultat|helbred)'
+      - 'forebygg\w* (selvmord|kreft|demens|hjerteinfarkt)'
+      - '(slutte|kutte|droppe) (med )?(medisin\w*|antidepressiva|lithium|ssri)'
+
+  # ── Eksterne handlinger ────────────────────────────────────────
+  - id: ekstern-handling
+    gjelder: alle
+    utfall: STOPP
+    autorisert_overstyrer: true
+    grunn: Ekstern handling (sende, kjøpe, publisere, betale) uten --autorisert.
+    # Strukturert output: {"handlinger": [{"type": "send", ...}]}
+    handlingstyper: [send, sende, epost, sms, kjop, kjøp, betal, publiser, post, poste, tweet, last_opp]
+    # Tekst-output: eksplisitte kommandoer og automatikk — ikke ordet "publiser" i en setning.
+    monstre:
+      - '^\s*(SEND|PUBLISER|KJ[ØO]P|BETAL|POST)\s*:'
+      - '(sendes|publiseres|postes|kj[øo]pes|betales) automatisk'
+      - 'auto-?(publiser|post|send|kj[øo]p)'
+      - '\b(smtplib|sendmail|requests\.post|tweepy|stripe\.charge)'
+
+dommer:
+  aktiv: true
+  # Nøkkel finnes men kallet feiler / svaret er søppel → fail closed.
+  ved_feil: STOPP
+  instruks: |
+    Du er portvakt. Du vurderer ÉN output fra en motor mot reglene under.
+    Lag 1 (regex) har allerede sluppet den gjennom; din jobb er det regex ikke ser:
+    omskrivninger, eufemismer, implisitte helsepåstander, våpen beskrevet uten
+    nøkkelord, handlinger som utføres uten å si det rett ut.
+    Vær streng på regelbrudd. Vær IKKE streng på tone, banning, satire eller
+    kritikk av institusjoner — det er tillatt.
+    Svar KUN med JSON: {"status": "SLIPP"|"STOPP"|"RETT", "grunn": "...", "linje": <int eller null>, "fiks": "<foreslått omskriving hvis RETT, ellers null>"}
