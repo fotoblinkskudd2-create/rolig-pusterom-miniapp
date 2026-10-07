@@ -1,0 +1,18 @@
+# Hemmeligheter
+.env
+.env.*
+!.env.example
+
+# Kjøredata (lokal sannhet, ikke git)
+logs/
+runs/
+mrart-rapport.html
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+build/
+dist/
