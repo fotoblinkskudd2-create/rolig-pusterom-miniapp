@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beslutningslogg</title>
+<style>
+  :root { --bg: #f7f5f0; --text: #3a4a3f; --muted: #7a8a7f; --line: #e5ebe6; --warn: #a8552f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1d221f; --text: #e4ebe6; --muted: #93a398; --line: #333c36; --warn: #e3946b; }
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; margin: 0; padding: 20px 16px 60px; }
+  h1 { font-size: 1.3rem; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
+  .stat { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .stat b { display: block; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: .8rem; }
+  .wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; }
+  .esc { color: var(--warn); }
+  a { color: var(--text); }
+</style>
+</head>
+<body>
+<h1>Beslutningslogg</h1>
+<p style="color:var(--muted)">Alt leses fra denne enheten. Ingenting sendes. Oppdateres hvert 2. sekund.</p>
+<div class="stats" id="stats"></div>
+<div class="wrap"><table>
+  <thead><tr><th>Tid</th><th>Spørsmål</th><th>Alternativer</th><th>Etikett</th><th>Confidence</th><th>Kilde</th><th>ms</th><th>Kostnad</th><th>Utfall (verifisert)</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table></div>
+<p><a href="index.html">Tilbake</a></p>
+<script src="decision/router.js"></script>
+<script>
+function render() {
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem('decisions') || '[]'); } catch (e) {}
+  const graded = log.filter(e => e.correct !== undefined);
+  const b = Decision.brier(graded);
+  const esc = log.filter(e => e.escalated).length;
+  const gen = log.filter(e => e.source === 'jev').length;
+  document.getElementById('stats').innerHTML = [
+    [log.length, 'beslutninger'],
+    [gen, 'modellkall'],
+    [log.length ? Math.round(100 * esc / log.length) + ' %' : '–', 'eskalert'],
+    [b == null ? '–' : b.toFixed(3), 'Brier (' + graded.length + ' med utfall)']
+  ].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('');
+  document.getElementById('rows').innerHTML = log.slice(0, 100).map(e => `<tr>
+    <td>${new Date(e.at).toLocaleString('no-NO')}</td><td>${e.question}</td><td>${(e.options || []).join(',')}</td>
+    <td>${e.label ?? '–'}</td><td>${e.confidence ?? '–'}</td>
+    <td class="${e.escalated ? 'esc' : ''}">${e.source}${e.escalated ? ' ↑ ' + (e.reason || '') : ''}</td>
+    <td>${e.ms}</td><td>${e.source === 'jev' ? 'kall' : '0'}</td>
+    <td>${e.outcome === undefined ? '–' : e.outcome + (e.correct ? ' ✓' : ' ✗')}</td></tr>`).join('');
+}
+render();
+setInterval(render, 2000);
+</script>
+</body>
+</html>

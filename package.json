@@ -1,0 +1,7 @@
+{
+  "name": "rolig-pusterom-miniapp",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

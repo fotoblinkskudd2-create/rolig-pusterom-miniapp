@@ -192,6 +192,8 @@
     cursor: pointer;
     padding: 6px 10px;
   }
+  .action-card.suggested { outline: 2px solid var(--text); }
+  .action-card.suggested small { color: var(--muted); }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
   .summary {
@@ -250,6 +252,7 @@
   <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
+<script src="decision/router.js"></script>
 <script>
 const actions = [
   "Gå ut i frisk luft i 5 minutter",
@@ -341,16 +344,33 @@ function runBreathCycle() {
   }
 }
 
-function renderActions() {
+function lastMood() {
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  return list.length ? Number(list[0].mood) : 3;
+}
+
+function logDecision(e) {
+  const log = JSON.parse(localStorage.getItem('decisions') || '[]');
+  log.unshift(e);
+  localStorage.setItem('decisions', JSON.stringify(log.slice(0, 200)));
+}
+
+let suggested = null;
+
+async function renderActions() {
   const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
   const today = new Date().toDateString();
+  const doneToday = done[today] || [];
+  const q = Decision.nextActionQuestion(actions, { mood: lastMood(), hour: new Date().getHours(), doneToday });
+  const d = await Decision.decide(q, { log: logDecision });
+  suggested = d.label == null ? null : Number(d.label);
   const list = document.getElementById('actionsList');
   list.innerHTML = '';
   actions.forEach((a, i) => {
-    const isDone = done[today] && done[today].includes(i);
+    const isDone = doneToday.includes(i);
     const card = document.createElement('div');
-    card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    card.className = 'action-card' + (isDone ? ' done' : '') + (i === suggested ? ' suggested' : '');
+    card.innerHTML = `<span>${i === suggested ? '<small>Forslag nå</small><br>' : ''}${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
     list.appendChild(card);
   });
 }
@@ -363,6 +383,14 @@ function toggleAction(i) {
   if (idx > -1) done[today].splice(idx, 1);
   else done[today].push(i);
   localStorage.setItem('doneActions', JSON.stringify(done));
+  // En etikett er ikke bevis. Utfallet settes først når koden ser grepet lagret.
+  const saved = (JSON.parse(localStorage.getItem('doneActions') || '{}')[today] || []).includes(i);
+  const log = JSON.parse(localStorage.getItem('decisions') || '[]');
+  if (saved && log[0] && log[0].outcome === undefined) {
+    log[0].outcome = String(i);
+    log[0].correct = String(i) === log[0].label;
+    localStorage.setItem('decisions', JSON.stringify(log));
+  }
   renderActions();
 }
 
