@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Test</title>
+<item>
+  <title><![CDATA[Døde mens han ventet på operasjon ved Haukeland - NRK]]></title>
+  <link>https://example.no/a</link>
+  <description>&lt;p&gt;Ventetiden ved sykehuset var over ett år.&lt;/p&gt;</description>
+  <pubDate>Mon, 05 Oct 2026 08:00:00 GMT</pubDate>
+  <source url="https://www.nrk.no">NRK</source>
+</item>
+<item>
+  <title>Fristbrudd øker i hele landet: Oslo og Bergen verst</title>
+  <link>https://example.no/b</link>
+  <description>Pasienter venter lenger på behandling.</description>
+  <pubDate>Sun, 04 Oct 2026 08:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Rosenborg vant 3–0</title>
+  <link>https://example.no/c</link>
+  <description>Fotball i Trondheim.</description>
+  <pubDate>Sun, 04 Oct 2026 08:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Lang ventetid på nytt pass</title>
+  <link>https://example.no/d</link>
+  <description>Politiet har kø.</description>
+  <pubDate>Sat, 03 Oct 2026 08:00:00 GMT</pubDate>
+</item>
+</channel></rss>

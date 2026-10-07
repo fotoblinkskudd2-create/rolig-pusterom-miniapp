@@ -1,0 +1,3 @@
+data/innmeldt/*
+!data/innmeldt/.gitkeep
+node_modules/

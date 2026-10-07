@@ -1,0 +1,14 @@
+{
+  "name": "folkets-regnskap",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Åpen database over offentlig svikt. Staten har alltid hatt dataene om oss. Nå får vi dataene om staten.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "robot": "node scripts/robot.js",
+    "bygg": "node scripts/bygg.js",
+    "test": "node --test test/*.test.js"
+  }
+}

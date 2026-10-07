@@ -1,0 +1,19 @@
+{
+  "omrade": "sykehuskø",
+  "feeds": [
+    { "navn": "Google Nyheter: sykehuskø", "url": "https://news.google.com/rss/search?q=sykehusk%C3%B8&hl=no&gl=NO&ceid=NO:no" },
+    { "navn": "Google Nyheter: fristbrudd", "url": "https://news.google.com/rss/search?q=fristbrudd+sykehus&hl=no&gl=NO&ceid=NO:no" },
+    { "navn": "Google Nyheter: døde i helsekø", "url": "https://news.google.com/rss/search?q=%22d%C3%B8de%22+helsek%C3%B8+OR+ventetid&hl=no&gl=NO&ceid=NO:no" },
+    { "navn": "NRK toppsaker", "url": "https://www.nrk.no/toppsaker.rss" },
+    { "navn": "NRK siste", "url": "https://www.nrk.no/nyheter/siste.rss" }
+  ],
+  "tema": [
+    "sykehuskø", "sykehuskøen", "helsekø", "helsekøen", "behandlingskø", "ventetid", "ventetiden",
+    "ventetider", "venteliste", "ventelisten", "fristbrudd", "pasientrettighet", "døde i kø",
+    "døde mens", "ventet på behandling", "ventet på operasjon", "ventet på time"
+  ],
+  "helseord": [
+    "sykehus", "helseforetak", "pasient", "behandling", "operasjon", "lege", "helse",
+    "psykiatri", "bup", "dps", "kreft", "spesialist", "poliklinikk", "fastlege", "spesialisthelse"
+  ]
+}

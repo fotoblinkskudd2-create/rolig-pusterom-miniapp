@@ -1,0 +1,4 @@
+# Offentlige tall. Én rad per tall. Rader uten https-kilde blir forkastet av bygg.js.
+# Skilletegn: semikolon. Verdi: tall med punktum som desimaltegn.
+# Eksempel (ikke ekte): 2026-T2;Gjennomsnittlig ventetid, påbegynt helsehjelp;60;dager;Helsedirektoratet;https://www.helsedirektoratet.no/statistikk/...
+periode;maal;verdi;enhet;kildenavn;kilde_url
