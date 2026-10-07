@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meld inn – Folkets regnskap</title>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<header class="topp"><div class="ramme">
+  <a class="merke" href="./">Folkets regnskap<span>.</span></a>
+  <nav class="meny"><a href="./">Tallene</a><a href="meld.html" aria-current="page">Meld inn</a><a href="metode.html">Metode og kilder</a></nav>
+</div></header>
+
+<main class="ramme">
+  <h1>Meld inn en sak</h1>
+  <p class="ingress">Anonymt. Ingen navn, ingen fødselsnummer, ingen fritekst. Vi lagrer ikke IP-adresse, nettleser eller klokkeslett – bare svarene under, og bare måneden det skjedde.</p>
+
+  <form id="skjema" novalidate>
+    <fieldset>
+      <legend>Hvilket område?</legend>
+      <div class="valg" id="omrade"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Hva skjedde?</legend>
+      <p class="hjelp">Kryss av alt som stemmer.</p>
+      <div class="valg" id="hendelser"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="ventetid">Hvor lenge ventet du / dere?</label></legend>
+      <select id="ventetid" name="ventetid" required><option value="">Velg …</option></select>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="fylke">Hvilket fylke hører sykehuset til?</label></legend>
+      <select id="fylke" name="fylke" required><option value="">Velg …</option></select>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="fagomrade">Fagområde</label></legend>
+      <select id="fagomrade" name="fagomrade" required><option value="">Velg …</option></select>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="maned">Når skjedde det?</label></legend>
+      <p class="hjelp">Måned er nok. Det gjør det vanskeligere å kjenne igjen en sak.</p>
+      <select id="maned" name="maned" required><option value="">Velg …</option></select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Hvem melder?</legend>
+      <div class="valg" id="melder"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Har du skriftlig dokumentasjon?</legend>
+      <p class="hjelp">Vedtak, brev fra sykehuset eller epikrise. Ikke last opp noe. Vil du at saken skal telle som «dokumentert», kan en moderator se papirene senere – uten at noe lagres her.</p>
+      <div class="valg" id="dok">
+        <label><input type="radio" name="harDokumentasjon" value="ja"> Ja</label>
+        <label><input type="radio" name="harDokumentasjon" value="nei"> Nei</label>
+      </div>
+    </fieldset>
+
+    <div class="skjult" aria-hidden="true"><label>Nettside <input name="nettside" tabindex="-1" autocomplete="off"></label></div>
+
+    <fieldset>
+      <p id="feil" class="feil" role="alert" hidden></p>
+      <button class="knapp" type="submit">Send inn anonymt</button>
+    </fieldset>
+  </form>
+
+  <div id="takk" class="kvittering" hidden>
+    <h3>Saken er telt.</h3>
+    <p>Den står nå som <strong>ubekreftet</strong> i tallene. Ett skrik kan avfeies. Ti tusen kan ikke det.</p>
+    <p style="margin-top:12px">Saksnummer: <code id="saksnr" class="tall"></code><br><small>Ta vare på det hvis du vil vise en moderator dokumentasjon senere. Det er ikke knyttet til deg.</small></p>
+    <p style="margin-top:18px"><a class="knapp" href="./">Se tallene</a></p>
+  </div>
+</main>
+
+<footer><div class="ramme">Ingen navn. Ingen annonser. Ingen sponsorer. Bare etterprøvbare tall.</div></footer>
+
+<script type="module">
+import { OMRADER, FYLKER, FAGOMRADER, HENDELSER, VENTETID, MELDER, validerInnmelding } from './skjema.js';
+
+const $ = (s) => document.querySelector(s);
+const opsjoner = (sel, par) => $(sel).insertAdjacentHTML('beforeend', par.map(([v, t]) => `<option value="${v}">${t}</option>`).join(''));
+const valg = (sel, navn, type, par) => ($(sel).innerHTML = par.map(([v, t, av]) => `<label><input type="${type}" name="${navn}" value="${v}" ${av ? 'disabled' : ''}> ${t}</label>`).join(''));
+
+valg('#omrade', 'omrade', 'radio', Object.entries(OMRADER).map(([k, o]) => [k, o.aktiv ? o.navn : `${o.navn} <small>(kommer)</small>`, !o.aktiv]));
+document.querySelector('input[name=omrade][value="sykehuskø"]').checked = true;
+valg('#hendelser', 'hendelser', 'checkbox', Object.entries(HENDELSER));
+valg('#melder', 'melder', 'radio', Object.entries(MELDER));
+opsjoner('#ventetid', Object.entries(VENTETID));
+opsjoner('#fylke', FYLKER.map((f) => [f, f]));
+opsjoner('#fagomrade', FAGOMRADER.map((f) => [f, f]));
+
+const MND = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+const naa = new Date();
+opsjoner('#maned', Array.from({ length: 60 }, (_, i) => {
+  const d = new Date(naa.getFullYear(), naa.getMonth() - i, 1);
+  return [`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, `${MND[d.getMonth()]} ${d.getFullYear()}`];
+}));
+
+const NAVN = { omrade: 'område', hendelser: 'hva som skjedde', ventetid: 'ventetid', fylke: 'fylke', fagomrade: 'fagområde', maned: 'når', melder: 'hvem som melder', harDokumentasjon: 'dokumentasjon' };
+
+$('#skjema').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const inn = {
+    omrade: f.get('omrade'),
+    hendelser: f.getAll('hendelser'),
+    ventetid: f.get('ventetid'),
+    fylke: f.get('fylke'),
+    fagomrade: f.get('fagomrade'),
+    maned: f.get('maned'),
+    melder: f.get('melder'),
+    harDokumentasjon: f.get('harDokumentasjon') === null ? null : f.get('harDokumentasjon') === 'ja',
+    nettside: f.get('nettside'),
+  };
+  const feil = $('#feil');
+  const sjekk = validerInnmelding(inn);
+  if (!sjekk.ok) {
+    feil.textContent = `Mangler: ${sjekk.feil.map((k) => NAVN[k] || k).join(', ')}.`;
+    feil.hidden = false;
+    return;
+  }
+  feil.hidden = true;
+  const knapp = e.target.querySelector('button');
+  knapp.disabled = true;
+  try {
+    const res = await fetch('api/meld', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(inn) });
+    const svar = await res.json().catch(() => ({}));
+    if (res.status === 429) throw new Error('For mange innmeldinger fra samme sted i dag. Prøv igjen i morgen.');
+    if (!res.ok || !svar.ok) throw new Error('Serveren tok ikke imot saken. Prøv igjen senere.');
+    $('#saksnr').textContent = svar.id || '–';
+    e.target.hidden = true;
+    $('#takk').hidden = false;
+    scrollTo(0, 0);
+  } catch (err) {
+    feil.textContent = err.message.startsWith('For mange') || err.message.startsWith('Serveren') ? err.message : 'Fikk ikke kontakt med serveren. Innmelding krever at basen kjører (npm start).';
+    feil.hidden = false;
+  } finally {
+    knapp.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

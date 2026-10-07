@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metode – Folkets regnskap</title>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<header class="topp"><div class="ramme">
+  <a class="merke" href="./">Folkets regnskap<span>.</span></a>
+  <nav class="meny"><a href="./">Tallene</a><a href="meld.html">Meld inn</a><a href="metode.html" aria-current="page">Metode og kilder</a></nav>
+</div></header>
+
+<main class="ramme">
+  <h1>Slik teller vi</h1>
+  <p class="ingress">Troverdighet er det eneste våpenet. Derfor står hele oppskriften her, og koden er åpen.</p>
+
+  <section class="blokk">
+    <h2>Fire prinsipper</h2>
+    <div class="rutenett">
+      <div class="rute"><h3>Mønster, ikke person</h3><small>Ingen enkeltsaker i front. Basen kjemper for mønsteret.</small></div>
+      <div class="rute"><h3>Ingen navn</h3><small>Skjemaet har ikke fritekst. Det som ikke kan skrives inn, kan ikke lekke.</small></div>
+      <div class="rute"><h3>Bare etterprøvbare tall</h3><small>Hver nyhetssak har lenke. Hvert offentlig tall har kilde.</small></div>
+      <div class="rute"><h3>Uavhengig</h3><small>Partipolitisk uavhengig, eid av medlemmene. Ingen annonser, ingen sponsorer med agenda.</small></div>
+    </div>
+  </section>
+
+  <section class="blokk">
+    <h2>Tre stempler</h2>
+    <table>
+      <tr><th><i class="prikk s-dokumentert"></i>Dokumentert</th><td>Innmeldt sak der en moderator har sett vedtak, brev eller epikrise. Papirene vises utenfor systemet og lagres aldri.</td></tr>
+      <tr><th><i class="prikk s-nyhetssak"></i>Nyhetssak</th><td>Hentet av roboten fra norske nyhetsstrømmer. Lenke i listen under. Samme tittel fra flere kilder telles én gang.</td></tr>
+      <tr><th><i class="prikk s-ubekreftet"></i>Ubekreftet</th><td>Meldt inn gjennom skjemaet, ikke kontrollert. Teller, men vises alltid adskilt.</td></tr>
+    </table>
+  </section>
+
+  <section class="blokk">
+    <h2>Roboten</h2>
+    <p>Hver morgen leser roboten nyhetsstrømmer (NRK, Google Nyheter-søk på «sykehuskø», «fristbrudd», «helsekø»). En sak telles bare hvis den handler om kø/ventetid <em>og</em> helse. Fylke settes bare når nøyaktig ett fylke eller sykehus nevnes – ellers står den som «Uten fylke». Ord som «døde» eller «fristbrudd» i tittel eller ingress gir hendelsestype. Roboten kan ta feil; derfor lenker vi til hver sak.</p>
+  </section>
+
+  <section class="blokk">
+    <h2>Personvern</h2>
+    <p>Vi lagrer ikke IP-adresse, nettleser eller tidspunkt. Spam stoppes med en teller som bare finnes i minnet og nullstilles hvert døgn. I krysstabeller (fylke, måned, fagområde) vises tall under 3 som «&lt;3», så ingen kan kjennes igjen.</p>
+  </section>
+
+  <section class="blokk">
+    <h2>Hva tallene ikke sier</h2>
+    <p>Dette er ikke et utvalg som representerer alle pasienter. Flere saker kan bety at det blir verre – eller at flere kjenner til basen, eller at pressen skriver mer. Vi viser derfor alltid stemplene hver for seg, og offentlige tall ved siden av.</p>
+  </section>
+
+  <section class="blokk">
+    <h2>Nyhetssaker roboten har funnet</h2>
+    <div id="kilder"><p class="tom">Laster …</p></div>
+  </section>
+</main>
+
+<footer><div class="ramme">Ingen navn. Ingen annonser. Ingen sponsorer. Bare etterprøvbare tall.</div></footer>
+
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const el = document.querySelector('#kilder');
+try {
+  const kilder = await (await fetch('data/kilder.json', { cache: 'no-store' })).json();
+  el.innerHTML = kilder.length
+    ? `<table><thead><tr><th>Dato</th><th>Sak</th><th>Fylke</th></tr></thead><tbody>${kilder.slice(0, 200).map((k) => `
+        <tr><td class="tall">${esc(k.dato)}</td><td><a href="${esc(k.url)}" rel="noopener nofollow">${esc(k.tittel)}</a><br><small>${esc(k.kilde)}</small></td><td>${esc(k.fylke || '–')}</td></tr>`).join('')}</tbody></table>`
+    : '<p class="tom">Roboten har ikke funnet noe ennå.</p>';
+} catch {
+  el.innerHTML = '<p class="tom">Fant ikke kildelisten.</p>';
+}
+</script>
+</body>
+</html>

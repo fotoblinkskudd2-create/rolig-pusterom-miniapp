@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Folkets regnskap</title>
+<meta name="description" content="Åpen database over offentlig svikt. Staten har alltid hatt dataene om oss. Nå får vi dataene om staten.">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<header class="topp"><div class="ramme">
+  <a class="merke" href="./">Folkets regnskap<span>.</span></a>
+  <nav class="meny"><a href="./" aria-current="page">Tallene</a><a href="meld.html">Meld inn</a><a href="metode.html">Metode og kilder</a></nav>
+</div></header>
+
+<main class="ramme">
+  <h1>Staten har alltid hatt dataene om oss. Nå får vi dataene om staten.</h1>
+  <p class="ingress">Første område: <strong>sykehuskø</strong>. Ventetid, forverring og dødsfall i kø – talt opp, sak for sak, fra folk og fra pressen.</p>
+
+  <div id="innhold"><p class="tom" style="margin-top:28px">Laster tall …</p></div>
+</main>
+
+<footer><div class="ramme">
+  Ingen navn. Ingen annonser. Ingen sponsorer. Bare etterprøvbare tall. <span id="oppdatert"></span>
+</div></footer>
+
+<script type="module">
+import { STATUS, HENDELSER } from './skjema.js';
+
+const STATUSER = Object.keys(STATUS);
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+// «<3» er skjult av personvernhensyn. Tegnes som 1 så stolpen synes, men tallet vises ikke.
+const verdi = (v) => (typeof v === 'number' ? v : 1);
+const vis = (v) => (typeof v === 'number' ? v.toLocaleString('nb-NO') : v);
+const MND = ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des'];
+const mnd = (m) => `${MND[+m.slice(5) - 1]} ${m.slice(0, 4)}`;
+
+function forklaring() {
+  return `<div class="forklaring">${STATUSER.map((s) => `<span><i class="prikk s-${s}"></i>${STATUS[s]}</span>`).join('')}</div>`;
+}
+
+function stolper(tabell, navn = (k) => k) {
+  const rader = Object.entries(tabell).filter(([, r]) => verdi(r.totalt) > 0).sort((a, b) => verdi(b[1].totalt) - verdi(a[1].totalt));
+  if (!rader.length) return '<p class="tom">Ingen saker ennå.</p>';
+  const maks = Math.max(...rader.map(([, r]) => verdi(r.totalt)));
+  return forklaring() + `<div class="stolper">${rader.map(([k, r]) => `
+    <span>${esc(navn(k))}</span>
+    <span class="spor" role="img" aria-label="${STATUSER.map((s) => `${STATUS[s]}: ${vis(r[s])}`).join(', ')}">
+      ${STATUSER.map((s) => (r[s] ? `<i class="s-${s}" style="width:${(verdi(r[s]) / maks) * 100}%"></i>` : '')).join('')}
+    </span>
+    <span class="n tall">${vis(r.totalt)}</span>`).join('')}</div>`;
+}
+
+function tidslinje(perManed) {
+  const m = Object.entries(perManed);
+  const maks = Math.max(1, ...m.map(([, r]) => verdi(r.totalt)));
+  return forklaring() + `<div class="tidslinje">${m.map(([k, r]) => `
+    <div class="kol" title="${mnd(k)}: ${vis(r.totalt)}">
+      ${STATUSER.map((s) => (r[s] ? `<i class="s-${s}" style="height:${(verdi(r[s]) / maks) * 100}%"></i>` : '')).join('')}
+    </div>`).join('')}</div>
+    <div class="akse"><span>${mnd(m[0][0])}</span><span>${mnd(m[m.length - 1][0])}</span></div>`;
+}
+
+function trend(t) {
+  if (!t.retning) {
+    return `<p class="trend">For tidlig å si.</p><p>Vi trenger minst 10 saker i hver periode før vi påstår noe. Nå: ${t.siste} saker i ${mnd(t.fra)}–${mnd(t.til)}, ${t.forrige} i perioden før.</p>`;
+  }
+  const ord = { verre: `Verre. ${t.endring > 0 ? '+' : ''}${t.endring} %`, bedre: `Bedre. ${t.endring} %`, flat: 'Omtrent likt.' };
+  return `<p class="trend ${t.retning}">${ord[t.retning]}</p><p>${t.siste} saker i ${mnd(t.fra)}–${mnd(t.til)} mot ${t.forrige} i ${mnd(t.forrigeFra)}–${mnd(t.forrigeTil)}. Merk: flere saker kan også bety at flere melder inn, eller at pressen skriver mer.</p>`;
+}
+
+function offisielt(rader) {
+  if (!rader.length) return '<p class="tom">Ingen offentlige tall lagt inn ennå. Hvert tall krever lenke til kilden.</p>';
+  return `<table><thead><tr><th>Periode</th><th>Mål</th><th>Verdi</th><th>Kilde</th></tr></thead><tbody>${rader.map((r) => `
+    <tr><td>${esc(r.periode)}</td><td>${esc(r.maal)}</td><td class="tall">${vis(r.verdi)} ${esc(r.enhet || '')}</td>
+    <td><a href="${esc(r.kilde_url)}" rel="noopener">${esc(r.kildenavn || 'Kilde')}</a></td></tr>`).join('')}</tbody></table>`;
+}
+
+async function last() {
+  let s;
+  try {
+    const res = await fetch('data/statistikk.json', { cache: 'no-store' });
+    s = await res.json();
+  } catch {
+    $('#innhold').innerHTML = '<p class="tom" style="margin-top:28px">Fant ikke tallene. Kjør <code>npm run bygg</code>.</p>';
+    return;
+  }
+  $('#oppdatert').textContent = `Oppdatert ${new Date(s.oppdatert).toLocaleString('nb-NO')}.`;
+
+  const tomt = s.totalt === 0 ? `<section class="blokk"><div class="tom"><h3>Ingen saker ennå.</h3><p style="margin:8px auto 18px">Det er her det starter. Ett skrik kan avfeies. Ti tusen loggførte saker kan ikke det.</p><a class="knapp" href="meld.html">Meld inn din sak</a></div></section>` : '';
+  const dod = s.dodsfall;
+  const dodTotalt = STATUSER.reduce((n, k) => n + dod[k], 0);
+
+  $('#innhold').innerHTML = `
+    <div class="helt">
+      <span class="tall">${vis(s.totalt)}</span>
+      <p>saker loggført der helsekøen sviktet.<br><a href="meld.html">Mangler din? Meld den inn →</a></p>
+    </div>
+    ${tomt}
+    <section class="blokk">
+      <h2>Hvor sikre er vi?</h2>
+      <div class="rutenett">
+        ${STATUSER.map((k) => `<div class="rute"><span class="tall"><i class="prikk s-${k}"></i>${vis(s.perStatus[k])}</span><small>${STATUS[k]}${{ dokumentert: ' – vi har sett vedtak eller brev', nyhetssak: ' – omtalt i pressen, med lenke', ubekreftet: ' – meldt inn, ikke kontrollert' }[k]}</small></div>`).join('')}
+        <div class="rute alarm"><span class="tall">${vis(dodTotalt)}</span><small>dødsfall i kø (${STATUSER.filter((k) => dod[k]).map((k) => `${dod[k]} ${STATUS[k].toLowerCase()}`).join(', ') || 'ingen registrert'})</small></div>
+      </div>
+    </section>
+    <section class="blokk"><h2>Blir det bedre eller verre?</h2>${trend(s.trend)}</section>
+    <section class="blokk"><h2>Siste 24 måneder</h2>${tidslinje(s.perManed)}</section>
+    <section class="blokk"><h2>Hva skjedde</h2>${stolper(s.perHendelse, (k) => HENDELSER[k])}</section>
+    <section class="blokk"><h2>Hvor i landet</h2>${stolper(s.perFylke)}</section>
+    <section class="blokk"><h2>Fagområde (innmeldte saker)</h2>${stolper(s.perFagomrade)}</section>
+    <section class="blokk"><h2>Offentlige tall</h2>${offisielt(s.offisielt)}</section>
+    <section class="blokk"><p>Tall under ${s.minVis} i en celle vises som «&lt;${s.minVis}», så ingen kan pekes ut. <a href="metode.html">Slik teller vi →</a></p></section>`;
+}
+last();
+</script>
+</body>
+</html>

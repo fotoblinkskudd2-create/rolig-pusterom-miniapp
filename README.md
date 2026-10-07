@@ -5,3 +5,7 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
 Åpne `index.html`. Les `RUN.md`.
+
+## Folkets regnskap
+
+Åpen database over offentlig svikt, start: sykehuskø. Se [`folkets-regnskap/`](folkets-regnskap/README.md).
