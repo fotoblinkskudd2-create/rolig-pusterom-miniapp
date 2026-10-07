@@ -2,7 +2,7 @@
 
 ## Åpne
 
-1. Last ned `index.html` og `isolation-mirror.html` i samme mappe.
+1. Last ned `index.html`, `isolation-mirror.html` og mappen `task-templates/` i samme mappe.
 2. Åpne `index.html` i Safari eller Chrome.
 3. På iPhone: Del → Legg til på Hjem-skjerm (valgfritt).
 
@@ -24,3 +24,7 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Test
+
+`npm test` og `npm run bench`. Krever Node 20+. Ingen avhengigheter.

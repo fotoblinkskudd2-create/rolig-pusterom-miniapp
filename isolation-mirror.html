@@ -39,7 +39,13 @@
       <pre id="labprompt"></pre>
       <button class="ghost" onclick="copyPrompt()">Kopier prompt</button>
     </div>
+    <div class="card">
+      <h3>Task-mal (JSON)</h3>
+      <p>Validert lokalt. Bildet leses kun for format (16 byte).</p>
+      <pre id="template"></pre>
+    </div>
   </div>
+<script src="task-templates/engine.js"></script>
 <script>
 document.getElementById('photo').addEventListener('change', (e) => {
   const f = e.target.files && e.target.files[0];
@@ -48,17 +54,33 @@ document.getElementById('photo').addEventListener('change', (e) => {
   img.src = URL.createObjectURL(f);
   img.style.display = 'block';
 });
-function generate() {
-  const note = document.getElementById('note').value.trim() || "stille isolasjon";
-  const hasPhoto = !!(document.getElementById('photo').files && document.getElementById('photo').files[0]);
-  const steps = [
-    "Sett føttene i gulvet. 3 dype pust.",
-    "Skriv én setning som er sann akkurat nå.",
-    hasPhoto ? "Bildet ligger bare her. Ikke del det. Se på det i 20 sekunder." : "Ta ett bilde av noe ekte i nærheten — ikke for andre, for deg."
-  ];
-  document.getElementById('protocol').innerHTML = steps.map((s,i)=>'<p>'+(i+1)+'. '+s+'</p>').join('') + '<p style="margin-top:12px;font-style:italic">Du er ikke alene i dette. Kampen teller.</p>';
-  const prompt = 'Grok-bot runtime. /lab. Klasse M.\nPROBLEM: Isolasjon. ' + note.slice(0,180) + '\nBRUKER: én person, lokal, ingen sky\nRAMMER: 48t, lokal-first, ingen marketplace, ingen app+sky\nDNA: fototerapi + passiv mekanikk + 48t\nLEVERANSE: ideer\nSeed 7. Drepe minst 3. IRP på overlevende #1.\nSkriv IDE ≤3 setninger på nynorsk. Stopp.\nIkke nytt OS.';
-  document.getElementById('labprompt').textContent = prompt;
+async function headerB64(file) {
+  const buf = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  let bin = '';
+  for (const b of buf) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+async function generate() {
+  const note = document.getElementById('note').value;
+  const f = document.getElementById('photo').files && document.getElementById('photo').files[0];
+  const modalities = [];
+  if (note.trim()) modalities.push({ type: 'text', value: note });
+  if (f) modalities.push({ type: 'image', mime: f.type, bytes: f.size, header: await headerB64(f) });
+  const t = TaskTemplates.generate({ schema_version: '1.0', source: 'isolation_mirror', modalities });
+  document.getElementById('template').textContent = JSON.stringify(t, null, 2);
+  const protocol = document.getElementById('protocol');
+  if (!t.constraints.passed) {
+    protocol.innerHTML = '';
+    t.constraints.errors.forEach(e => {
+      const p = document.createElement('p');
+      p.textContent = e.code + ' · ' + e.path + ' · ' + e.message;
+      protocol.appendChild(p);
+    });
+    document.getElementById('labprompt').textContent = '';
+  } else {
+    protocol.innerHTML = t.refinement.steps.map((s,i)=>'<p>'+(i+1)+'. '+s+'</p>').join('') + '<p style="margin-top:12px;font-style:italic">Du er ikke alene i dette. Kampen teller.</p>';
+    document.getElementById('labprompt').textContent = t.refinement.lab_prompt;
+  }
   document.getElementById('out').style.display = 'block';
 }
 function copyPrompt() {

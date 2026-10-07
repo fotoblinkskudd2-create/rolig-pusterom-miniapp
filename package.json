@@ -1,0 +1,9 @@
+{
+  "name": "rolig-pusterom-miniapp",
+  "private": true,
+  "description": "Rolig mini-app. Pure HTML. Node brukes kun til test og benchmark av task-templates.",
+  "scripts": {
+    "test": "node --test task-templates/*.test.js",
+    "bench": "node --expose-gc task-templates/bench.js"
+  }
+}

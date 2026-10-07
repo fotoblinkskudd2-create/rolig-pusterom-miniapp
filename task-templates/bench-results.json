@@ -1,0 +1,566 @@
+{
+  "node": "v22.22.0",
+  "runs_per_combo": 300,
+  "warmup": 50,
+  "memory_iterations": 2000,
+  "gc_exposed": true,
+  "latency_budget_ms": 500,
+  "worst_max_ms": 4.893,
+  "within_budget": true,
+  "note": "Maskinavhengig. Minne er heap-delta målt med V8 gc og er et estimat, ikke eksakt per-objekt-størrelse.",
+  "combos": {
+    "valid.mirrorText": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.005,
+        "p95": 0.011,
+        "p99": 0.162,
+        "max": 0.634,
+        "mean": 0.01,
+        "ci95_mean": [
+          0.006,
+          0.015
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 1986,
+        "retained_after_gc_bytes": 17336
+      }
+    },
+    "valid.mirrorImage": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.005,
+        "p95": 0.008,
+        "p99": 0.028,
+        "max": 0.043,
+        "mean": 0.006,
+        "ci95_mean": [
+          0.006,
+          0.007
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2273,
+        "retained_after_gc_bytes": 47328
+      }
+    },
+    "valid.mirrorFull": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.007,
+        "p95": 0.016,
+        "p99": 0.062,
+        "max": 0.195,
+        "mean": 0.01,
+        "ci95_mean": [
+          0.008,
+          0.012
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2103,
+        "retained_after_gc_bytes": 30328
+      }
+    },
+    "valid.checkin": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.004,
+        "p95": 0.009,
+        "p99": 0.032,
+        "max": 0.051,
+        "mean": 0.005,
+        "ci95_mean": [
+          0.005,
+          0.006
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2471,
+        "retained_after_gc_bytes": 16800
+      }
+    },
+    "valid.breathing": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.004,
+        "p99": 0.023,
+        "max": 0.039,
+        "mean": 0.003,
+        "ci95_mean": [
+          0.003,
+          0.004
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4889,
+        "retained_after_gc_bytes": -808
+      }
+    },
+    "valid.historyUp": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.022,
+        "p95": 0.043,
+        "p99": 0.075,
+        "max": 0.165,
+        "mean": 0.025,
+        "ci95_mean": [
+          0.023,
+          0.027
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5551,
+        "retained_after_gc_bytes": 104808
+      }
+    },
+    "valid.historyShort": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.005,
+        "p95": 0.008,
+        "p99": 0.028,
+        "max": 0.048,
+        "mean": 0.006,
+        "ci95_mean": [
+          0.005,
+          0.006
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 8179,
+        "retained_after_gc_bytes": 13720
+      }
+    },
+    "text.1": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.002,
+        "p95": 0.003,
+        "p99": 0.003,
+        "max": 0.038,
+        "mean": 0.002,
+        "ci95_mean": [
+          0.002,
+          0.002
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5233,
+        "retained_after_gc_bytes": -68496
+      }
+    },
+    "text.180": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.004,
+        "p99": 0.019,
+        "max": 0.039,
+        "mean": 0.003,
+        "ci95_mean": [
+          0.003,
+          0.003
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4762,
+        "retained_after_gc_bytes": 26856
+      }
+    },
+    "text.2000": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.003,
+        "p99": 0.019,
+        "max": 0.032,
+        "mean": 0.003,
+        "ci95_mean": [
+          0.003,
+          0.004
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4547,
+        "retained_after_gc_bytes": -72
+      }
+    },
+    "image.png": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.005,
+        "p99": 0.006,
+        "max": 0.039,
+        "mean": 0.004,
+        "ci95_mean": [
+          0.003,
+          0.004
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5445,
+        "retained_after_gc_bytes": 23848
+      }
+    },
+    "image.jpeg": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.004,
+        "p99": 0.025,
+        "max": 0.043,
+        "mean": 0.004,
+        "ci95_mean": [
+          0.003,
+          0.004
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5341,
+        "retained_after_gc_bytes": 6904
+      }
+    },
+    "image.webp": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.003,
+        "p95": 0.005,
+        "p99": 0.022,
+        "max": 0.034,
+        "mean": 0.003,
+        "ci95_mean": [
+          0.003,
+          0.004
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5377,
+        "retained_after_gc_bytes": 23480
+      }
+    },
+    "image.heic": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.002,
+        "p95": 0.003,
+        "p99": 0.004,
+        "max": 0.049,
+        "mean": 0.003,
+        "ci95_mean": [
+          0.002,
+          0.003
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5265,
+        "retained_after_gc_bytes": 2688
+      }
+    },
+    "image.gif": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.002,
+        "p95": 0.003,
+        "p99": 0.004,
+        "max": 0.039,
+        "mean": 0.002,
+        "ci95_mean": [
+          0.002,
+          0.003
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5476,
+        "retained_after_gc_bytes": -32368
+      }
+    },
+    "series.1": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.004,
+        "p95": 0.006,
+        "p99": 0.036,
+        "max": 0.048,
+        "mean": 0.005,
+        "ci95_mean": [
+          0.004,
+          0.005
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5892,
+        "retained_after_gc_bytes": -4544
+      }
+    },
+    "series.10": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.011,
+        "p95": 0.016,
+        "p99": 0.048,
+        "max": 0.084,
+        "mean": 0.012,
+        "ci95_mean": [
+          0.011,
+          0.013
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4901,
+        "retained_after_gc_bytes": 26672
+      }
+    },
+    "series.100": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.055,
+        "p95": 0.09,
+        "p99": 0.135,
+        "max": 0.327,
+        "mean": 0.061,
+        "ci95_mean": [
+          0.059,
+          0.064
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4514,
+        "retained_after_gc_bytes": 216
+      }
+    },
+    "series.1000": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 1.252,
+        "p95": 1.572,
+        "p99": 1.669,
+        "max": 1.719,
+        "mean": 1.295,
+        "ci95_mean": [
+          1.282,
+          1.307
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2963,
+        "retained_after_gc_bytes": 216
+      }
+    },
+    "series.1000.unsorted": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 2,
+      "latency_ms": {
+        "p50": 2.121,
+        "p95": 2.614,
+        "p99": 3.113,
+        "max": 4.227,
+        "mean": 2.209,
+        "ci95_mean": [
+          2.181,
+          2.237
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 7424,
+        "retained_after_gc_bytes": 54664
+      }
+    },
+    "corrupt.truncated_json": {
+      "passed": false,
+      "error_codes": [
+        "E_PARSE"
+      ],
+      "iteration_count": 0,
+      "latency_ms": {
+        "p50": 0.006,
+        "p95": 0.006,
+        "p99": 0.023,
+        "max": 0.066,
+        "mean": 0.006,
+        "ci95_mean": [
+          0.006,
+          0.007
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4098,
+        "retained_after_gc_bytes": 20160
+      }
+    },
+    "string.json_1000pts": {
+      "passed": true,
+      "error_codes": [],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 1.409,
+        "p95": 1.806,
+        "p99": 2.246,
+        "max": 4.893,
+        "mean": 1.486,
+        "ci95_mean": [
+          1.455,
+          1.517
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2706,
+        "retained_after_gc_bytes": 21360
+      }
+    },
+    "corrupt.bad_base64": {
+      "passed": false,
+      "error_codes": [
+        "E_BASE64"
+      ],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.002,
+        "p95": 0.003,
+        "p99": 0.017,
+        "max": 3.155,
+        "mean": 0.014,
+        "ci95_mean": [
+          -0.007,
+          0.034
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4798,
+        "retained_after_gc_bytes": -14152
+      }
+    },
+    "corrupt.magic_mismatch": {
+      "passed": false,
+      "error_codes": [
+        "E_MAGIC_MISMATCH"
+      ],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.004,
+        "p95": 0.008,
+        "p99": 0.033,
+        "max": 0.048,
+        "mean": 0.005,
+        "ci95_mean": [
+          0.005,
+          0.006
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 4836,
+        "retained_after_gc_bytes": 11240
+      }
+    },
+    "corrupt.ambiguous_tags": {
+      "passed": false,
+      "error_codes": [
+        "E_TAG_AMBIGUOUS"
+      ],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.004,
+        "p95": 0.007,
+        "p99": 0.025,
+        "max": 0.246,
+        "mean": 0.005,
+        "ci95_mean": [
+          0.004,
+          0.007
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 5637,
+        "retained_after_gc_bytes": 5200
+      }
+    },
+    "corrupt.1000_bad_points": {
+      "passed": false,
+      "error_codes": [
+        "E_UNDEFINED_FIELD",
+        "E_TYPE"
+      ],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.61,
+        "p95": 1.03,
+        "p99": 1.207,
+        "max": 3.651,
+        "mean": 0.656,
+        "ci95_mean": [
+          0.632,
+          0.68
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 371655,
+        "retained_after_gc_bytes": 248
+      }
+    },
+    "corrupt.null": {
+      "passed": false,
+      "error_codes": [
+        "E_ROOT_TYPE"
+      ],
+      "iteration_count": 1,
+      "latency_ms": {
+        "p50": 0.001,
+        "p95": 0.001,
+        "p99": 0.001,
+        "max": 0.001,
+        "mean": 0.001,
+        "ci95_mean": [
+          0.001,
+          0.001
+        ]
+      },
+      "memory": {
+        "bytes_per_iteration": 2533,
+        "retained_after_gc_bytes": 16
+      }
+    }
+  }
+}
