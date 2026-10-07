@@ -1,0 +1,36 @@
+name: Folkets regnskap – daglig robot
+
+on:
+  schedule:
+    - cron: '17 5 * * *'   # hver morgen, 07:17 norsk sommertid
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: folkets-regnskap-robot
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: folkets-regnskap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run robot
+      - run: npm run bygg
+      - name: Lagre nye tall
+        run: |
+          git config user.name "folkets-regnskap-robot"
+          git config user.email "folkets-regnskap-robot@users.noreply.github.com"
+          git add data/nyheter.json public/data/
+          if git diff --cached --quiet; then echo "Ingen endring."; exit 0; fi
+          git commit -m "Robot: nye tall $(date -u +%F)"
+          git push
