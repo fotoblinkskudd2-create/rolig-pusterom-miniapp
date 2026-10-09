@@ -1,0 +1,21 @@
+2026-10-09T16:57:52.726Z
+OK  Start: én inngang «Prøv en oppgave» åpner SIG-01
+OK  Feilforsøk gir «Prøv igjen.» med konkret regel og bevarer brettet
+OK  Korrekt løsning: «Det virket.» + «Du fant en løsning.» + forklaring; gjentatt trykk er trygt
+OK  Alternativ løsning godtas (SIG-03 med bare B, REK-01 ■ ● ▲)
+OK  Hint midt i forsøk bevarer forsøket; hint 2 og slutt
+OK  Angre etter feil (FEI-01): feil bytte → Prøv igjen → Angre gir original
+OK  Ruter: ulovlig steg forklares, angre fjerner siste steg, reload gjenoppretter
+OK  Bytte tema og komme tilbake bevarer forsøket (MON-02)
+OK  Tastatur uten mus: REK-03 og RUT-01 løses med Tab/piltaster/Enter
+OK  Alle 30 oppgaver: eksempelløsning gir «Det virket.» i grensesnittet, start gir «Prøv igjen.»
+OK  Ugyldig import avvises og bevarer gjeldende data
+OK  Eksport → slett alt → import gir tilbake løste, forsøk, hint og gjeldende
+OK  Ødelagt lagret forsøk: forståelig melding, resten reddes, oppgaven starter fra gyldig start
+OK  Helt ødelagt lagring (ikke JSON) gir melding og ny start
+OK  Utilgjengelig localStorage: appen virker i minnet og sier at framdrift ikke lagres
+OK  Smal skjerm 320 px: ingen vannrett rulling på noen av de 30 oppgavene eller andre sider
+OK  Utskrift: 30 kort, fasit i egen del med sideskift, skjermknapper skjult
+OK  file:// uten server: appen og utskriften virker
+OK  Offline: service worker cacher; server stoppet + nett av → reload, oppgave, utskrift virker
+OK  Ingen JavaScript-feil i hovedkonteksten

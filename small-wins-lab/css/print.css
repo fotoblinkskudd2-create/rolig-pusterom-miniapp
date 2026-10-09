@@ -24,7 +24,7 @@ body { font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 .rutenett td.stein { background: #ccc; }
 .svarlinje { margin-top: .6em; border-top: 1px solid #bbb; padding-top: .4em; }
 .boks { display: inline-block; width: 44px; height: 36px; border: 1.5px solid #1d2621; margin-right: 4px; font-size: .7em; vertical-align: middle; padding: 2px; }
-.avkrysning { margin-right: 16px; white-space: nowrap; }
+.avkrysning { display: inline-block; margin-right: 16px; white-space: nowrap; }
 .fasitdel { margin-top: 2em; padding-bottom: 2em; }
 .fasitpost { border-bottom: 1px solid #ccc; padding: 6px 0; break-inside: avoid; page-break-inside: avoid; }
 @media print {

@@ -161,7 +161,7 @@
     const tm = D.TEMAER.find(x => x.id === temaId);
     return h('section', { class: 'side' },
       toppNav(),
-      h('div', { class: 'temafaner', role: 'list' }, D.TEMAER.map(x => h('a', { role: 'listitem', href: '#/tema/' + encodeURIComponent(x.id), class: 'fane' + (x.id === temaId ? ' aktiv' : ''), 'aria-current': x.id === temaId ? 'page' : null }, x.navn))),
+      h('nav', { class: 'temafaner', 'aria-label': 'Bytt tema' }, D.TEMAER.map(x => h('a', { href: '#/tema/' + encodeURIComponent(x.id), class: 'fane' + (x.id === temaId ? ' aktiv' : ''), 'aria-current': x.id === temaId ? 'page' : null }, x.navn))),
       h('h1', { tabindex: '-1' }, tm.ikon + ' ' + tm.navn),
       h('p', { class: 'ingress' }, tm.kort + '.'),
       [1, 2, 3].map(n => h('div', { class: 'nivå' },
