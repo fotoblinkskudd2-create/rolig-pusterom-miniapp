@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eight Gates Animatic</title>
+<style>
+  :root {
+    --bg: #05070b;
+    --panel: #0c1118;
+    --text: #e8eef5;
+    --muted: #7d8a99;
+    --cyan: #2ee6ff;
+    --gold: #e8c25a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  h1 { font-size: 0.85rem; letter-spacing: 0.3em; color: var(--muted); font-weight: 500; }
+  .frame {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  svg { width: 100%; height: 100%; display: block; }
+  .ost {
+    position: absolute; top: 7%; left: 0; right: 0;
+    text-align: center; font-weight: 700; letter-spacing: 0.35em;
+    font-size: clamp(0.7rem, 2.2vw, 1.25rem);
+    transition: opacity .4s;
+  }
+  .vo {
+    position: absolute; bottom: 6%; left: 8%; right: 8%;
+    text-align: center; font-size: clamp(0.75rem, 2vw, 1.05rem);
+    color: #cfd8e3; font-style: italic; transition: opacity .3s;
+    text-shadow: 0 1px 6px #000;
+  }
+  .controls {
+    width: 100%; max-width: 960px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  button {
+    background: var(--panel); color: var(--text);
+    border: 1px solid #243040; border-radius: 4px;
+    padding: 8px 14px; font: inherit; font-size: 0.85rem; cursor: pointer;
+  }
+  button:hover { border-color: var(--cyan); }
+  input[type=range] { flex: 1; min-width: 160px; accent-color: var(--cyan); }
+  .time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.85rem; min-width: 84px; }
+  label { color: var(--muted); font-size: 0.85rem; display: flex; gap: 6px; align-items: center; }
+  .note { max-width: 960px; color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h1>THE EIGHT GATES · 60s ANIMATIC</h1>
+
+<div class="frame">
+  <svg id="stage" viewBox="0 0 1600 900" aria-label="Animatic frame">
+    <defs>
+      <radialGradient id="floor" cx="50%" cy="0%" r="80%">
+        <stop offset="0%" stop-color="#0d1a24"/>
+        <stop offset="100%" stop-color="#000"/>
+      </radialGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="14" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <rect width="1600" height="900" fill="#000"/>
+    <g id="hall" opacity="0">
+      <rect y="560" width="1600" height="340" fill="url(#floor)"/>
+      <g id="gates"></g>
+      <g id="beams"></g>
+    </g>
+    <circle id="spark" cx="800" cy="450" r="5" fill="#e8c25a" filter="url(#glow)" opacity="0"/>
+    <g id="seal" opacity="0" transform="translate(800 470)">
+      <circle r="92" fill="none" stroke="#e8c25a" stroke-width="5" filter="url(#glow)"/>
+      <circle r="74" fill="none" stroke="#e8c25a" stroke-width="2" stroke-dasharray="4 6"/>
+      <text text-anchor="middle" y="-12" fill="#e8c25a" font-size="22" font-weight="700" letter-spacing="5">PATENT</text>
+      <text id="serial" text-anchor="middle" y="22" fill="#fff1d6" font-size="18" font-family="monospace" letter-spacing="2">US 00,000,000</text>
+    </g>
+    <g id="logo" opacity="0">
+      <text x="800" y="450" text-anchor="middle" fill="#fff" font-size="74" font-weight="800" letter-spacing="18">EIGHT GATES</text>
+      <text x="800" y="510" text-anchor="middle" fill="#e8c25a" font-size="30" letter-spacing="4">Where ideas become patents.</text>
+      <text x="800" y="560" text-anchor="middle" fill="#7d8a99" font-size="22" letter-spacing="3">eightgates.ai</text>
+    </g>
+  </svg>
+  <div class="ost" id="ost"></div>
+  <div class="vo" id="vo"></div>
+</div>
+
+<div class="controls">
+  <button id="play">▶ Play</button>
+  <input type="range" id="scrub" min="0" max="60" step="0.1" value="0" aria-label="Timeline">
+  <span class="time" id="time">0:00.0 / 1:00</span>
+  <label><input type="checkbox" id="tts"> Temp VO (browser voice)</label>
+</div>
+<p class="note">Timing matches SCRIPT.md. Temp VO uses the browser's built-in speech voice and is for pacing only; the real voice comes from ElevenLabs.</p>
+
+<script>
+// Arc order left→right: 7 Prior Art, 1–6, 8 Claims (gates 7/8 are the "end" gates).
+const GATES = [
+  { n: 7, name: 'PRIOR ART',    color: '#2ee6ff' },
+  { n: 1, name: 'ART',          color: '#ff3fa4' },
+  { n: 2, name: 'IMAGES',       color: '#9b6bff' },
+  { n: 3, name: 'VIDEO',        color: '#ff6a3d' },
+  { n: 4, name: 'WRITING',      color: '#fff1d6' },
+  { n: 5, name: 'VIBE CODING',  color: '#3dffa0' },
+  { n: 6, name: 'IDEA HUNTING', color: '#ffb52e' },
+  { n: 8, name: 'CLAIMS',       color: '#e8c25a' },
+];
+
+const CUES = [
+  { t: 0,  vo: 'Every great invention already exists. … It\'s just hiding.', ost: 'HIDDEN IN PLAIN SIGHT', on: [] },
+  { t: 6,  vo: 'So we built eight gates to find them.', ost: '', on: [] },
+  { t: 10, vo: 'Art sketches what doesn\'t exist yet.', ost: '01 ART', on: [1] },
+  { t: 14, vo: 'Images render a thousand versions before lunch.', ost: '02 IMAGES', on: [2] },
+  { t: 18, vo: 'Video puts it in motion and finds where it breaks.', ost: '03 VIDEO', on: [3] },
+  { t: 22, vo: 'Writing turns sparks into exact language.', ost: '04 WRITING', on: [4] },
+  { t: 26, vo: 'Vibe Coding builds the prototype at the speed of a hunch.', ost: '05 VIBE CODING', on: [5] },
+  { t: 30, vo: 'Idea Hunting tracks the gaps no one has claimed.', ost: '06 IDEA HUNTING', on: [6] },
+  { t: 34, vo: 'Prior Art checks the world\'s record. … Claims draws the line that\'s yours.', ost: '07 PRIOR ART · 08 CLAIMS', on: [7, 8] },
+  { t: 40, vo: 'Eight gates. One engine. … Every discipline asking the same question: what hasn\'t been invented yet?', ost: 'EIGHT GATES. ONE ENGINE.', on: [] },
+  { t: 48, vo: 'And when we find it, we make it yours.', ost: '', on: [] },
+  { t: 55, vo: 'Eight Gates. … Where ideas become patents.', ost: '', on: [] },
+];
+const DURATION = 60;
+
+const $ = id => document.getElementById(id);
+const gatesG = $('gates'), beamsG = $('beams');
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+};
+
+// Lay gates on an arc: ends are near and big, centre is far and small.
+const gateEls = GATES.map((g, i) => {
+  const a = Math.PI * (i / (GATES.length - 1));
+  const x = 130 + i * (1340 / (GATES.length - 1));
+  const depth = Math.sin(a);
+  const s = 1.05 - depth * 0.45;
+  const baseY = 640 - depth * 90;
+  const w = 120 * s, h = 300 * s;
+  const grp = el('g', {});
+  const path = `M ${x - w / 2} ${baseY} L ${x - w / 2} ${baseY - h + w / 2} A ${w / 2} ${w / 2} 0 0 1 ${x + w / 2} ${baseY - h + w / 2} L ${x + w / 2} ${baseY} Z`;
+  const fill = el('path', { d: path, fill: g.color, opacity: 0.05 });
+  const frame = el('path', { d: path, fill: 'none', stroke: g.color, 'stroke-width': 4 * s, filter: 'url(#glow)' });
+  const label = el('text', { x, y: baseY + 34 * s, 'text-anchor': 'middle', fill: g.color, 'font-size': 15 * s, 'letter-spacing': 2 });
+  label.textContent = `${String(g.n).padStart(2, '0')} ${g.name}`;
+  grp.append(fill, frame, label);
+  grp.dataset.depth = depth;
+  gatesG.append(grp);
+  const beam = el('line', { x1: x, y1: baseY - h / 2, x2: 800, y2: 470, stroke: g.color, 'stroke-width': 6, filter: 'url(#glow)', opacity: 0 });
+  beamsG.append(beam);
+  return { ...g, grp, fill, frame, beam };
+});
+
+// Paint far gates first so the near end gates sit in front.
+[...gatesG.children].sort((a, b) => b.dataset.depth - a.dataset.depth).forEach(g => gatesG.append(g));
+
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+
+let t = 0, playing = false, last = 0, cueIdx = -1;
+
+function render() {
+  const cue = CUES.reduce((c, x) => (t >= x.t ? x : c), CUES[0]);
+  const idx = CUES.indexOf(cue);
+  if (idx !== cueIdx) {
+    cueIdx = idx;
+    $('vo').textContent = '"' + cue.vo + '"';
+    $('ost').textContent = cue.ost;
+    if (playing && $('tts').checked && 'speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(cue.vo.replace(/…/g, ','));
+      u.rate = 1.05;
+      speechSynthesis.speak(u);
+    }
+  }
+
+  // Spark 0–6s, hall reveal 6–10s
+  $('spark').setAttribute('opacity', t < 7 ? (0.6 + 0.4 * Math.sin(t * 3)) * (1 - ramp(t, 6, 7)) : 0);
+  $('spark').setAttribute('r', 4 + ramp(t, 5, 7) * 40);
+  const hallOp = ramp(t, 6, 9) * (1 - ramp(t, 55, 57));
+  $('hall').setAttribute('opacity', hallOp);
+
+  // Gentle dolly-in through the montage, pull back wide at 40s
+  const zoom = 1 + ramp(t, 6, 40) * 0.12 - ramp(t, 40, 44) * 0.12;
+  $('hall').setAttribute('transform', `translate(800 450) scale(${zoom}) translate(-800 -450)`);
+
+  const relay = t >= 40 && t < 48 ? Math.floor(((t - 40) * 2) % GATES.length) : -1;
+  const climax = ramp(t, 48, 50);
+
+  gateEls.forEach((g, i) => {
+    const firstOn = CUES.find(c => c.on.includes(g.n)).t;
+    let glow = t >= firstOn ? 0.35 : 0.12;               // lit once passed, dormant before
+    if (cue.on.includes(g.n)) glow = 0.75 + 0.25 * Math.sin((t - cue.t) * 6);
+    if (relay === i) glow = 1;
+    glow = Math.max(glow, climax);
+    g.frame.setAttribute('opacity', glow);
+    g.fill.setAttribute('opacity', 0.04 + glow * 0.22);
+    g.beam.setAttribute('opacity', climax * (1 - ramp(t, 53, 55)));
+  });
+
+  // Seal forms 49–55s, logo 55–60s
+  $('seal').setAttribute('opacity', ramp(t, 49, 51) * (1 - ramp(t, 55, 56)));
+  const sc = 0.6 + ramp(t, 49, 51) * 0.4;
+  $('seal').setAttribute('transform', `translate(800 470) scale(${sc})`);
+  const serialProgress = ramp(t, 50, 53);
+  $('serial').textContent = 'US ' + String(Math.floor(serialProgress * 12845093)).padStart(8, '0').replace(/(\d{2})(\d{3})(\d{3})/, '$1,$2,$3');
+  $('logo').setAttribute('opacity', ramp(t, 55.5, 57));
+
+  $('ost').style.opacity = cue.ost ? 1 : 0;
+  $('ost').style.color = cue.on.length ? GATES.find(g => g.n === cue.on[0]).color : '#e8c25a';
+  $('scrub').value = t;
+  const m = Math.floor(t / 60), s = (t % 60).toFixed(1).padStart(4, '0');
+  $('time').textContent = `${m}:${s} / 1:00`;
+}
+
+function tick(now) {
+  if (!playing) return;
+  t += (now - last) / 1000;
+  last = now;
+  if (t >= DURATION) { t = DURATION; setPlaying(false); }
+  render();
+  requestAnimationFrame(tick);
+}
+
+function setPlaying(p) {
+  playing = p;
+  $('play').textContent = p ? '❚❚ Pause' : '▶ Play';
+  if (p) {
+    if (t >= DURATION) t = 0;
+    cueIdx = -1;
+    last = performance.now();
+    requestAnimationFrame(tick);
+  } else if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+  }
+}
+
+$('play').onclick = () => setPlaying(!playing);
+$('scrub').oninput = e => {
+  t = +e.target.value;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  cueIdx = -1;
+  render();
+};
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && e.target.tagName !== 'INPUT') { e.preventDefault(); setPlaying(!playing); }
+});
+render();
+</script>
+</body>
+</html>
