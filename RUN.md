@@ -24,3 +24,11 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Test (for utviklere og agenter)
+
+```
+NODE_PATH=$(npm root -g) node tests/smoke.cjs
+```
+
+Krever Node og Playwright med Chromium (`npm i -g playwright && npx playwright install chromium`). Røyktesten åpner begge HTML-filene headless og sjekker lokal-first-linje, nav, sjekk-inn uten `alert()`, at noter vises som tekst, eksport og lenken til Isolation Mirror. Exit 0 = alt OK.
