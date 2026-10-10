@@ -2,68 +2,140 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Isolation Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1f1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Isolation Mirror – Pusterom</title>
 <style>
-  :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; }
-  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0; padding:20px; max-width:480px; margin:0 auto; }
-  h1 { font-size:1.4rem; margin-bottom:8px; }
+  :root { color-scheme: dark; --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#94a499; --accent:#a8c5b0; --border:#3a4a3f; }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { font-family:system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); max-width:480px; line-height:1.5; }
+  h1 { font-size:1.4rem; margin:0 0 8px; }
   p { color:var(--muted); font-size:0.9rem; }
-  textarea, input[type=file] { width:100%; background:var(--card); border:1px solid #3a4a3f; border-radius:12px; padding:12px; color:var(--text); margin:12px 0; box-sizing:border-box; }
-  button { width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:14px; font-weight:600; cursor:pointer; }
-  button.ghost { background:transparent; border:1px solid #3a4a3f; color:var(--text); margin-top:8px; }
+  :focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  textarea { width:100%; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font:inherit; margin:12px 0; resize:vertical; }
+  input[type=file] { display:none; }
+  button, .file-btn { display:block; width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:12px; padding:14px; font:inherit; font-weight:600; cursor:pointer; text-align:center; }
+  button.ghost, .file-btn { background:transparent; border:1px solid var(--border); color:var(--text); font-weight:500; margin-top:8px; }
+  .file-row { display:flex; gap:8px; margin-bottom:12px; }
+  .file-row .file-btn { margin-top:0; }
+  .file-row button.ghost { margin-top:0; width:auto; flex-shrink:0; padding:14px 18px; }
   .output { display:none; margin-top:24px; }
   .card { background:var(--card); border-radius:16px; padding:16px; margin-bottom:16px; }
-  .card h3 { margin:0 0 8px; font-size:1rem; }
-  img.prev { width:100%; border-radius:12px; margin:8px 0; max-height:220px; object-fit:cover; display:none; }
-  pre { white-space:pre-wrap; font-size:0.8rem; color:var(--text); }
-  a.back { color:var(--muted); font-size:0.82rem; display:inline-block; margin-bottom:16px; }
+  .card h2 { margin:0 0 8px; font-size:1rem; }
+  .card p { color:var(--text); }
+  .card p.closing { margin-top:12px; font-style:italic; color:var(--muted); }
+  img.prev { width:100%; border-radius:12px; margin:0 0 12px; max-height:220px; object-fit:cover; display:none; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:0.8rem; color:var(--text); background:var(--bg); border-radius:8px; padding:10px; }
+  a.back { color:var(--muted); font-size:0.85rem; display:inline-block; margin-bottom:16px; text-decoration:none; padding:4px 0; }
+  .status { min-height:1.4em; text-align:center; font-size:0.85rem; color:var(--muted); margin-top:8px; }
 </style>
 </head>
 <body>
   <a class="back" href="index.html">← Pusterom</a>
   <h1>Isolation Mirror</h1>
-  <p>Note eller bilde. Alt lokalt. Bildet forlater ikke enheten. Prompten kan du lime i Labben eller Grok-bot.</p>
-  <textarea id="note" rows="4" placeholder="Skriv kort om isolasjonen eller det som tynger..."></textarea>
+  <p>Note eller bilde. Alt lokalt. Bildet forlater ikke enheten og lagres ikke. Prompten kan du lime i Labben eller Grok-bot.</p>
+  <textarea id="note" rows="4" aria-label="Note" placeholder="Skriv kort om isolasjonen eller det som tynger..."></textarea>
+  <div class="file-row">
+    <label class="file-btn" for="photo" id="photoLabel">📷 Velg bilde (valgfritt)</label>
+    <button class="ghost" id="clearPhoto" hidden aria-label="Fjern bilde">✕</button>
+  </div>
   <input type="file" id="photo" accept="image/*">
-  <img class="prev" id="prev" alt="">
-  <button onclick="generate()">Generer</button>
-  <div class="output" id="out">
+  <img class="prev" id="prev" alt="Ditt bilde, bare synlig her">
+  <button id="generate">Generer</button>
+  <div class="output" id="out" aria-live="polite">
     <div class="card">
-      <h3>Privat protokoll (kun din)</h3>
+      <h2>Privat protokoll (kun din)</h2>
       <div id="protocol"></div>
     </div>
     <div class="card">
-      <h3>Labben / Grok-bot</h3>
-      <p>Lim dette i Labben eller i Grok-bot med /lab.</p>
+      <h2>Labben / Grok-bot</h2>
+      <p>Lim dette i Labben eller i Grok-bot med /lab. Bildet er ikke med.</p>
       <pre id="labprompt"></pre>
-      <button class="ghost" onclick="copyPrompt()">Kopier prompt</button>
+      <button class="ghost" id="copy">Kopier prompt</button>
+      <div class="status" id="copyStatus" role="status"></div>
     </div>
   </div>
 <script>
-document.getElementById('photo').addEventListener('change', (e) => {
-  const f = e.target.files && e.target.files[0];
-  const img = document.getElementById('prev');
-  if (!f) { img.style.display = 'none'; return; }
-  img.src = URL.createObjectURL(f);
+const $ = id => document.getElementById(id);
+let photoUrl = null;
+
+function setPhoto(file) {
+  if (photoUrl) { URL.revokeObjectURL(photoUrl); photoUrl = null; }
+  const img = $('prev');
+  if (!file) {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    $('clearPhoto').hidden = true;
+    $('photoLabel').textContent = '📷 Velg bilde (valgfritt)';
+    return;
+  }
+  photoUrl = URL.createObjectURL(file);
+  img.src = photoUrl;
   img.style.display = 'block';
-});
-function generate() {
-  const note = document.getElementById('note').value.trim() || "stille isolasjon";
-  const hasPhoto = !!(document.getElementById('photo').files && document.getElementById('photo').files[0]);
+  $('clearPhoto').hidden = false;
+  $('photoLabel').textContent = '📷 Bytt bilde';
+}
+
+$('photo').addEventListener('change', e => setPhoto(e.target.files && e.target.files[0]));
+$('clearPhoto').addEventListener('click', () => { $('photo').value = ''; setPhoto(null); });
+
+$('generate').addEventListener('click', () => {
+  const note = $('note').value.trim().replace(/\s+/g, ' ') || 'stille isolasjon';
+  const hasPhoto = !!photoUrl;
   const steps = [
-    "Sett føttene i gulvet. 3 dype pust.",
-    "Skriv én setning som er sann akkurat nå.",
-    hasPhoto ? "Bildet ligger bare her. Ikke del det. Se på det i 20 sekunder." : "Ta ett bilde av noe ekte i nærheten — ikke for andre, for deg."
+    'Sett føttene i gulvet. 3 dype pust.',
+    'Skriv én setning som er sann akkurat nå.',
+    hasPhoto ? 'Bildet ligger bare her. Ikke del det. Se på det i 20 sekunder.' : 'Ta ett bilde av noe ekte i nærheten — ikke for andre, for deg.'
   ];
-  document.getElementById('protocol').innerHTML = steps.map((s,i)=>'<p>'+(i+1)+'. '+s+'</p>').join('') + '<p style="margin-top:12px;font-style:italic">Du er ikke alene i dette. Kampen teller.</p>';
-  const prompt = 'Grok-bot runtime. /lab. Klasse M.\nPROBLEM: Isolasjon. ' + note.slice(0,180) + '\nBRUKER: én person, lokal, ingen sky\nRAMMER: 48t, lokal-first, ingen marketplace, ingen app+sky\nDNA: fototerapi + passiv mekanikk + 48t\nLEVERANSE: ideer\nSeed 7. Drepe minst 3. IRP på overlevende #1.\nSkriv IDE ≤3 setninger på nynorsk. Stopp.\nIkke nytt OS.';
-  document.getElementById('labprompt').textContent = prompt;
-  document.getElementById('out').style.display = 'block';
-}
-function copyPrompt() {
-  navigator.clipboard.writeText(document.getElementById('labprompt').textContent);
-}
+  const protocol = $('protocol');
+  protocol.innerHTML = '';
+  steps.forEach((s, i) => {
+    const p = document.createElement('p');
+    p.textContent = (i + 1) + '. ' + s;
+    protocol.appendChild(p);
+  });
+  const closing = document.createElement('p');
+  closing.className = 'closing';
+  closing.textContent = 'Du er ikke alene i dette. Kampen teller.';
+  protocol.appendChild(closing);
+
+  const cut = note.length > 180 ? note.slice(0, 180).replace(/\s+\S*$/, '') + '…' : note;
+  $('labprompt').textContent = [
+    'Grok-bot runtime. /lab. Klasse M.',
+    'PROBLEM: Isolasjon. ' + cut,
+    'BRUKER: én person, lokal, ingen sky',
+    'RAMMER: 48t, lokal-first, ingen marketplace, ingen app+sky',
+    'DNA: fototerapi + passiv mekanikk + 48t',
+    'LEVERANSE: ideer',
+    'Seed 7. Drepe minst 3. IRP på overlevende #1.',
+    'Skriv IDE ≤3 setninger på nynorsk. Stopp.',
+    'Ikke nytt OS.'
+  ].join('\n');
+  $('copyStatus').textContent = '';
+  $('out').style.display = 'block';
+  $('out').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
+
+$('copy').addEventListener('click', async () => {
+  const text = $('labprompt').textContent;
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch (e) {
+    // file:// og eldre Safari: marker teksten og bruk gammel kopi.
+    const r = document.createRange();
+    r.selectNodeContents($('labprompt'));
+    const sel = getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+    try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+  }
+  $('copyStatus').textContent = ok ? 'Kopiert.' : 'Teksten er markert. Kopier den manuelt.';
+});
 </script>
 </body>
 </html>

@@ -2,18 +2,47 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Rolig mini-app: sjekk inn, pust, små grep. Alt blir på denne enheten.">
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161b18" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
+    color-scheme: light dark;
     --bg: #f5f7f4;
     --card: #ffffff;
     --text: #3a4a3f;
-    --muted: #7a8a7f;
+    --muted: #6b7b70;
     --accent: #a8c5b0;
+    --on-accent: #2a3a2f;
+    --border: #e5ebe6;
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --shadow: rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161b18;
+      --card: #212924;
+      --text: #e0ebe3;
+      --muted: #94a499;
+      --accent: #8fb39a;
+      --on-accent: #142019;
+      --border: #313b34;
+      --soft-blue: #2a3a47;
+      --soft-beige: #36302a;
+      --soft-green: #27372c;
+      --shadow: rgba(0,0,0,0.3);
+    }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -21,12 +50,15 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
     line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
   }
+  button { font-family: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .page {
     display: none;
-    padding: 28px 20px 40px;
+    padding: calc(28px + env(safe-area-inset-top)) 20px 40px;
     max-width: 440px;
     margin: 0 auto;
   }
@@ -35,17 +67,21 @@
     font-size: 1.6rem;
     font-weight: 600;
     margin-bottom: 12px;
-    color: var(--text);
   }
   h2 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
   }
   p, .support {
     color: var(--muted);
     font-size: 0.95rem;
     margin-bottom: 20px;
+  }
+  .local-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: -8px 0 8px;
   }
   .mood-scale {
     display: flex;
@@ -56,26 +92,28 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--border);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.2s;
   }
-  .mood-btn.selected {
+  .mood-btn[aria-pressed="true"] {
     border-color: var(--accent);
     background: var(--soft-green);
     transform: scale(1.05);
   }
+  .mood-scale.nudge .mood-btn { border-color: var(--accent); }
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
     font-family: inherit;
+    color: var(--text);
     resize: vertical;
     background: var(--card);
     margin-bottom: 16px;
@@ -84,7 +122,7 @@
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: var(--on-accent);
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -92,21 +130,48 @@
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s;
+    text-align: center;
+    text-decoration: none;
   }
   .btn:active { opacity: 0.85; }
   .btn-secondary {
     background: var(--soft-blue);
+    color: var(--text);
     margin-top: 12px;
   }
+  .btn-quiet {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .btn-danger { color: #b5524a; }
+  @media (prefers-color-scheme: dark) { .btn-danger { color: #e08a82; } }
   .message {
     background: var(--soft-green);
     border-radius: 16px;
     padding: 16px;
-    margin-top: 20px;
+    margin-top: 16px;
     text-align: center;
     display: none;
   }
   .message.show { display: block; }
+  .message.gentle { background: var(--soft-beige); }
+  .mirror-link {
+    display: block;
+    margin-top: 32px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+  .mirror-link small { display: block; color: var(--muted); }
   /* Breathing */
   .circle-wrap {
     display: flex;
@@ -120,15 +185,29 @@
     height: 140px;
     border-radius: 50%;
     background: var(--soft-blue);
-    transition: transform 4s ease-in-out;
+    transition-property: transform, background-color;
+    transition-timing-function: ease-in-out;
+    transition-duration: 1s;
   }
-  .circle.inhale { transform: scale(1.6); background: var(--accent); }
-  .circle.exhale { transform: scale(1); }
+  .circle.inhale { transform: scale(1.6); background: var(--accent); transition-duration: 4s; }
+  .circle.hold { transform: scale(1.6); background: var(--accent); }
+  .circle.exhale { transform: scale(1); transition-duration: 6s; }
+  @media (prefers-reduced-motion: reduce) {
+    .circle, .circle.inhale, .circle.exhale { transition-duration: 0.01s; }
+    .circle.inhale, .circle.hold { transform: scale(1.15); }
+  }
   .breath-text {
     text-align: center;
     font-size: 1.3rem;
     font-weight: 500;
     min-height: 2rem;
+  }
+  .breath-count {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    min-height: 1.4rem;
+    margin-bottom: 16px;
   }
   .actions-list {
     display: flex;
@@ -142,31 +221,55 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    gap: 12px;
+    border: 1px solid var(--border);
   }
   .action-card.done {
     opacity: 0.6;
     background: var(--soft-green);
   }
   .action-card button {
+    flex-shrink: 0;
     background: none;
     border: 1px solid var(--accent);
     border-radius: 12px;
     padding: 6px 12px;
     font-size: 0.85rem;
     cursor: pointer;
-    color: var(--text);
+    min-width: 56px;
   }
   .history-item {
     background: var(--card);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--border);
   }
   .history-item .date {
     font-size: 0.85rem;
     color: var(--muted);
+  }
+  .history-item .note { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .trend {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 56px;
+    margin-bottom: 6px;
+  }
+  .trend .day {
+    flex: 1;
+    border-radius: 6px 6px 3px 3px;
+    background: var(--accent);
+    min-height: 4px;
+  }
+  .trend .day.empty { background: var(--border); }
+  .trend-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 20px;
   }
   .nav {
     position: fixed;
@@ -176,9 +279,9 @@
     background: var(--card);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+    padding: 10px 0 calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px var(--shadow);
   }
   .nav button {
     background: none;
@@ -201,57 +304,83 @@
     text-align: center;
     margin-top: 24px;
   }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  input[type=file], [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 
-<div id="page-hjem" class="page active">
-  <h1>Hei. Du er trygg her.</h1>
-  <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+<main>
+<section id="page-hjem" class="page active" aria-labelledby="h-hjem">
+  <h1 id="h-hjem">Hei. Du er trygg her.</h1>
+  <p class="local-note">🔒 Alt blir på denne enheten. Ingen konto, ingen sky.</p>
+  <p class="support" id="moodLabel">Hvordan har du det akkurat nå?</p>
+  <div class="mood-scale" id="moodScale" role="group" aria-labelledby="moodLabel">
+    <button class="mood-btn" data-mood="1" aria-pressed="false" aria-label="Tungt">😔</button>
+    <button class="mood-btn" data-mood="2" aria-pressed="false" aria-label="Litt tungt">😕</button>
+    <button class="mood-btn" data-mood="3" aria-pressed="false" aria-label="Nøytralt">😐</button>
+    <button class="mood-btn" data-mood="4" aria-pressed="false" aria-label="Greit">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-pressed="false" aria-label="Rolig">😌</button>
   </div>
+  <label for="note" class="sr-only">Notat</label>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
-  <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
-  <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
-</div>
+  <button class="btn" id="saveBtn">Lagre sjekk-inn</button>
+  <div class="message" id="saveMsg" role="status" aria-live="polite"></div>
+  <button class="btn btn-secondary" data-goto="pusterom">Pust med meg</button>
+  <a class="mirror-link" href="isolation-mirror.html">
+    🪞 Isolation Mirror
+    <small>Når det er tomt rundt deg. Note eller bilde, alt lokalt.</small>
+  </a>
+</section>
 
-<div id="page-pusterom" class="page">
-  <h1>Pusterom</h1>
-  <p class="support">Følg sirkelen. Pust rolig.</p>
-  <div class="circle-wrap">
+<section id="page-pusterom" class="page" aria-labelledby="h-pusterom">
+  <h1 id="h-pusterom">Pusterom</h1>
+  <p class="support">Følg sirkelen. Inn 4 · hold 2 · ut 6.</p>
+  <div class="circle-wrap" aria-hidden="true">
     <div class="circle" id="breathCircle"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
-  <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
-</div>
+  <div class="breath-text" id="breathText" aria-live="polite">Trykk start</div>
+  <div class="breath-count" id="breathCount"></div>
+  <button class="btn" id="breathBtn">Start</button>
+</section>
 
-<div id="page-grep" class="page">
-  <h1>Små grep</h1>
-  <p class="support">Enkle ting som kan hjelpe her og nå.</p>
+<section id="page-grep" class="page" aria-labelledby="h-grep">
+  <h1 id="h-grep">Små grep</h1>
+  <p class="support">Enkle ting som kan hjelpe her og nå. Ett er nok.</p>
   <div class="actions-list" id="actionsList"></div>
-</div>
+</section>
 
-<div id="page-historikk" class="page">
-  <h1>Din oversikt</h1>
+<section id="page-historikk" class="page" aria-labelledby="h-historikk">
+  <h1 id="h-historikk">Din oversikt</h1>
+  <h2>Siste 14 dager</h2>
+  <div class="trend" id="trend" role="img"></div>
+  <div class="trend-legend"><span>for to uker siden</span><span>i dag</span></div>
   <div id="historyList"></div>
-  <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
-</div>
+  <div class="summary" id="weekSummary"></div>
 
-<nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <h2>Ta historikken med deg</h2>
+  <p class="support">Nettleserdata kan slettes. Last ned en kopi, eller ta sikkerhetskopi du kan hente inn igjen.</p>
+  <button class="btn btn-secondary" id="exportTxt">Last ned som tekst (.txt)</button>
+  <button class="btn btn-quiet" id="exportJson">Sikkerhetskopi (.json)</button>
+  <button class="btn btn-quiet" id="importJsonBtn">Hent inn sikkerhetskopi</button>
+  <input type="file" id="importJson" accept="application/json,.json">
+  <button class="btn btn-quiet btn-danger" id="wipeBtn">Slett alt på denne enheten</button>
+  <div class="message" id="dataMsg" role="status" aria-live="polite"></div>
+</section>
+</main>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button class="active" data-goto="hjem" aria-current="page"><span aria-hidden="true">🏠</span>Hjem</button>
+  <button data-goto="pusterom"><span aria-hidden="true">🌬️</span>Pusterom</button>
+  <button data-goto="grep"><span aria-hidden="true">✋</span>Små grep</button>
+  <button data-goto="historikk"><span aria-hidden="true">📖</span>Historikk</button>
 </nav>
 
 <script>
-const actions = [
+const ACTIONS = [
   "Gå ut i frisk luft i 5 minutter",
   "Drikk et glass vann sakte",
   "Sett deg og kjenn føttene i gulvet",
@@ -260,138 +389,406 @@ const actions = [
   "Legg telefonen bort i 10 minutter",
   "Strekk armene over hodet"
 ];
+const MOODS = ['', '😔', '😕', '😐', '🙂', '😌'];
+const MOOD_WORDS = ['', 'tungt', 'litt tungt', 'nøytralt', 'greit', 'rolig'];
+const BREATH = [
+  { cls: 'inhale', text: 'Pust inn…', ms: 4000 },
+  { cls: 'hold',   text: 'Hold…',     ms: 2000 },
+  { cls: 'exhale', text: 'Pust ut…',  ms: 6000 }
+];
+const KEEP_ACTION_DAYS = 60;
 
+const $ = id => document.getElementById(id);
+
+// --- Lagring. Tåler privat modus og ødelagt JSON uten å krasje appen.
+const store = {
+  get(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch (e) { return false; }
+  }
+};
+
+function dayKey(d) {
+  // Lokal dato, ikke UTC, så midnatt følger brukeren.
+  const x = new Date(d);
+  return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+}
+
+function startOfWeek(d) {
+  // Norsk uke starter mandag.
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+
+function getCheckins() {
+  const list = store.get('checkins', []);
+  return Array.isArray(list) ? list.filter(e => e && e.date && !isNaN(new Date(e.date))) : [];
+}
+
+function getDoneActions() {
+  const raw = store.get('doneActions', {});
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  // 1.0 brukte toDateString() som nøkkel ("Sat Aug 29 2026"). Flytt til YYYY-MM-DD.
+  const out = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (!Array.isArray(v)) continue;
+    const key = /^\d{4}-\d{2}-\d{2}$/.test(k) ? k : (isNaN(new Date(k)) ? null : dayKey(new Date(k)));
+    if (key) out[key] = [...new Set([...(out[key] || []), ...v])];
+  }
+  return out;
+}
+
+function saveDoneActions(done) {
+  const cutoff = dayKey(Date.now() - KEEP_ACTION_DAYS * 864e5);
+  for (const k of Object.keys(done)) {
+    if (k < cutoff || done[k].length === 0) delete done[k];
+  }
+  return store.set('doneActions', done);
+}
+
+function showMsg(el, text, gentle, ms) {
+  el.textContent = text;
+  el.classList.toggle('gentle', !!gentle);
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), ms || 4000);
+}
+
+// --- Navigasjon
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => {
+    const on = b.dataset.goto === name;
+    b.classList.toggle('active', on);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  if (name !== 'pusterom' && breathing) stopBreath();
+  if (name === 'historikk') renderHistory();
+  if (name === 'grep') renderActions();
+  window.scrollTo(0, 0);
+  if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-goto]');
+  if (b) switchPage(b.dataset.goto);
+});
+
+// --- Sjekk-inn
 let selectedMood = null;
-let breathing = false;
-let breathInterval = null;
-let phase = 0; // 0 inhale, 1 hold, 2 exhale
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedMood = btn.dataset.mood;
+    document.querySelectorAll('.mood-btn').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    $('moodScale').classList.remove('nudge');
+    selectedMood = Number(btn.dataset.mood);
   });
 });
 
-function saveCheckin() {
+$('saveBtn').addEventListener('click', () => {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    $('moodScale').classList.add('nudge');
+    showMsg($('saveMsg'), 'Trykk på et fjes først. Det finnes ikke feil svar.', true, 3000);
     return;
   }
-  const note = document.getElementById('note').value.trim();
-  const entry = {
-    date: new Date().toISOString(),
-    mood: selectedMood,
-    note: note
-  };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
-  document.getElementById('saveMsg').classList.add('show');
-  document.getElementById('note').value = '';
-  selectedMood = null;
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
-  renderHistory();
-}
-
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  if (name === 'historikk') renderHistory();
-  if (name === 'grep') renderActions();
-}
-
-function toggleBreath() {
-  const btn = document.getElementById('breathBtn');
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  if (!breathing) {
-    breathing = true;
-    btn.textContent = 'Stopp';
-    phase = 0;
-    runBreathCycle();
-  } else {
-    breathing = false;
-    clearTimeout(breathInterval);
-    btn.textContent = 'Start';
-    text.textContent = 'Trykk start';
-    circle.className = 'circle';
+  const list = getCheckins();
+  list.unshift({ date: new Date().toISOString(), mood: selectedMood, note: $('note').value.trim() });
+  if (!store.set('checkins', list)) {
+    showMsg($('saveMsg'), 'Klarte ikke å lagre. Er nettleseren i privat modus?', true, 5000);
+    return;
   }
+  showMsg($('saveMsg'), 'Takk. Det er bra at du sjekket inn.');
+  $('note').value = '';
+  selectedMood = null;
+  document.querySelectorAll('.mood-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+});
+
+// --- Pusterom
+let breathing = false;
+let breathTimer = null;
+let phase = 0;
+let rounds = 0;
+let wakeLock = null;
+
+async function lockScreen() {
+  try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }
+  catch (e) { wakeLock = null; }
+}
+
+function releaseScreen() {
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+
+function startBreath() {
+  breathing = true;
+  phase = 0;
+  rounds = 0;
+  $('breathBtn').textContent = 'Stopp';
+  $('breathCount').textContent = '';
+  lockScreen();
+  runBreathCycle();
+}
+
+function stopBreath() {
+  breathing = false;
+  clearTimeout(breathTimer);
+  releaseScreen();
+  $('breathBtn').textContent = 'Start';
+  $('breathText').textContent = rounds > 0 ? 'Fint. Kjenn etter hvordan du har det nå.' : 'Trykk start';
+  $('breathCircle').className = 'circle';
+  if (rounds > 0) logBreath(rounds);
 }
 
 function runBreathCycle() {
   if (!breathing) return;
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  if (phase === 0) {
-    text.textContent = 'Pust inn…';
-    circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
-  } else if (phase === 1) {
-    text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
-  } else {
-    text.textContent = 'Pust ut…';
-    circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
-  }
+  const p = BREATH[phase];
+  $('breathText').textContent = p.text;
+  $('breathCircle').className = 'circle ' + p.cls;
+  breathTimer = setTimeout(() => {
+    phase = (phase + 1) % BREATH.length;
+    if (phase === 0) {
+      rounds++;
+      $('breathCount').textContent = rounds === 1 ? '1 runde' : rounds + ' runder';
+    }
+    runBreathCycle();
+  }, p.ms);
 }
 
+function logBreath(n) {
+  const list = store.get('breaths', []);
+  const arr = Array.isArray(list) ? list : [];
+  arr.unshift({ date: new Date().toISOString(), rounds: n });
+  store.set('breaths', arr.slice(0, 500));
+}
+
+$('breathBtn').addEventListener('click', () => breathing ? stopBreath() : startBreath());
+
+document.addEventListener('visibilitychange', () => {
+  // Wake lock slippes når fanen skjules. Hent den igjen når brukeren kommer tilbake.
+  if (document.visibilityState === 'visible' && breathing) lockScreen();
+});
+
+// --- Små grep
 function renderActions() {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
-  const list = document.getElementById('actionsList');
+  const done = getDoneActions();
+  const today = done[dayKey(Date.now())] || [];
+  const list = $('actionsList');
   list.innerHTML = '';
-  actions.forEach((a, i) => {
-    const isDone = done[today] && done[today].includes(i);
+  ACTIONS.forEach((a, i) => {
+    const isDone = today.includes(i);
     const card = document.createElement('div');
     card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    const label = document.createElement('span');
+    label.textContent = a;
+    const btn = document.createElement('button');
+    btn.textContent = isDone ? '✓' : 'Gjør';
+    btn.setAttribute('aria-pressed', String(isDone));
+    btn.setAttribute('aria-label', (isDone ? 'Angre: ' : 'Merk som gjort: ') + a);
+    btn.addEventListener('click', () => toggleAction(i));
+    card.append(label, btn);
     list.appendChild(card);
   });
 }
 
 function toggleAction(i) {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
-  if (!done[today]) done[today] = [];
-  const idx = done[today].indexOf(i);
-  if (idx > -1) done[today].splice(idx, 1);
-  else done[today].push(i);
-  localStorage.setItem('doneActions', JSON.stringify(done));
+  const done = getDoneActions();
+  const k = dayKey(Date.now());
+  const today = done[k] || [];
+  done[k] = today.includes(i) ? today.filter(x => x !== i) : [...today, i];
+  saveDoneActions(done);
   renderActions();
 }
 
-function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  const container = document.getElementById('historyList');
-  container.innerHTML = '';
-  if (list.length === 0) {
-    container.innerHTML = '<p class="support">Ingen sjekk-ins ennå. Det er greit.</p>';
-  } else {
-    list.slice(0, 20).forEach(e => {
-      const d = new Date(e.date);
-      const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
-      const item = document.createElement('div');
-      item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
-      container.appendChild(item);
-    });
+// --- Historikk
+function renderTrend(list) {
+  const byDay = {};
+  list.forEach(e => {
+    const k = dayKey(e.date);
+    (byDay[k] = byDay[k] || []).push(Number(e.mood) || 3);
+  });
+  const trend = $('trend');
+  trend.innerHTML = '';
+  const words = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const moods = byDay[dayKey(d)];
+    const bar = document.createElement('div');
+    bar.className = 'day' + (moods ? '' : ' empty');
+    if (moods) {
+      const avg = moods.reduce((a, b) => a + b, 0) / moods.length;
+      bar.style.height = (avg / 5 * 100) + '%';
+      bar.title = d.toLocaleDateString('no-NO', { weekday: 'short', day: 'numeric', month: 'short' }) + ': ' + MOOD_WORDS[Math.round(avg)];
+      words.push(MOOD_WORDS[Math.round(avg)]);
+    }
+    trend.appendChild(bar);
   }
-  // week count
-  const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
-  const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  trend.setAttribute('aria-label', words.length
+    ? 'Humør siste 14 dager, ' + words.length + ' dager med sjekk-inn.'
+    : 'Ingen sjekk-inn siste 14 dager.');
 }
 
-// init
-renderActions();
-renderHistory();
+function renderHistory() {
+  const list = getCheckins();
+  renderTrend(list);
+  const container = $('historyList');
+  container.innerHTML = '';
+  if (list.length === 0) {
+    const p = document.createElement('p');
+    p.className = 'support';
+    p.textContent = 'Ingen sjekk-ins ennå. Det er greit.';
+    container.appendChild(p);
+  } else {
+    list.slice(0, 30).forEach(e => {
+      const d = new Date(e.date);
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      const date = document.createElement('div');
+      date.className = 'date';
+      date.textContent = d.toLocaleDateString('no-NO', { weekday: 'short', day: 'numeric', month: 'short' })
+        + ' ' + d.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })
+        + ' · ' + (MOODS[e.mood] || '😐');
+      item.appendChild(date);
+      if (e.note) {
+        const note = document.createElement('div');
+        note.className = 'note';
+        note.textContent = e.note;
+        item.appendChild(note);
+      }
+      container.appendChild(item);
+    });
+    if (list.length > 30) {
+      const more = document.createElement('p');
+      more.className = 'support';
+      more.textContent = 'Viser de siste 30. Alle ' + list.length + ' er med i nedlastingen.';
+      container.appendChild(more);
+    }
+  }
+
+  // Uka: sjekk-inn + pusteøkter + små grep siden mandag.
+  const monday = startOfWeek(Date.now());
+  const mondayKey = dayKey(monday);
+  const checkins = list.filter(e => new Date(e.date) >= monday).length;
+  const breaths = (store.get('breaths', []) || []).filter(e => e && new Date(e.date) >= monday).length;
+  const grep = Object.entries(getDoneActions()).filter(([k]) => k >= mondayKey).reduce((n, [, v]) => n + v.length, 0);
+  const total = checkins + breaths + grep;
+  $('weekSummary').textContent = total === 0
+    ? 'Ny uke. Ingen krav.'
+    : 'Du har tatt vare på deg selv ' + total + (total === 1 ? ' gang' : ' ganger') + ' denne uken. Det er fint.';
+}
+
+// --- Export / import
+function download(filename, text, type) {
+  const blob = new Blob([text], { type: type + ';charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+$('exportTxt').addEventListener('click', () => {
+  const list = getCheckins();
+  if (list.length === 0) {
+    showMsg($('dataMsg'), 'Ingenting å laste ned ennå.', true);
+    return;
+  }
+  const lines = ['Pusterom – historikk', 'Lastet ned ' + new Date().toLocaleString('no-NO'), ''];
+  list.forEach(e => {
+    const d = new Date(e.date);
+    lines.push(d.toLocaleString('no-NO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+      + ' — ' + (MOOD_WORDS[e.mood] || '?') + ' (' + e.mood + '/5)');
+    if (e.note) lines.push('  ' + e.note.replace(/\n/g, '\n  '));
+    lines.push('');
+  });
+  download('pusterom-historikk.txt', lines.join('\n'), 'text/plain');
+});
+
+$('exportJson').addEventListener('click', () => {
+  const data = {
+    app: 'pusterom',
+    version: 1,
+    exported: new Date().toISOString(),
+    checkins: getCheckins(),
+    doneActions: getDoneActions(),
+    breaths: store.get('breaths', [])
+  };
+  download('pusterom-' + dayKey(Date.now()) + '.json', JSON.stringify(data, null, 2), 'application/json');
+});
+
+$('importJsonBtn').addEventListener('click', () => $('importJson').click());
+
+$('importJson').addEventListener('change', async e => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || data.app !== 'pusterom' || !Array.isArray(data.checkins)) throw new Error('feil format');
+    // Slå sammen, ikke overskriv. Samme tidspunkt = samme sjekk-inn.
+    const seen = new Set();
+    const merged = [...getCheckins(), ...data.checkins]
+      .filter(c => c && c.date && !isNaN(new Date(c.date)) && !seen.has(c.date) && seen.add(c.date))
+      .map(c => ({ date: c.date, mood: Number(c.mood) || 3, note: typeof c.note === 'string' ? c.note : '' }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    const added = merged.length - getCheckins().length;
+    const done = getDoneActions();
+    if (data.doneActions && typeof data.doneActions === 'object') {
+      for (const [k, v] of Object.entries(data.doneActions)) {
+        if (Array.isArray(v)) done[k] = [...new Set([...(done[k] || []), ...v.filter(Number.isInteger)])];
+      }
+    }
+    const breathSeen = new Set();
+    const breaths = [...(store.get('breaths', []) || []), ...(Array.isArray(data.breaths) ? data.breaths : [])]
+      .filter(b => b && b.date && !breathSeen.has(b.date) && breathSeen.add(b.date))
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 500);
+    store.set('checkins', merged);
+    saveDoneActions(done);
+    store.set('breaths', breaths);
+    renderHistory();
+    showMsg($('dataMsg'), added > 0 ? 'Hentet inn ' + added + ' sjekk-inn.' : 'Alt fra kopien fantes allerede her.');
+  } catch (err) {
+    showMsg($('dataMsg'), 'Kunne ikke lese filen. Bruk en sikkerhetskopi laget her.', true, 5000);
+  }
+});
+
+let wipeArmed = false;
+$('wipeBtn').addEventListener('click', () => {
+  if (!wipeArmed) {
+    wipeArmed = true;
+    $('wipeBtn').textContent = 'Trykk igjen for å slette alt';
+    setTimeout(() => { wipeArmed = false; $('wipeBtn').textContent = 'Slett alt på denne enheten'; }, 4000);
+    return;
+  }
+  wipeArmed = false;
+  ['checkins', 'doneActions', 'breaths'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  $('wipeBtn').textContent = 'Slett alt på denne enheten';
+  renderHistory();
+  showMsg($('dataMsg'), 'Slettet. Ingenting ligger igjen her.');
+});
+
+// --- Oppstart
+function pageFromHash() {
+  const name = location.hash.slice(1);
+  return document.getElementById('page-' + name) ? name : 'hjem';
+}
+switchPage(pageFromHash());
+window.addEventListener('hashchange', () => switchPage(pageFromHash()));
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
