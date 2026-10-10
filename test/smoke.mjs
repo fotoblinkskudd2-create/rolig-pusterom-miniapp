@@ -107,6 +107,29 @@ await test('Gamle data (1.0-format) leses uten feil', async () => {
   await ctx.close();
 });
 
+await test('Humørgraf: 14 ulike dager rundt overgang til vintertid', async () => {
+  const { ctx, page, errors } = await freshPage({ timezoneId: 'Europe/Oslo' });
+  await page.clock.setFixedTime(new Date('2026-10-26T23:30:00+01:00'));
+  await page.goto(BASE);
+  await page.evaluate(() => localStorage.setItem('checkins', JSON.stringify([{ date: new Date().toISOString(), mood: 3, note: '' }])));
+  await page.goto(BASE + '#historikk');
+  await page.reload();
+  const days = await page.evaluate(() => {
+    const out = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i);
+      out.push(d.getDate());
+    }
+    return out;
+  });
+  assert(new Set(days).size === 14 && days[13] === 26 && days[12] === 25 && days[11] === 24, days.join(','));
+  const labels = await page.$$eval('#barLabels span', (s) => s.map((x) => x.textContent));
+  assert(labels[13] === '26' && labels[11] === '24', labels.join(','));
+  assert(await page.locator('.bar.today:not(.empty)').count() === 1, 'dagens søyle mangler');
+  assert(!errors.length, errors.join('; '));
+  await ctx.close();
+});
+
 await test('Små grep: av/på og prunes ikke dagens', async () => {
   const { ctx, page } = await freshPage();
   await page.goto(BASE + '#grep');

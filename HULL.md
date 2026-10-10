@@ -30,5 +30,6 @@ Alle fem er lukket, og har test i `test/smoke.mjs`. I tillegg funnet og fikset:
 9. `doneActions` vokste for alltid. Nå beholdes 14 dager.
 10. «Du har tatt vare på deg selv 0 ganger … Det er fint.» Nå teller uken sjekk-inn, pusteøkter og små grep, og sier noe varmt når den er tom.
 11. `user-scalable=no` stengte zoom for svaksynte. Fjernet.
+12. Dager regnet som «nå minus 24 t» – på kvelden etter overgang til vintertid viste grafen samme dag to ganger. Nå kalenderdager, med test som låser klokka til 26.10.2026 23:30 i Oslo.
 
 Fortsatt åpent: test på ekte iPhone (særlig eksport-nedlasting og Hjem-skjerm-ikon).

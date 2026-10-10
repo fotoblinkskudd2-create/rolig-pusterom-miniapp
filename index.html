@@ -417,10 +417,16 @@ function dayKey(d) {
   const x = new Date(d);
   return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
 }
+function daysAgoKey(n) {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() - n);
+  return dayKey(d);
+}
 function loadDoneActions() {
   const raw = load('doneActions', {});
   const out = {};
-  const cutoff = dayKey(Date.now() - 13 * DAY);
+  const cutoff = daysAgoKey(13);
   Object.keys(raw).forEach((k) => {
     const key = /^\d{4}-\d{2}-\d{2}$/.test(k) ? k : (isNaN(Date.parse(k)) ? null : dayKey(Date.parse(k)));
     if (!key || key < cutoff || !Array.isArray(raw[k])) return;
@@ -616,7 +622,9 @@ function renderTrend(list) {
   const desc = [];
   let sum = 0, n = 0;
   for (let i = 13; i >= 0; i--) {
-    const d = new Date(Date.now() - i * DAY);
+    const d = new Date();
+    d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - i); // kalenderdager, ikke 24 t – tåler sommertid
     const k = dayKey(d);
     const moods = byDay[k];
     const bar = document.createElement('div');
@@ -681,7 +689,7 @@ function renderWeek(list) {
   const weekAgo = Date.now() - 7 * DAY;
   const checkins = list.filter((e) => Date.parse(e.date) > weekAgo).length;
   const breaths = load('breathSessions', []).filter((s) => s && Date.parse(s.date) > weekAgo).length;
-  const cutoff = dayKey(Date.now() - 6 * DAY);
+  const cutoff = daysAgoKey(6);
   const done = loadDoneActions();
   const grep = Object.keys(done).filter((k) => k >= cutoff).reduce((a, k) => a + done[k].length, 0);
   const parts = [];
