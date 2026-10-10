@@ -38,7 +38,7 @@ test('alle filer service workeren mellomlagrer finnes', async () => {
   for (const f of list) assert.equal((await fetch(new URL(f, base))).status, 200, f);
 });
 
-test('appen og Isolation Mirror åpner uten nett etter første besøk', async () => {
+test('appen, Isolation Mirror og Systemrommet åpner uten nett etter første besøk', async () => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
   await page.goto(base + 'index.html');
@@ -52,6 +52,8 @@ test('appen og Isolation Mirror åpner uten nett etter første besøk', async ()
   await page.locator('#saveMsg').waitFor({ state: 'visible' });
   await page.goto(base + 'isolation-mirror.html');
   assert.equal(await page.textContent('h1'), 'Isolation Mirror');
+  await page.goto(base + 'systemrom.html');
+  assert.equal(await page.textContent('h1'), 'Systemrommet');
   await page.goto(base + 'index.html#pusterom');
   assert.equal(await page.$eval('.page.active', (e) => e.id), 'page-pusterom');
   await context.close();

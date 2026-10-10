@@ -1,11 +1,12 @@
 // Pusterom service worker: gjør appen tilgjengelig uten nett.
 // Ingen data sendes noe sted. Bare appens egne filer mellomlagres.
 // Bytt CACHE ved hver endring i filene under, ellers får brukere gammel versjon.
-const CACHE = 'pusterom-1.2.0';
+const CACHE = 'pusterom-1.3.0';
 const SHELL = [
   './',
   './index.html',
   './isolation-mirror.html',
+  './systemrom.html',
   './manifest.webmanifest',
   './icons/icon.svg',
   './icons/icon-192.png',

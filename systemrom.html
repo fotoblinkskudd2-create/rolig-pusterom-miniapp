@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161b18" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Systemrommet</title>
+<style>
+  :root {
+    --bg: #f5f7f4;
+    --card: #ffffff;
+    --text: #3a4a3f;
+    --muted: #66766b;
+    --accent: #a8c5b0;
+    --on-accent: #2a3a2f;
+    --soft-blue: #d4e4f0;
+    --soft-beige: #f0e9df;
+    --soft-green: #e0ebe3;
+    --border: #e0e6e1;
+    --warn: #f3e3c8;
+    --warn-ink: #6a4a12;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161b18;
+      --card: #212924;
+      --text: #e3ece5;
+      --muted: #9aab9f;
+      --accent: #8fb89b;
+      --on-accent: #142018;
+      --soft-blue: #2a3a47;
+      --soft-beige: #342f28;
+      --soft-green: #25352b;
+      --border: #314038;
+      --warn: #4a3b1f;
+      --warn-ink: #f3dcae;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  main {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 20px calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  a.back { color: var(--muted); font-size: 0.9rem; display: inline-block; padding: 10px 0; margin-bottom: 4px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; font-weight: 600; }
+  h2 { font-size: 1.1rem; margin: 0 0 4px; font-weight: 600; }
+  p { color: var(--muted); font-size: 0.9rem; margin: 0 0 12px; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 16px;
+    overflow-wrap: anywhere;
+  }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin: 4px 0 2px; }
+  input, textarea, select {
+    width: 100%;
+    min-height: 44px;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  textarea { min-height: 80px; resize: vertical; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; min-width: 0; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    min-height: 48px;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--on-accent);
+    cursor: pointer;
+    width: 100%;
+  }
+  button.ghost { background: transparent; border: 1px solid var(--border); color: var(--text); font-weight: 500; }
+  button.small { width: auto; min-height: 44px; padding: 8px 12px; font-size: 0.85rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip {
+    width: auto;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--soft-green);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.88rem;
+  }
+  .now { background: var(--soft-blue); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.95rem; }
+  .item { border-top: 1px solid var(--border); padding: 10px 0; font-size: 0.92rem; }
+  .item:first-child { border-top: none; }
+  .meta { color: var(--muted); font-size: 0.78rem; }
+  .actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .item.read { opacity: 0.65; }
+  .text { white-space: pre-wrap; }
+  .lock { font-variant-numeric: tabular-nums; }
+  .ripe { background: var(--warn); color: var(--warn-ink); border-radius: 12px; padding: 8px 10px; margin-top: 6px; }
+  .tally, .gap { background: var(--soft-beige); border-radius: 12px; padding: 10px 12px; margin-top: 12px; font-size: 0.9rem; }
+  .gap { margin: 6px 0; }
+  .empty { color: var(--muted); font-size: 0.88rem; font-style: italic; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 0.88rem; margin-top: 12px; min-height: 44px; display: flex; align-items: center; }
+  .local-line { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 24px; }
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+    width: calc(100% - 40px); max-width: 400px;
+    background: var(--text); color: var(--bg); text-align: center;
+    padding: 12px 16px; border-radius: 14px; font-size: 0.92rem; z-index: 20;
+  }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Systemrommet</h1>
+  <p>For et hode med flere i. Hvem er her, beskjeder mellom dere, og en brems på kjøp. Alt blir på denne enheten.</p>
+
+  <section id="awaySection" aria-labelledby="t-away">
+    <h2 id="t-away">Mens du var borte</h2>
+    <div id="away" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="t-front">
+    <h2 id="t-front">Hvem er her nå?</h2>
+    <div class="now" id="nowLine"></div>
+    <div class="chips" id="knownChips"></div>
+    <label for="frontName">Navn, alder eller «vet ikke»</label>
+    <input id="frontName" maxlength="40" autocomplete="off">
+    <label for="frontNote">Hvordan er det her? (valgfritt)</label>
+    <input id="frontNote" maxlength="140" autocomplete="off">
+    <button type="button" id="frontBtn">Logg at jeg er her</button>
+    <details>
+      <summary>Siste bytter</summary>
+      <div id="frontLog"></div>
+    </details>
+  </section>
+
+  <section aria-labelledby="t-notes">
+    <h2 id="t-notes">Lapper</h2>
+    <p>Beskjed til den som kommer etter deg. Eller til alle.</p>
+    <label for="noteTo">Til (tomt = alle)</label>
+    <input id="noteTo" maxlength="40" autocomplete="off">
+    <label for="noteText">Lapp</label>
+    <textarea id="noteText" maxlength="600" placeholder="Jeg spiste klokka 12. Pakken på døra er min, ikke åpne den før fredag."></textarea>
+    <button type="button" id="noteBtn">Legg igjen lapp</button>
+    <div id="notes" style="margin-top:12px"></div>
+  </section>
+
+  <section id="brems" aria-labelledby="t-brake">
+    <h2 id="t-brake">Kjøpsbrems · 48 timer</h2>
+    <p>Lyst på noe? Skriv det her i stedet for å trykke kjøp. Det låses i 48 timer. Så får alle si sitt.</p>
+    <label for="buyWhat">Hva</label>
+    <input id="buyWhat" maxlength="80" autocomplete="off" placeholder="Lego Technic, robotstøvsuger …">
+    <div class="row">
+      <div>
+        <label for="buyPrice">Pris i kr</label>
+        <input id="buyPrice" type="number" inputmode="numeric" min="0" step="1">
+      </div>
+      <div>
+        <label for="buyHow">Betaling</label>
+        <select id="buyHow">
+          <option value="direkte">Betale nå</option>
+          <option value="avbetaling">Avbetaling / Klarna</option>
+          <option value="kreditt">Kredittkort</option>
+        </select>
+      </div>
+    </div>
+    <label for="buyWhy">Hvorfor akkurat nå? (valgfritt)</label>
+    <input id="buyWhy" maxlength="140" autocomplete="off">
+    <button type="button" id="brakeBtn">Lås i 48 timer</button>
+    <div id="brakes" style="margin-top:12px"></div>
+    <div class="tally" id="tally"></div>
+  </section>
+
+  <p class="local-line">Med i sikkerhetskopien og «Slett alt» under Historikk i Pusterom.<br>Ingen konto. Ingen sky. Et verktøy, ikke behandling.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+'use strict';
+
+// Samme nøkler leses av index.html (sikkerhetskopi, gjenoppretting og «Slett alt»).
+const KEY = { front: 'systemrom.front', notes: 'systemrom.lapper', brakes: 'systemrom.brems' };
+const LOCK_MS = 48 * 60 * 60 * 1000;
+const HOW = { direkte: 'betale nå', avbetaling: 'avbetaling', kreditt: 'kredittkort' };
+const $ = (id) => document.getElementById(id);
+
+// ---------- Lagring (lokal, tåler privat modus) ----------
+
+function load(key) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+}
+function save(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    toast('Kunne ikke lagre på denne enheten. Privat modus eller full lagring?');
+    return false;
+  }
+}
+
+// ---------- Små hjelpere ----------
+
+// Bygger DOM uten innerHTML. Alt brukeren skriver blir tekst, aldri kode.
+function el(tag, props, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (k === 'on') for (const [ev, fn] of Object.entries(v)) n.addEventListener(ev, fn);
+    else if (k === 'class') n.className = v;
+    else n.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) n.append(kid);
+  return n;
+}
+const b = (text) => el('strong', null, String(text));
+
+let toastTimer = null;
+function toast(text) {
+  const t = $('toast');
+  t.textContent = text;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 3500);
+}
+
+function when(iso) {
+  return new Date(iso).toLocaleString('nb-NO', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+function span(ms) {
+  const m = Math.max(0, Math.round(ms / 60000));
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60);
+  if (m <= 48 * 60) return h + ' t ' + (m % 60) + ' min';
+  return Math.floor(h / 24) + ' døgn ' + (h % 24) + ' t';
+}
+const kr = (n) => (Number(n) || 0).toLocaleString('nb-NO') + ' kr';
+const norm = (name) => String(name || '').trim().toLowerCase();
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const currentFront = () => load(KEY.front)[0] || null;
+const me = () => (currentFront() && currentFront().name) || 'ukjent';
+const item = (meta, ...body) => el('div', { class: 'item' }, el('div', { class: 'meta' }, meta), ...body);
+
+// ---------- Hvem er her ----------
+
+function logFront(nameArg) {
+  const name = String(nameArg ?? $('frontName').value).trim().slice(0, 40) || 'vet ikke';
+  const note = $('frontNote').value.trim().slice(0, 140);
+  const list = load(KEY.front);
+  list.unshift({ id: newId(), at: new Date().toISOString(), name, note });
+  if (!save(KEY.front, list.slice(0, 500))) return;
+  $('frontName').value = '';
+  $('frontNote').value = '';
+  renderAll();
+  showAway(name);
+  toast('Logget: ' + name);
+}
+
+function knownNames() {
+  const seen = new Map();
+  load(KEY.front).forEach((e) => { if (!seen.has(norm(e.name))) seen.set(norm(e.name), e.name); });
+  return [...seen.values()].slice(0, 10);
+}
+
+function renderFront() {
+  const list = load(KEY.front);
+  const now = list[0];
+  $('nowLine').replaceChildren(...(now
+    ? [b(now.name), ` har vært her siden ${when(now.at)} (${span(Date.now() - new Date(now.at))}).`,
+       now.note ? el('div', { class: 'meta' }, now.note) : null].filter(Boolean)
+    : ['Ingen logget ennå. Det er greit å skrive «vet ikke».']));
+  $('knownChips').replaceChildren(...knownNames().map((n) =>
+    el('button', { type: 'button', class: 'chip', 'aria-label': 'Logg at ' + n + ' er her', on: { click: () => logFront(n) } }, n)));
+  $('frontLog').replaceChildren(...(list.length
+    ? list.slice(0, 25).map((e) => item(when(e.at), e.name, e.note ? ' · ' + e.note : ''))
+    : [el('div', { class: 'empty' }, 'Ingen bytter logget.')]));
+}
+
+// ---------- Mens du var borte ----------
+
+function events() {
+  const out = [];
+  load(KEY.front).forEach((e) => out.push({ at: e.at, body: [b(e.name), ' var her', e.note ? ': ' + e.note : ''] }));
+  load(KEY.notes).forEach((n) => out.push({ at: n.at, body: [`Lapp fra ${n.from} til ${n.to || 'alle'}: «${n.text}»`] }));
+  load(KEY.brakes).forEach((x) => {
+    out.push({ at: x.at, body: [`${x.by} ville kjøpe `, b(x.what), ` (${kr(x.price)}, ${HOW[x.how] || x.how})`] });
+    if (x.decidedAt) out.push({ at: x.decidedAt, body: [`${x.decidedBy || 'noen'} ${x.decision === 'kjøpt' ? 'kjøpte' : 'slapp'} `, b(x.what)] });
+  });
+  return out.filter((e) => !isNaN(new Date(e.at))).sort((a, c) => new Date(c.at) - new Date(a.at));
+}
+
+function ripeBrakes() {
+  return load(KEY.brakes).filter((x) => !x.decision && Date.now() - new Date(x.at) >= LOCK_MS);
+}
+
+let awayShownFor = null;
+
+function showAway(name) {
+  awayShownFor = name;
+  const who = norm(name);
+  const all = load(KEY.front);
+  // Hopp over rekken av egne innlogginger øverst. «Sist her» er siste gang før noen andre kom,
+  // ellers forsvinner det de andre gjorde hvis samme navn logges to ganger på rad.
+  let i = 0;
+  while (i < all.length && norm(all[i].name) === who) i++;
+  const prev = all.slice(i).find((e) => norm(e.name) === who);
+  const latestMine = all[0];
+  const kids = [];
+  if (!prev) {
+    kids.push(el('div', { class: 'gap' }, `Første gang ${name} logger seg her. Velkommen. Se gjerne lappene under.`));
+  } else {
+    const since = new Date(prev.at);
+    const latest = new Date(latestMine.at);
+    const evs = events().filter((e) => new Date(e.at) > since && new Date(e.at) < latest);
+    kids.push(el('div', { class: 'gap' }, `${name} var sist her ${when(prev.at)}. Det er ${span(latest - since)} siden.`));
+    if (evs.length) evs.slice(0, 30).forEach((e) => kids.push(item(when(e.at), ...e.body)));
+    else kids.push(el('div', { class: 'empty' }, 'Ingenting ble logget i mellomtiden. Det betyr ikke at ingenting skjedde.'));
+  }
+  const ripe = ripeBrakes().length;
+  if (ripe) kids.push(el('div', { class: 'ripe' }, `${ripe} kjøp venter på avgjørelse i Kjøpsbrems.`));
+  $('away').replaceChildren(...kids);
+}
+
+function renderAwayDefault() {
+  if (awayShownFor) return;
+  const evs = events();
+  $('away').replaceChildren(...(currentFront() && evs.length
+    ? [el('div', { class: 'meta' }, 'Siste som skjedde:'), ...evs.slice(0, 5).map((e) => item(when(e.at), ...e.body))]
+    : [el('div', { class: 'empty' }, 'Logg hvem som er her, så vises det som har skjedd siden sist.')]));
+}
+
+// ---------- Lapper ----------
+
+function addNote() {
+  const text = $('noteText').value.trim().slice(0, 600);
+  if (!text) { toast('Lappen er tom.'); $('noteText').focus(); return; }
+  const list = load(KEY.notes);
+  list.unshift({ id: newId(), at: new Date().toISOString(), from: me(), to: $('noteTo').value.trim().slice(0, 40), text, readBy: [] });
+  if (!save(KEY.notes, list.slice(0, 300))) return;
+  $('noteText').value = '';
+  $('noteTo').value = '';
+  renderAll();
+  toast('Lapp lagt igjen.');
+}
+
+function markRead(id) {
+  const reader = me();
+  const list = load(KEY.notes);
+  const n = list.find((x) => x.id === id);
+  if (!n) return;
+  n.readBy = Array.isArray(n.readBy) ? n.readBy : [];
+  if (!n.readBy.some((r) => norm(r.name) === norm(reader))) n.readBy.push({ name: reader, at: new Date().toISOString() });
+  save(KEY.notes, list);
+  renderAll();
+}
+
+let armedDelete = null;
+function deleteNote(id, btn) {
+  // To trykk, som «Slett alt»: en lapp kan være skrevet av noen andre.
+  if (armedDelete !== id) {
+    armedDelete = id;
+    btn.textContent = 'Trykk igjen for å fjerne';
+    setTimeout(() => { if (armedDelete === id) { armedDelete = null; renderNotes(); } }, 4000);
+    return;
+  }
+  armedDelete = null;
+  save(KEY.notes, load(KEY.notes).filter((x) => x.id !== id));
+  renderAll();
+}
+
+function renderNotes() {
+  const who = norm(currentFront() && currentFront().name);
+  const list = load(KEY.notes);
+  if (!list.length) { $('notes').replaceChildren(el('div', { class: 'empty' }, 'Ingen lapper.')); return; }
+  $('notes').replaceChildren(...list.slice(0, 40).map((n) => {
+    const readBy = Array.isArray(n.readBy) ? n.readBy : [];
+    const forMe = !n.to || norm(n.to) === who;
+    const readByMe = readBy.some((r) => norm(r.name) === who);
+    const node = item(
+      [`${when(n.at)} · fra ${n.from} til ${n.to || 'alle'}`, forMe && !readByMe ? el('span', null, ' · ', b('til deg')) : null],
+      el('div', { class: 'text' }, n.text),
+      el('div', { class: 'meta' }, readBy.length ? 'Sett av ' + readBy.map((r) => r.name).join(', ') : 'Ikke sett ennå'),
+      el('div', { class: 'actions' },
+        readByMe ? null : el('button', { type: 'button', class: 'small', on: { click: () => markRead(n.id) } }, 'Jeg har sett den'),
+        el('button', { type: 'button', class: 'small ghost', on: { click: (ev) => deleteNote(n.id, ev.currentTarget) } }, 'Fjern'))
+    );
+    if (readByMe) node.classList.add('read');
+    return node;
+  }));
+}
+
+// ---------- Kjøpsbrems ----------
+
+function addBrake() {
+  const what = $('buyWhat').value.trim().slice(0, 80);
+  if (!what) { toast('Skriv hva du har lyst på.'); $('buyWhat').focus(); return; }
+  const price = Math.max(0, Math.round(Number($('buyPrice').value) || 0));
+  const how = HOW[$('buyHow').value] ? $('buyHow').value : 'direkte';
+  const list = load(KEY.brakes);
+  list.unshift({ id: newId(), at: new Date().toISOString(), by: me(), what, price, how, why: $('buyWhy').value.trim().slice(0, 140), votes: [] });
+  if (!save(KEY.brakes, list.slice(0, 300))) return;
+  ['buyWhat', 'buyPrice', 'buyWhy'].forEach((id) => { $(id).value = ''; });
+  renderAll();
+  toast('Låst. Vi ses om 48 timer.');
+}
+
+function vote(id, yes) {
+  const name = me();
+  const list = load(KEY.brakes);
+  const x = list.find((y) => y.id === id);
+  if (!x) return;
+  x.votes = (Array.isArray(x.votes) ? x.votes : []).filter((v) => norm(v.name) !== norm(name));
+  x.votes.push({ name, yes, at: new Date().toISOString() });
+  save(KEY.brakes, list);
+  renderAll();
+}
+
+function decide(id, decision) {
+  const list = load(KEY.brakes);
+  const x = list.find((y) => y.id === id);
+  if (!x || x.decision) return;
+  // Kjøp er låst til 48 timer har gått. Det er hele poenget.
+  if (decision === 'kjøpt' && Date.now() - new Date(x.at) < LOCK_MS) return;
+  x.decision = decision;
+  x.decidedAt = new Date().toISOString();
+  x.decidedBy = me();
+  save(KEY.brakes, list);
+  renderAll();
+  toast(decision === 'sluppet' ? kr(x.price) + ' ble værende hos deg.' : 'Notert. Ingen skam. Det var et valg.');
+}
+
+function renderBrakes() {
+  const list = load(KEY.brakes);
+  const open = list.filter((x) => !x.decision);
+  $('brakes').replaceChildren(...(open.length ? open.map((x) => {
+    const left = LOCK_MS - (Date.now() - new Date(x.at));
+    const votes = Array.isArray(x.votes) ? x.votes : [];
+    const yes = votes.filter((v) => v.yes).map((v) => v.name);
+    const no = votes.filter((v) => !v.yes).map((v) => v.name);
+    const btn = (label, fn, ghost = true) => el('button', { type: 'button', class: ghost ? 'small ghost' : 'small', on: { click: fn } }, label);
+    return item(
+      `${when(x.at)} · ${x.by} · ${HOW[x.how] || x.how}`,
+      b(x.what), ' · ' + kr(x.price),
+      x.why ? el('div', { class: 'meta' }, '«' + x.why + '»') : null,
+      el('div', { class: 'meta' }, `Vil ha: ${yes.join(', ') || '–'} · Vil ikke: ${no.join(', ') || '–'}`),
+      left <= 0
+        ? [el('div', { class: 'ripe' }, '48 timer har gått. Har dere fortsatt lyst?'),
+           el('div', { class: 'actions' }, btn('Slipp det', () => decide(x.id, 'sluppet'), false), btn('Kjøp', () => decide(x.id, 'kjøpt')))]
+        : [el('div', { class: 'meta lock' }, 'Låses opp om ' + span(left)),
+           el('div', { class: 'actions' }, btn('Jeg vil ha den', () => vote(x.id, true)), btn('Jeg vil ikke', () => vote(x.id, false)), btn('Slipp nå', () => decide(x.id, 'sluppet')))]
+    );
+  }) : [el('div', { class: 'empty' }, 'Ingenting låst. Godt.')]));
+
+  const sum = (arr) => arr.reduce((s, x) => s + (Number(x.price) || 0), 0);
+  const released = list.filter((x) => x.decision === 'sluppet');
+  const bought = list.filter((x) => x.decision === 'kjøpt');
+  const credit = released.filter((x) => x.how !== 'direkte');
+  const lines = [];
+  if (!list.length) lines.push('Når noe slippes, telles pengene som ble værende her.');
+  else {
+    lines.push(el('div', null, `Sluppet: ${released.length} ting. `, b(kr(sum(released))), ' ble værende.'));
+    if (credit.length) lines.push(el('div', null, `${credit.length} av dem var på avbetaling eller kreditt: ${kr(sum(credit))} ny gjeld som aldri ble til.`));
+    if (bought.length) lines.push(el('div', null, `Kjøpt etter 48 timer: ${bought.length} (${kr(sum(bought))}). Det var et valg, ikke en impuls.`));
+  }
+  $('tally').replaceChildren(...lines);
+}
+
+// ---------- Start ----------
+
+function renderAll() {
+  renderFront();
+  renderNotes();
+  renderBrakes();
+  renderAwayDefault();
+}
+
+$('frontBtn').addEventListener('click', () => logFront());
+$('frontName').addEventListener('keydown', (e) => { if (e.key === 'Enter') logFront(); });
+$('noteBtn').addEventListener('click', addNote);
+$('brakeBtn').addEventListener('click', addBrake);
+// En annen fane (eller del) kan ha skrevet noe. Hold siden i takt.
+window.addEventListener('storage', renderAll);
+renderAll();
+setInterval(renderBrakes, 60 * 1000);
+
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+</script>
+</body>
+</html>

@@ -24,6 +24,9 @@ Service worker og hjemskjerm-ikon krever http(s).
 | `checkins` | tid, humør 1–5, valgfritt notat (maks 1000 tegn) |
 | `breaths` | tid og antall fullførte runder per pusteøkt |
 | `doneActions` | hvilke «små grep» som er merket, per dag (siste 60 dager) |
+| `systemrom.front` | hvem som er her: navn, tid, valgfri note (maks 500) |
+| `systemrom.lapper` | lapper: fra, til, tekst, hvem som har sett dem (maks 300) |
+| `systemrom.brems` | kjøpsbrems: hva, pris, betaling, stemmer, avgjørelse (maks 300) |
 
 Ingenting sendes på nett. Testen «hele brukerreisen gjør ingen nettverkskall» kontrollerer det. Service workeren mellomlagrer bare appens egne filer. Isolation Mirror viser bildet bare i fanen, og bildet lagres ikke.
 
@@ -37,6 +40,17 @@ Historikk → **Dine data**:
 - **Slett alt på denne enheten:** to trykk.
 
 I installert app på iPhone skal Del-arket åpnes i stedet for nedlasting. Det er ikke testet på ekte iPhone ennå; se `LOGG.md`.
+
+## Systemrommet
+
+Hjem → **Systemrommet**. For et hode med flere i.
+
+- **Hvem er her nå?** Skriv navn, alder eller «vet ikke». Kjente navn blir knapper.
+- **Mens du var borte:** når et navn logges, vises det som skjedde siden sist dette navnet var her, før noen andre kom.
+- **Lapper:** beskjed til ett navn eller til alle. «Til deg» vises for den det gjelder. Å fjerne en lapp krever to trykk.
+- **Kjøpsbrems:** skriv ned det du har lyst på i stedet for å kjøpe. Det låses i 48 timer, og så kan alle stemme. «Kjøp» finnes ikke før tiden har gått; «Slipp» kan du trykke når som helst. Det som slippes, telles, og avbetaling eller kreditt telles som gjeld som aldri ble til.
+
+Alt er med i sikkerhetskopien, og «Slett alt» fjerner det også. Snarvei fra hjemskjerm-ikonet: «Kjøpsbrems».
 
 ## Isolation Mirror → Grok-bot
 

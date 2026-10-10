@@ -250,6 +250,14 @@
   .data-tools { margin-top: 32px; }
   .data-tools p { font-size: 0.85rem; margin-bottom: 4px; }
   .mirror-link { margin-top: 32px; }
+  .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .doors a {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 56px; padding: 10px 12px; border-radius: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.92rem;
+  }
+  .doors a small { font-weight: 400; color: var(--muted); font-size: 0.76rem; }
   .nav {
     position: fixed;
     bottom: 0;
@@ -321,6 +329,11 @@
   <button type="button" class="btn" id="saveBtn">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg" role="status" aria-live="polite" hidden></div>
   <button type="button" class="btn btn-secondary" data-go="pusterom">Pust med meg</button>
+
+  <div class="doors">
+    <a href="systemrom.html">Systemrommet<small>Hvem er her · lapper · kjøpsbrems</small></a>
+    <a href="isolation-mirror.html">Isolation Mirror<small>Note eller bilde → prompt</small></a>
+  </div>
 
   <section class="help" aria-labelledby="t-help">
     <h2 id="t-help">Trenger du noen å snakke med?</h2>
@@ -469,6 +482,25 @@ const getBreaths = () => {
   return Array.isArray(list) ? list.map(cleanBreath).filter(Boolean) : [];
 };
 const getDone = () => cleanDone(store.get('doneActions', {}));
+
+// Systemrommet (systemrom.html) eier innholdet. Her følger det bare med i
+// sikkerhetskopi, gjenoppretting og «Slett alt», så ingenting blir liggende igjen.
+const SYSTEMROM_KEYS = { front: 'systemrom.front', lapper: 'systemrom.lapper', brems: 'systemrom.brems' };
+const SYSTEMROM_REQUIRED = { front: ['name'], lapper: ['text'], brems: ['what'] };
+
+function cleanSystemrom(kind, e) {
+  if (!e || typeof e !== 'object' || typeof e.id !== 'string' || isNaN(new Date(e.at))) return null;
+  if (!SYSTEMROM_REQUIRED[kind].every((f) => typeof e[f] === 'string')) return null;
+  return e;
+}
+function getSystemrom() {
+  const out = {};
+  for (const [kind, key] of Object.entries(SYSTEMROM_KEYS)) {
+    const list = store.get(key, []);
+    out[kind] = Array.isArray(list) ? list.map((e) => cleanSystemrom(kind, e)).filter(Boolean) : [];
+  }
+  return out;
+}
 
 const byNewest = (a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
 
@@ -762,7 +794,8 @@ function backupAsJson() {
     exported: new Date().toISOString(),
     checkins: getCheckins(),
     breaths: getBreaths(),
-    doneActions: getDone()
+    doneActions: getDone(),
+    systemrom: getSystemrom()
   }, null, 2);
 }
 
@@ -786,12 +819,26 @@ function restoreFrom(text) {
   (Array.isArray(data.breaths) ? data.breaths : []).map(cleanBreath).filter(Boolean).forEach((e) => {
     if (!seenB.has(e.date)) { seenB.add(e.date); breaths.push(e); }
   });
+  const sys = getSystemrom();
+  const incoming = data.systemrom && typeof data.systemrom === 'object' ? data.systemrom : {};
+  let sysAdded = 0;
+  for (const kind of Object.keys(SYSTEMROM_KEYS)) {
+    const ids = new Set(sys[kind].map((e) => e.id));
+    (Array.isArray(incoming[kind]) ? incoming[kind] : []).map((e) => cleanSystemrom(kind, e)).filter(Boolean).forEach((e) => {
+      if (!ids.has(e.id)) { ids.add(e.id); sys[kind].push(e); sysAdded++; }
+    });
+    sys[kind].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+  }
   const done = getDone();
   for (const [day, ids] of Object.entries(cleanDone(data.doneActions))) {
     done[day] = [...new Set([...(done[day] || []), ...ids])];
   }
-  if (store.set('checkins', checkins.sort(byNewest)) && store.set('breaths', breaths.sort(byNewest)) && store.set('doneActions', done)) {
-    toast(added ? `Hentet inn ${added} ${plural(added, 'innsjekk', 'innsjekker')}.` : 'Alt i filen fantes allerede her.');
+  const sysOk = !sysAdded || Object.entries(SYSTEMROM_KEYS).every(([kind, key]) => store.set(key, sys[kind]));
+  if (store.set('checkins', checkins.sort(byNewest)) && store.set('breaths', breaths.sort(byNewest)) && store.set('doneActions', done) && sysOk) {
+    const parts = [];
+    if (added) parts.push(`${added} ${plural(added, 'innsjekk', 'innsjekker')}`);
+    if (sysAdded) parts.push(`${sysAdded} ${plural(sysAdded, 'ting', 'ting')} fra Systemrommet`);
+    toast(parts.length ? `Hentet inn ${parts.join(' og ')}.` : 'Alt i filen fantes allerede her.');
   }
   renderHistory();
   renderActions();
@@ -821,7 +868,7 @@ $('wipeBtn').addEventListener('click', () => {
   clearTimeout(wipeTimer);
   wipeArmed = false;
   btn.textContent = 'Slett alt på denne enheten';
-  ['checkins', 'breaths', 'doneActions'].forEach(store.remove);
+  ['checkins', 'breaths', 'doneActions', ...Object.values(SYSTEMROM_KEYS)].forEach(store.remove);
   renderHistory();
   renderActions();
   toast('Alt er slettet fra denne enheten.');

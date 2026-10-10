@@ -30,6 +30,14 @@ En fremmed kan:
 5. åpne Isolation Mirror fra Historikk og kopiere Labben-prompten;
 6. installere appen på hjemskjermen og bruke den uten nett, når den kjøres fra en webadresse.
 
+## Etter 1.3
+
+7. åpne **Systemrommet** fra forsiden, logge hvem som er her, legge igjen lapper og låse et kjøp i 48 timer;
+8. se hva de andre gjorde mens de var borte;
+9. vite at «Slett alt» og sikkerhetskopien også gjelder Systemrommet.
+
+Systemrommet lå før 1.3 bare i PR #2, sammen med Kubernetes. Den versjonen var ikke med i sikkerhetskopien eller i «Slett alt». Et ferskt kjøp viste «Låses opp om 2 døgn 0 t», og to innlogginger på rad med samme navn skjulte det andre hadde gjort.
+
 ## Mangler fortsatt
 
 - Test på ekte iPhone (Safari og hjemskjerm-modus). Ikke gjort: ingen enhet i denne økten.

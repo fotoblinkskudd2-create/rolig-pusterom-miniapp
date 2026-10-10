@@ -122,7 +122,7 @@ describe('Navigasjon', () => {
   test('Isolation Mirror kan nås fra appen', async () => {
     const { context, page } = await open();
     await nav(page, 'Historikk').click();
-    const link = page.locator('a[href="isolation-mirror.html"]');
+    const link = page.locator('#page-historikk a[href="isolation-mirror.html"]');
     assert.ok(await link.isVisible());
     await link.click();
     await page.waitForURL(/isolation-mirror\.html$/);

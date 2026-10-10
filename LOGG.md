@@ -1,6 +1,15 @@
 # LOGG
 
-**Stadium:** lokal prototype · **Kontrollstatus:** 30 automatiske tester grønne i Chromium; ikke testet på ekte iPhone · **Markedssignal:** ingen (ingen brukere har prøvd den)
+**Stadium:** lokal prototype · **Kontrollstatus:** 45 automatiske tester grønne i Chromium; ikke testet på ekte iPhone · **Markedssignal:** ingen (ingen brukere har prøvd den)
+
+## Beslutning 10.10.2026 — 1.3 «Landing»
+
+- **Funn:** 86 grener, 0 merget. 27 grener skrev om `index.html`, og 17 fikset den samme nav-feilen. Den beste versjonen (1.2) lå på en gren uten PR. Systemrommet, den mest personlige funksjonen som er bygget, satt fast i en PR om Kubernetes. Alt står i `KART.md`.
+- **Valgt retning:** Bygg videre på 1.2 i stedet for å skrive en 18. versjon. Hent Systemrommet ut, gjør det like solid som resten og land alt i én gren som kan merges.
+- **Hvorfor Systemrommet og ikke noe annet fra grenene:** Det løser et konkret problem for brukeren: impulskjøp på avbetaling mens en annen del er fremme, og hukommelseshull mellom bytter. Alt annet i del 3 av kartet er generelt («streak», «humørgraf») og venter på bruksprøven.
+- **Ikke tatt med fra PR #2:** Kubernetes, Docker og nginx. Det forutsetter en server, og publisering er fortsatt en beslutning som ikke er tatt (se 1.3-arbeidsordren under).
+- **Kontroll:** `npm test` → 45/45 (30 fra 1.2, 15 nye for Systemrommet). Skjermbilder 390 px i lys og mørk modus er sett gjennom. Én logisk feil ble funnet visuelt og låst med test.
+- **Ikke kontrollert:** Systemrommet med en ekte bruker. Det er bygget for et system med flere deler, og bare den som lever med det, kan si om ordene og flyten stemmer. **Legg det til i bruksprøven (punkt 3 under) som egen oppgave:** «Noen andre enn deg har vært her. Finn ut hva som skjedde.»
 
 ## Beslutning 05.10.2026 — 1.2
 
