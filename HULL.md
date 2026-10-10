@@ -15,8 +15,20 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 - Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
 - Ingen sky. Det skal bli slik.
 
-## Etter 1.1
+## 1.1 – sannheten
 
-En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
+1.1-commiten oppdaterte bare README/HULL/RUN. Punkt 1–4 over var fortsatt i `index.html`.
+Punkt 5 ble fikset i `isolation-mirror.html`, men ingen lenke pekte dit.
 
-Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+## Etter 1.2
+
+Alle fem er lukket, og har test i `test/smoke.mjs`. I tillegg funnet og fikset:
+
+6. Notater ble satt inn med `innerHTML` – en note med `<img onerror=…>` kjørte kode. Nå ren tekst.
+7. Pustesirkelen brukte 4 s overgang på en 6 s utpust. Nå følger animasjonen hvert steg.
+8. Pusten fortsatte å gå i bakgrunnen når du byttet side.
+9. `doneActions` vokste for alltid. Nå beholdes 14 dager.
+10. «Du har tatt vare på deg selv 0 ganger … Det er fint.» Nå teller uken sjekk-inn, pusteøkter og små grep, og sier noe varmt når den er tom.
+11. `user-scalable=no` stengte zoom for svaksynte. Fjernet.
+
+Fortsatt åpent: test på ekte iPhone (særlig eksport-nedlasting og Hjem-skjerm-ikon).
