@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "clawmem": {
+      "source": {
+        "source": "github",
+        "repo": "clawmem-ai/clawmem-claude-code-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "clawmem-claude-code-plugin@clawmem": true
+  }
+}
