@@ -24,3 +24,9 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Test
+
+```bash
+node tests/app.test.mjs   # krever playwright + chromium
+```
