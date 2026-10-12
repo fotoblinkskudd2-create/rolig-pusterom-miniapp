@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiber Supply Tracker</title>
+<style>
+:root{--bg:#f6f5f2;--fg:#1c1c1a;--mut:#6b6a66;--line:#d9d6cf;--card:#fff;--a:#c2410c;--b:#1d4ed8;--ok:#15803d}
+@media (prefers-color-scheme:dark){:root{--bg:#121211;--fg:#ecebe7;--mut:#9a988f;--line:#2e2d2a;--card:#1b1b19;--a:#fb923c;--b:#60a5fa;--ok:#4ade80}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:17px;margin:32px 0 8px}
+.sub{color:var(--mut);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:block;font-size:13px;color:var(--mut)}input[type=range]{width:100%}
+.big{font-size:28px;font-weight:650;font-variant-numeric:tabular-nums}
+.warn{color:var(--a);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.conf{font-size:11px;padding:1px 6px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}
+.conf.low,.conf.derived{color:var(--a)}.conf.medium{color:var(--b)}.conf.high{color:var(--ok)}
+svg text{fill:var(--mut);font-size:11px}a{color:var(--b)}
+.bar{height:14px;background:var(--b);border-radius:3px}.bar.bad{background:var(--a)}
+</style>
+</head>
+<body>
+<main>
+<h1>Fiber Supply Tracker</h1>
+<p class="sub">Én tråd, to hærer, én leverandør. Kuratert åpne kilder, med tillit merket per datapunkt. Ingen tall uten kilde.</p>
+
+<h2>Fiberpris (USD/km)</h2>
+<div class="card"><svg id="chart" viewBox="0 0 900 260" width="100%" role="img" aria-label="Fiberpris over tid"></svg>
+<p class="warn">Merk: G.652 bulk og G.657.A2 spot er ulike produkter. Hoppet 2025→2026 er reelt i begge, men G.657.A2-tallene kommer fra leverandørblogger (lav tillit).</p></div>
+
+<h2>Kalkulator: hva koster prishoppet per FPV-sortie?</h2>
+<div class="card">
+<div class="grid">
+ <div><label>Spollengde: <b id="v_spool"></b> km</label><input id="spool" type="range" min="5" max="50" step="1"></div>
+ <div><label>Gammel pris: <b id="v_old"></b> $/km</label><input id="old" type="range" min="1" max="15" step="0.1"></div>
+ <div><label>Ny pris: <b id="v_new"></b> $/km</label><input id="new" type="range" min="1" max="60" step="0.5"></div>
+ <div><label>Drone uten fiber: <b id="v_base"></b> $</label><input id="base" type="range" min="100" max="2000" step="10"></div>
+ <div><label>Vikling/kanister-påslag: <b id="v_wind"></b> %</label><input id="wind" type="range" min="0" max="200" step="5"></div>
+ <div><label>Sortier/mnd (antagelse): <b id="v_sort"></b></label><input id="sort" type="range" min="1000" max="300000" step="1000"></div>
+ <div><label>AI-andel av prishopp (DIN antagelse): <b id="v_ai"></b> %</label><input id="ai" type="range" min="0" max="100" step="5"></div>
+</div>
+<div class="grid" style="margin-top:16px">
+ <div><label>Ekstra per sortie</label><div class="big" id="o_delta"></div></div>
+ <div><label>Fiberandel av dronekost (ny)</label><div class="big" id="o_share"></div></div>
+ <div><label>Ekstra per måned</label><div class="big" id="o_month"></div></div>
+ <div><label>Hvis AI-andelen stemmer</label><div class="big" id="o_ai"></div></div>
+</div>
+<p class="warn">Standard: G.657.A2 avledet sent-2025-pris ($5,5) mot leverandør-spot mars 2026 ($33). Begge lav tillit. Ferdige kanistre er listet billigere per km enn bulk-spot, så enten er listingene utdaterte eller spot-tallene oppblåst. Ingen kilde kvantifiserer hvor mye av FPV-fiberprisen som skyldes AI-datasentre vs. militær etterspørsel vs. preform-flaskehals. AI-glideren er et tankeeksperiment, ikke data.</p>
+</div>
+
+<h2>Luftvern-gapet</h2>
+<div class="card" id="ad"></div>
+
+<h2>Kontekst og kilder</h2>
+<div class="card"><table id="ctx"></table></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+async function load(){
+  for(const u of ['/api/dataset','../data/dataset.json','data/dataset.json']){
+    try{const r=await fetch(u);if(r.ok)return r.json()}catch(e){}
+  }
+  document.body.insertAdjacentHTML('afterbegin','<p style="padding:16px">Fant ikke datasettet. Kjør <code>uvicorn api:app</code> eller en lokal http-server.</p>');
+  throw new Error('no data');
+}
+const conf=c=>`<span class="conf ${c}">${c}</span>`;
+const usd=n=>'$'+Math.round(n).toLocaleString('nb-NO');
+
+function chart(pts){
+  const s=$('chart'),W=900,H=260,P={l:44,r:16,t:16,b:30};
+  const t=d=>{const[y,m]=d.split('-').map(Number);return y*12+m};
+  const xs=pts.map(p=>t(p.date)),x0=Math.min(...xs),x1=Math.max(...xs),ymax=40;
+  const X=v=>P.l+(t(v)-x0)/(x1-x0)*(W-P.l-P.r),Y=v=>H-P.b-v/ymax*(H-P.t-P.b);
+  let h='';
+  for(let v=0;v<=ymax;v+=10)h+=`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".12"/><text x="${P.l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  const groups={};pts.forEach(p=>{const g=p.grade.startsWith('G.652')?'G.652 bulk':'G.657.A2';(groups[g]=groups[g]||[]).push(p)});
+  const col={'G.652 bulk':'var(--b)','G.657.A2':'var(--a)'};
+  let ly=20;
+  for(const[g,arr]of Object.entries(groups)){
+    arr.sort((a,b)=>t(a.date)-t(b.date));
+    h+=`<polyline fill="none" stroke="${col[g]}" stroke-width="2" points="${arr.map(p=>X(p.date)+','+Y(p.usd_per_km)).join(' ')}"/>`;
+    arr.forEach(p=>h+=`<circle cx="${X(p.date)}" cy="${Y(p.usd_per_km)}" r="5" fill="${col[g]}" ${p.confidence==='derived'?'fill-opacity=".3"':''}><title>${p.date} ${p.grade}: $${p.usd_per_km}/km (${p.confidence}) – ${p.source}</title></circle><text x="${X(p.date)}" y="${Y(p.usd_per_km)-10}" text-anchor="middle">$${p.usd_per_km}</text>`);
+    h+=`<circle cx="${P.l+16}" cy="${ly}" r="5" fill="${col[g]}"/><text x="${P.l+28}" y="${ly+4}">${g}</text>`;ly+=18;
+  }
+  [...new Set(pts.map(p=>p.date))].forEach(d=>h+=`<text x="${X(d)}" y="${H-10}" text-anchor="middle">${d}</text>`);
+  s.innerHTML=h;
+}
+
+function calc(d){
+  const ids={spool:d.defaults.spool_km,old:5.5,new:33,base:d.defaults.drone_base_usd,wind:d.defaults.winding_overhead*100,sort:d.defaults.sorties_per_month,ai:0};
+  for(const[k,v]of Object.entries(ids)){$(k).value=v;$(k).oninput=run}
+  function run(){
+    const g=k=>+$(k).value,sp=g('spool'),o=g('old'),n=g('new'),b=g('base'),w=g('wind')/100,so=g('sort'),ai=g('ai')/100;
+    ['spool','old','new','base','wind','sort','ai'].forEach(k=>$('v_'+k).textContent=(+$(k).value).toLocaleString('nb-NO'));
+    const f=p=>sp*p*(1+w),delta=f(n)-f(o);
+    $('o_delta').textContent=usd(delta);
+    $('o_share').textContent=Math.round(f(n)/(f(n)+b)*100)+' %';
+    $('o_month').textContent=usd(delta*so);
+    $('o_ai').textContent=ai?usd(delta*so*ai)+'/mnd':'—';
+  }
+  run();
+}
+
+function airDefense(rows){
+  $('ad').innerHTML='<table>'+rows.map(r=>{
+    const pct=r.unit==='%'?r.value:null;
+    return `<tr><td>${r.date}</td><td>${r.metric}<br><small style="color:var(--mut)">${r.detail}</small></td><td style="width:30%">${pct!==null?`<div class="bar ${pct<60?'bad':''}" style="width:${pct}%"></div>`:''}<b>${r.value} ${r.unit}</b></td><td>${conf(r.confidence)} <a href="${r.url}" target="_blank" rel="noopener">kilde</a></td></tr>`}).join('')+'</table>';
+}
+
+load().then(d=>{
+  chart(d.fiber_prices);calc(d);airDefense(d.air_defense);
+  $('ctx').innerHTML=[...d.fiber_prices.map(p=>({claim:`${p.date} ${p.grade}: ${p.raw}`,...p})),...d.fiber_context]
+    .map(c=>`<tr><td>${c.claim}</td><td>${conf(c.confidence)}</td><td><a href="${c.url}" target="_blank" rel="noopener">${c.source}</a></td></tr>`).join('');
+});
+</script>
+</body>
+</html>

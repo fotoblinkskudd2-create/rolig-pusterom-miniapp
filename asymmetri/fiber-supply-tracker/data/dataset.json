@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "updated": "2026-10-12",
+    "note": "Kuratert, ikke skrapet. Hvert punkt har kilde og tillit. 'low' = leverandørblogg/kommersiell interesse eller uverifisert. 'derived' = regnet ut fra et annet tall, ikke oppgitt direkte.",
+    "currency": "USD"
+  },
+  "fiber_prices": [
+    {"date": "2025-01", "grade": "G.652 standard (Kina, bulk)", "usd_per_km": 2.33, "raw": "16 CNY/km", "confidence": "medium", "source": "Vedomosti via Kyiv Post", "url": "https://www.kyivpost.com/post/70906"},
+    {"date": "2025-11", "grade": "G.657.A2 (spot, avledet)", "usd_per_km": 5.5, "raw": "33 USD / 6x", "confidence": "derived", "source": "Avledet fra Accio-påstand om '6x fra sent 2025'", "url": "https://www.accio.com/business/fiber-optic-drone-price"},
+    {"date": "2026-01", "grade": "G.652 standard (Kina, bulk)", "usd_per_km": 5.83, "raw": "40 CNY/km", "confidence": "medium", "source": "Vedomosti via Kyiv Post", "url": "https://www.kyivpost.com/post/70906"},
+    {"date": "2026-03", "grade": "G.657.A2 (spot)", "usd_per_km": 33.0, "raw": "33 USD/km", "confidence": "low", "source": "Accio prisrapport (metode ukjent)", "url": "https://www.accio.com/business/fiber-optic-drone-price"},
+    {"date": "2026-06", "grade": "G.657.A2 (datasenter-grade)", "usd_per_km": 35.0, "raw": "~35 USD/km, +90 %", "confidence": "low", "source": "Glory Optical via leverandørblogg", "url": "https://www.gl-fibercable.com/newsdetail/2026-fiber-optic-market-crisis:-g657a2-supply-shortage-and-soaring-prices-reshape-global-procurement-strategies.html"}
+  ],
+  "fiber_context": [
+    {"claim": "Europeiske G.652.D-priser +~136 % jan–mar 2026", "confidence": "medium", "source": "CRU via Hengtong", "url": "https://www.hengtongglobal.com/info/optical-fiber-shortage-2026-buyers-guide-103466005.html"},
+    {"claim": "Corning–Meta fiberavtale opptil 6 mrd USD (jan 2026)", "confidence": "high", "source": "Selskapsmelding, gjengitt i flere kilder", "url": "https://www.oyii.net/news/structural-price-rally-in-fiber-optic-cables-ai-powered-demand-supply-constraints-2026-forecast/"},
+    {"claim": "AI/DCI-andel av fiberetterspørsel: <5 % (2024) → ~35 % (2027, prognose)", "confidence": "low", "source": "Bransjeprognose via leverandør", "url": "https://www.oyii.net/news/structural-price-rally-in-fiber-optic-cables-ai-powered-demand-supply-constraints-2026-forecast/"},
+    {"claim": "Flaskehals er preform-kapasitet; YOFC/Hengtong/FiberHome flytter kapasitet til spesialfiber", "confidence": "low", "source": "Hengtong-blogg", "url": "https://www.hengtongglobal.com/info/optical-fiber-shortage-2026-buyers-guide-103466005.html"},
+    {"claim": "Russlands eneste innenlandske fiberprodusent offline siden mai 2025 → full Kina-avhengighet", "confidence": "medium", "source": "Moscow Times", "url": "https://www.themoscowtimes.com/2026/02/26/russia-forced-to-rely-on-chinese-optical-fiber-imports-after-ukrainian-strikes-halt-domestic-plant-a92054"},
+    {"claim": "Russland kjøper ferdigviklede spoler fra Kina; Ukraina lærte vikling 'nesten fra null', mangel og kvalitetsproblemer", "confidence": "medium", "source": "Ukrainska Pravda", "url": "https://www.pravda.com.ua/eng/articles/2026/01/25/8017810/"},
+    {"claim": "Ferdige 10–20 km FPV-kanistre listet til ~105–270 USD/stk (B2B, kan være utdatert)", "confidence": "low", "source": "Made-in-China (CFOFC)", "url": "https://cfofc2024.en.made-in-china.com/product-group/rqBGEXobXHtv/FPV-Drone-Fiber-Optical-Spool-Canister-catalog-1.html"}
+  ],
+  "air_defense": [
+    {"date": "2026-05", "metric": "Alle droner (Shahed/Gerbera/Italmas): avskjæringsrate", "value": 91.7, "unit": "%", "detail": "7476 av 8150", "confidence": "medium", "source": "Forsvarsdep. via Ukrainska Pravda/Mezha", "url": "https://www.pravda.com.ua/eng/news/2026/06/11/8038825/"},
+    {"date": "2026-09", "metric": "Jet-Geran (Geran-3/4/5): avskjæringsrate", "value": 57, "unit": "%", "detail": "Zelenskyj 28. sep; andre anslag 55–60 %", "confidence": "medium", "source": "TechTimes", "url": "https://www.techtimes.com/articles/328255/20260929/ukraine-stops-90-propeller-shaheds-only-57-jet-ones-russia-designed-it-that-way.htm"},
+    {"date": "2026-09", "metric": "Propell-Shahed: avskjæringsrate", "value": 90, "unit": "%", "detail": "", "confidence": "medium", "source": "TechTimes", "url": "https://www.techtimes.com/articles/328255/20260929/ukraine-stops-90-propeller-shaheds-only-57-jet-ones-russia-designed-it-that-way.htm"},
+    {"date": "2026-10", "metric": "Bars jet-interceptor mot jet-Geran", "value": 30, "unit": "%", "detail": "Beste interceptor-drone mot jet-varianter", "confidence": "medium", "source": "The Defender", "url": "https://thedefender.media/en/2026/10/bars-30per-effective/"},
+    {"date": "2026-01", "metric": "Andel Shahed-nedskytinger tatt av interceptor-droner", "value": 70, "unit": "%", "detail": "The Economist via DroneXL", "confidence": "medium", "source": "DroneXL", "url": "https://dronexl.co/2026/03/01/ukraine-is-scaling-up-interceptor-drones-as-russias-shahed-threat-outpaces-every-defense"},
+    {"date": "2026-07", "metric": "Ballistiske/missiler mot Kyiv, én natt: avskåret", "value": 0, "unit": "av 28", "detail": "Tilskrevet mangel på interceptorer", "confidence": "medium", "source": "Libertarian Institute / pressemeldinger", "url": "https://libertarianinstitute.org/news/ukraine-lacks-interceptors-to-shoot-down-russian-ballistic-missiles/"},
+    {"date": "2026-08", "metric": "Luftvern-missilleveranser 2026 vs 2025", "value": 33, "unit": "%", "detail": "Ca. en tredjedel av 2025-nivå", "confidence": "medium", "source": "Reuters via Internazionale", "url": "https://www.internazionale.it/ultime-notizie-reuters/2026/08/05/ukraine-says-missile-interceptor-deliveries-have-fallen-to-third-of-2025-level"},
+    {"date": "2025", "metric": "Patriot-interceptorer produsert (Lockheed)", "value": 620, "unit": "stk/år", "detail": "Mål 2000/år innen 2030", "confidence": "high", "source": "NBC/Reuters", "url": "https://www.nbcpalmsprings.com/2026/08/17/ukraine-warns-of-patriot-missile-shortage-as-interceptors-run-low"}
+  ],
+  "defaults": {
+    "spool_km": 20,
+    "drone_base_usd": 450,
+    "winding_overhead": 0.35,
+    "sorties_per_month": 100000
+  }
+}

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EW Spectrum Sim</title>
+<style>
+:root{--bg:#0f1012;--fg:#e8e6e1;--mut:#8d8a83;--line:#2a2b2f;--card:#17181b;--ok:#4ade80;--bad:#f87171;--fib:#fbbf24;--rf:#60a5fa;--jam:#f87171}
+:root[data-theme=light]{--bg:#f5f4f0;--fg:#1b1b19;--mut:#66645e;--line:#d6d3cb;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0}.sub{color:var(--mut);margin:0 0 12px}
+.row{display:grid;grid-template-columns:1fr 280px;gap:12px}@media(max-width:820px){.row{grid-template-columns:1fr}}
+canvas{width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;display:block;touch-action:none}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px}
+button{background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;margin:0 6px 6px 0;cursor:pointer;font:inherit}
+button.on{border-color:var(--rf);color:var(--rf)}
+label{display:block;color:var(--mut);font-size:12px;margin-top:8px}input[type=range]{width:100%}
+.stat{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0;font-variant-numeric:tabular-nums}
+.note{color:var(--mut);font-size:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<main>
+<h1>EW Spectrum Sim</h1>
+<p class="sub">Leketøysmodell av lenke vs. jamming. Fri-roms dempning (1/d²), ingen terreng, ingen ekte taktiske parametre. Poenget er asymmetrien, ikke presisjonen.</p>
+<div id="scen"></div>
+<div class="row">
+ <div>
+  <canvas id="map" width="820" height="460"></canvas>
+  <canvas id="spec" width="820" height="110" style="margin-top:8px"></canvas>
+ </div>
+ <div class="panel">
+  <label>Lenketype for nye droner</label>
+  <div id="links"></div>
+  <label>Jammer-effekt (relativ): <b id="v_jp">1</b></label><input id="jp" type="range" min="0" max="4" step="0.1" value="1">
+  <label>Jammer-båndbredde: <b id="v_jbw">bred</b></label><input id="jbw" type="range" min="0.05" max="1" step="0.05" value="1">
+  <label>Kutt-sannsynlighet ved barriere: <b id="v_cut">60</b> %</label><input id="cut" type="range" min="0" max="100" step="5" value="60">
+  <div style="margin-top:12px">
+   <div class="stat"><span>Nådde mål</span><b id="s_hit">0</b></div>
+   <div class="stat"><span>Mistet RF-lenke</span><b id="s_jam">0</b></div>
+   <div class="stat"><span>Fiber kuttet</span><b id="s_cut">0</b></div>
+   <div class="stat"><span>Suksessrate</span><b id="s_rate">–</b></div>
+  </div>
+  <p class="note">Dra jammere (røde). Shift-dra eller langtrykk på kartet tegner en kabelkutt-barriere. Klikk på en gul fiber for å kutte den manuelt. <b>R</b> nullstiller.</p>
+ </div>
+</div>
+<p class="note"><b>Modell:</b> lenken dør når J/S = (P<sub>j</sub>·overlapp / P<sub>s</sub>)·(d<sub>op→drone</sub> / d<sub>jammer→drone</sub>)² overstiger en terskel. FHSS gir prosesseringsgevinst mot smalbånd, men en bred jammer dekker hele hoppbåndet. Mesh-repeater kutter d<sub>op→drone</sub>. Fiber har ingen RF-lenke å jamme, men en fysisk tråd som må krysse terrenget.</p>
+</main>
+<script>
+const C=document.getElementById('map'),X=C.getContext('2d'),S=document.getElementById('spec'),SX=S.getContext('2d');
+const W=C.width,H=C.height,css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const LINKS={
+ analog:{name:'Analog fast frekvens',f:5.8,bw:0.02,thr:1,pg:1},
+ fhss:{name:'Frekvenshopping (FHSS)',f:2.4,bw:0.5,thr:1,pg:4},
+ mesh:{name:'FHSS + mesh-repeater',f:2.4,bw:0.5,thr:1,pg:4,relay:true},
+ fiber:{name:'Fiber',fiber:true}
+};
+let link='analog',drones=[],jammers=[],barriers=[],stats={hit:0,jam:0,cut:0},drawing=null,drag=null,t=0;
+const OP={x:50,y:H/2},TGT={x:W-60,y:H/2},RELAY={x:W*0.45,y:H/2-90};
+const $=id=>document.getElementById(id);
+
+const SCEN={
+ 'Analog vs bred jammer':()=>{link='analog';jammers=[{x:W*0.62,y:H/2+110}];barriers=[];set(1.2,1)},
+ 'FHSS vs smal jammer':()=>{link='fhss';jammers=[{x:W*0.62,y:H/2+110}];barriers=[];set(1.2,0.1)},
+ 'FHSS vs bred jammer':()=>{link='fhss';jammers=[{x:W*0.62,y:H/2+110}];barriers=[];set(1.5,1)},
+ 'Mesh-repeater':()=>{link='mesh';jammers=[{x:W*0.62,y:H/2+110}];barriers=[];set(1.5,1)},
+ 'Fiber (jamming irrelevant)':()=>{link='fiber';jammers=[{x:W*0.62,y:H/2+110},{x:W*0.4,y:H/2-60}];barriers=[];set(4,1)},
+ 'Fiber + kabelkutt-barriere':()=>{link='fiber';jammers=[{x:W*0.62,y:H/2+110}];barriers=[[{x:W*0.72,y:20},{x:W*0.70,y:H-20}]];set(4,1)},
+};
+function set(p,bw){$('jp').value=p;$('jbw').value=bw;reset()}
+function reset(){drones=[];stats={hit:0,jam:0,cut:0};ui()}
+function ui(){
+ $('scen').innerHTML='';for(const k in SCEN){const b=document.createElement('button');b.textContent=k;b.onclick=()=>{SCEN[k]();ui()};$('scen').append(b)}
+ $('links').innerHTML='';for(const k in LINKS){const b=document.createElement('button');b.textContent=LINKS[k].name;b.className=k===link?'on':'';b.onclick=()=>{link=k;ui()};$('links').append(b)}
+}
+
+function spawn(){
+ const L=LINKS[link];
+ drones.push({x:OP.x,y:OP.y+(Math.random()-.5)*60,vx:0,vy:0,k:link,f:L.f,trail:[{x:OP.x,y:OP.y}],state:'fly',seed:Math.random()*100});
+}
+const d2=(a,b)=>(a.x-b.x)**2+(a.y-b.y)**2;
+function js(dr){
+ const L=LINKS[dr.k];if(L.fiber)return 0;
+ const P=+$('jp').value,bw=+$('jbw').value;
+ // overlapp: hvor mye av lenkens bånd jammeren dekker. Smal jammer treffer FHSS bare en brøkdel av tiden.
+ const overlap=L.bw<=bw?1:bw/L.bw;
+ const pg=bw>=L.bw?1:L.pg; // prosesseringsgevinst teller bare når jammeren ikke dekker hele hoppbåndet
+ const src=L.relay&&dr.x>RELAY.x-40?RELAY:OP;
+ let worst=0;
+ for(const j of jammers){const r=Math.max(d2(dr,j),400);worst=Math.max(worst,P*overlap/pg*(d2(dr,src)/r)/6)}
+ return worst;
+}
+function segX(a,b,c,d){const o=(p,q,r)=>Math.sign((q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x));return o(a,b,c)!==o(a,b,d)&&o(c,d,a)!==o(c,d,b)}
+
+function step(){
+ t++;if(t%28===0&&drones.filter(d=>d.state==='fly').length<14)spawn();
+ for(const d of drones){
+  if(d.state!=='fly'){d.fade=(d.fade||1)-0.01;continue}
+  const dx=TGT.x-d.x,dy=TGT.y-d.y+Math.sin(t/30+d.seed)*60,m=Math.hypot(dx,dy);
+  d.vx=d.vx*.9+dx/m*.35;d.vy=d.vy*.9+dy/m*.35;const p={x:d.x,y:d.y};d.x+=d.vx;d.y+=d.vy;
+  if(d.k==='fiber'){
+   if(t%3===0)d.trail.push({x:d.x,y:d.y});
+   for(const b of barriers)for(let i=1;i<b.length;i++)if(segX(p,d,b[i-1],b[i])&&Math.random()*100<+$('cut').value){d.state='cut';stats.cut++}
+  }else{d.js=js(d);if(d.js>1){d.state='jam';stats.jam++}}
+  if(d.state==='fly'&&d2(d,TGT)<400){d.state='hit';stats.hit++}
+ }
+ drones=drones.filter(d=>d.state==='fly'||d.fade>0);
+}
+
+function draw(){
+ const fg=css('--fg'),mut=css('--mut');
+ X.clearRect(0,0,W,H);
+ for(const j of jammers){const r=Math.sqrt(+$('jp').value)*120*(.6+.4*+$('jbw').value);const g=X.createRadialGradient(j.x,j.y,0,j.x,j.y,r);g.addColorStop(0,'rgba(248,113,113,.35)');g.addColorStop(1,'rgba(248,113,113,0)');X.fillStyle=g;X.beginPath();X.arc(j.x,j.y,r,0,7);X.fill();X.fillStyle=css('--jam');X.fillRect(j.x-7,j.y-7,14,14)}
+ X.strokeStyle=fg;X.lineWidth=4;X.setLineDash([6,4]);for(const b of barriers){X.beginPath();b.forEach((p,i)=>i?X.lineTo(p.x,p.y):X.moveTo(p.x,p.y));X.stroke()}X.setLineDash([]);
+ if(link==='mesh'||drones.some(d=>d.k==='mesh')){X.fillStyle=css('--rf');X.beginPath();X.moveTo(RELAY.x,RELAY.y-9);X.lineTo(RELAY.x+8,RELAY.y+7);X.lineTo(RELAY.x-8,RELAY.y+7);X.fill();X.fillStyle=mut;X.fillText('repeater',RELAY.x-20,RELAY.y-14)}
+ for(const d of drones){
+  X.globalAlpha=d.state==='fly'?1:Math.max(d.fade,0);
+  if(d.k==='fiber'){X.strokeStyle=d.state==='cut'?css('--bad'):css('--fib');X.lineWidth=1;X.beginPath();d.trail.forEach((p,i)=>i?X.lineTo(p.x,p.y):X.moveTo(p.x,p.y));if(d.state!=='cut')X.lineTo(d.x,d.y);X.stroke()}
+  else if(d.state==='fly'){const src=LINKS[d.k].relay&&d.x>RELAY.x-40?RELAY:OP;X.strokeStyle=`rgba(96,165,250,${Math.max(.08,.6-(d.js||0)*.5)})`;X.beginPath();X.moveTo(src.x,src.y);X.lineTo(d.x,d.y);X.stroke()}
+  X.fillStyle=d.state==='fly'?fg:d.state==='hit'?css('--ok'):css('--bad');X.beginPath();X.arc(d.x,d.y,4,0,7);X.fill();
+ }
+ X.globalAlpha=1;X.fillStyle=css('--rf');X.fillRect(OP.x-8,OP.y-8,16,16);X.fillStyle=mut;X.fillText('operatør',OP.x-20,OP.y+24);
+ X.strokeStyle=css('--ok');X.lineWidth=2;X.beginPath();X.arc(TGT.x,TGT.y,20,0,7);X.stroke();X.fillText('mål',TGT.x-8,TGT.y+36);
+ if(drawing){X.strokeStyle=mut;X.beginPath();drawing.forEach((p,i)=>i?X.lineTo(p.x,p.y):X.moveTo(p.x,p.y));X.stroke()}
+ // spektrum
+ const SW=S.width,SH=S.height,fx=f=>20+(f-0.4)/(6.2-0.4)*(SW-40);
+ SX.clearRect(0,0,SW,SH);SX.fillStyle=mut;SX.font='11px system-ui';
+ [0.9,1.2,2.4,5.8].forEach(f=>SX.fillText(f+' GHz',fx(f)-16,SH-6));
+ const bw=+$('jbw').value,P=+$('jp').value;
+ if(jammers.length){const c=3.3,half=bw*2.9;SX.fillStyle='rgba(248,113,113,.3)';SX.fillRect(fx(Math.max(.4,c-half)),SH-22-P*18,fx(Math.min(6.2,c+half))-fx(Math.max(.4,c-half)),P*18)}
+ for(const d of drones.filter(d=>d.state==='fly'&&!LINKS[d.k].fiber)){const L=LINKS[d.k];const f=L.bw>0.1?L.f-L.bw*2+Math.random()*L.bw*4:L.f;SX.fillStyle=css('--rf');SX.fillRect(fx(f)-1,SH-60,3,38)}
+ SX.fillStyle=css('--fib');if(drones.some(d=>d.k==='fiber'&&d.state==='fly'))SX.fillText('fiber: ingen RF-signatur på kontrolllenken (det er noe annet som skal finne den)',20,16);
+ const n=stats.hit+stats.jam+stats.cut;['hit','jam','cut'].forEach(k=>$('s_'+k).textContent=stats[k]);$('s_rate').textContent=n?Math.round(stats.hit/n*100)+' %':'–';
+ ['jp','cut'].forEach(k=>$('v_'+k).textContent=$(k).value);$('v_jbw').textContent=bw>.8?'bred':bw<.2?'smal':'middels';
+}
+
+const pos=e=>{const r=C.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}};
+let press;
+C.onpointerdown=e=>{const p=pos(e);C.setPointerCapture(e.pointerId);
+ const j=jammers.find(j=>d2(j,p)<300);if(j&&!e.shiftKey){drag=j;return}
+ for(const d of drones)if(d.k==='fiber'&&d.state==='fly'&&d.trail.some(q=>d2(q,p)<60)){d.state='cut';stats.cut++;return}
+ if(e.shiftKey){drawing=[p];return}
+ press=setTimeout(()=>drawing=[p],350);};
+C.onpointermove=e=>{const p=pos(e);if(drag){drag.x=p.x;drag.y=p.y}else if(drawing)drawing.push(p);else clearTimeout(press)};
+C.onpointerup=()=>{clearTimeout(press);if(drawing&&drawing.length>2)barriers.push(drawing.filter((_,i)=>i%3===0));drawing=null;drag=null};
+addEventListener('keydown',e=>{if(e.key==='r'||e.key==='R'){barriers=[];reset()}});
+SCEN['Analog vs bred jammer']();ui();
+(function loop(){step();draw();requestAnimationFrame(loop)})();
+</script>
+</body>
+</html>
