@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
@@ -194,6 +194,35 @@
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
+  .local-line {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: -8px 0 20px;
+  }
+  .hint {
+    color: #8a5a3f;
+    font-size: 0.9rem;
+    min-height: 1.2rem;
+    margin: -8px 0 12px;
+  }
+  .help {
+    background: var(--soft-beige);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 28px;
+    font-size: 0.92rem;
+  }
+  .help strong { display: block; margin-bottom: 6px; }
+  .help a { color: var(--text); font-weight: 600; }
+  .help ul { list-style: none; margin-top: 6px; }
+  .help li { margin: 4px 0; }
+  .footer-link {
+    display: block;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 20px;
+  }
   .summary {
     background: var(--soft-beige);
     border-radius: 16px;
@@ -208,6 +237,7 @@
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
   <p class="support">Hvordan har du det akkurat nå?</p>
+  <p class="local-line">Alt blir på denne enheten. Ingen konto, ingen sky.</p>
   <div class="mood-scale" id="moodScale">
     <button class="mood-btn" data-mood="1">😔</button>
     <button class="mood-btn" data-mood="2">😕</button>
@@ -216,9 +246,20 @@
     <button class="mood-btn" data-mood="5">😌</button>
   </div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
+  <div class="hint" id="moodHint" aria-live="polite"></div>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <div class="help">
+    <strong>Trenger du hjelp nå?</strong>
+    Denne appen er ikke behandling. Er du i fare, ring.
+    <ul>
+      <li><a href="tel:113">113</a> – akutt fare for liv</li>
+      <li><a href="tel:116117">116 117</a> – legevakt</li>
+      <li><a href="tel:116123">116 123</a> – Mental Helse hjelpetelefon, døgnåpen</li>
+    </ul>
+  </div>
+  <a class="footer-link" href="isolation-mirror.html">Isolation Mirror →</a>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -241,13 +282,15 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" onclick="exportHistory()">Ta historikken med deg</button>
+  <p class="local-line" style="margin-top:8px">Lagres som pusterom-historikk.txt. Sletter du nettleserdata, forsvinner historikken her.</p>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -271,12 +314,13 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedMood = btn.dataset.mood;
+    document.getElementById('moodHint').textContent = '';
   });
 });
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    document.getElementById('moodHint').textContent = 'Velg et fjes først.';
     return;
   }
   const note = document.getElementById('note').value.trim();
@@ -299,8 +343,8 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.page === name));
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -378,7 +422,15 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      const date = document.createElement('div');
+      date.className = 'date';
+      date.textContent = `${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}`;
+      item.appendChild(date);
+      if (e.note) {
+        const note = document.createElement('div');
+        note.textContent = e.note;
+        item.appendChild(note);
+      }
       container.appendChild(item);
     });
   }
@@ -387,6 +439,24 @@ function renderHistory() {
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+}
+
+function exportHistory() {
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const lines = ['Pusterom – historikk', 'Eksportert ' + new Date().toLocaleString('no-NO'), ''];
+  if (list.length === 0) lines.push('Ingen sjekk-ins ennå.');
+  list.forEach(e => {
+    const d = new Date(e.date).toLocaleString('no-NO');
+    lines.push(`${d} · humør ${e.mood}/5${e.note ? ' · ' + e.note.replace(/\s+/g, ' ') : ''}`);
+  });
+  const blob = new Blob([lines.join('\n') + '\n'], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-historikk.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // init

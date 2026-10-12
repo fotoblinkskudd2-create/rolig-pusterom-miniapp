@@ -4,4 +4,6 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
+**1.1.1 (12.10.2026):** 1.1 faktisk bygget i koden + kriserute (113 / 116 117 / 116 123). Se `HULL.md`.
+
 Åpne `index.html`. Les `RUN.md`.

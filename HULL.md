@@ -19,4 +19,20 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 
-Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+## Revisjon 12.10.2026 — 1.1 var dokumentert, ikke bygget
+
+DOKUMENTERT: commit `3cc07de` («nav-fix, lokal-first, historikk-export») endret bare README, RUN og HULL. `index.html` var urørt siden 1.0. Punkt 1–4 over var fortsatt feil i koden.
+
+Nå bygget og testet (headless Chromium, 390 px, 9/9 PASS):
+
+1. Nav følger siden via `data-page`, ikke `event.currentTarget`.
+2. «Alt blir på denne enheten. Ingen konto, ingen sky.» under spørsmålet.
+3. `alert()` erstattet med stille hint under notatfeltet.
+4. Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
+5. Lenke «Isolation Mirror →» nederst på Hjem.
+6. Ny: «Trenger du hjelp nå?» med 113, 116 117 og 116 123 (Mental Helse). En stress-app uten vei til hjelp er et sikkerhetshull.
+7. Ny: notater vises som tekst, ikke HTML.
+8. Ny: zoom er tillatt igjen (`user-scalable=no` fjernet).
+
+Mangler fortsatt: PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+eple: ingen fremmed har åpnet appen ennå.
