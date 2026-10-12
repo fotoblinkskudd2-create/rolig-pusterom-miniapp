@@ -1,0 +1,53 @@
+{
+  "navn": "Ingrid",
+  "telefon": "+47 900 00 000",
+  "ntfy_server": "https://ntfy.sh",
+  "topic_ut": "",
+  "topic_inn": "",
+  "stille_fra": "22:00",
+  "stille_til": "07:30",
+  "livstegn_frist": "10:30",
+  "dagsrapport": "20:00",
+  "rutiner": [
+    {
+      "type": "medisin",
+      "tid": "08:00",
+      "tekst": "God morgen, Ingrid. Nå er det tid for morgentablettene. Klem poten min når du har tatt dem.",
+      "purr_tekst": "Ingrid, har du tatt morgentablettene? Klem poten min hvis du har.",
+      "takk": "Flott. Da er morgenen i boks.",
+      "purr_min": 15,
+      "maks_purr": 2,
+      "varsle_familie": true
+    },
+    {
+      "type": "mat",
+      "tid": "12:00",
+      "tekst": "Nå er det lunsjtid, Ingrid. Hva med en brødskive? Klem poten når du har spist.",
+      "purr_min": 30,
+      "maks_purr": 1,
+      "varsle_familie": true
+    },
+    {
+      "type": "vann",
+      "tider": ["10:00", "13:30", "16:00"],
+      "tekst": "Nå tar vi et glass vann, du og jeg. Klem poten når glasset er tomt.",
+      "purr_min": 20,
+      "maks_purr": 1,
+      "varsle_familie": false
+    },
+    {
+      "type": "medisin",
+      "tid": "20:00",
+      "tekst": "Kveldstablettene nå, Ingrid. Klem poten min når de er tatt.",
+      "purr_tekst": "Ingrid, har du tatt kveldstablettene? Klem poten min hvis du har.",
+      "purr_min": 15,
+      "maks_purr": 2,
+      "varsle_familie": true
+    }
+  ],
+  "prat": [
+    "Så godt at du er her. Har du vært ute i dag?",
+    "Jeg tenkte på deg. Hold poten min lenge, så ringer jeg noen for deg.",
+    "Vet du hva? Det er lov å ringe Kari bare for å si hei."
+  ]
+}
