@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Isolation Mirror</title>
 <style>
   :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; }
@@ -37,7 +39,7 @@
       <h3>Labben / Grok-bot</h3>
       <p>Lim dette i Labben eller i Grok-bot med /lab.</p>
       <pre id="labprompt"></pre>
-      <button class="ghost" onclick="copyPrompt()">Kopier prompt</button>
+      <button class="ghost" id="copyBtn" onclick="copyPrompt()">Kopier prompt</button>
     </div>
   </div>
 <script>
@@ -45,6 +47,7 @@ document.getElementById('photo').addEventListener('change', (e) => {
   const f = e.target.files && e.target.files[0];
   const img = document.getElementById('prev');
   if (!f) { img.style.display = 'none'; return; }
+  if (img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
   img.src = URL.createObjectURL(f);
   img.style.display = 'block';
 });
@@ -62,7 +65,27 @@ function generate() {
   document.getElementById('out').style.display = 'block';
 }
 function copyPrompt() {
-  navigator.clipboard.writeText(document.getElementById('labprompt').textContent);
+  const text = document.getElementById('labprompt').textContent;
+  const btn = document.getElementById('copyBtn');
+  const done = ok => { btn.textContent = ok ? 'Kopiert ✓' : 'Marker teksten og kopier selv'; setTimeout(() => btn.textContent = 'Kopier prompt', 2500); };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => done(true), () => done(fallbackCopy(text)));
+  } else {
+    done(fallbackCopy(text));
+  }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove();
+  return ok;
 }
 </script>
 </body>

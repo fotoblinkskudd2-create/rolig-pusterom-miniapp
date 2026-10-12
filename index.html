@@ -2,18 +2,44 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1f1c" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
     --bg: #f5f7f4;
     --card: #ffffff;
     --text: #3a4a3f;
-    --muted: #7a8a7f;
+    --muted: #6f7f74;
     --accent: #a8c5b0;
+    --on-accent: #2a3a2f;
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --line: #e5ebe6;
+    --warm: #f6e3d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1f1c;
+      --card: #242b26;
+      --text: #e0ebe3;
+      --muted: #9aab9f;
+      --accent: #a8c5b0;
+      --on-accent: #1a1f1c;
+      --soft-blue: #2c3a44;
+      --soft-beige: #3a342c;
+      --soft-green: #2f3d33;
+      --line: #34403a;
+      --warm: #43342b;
+    }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -21,70 +47,58 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
     line-height: 1.5;
   }
   .page {
     display: none;
-    padding: 28px 20px 40px;
+    padding: calc(28px + env(safe-area-inset-top)) 20px 40px;
     max-width: 440px;
     margin: 0 auto;
   }
   .page.active { display: block; }
-  h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 16px;
-  }
-  p, .support {
+  h1 { font-size: 1.6rem; font-weight: 600; margin-bottom: 12px; }
+  h2 { font-size: 1.1rem; font-weight: 600; margin: 28px 0 10px; }
+  p, .support { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+  .local {
+    font-size: 0.8rem;
     color: var(--muted);
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-  }
-  .mood-scale {
     display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin: 24px 0;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
   }
+  .mood-scale { display: flex; justify-content: space-between; gap: 8px; margin: 24px 0 8px; }
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.2s;
   }
-  .mood-btn.selected {
-    border-color: var(--accent);
-    background: var(--soft-green);
-    transform: scale(1.05);
-  }
+  .mood-btn.selected { border-color: var(--accent); background: var(--soft-green); transform: scale(1.05); }
+  .hint { min-height: 1.4rem; font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
     background: var(--card);
+    color: var(--text);
     margin-bottom: 16px;
   }
   .btn {
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: var(--on-accent);
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -92,12 +106,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s;
+    text-align: center;
+    text-decoration: none;
   }
   .btn:active { opacity: 0.85; }
-  .btn-secondary {
-    background: var(--soft-blue);
-    margin-top: 12px;
-  }
+  .btn-secondary { background: var(--soft-blue); color: var(--text); margin-top: 12px; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); margin-top: 12px; }
   .message {
     background: var(--soft-green);
     border-radius: 16px;
@@ -107,34 +121,40 @@
     display: none;
   }
   .message.show { display: block; }
-  /* Breathing */
-  .circle-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 260px;
-    margin: 20px 0;
+  /* Fyrlykt: dukker opp når det er tungt */
+  .fyrlykt {
+    display: none;
+    background: var(--warm);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 20px;
   }
+  .fyrlykt.show { display: block; }
+  .fyrlykt strong { display: block; margin-bottom: 6px; }
+  .fyrlykt p { color: var(--text); margin-bottom: 12px; font-size: 0.92rem; }
+  .fyrlykt a { color: var(--text); font-weight: 600; }
+  .lines { list-style: none; font-size: 0.92rem; }
+  .lines li { padding: 6px 0; border-top: 1px solid var(--line); }
+  .lines li:first-child { border-top: none; }
+  /* Breathing */
+  .circle-wrap { display: flex; justify-content: center; align-items: center; height: 260px; margin: 20px 0; }
   .circle {
     width: 140px;
     height: 140px;
     border-radius: 50%;
     background: var(--soft-blue);
-    transition: transform 4s ease-in-out;
+    transition: transform 4s ease-in-out, background 4s ease-in-out;
   }
   .circle.inhale { transform: scale(1.6); background: var(--accent); }
-  .circle.exhale { transform: scale(1); }
-  .breath-text {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 500;
-    min-height: 2rem;
+  .circle.hold { transform: scale(1.6); background: var(--accent); }
+  .circle.exhale { transform: scale(1); transition-duration: 6s; }
+  @media (prefers-reduced-motion: reduce) {
+    .circle, .circle.exhale { transition: background 1s; }
+    .circle.inhale, .circle.hold { transform: none; }
   }
-  .actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  .breath-text { text-align: center; font-size: 1.3rem; font-weight: 500; min-height: 2rem; }
+  .breath-count { text-align: center; font-size: 0.85rem; color: var(--muted); min-height: 1.4rem; margin-bottom: 16px; }
+  .actions-list { display: flex; flex-direction: column; gap: 12px; }
   .action-card {
     background: var(--card);
     border-radius: 16px;
@@ -142,12 +162,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    gap: 12px;
+    border: 1px solid var(--line);
   }
-  .action-card.done {
-    opacity: 0.6;
-    background: var(--soft-green);
-  }
+  .action-card.done { opacity: 0.6; background: var(--soft-green); }
   .action-card button {
     background: none;
     border: 1px solid var(--accent);
@@ -156,18 +174,31 @@
     font-size: 0.85rem;
     cursor: pointer;
     color: var(--text);
+    flex-shrink: 0;
   }
+  /* Tidevann: humøret som en kystlinje */
+  .tide {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 14px 8px;
+    margin-bottom: 16px;
+  }
+  .tide-head { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  .tide svg { display: block; width: 100%; height: 80px; }
+  .tide-axis { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); }
   .history-item {
     background: var(--card);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
+    overflow-wrap: anywhere;
   }
-  .history-item .date {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
+  .history-item .date { font-size: 0.85rem; color: var(--muted); }
+  .summary { background: var(--soft-beige); border-radius: 16px; padding: 16px; text-align: center; margin-top: 24px; }
+  .foot { text-align: center; margin-top: 28px; font-size: 0.85rem; }
+  .foot a { color: var(--muted); }
   .nav {
     position: fixed;
     bottom: 0;
@@ -176,8 +207,8 @@
     background: var(--card);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    padding: 10px 0 calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
@@ -194,40 +225,49 @@
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
-  .summary {
-    background: var(--soft-beige);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    margin-top: 24px;
-  }
 </style>
 </head>
 <body>
 
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
+  <div class="local">🔒 Alt blir på denne enheten. Ingen konto, ingen sky.</div>
   <p class="support">Hvordan har du det akkurat nå?</p>
   <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+    <button class="mood-btn" data-mood="1" aria-label="Veldig tungt">😔</button>
+    <button class="mood-btn" data-mood="2" aria-label="Tungt">😕</button>
+    <button class="mood-btn" data-mood="3" aria-label="Sånn passe">😐</button>
+    <button class="mood-btn" data-mood="4" aria-label="Greit">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-label="Rolig">😌</button>
   </div>
+  <div class="hint" id="moodHint" aria-live="polite"></div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+
+  <div class="fyrlykt" id="fyrlykt" role="region" aria-label="Hjelp nå">
+    <strong>Det høres tungt ut.</strong>
+    <p>Du trenger ikke bære det alene. Start med ett minutt pust, eller snakk med noen nå:</p>
+    <ul class="lines">
+      <li>Mental Helse hjelpetelefon · <a href="tel:116123">116 123</a> (døgnåpen)</li>
+      <li>Kirkens SOS · <a href="tel:22400040">22 40 00 40</a> (døgnåpen)</li>
+      <li>Akutt fare · <a href="tel:113">113</a></li>
+    </ul>
+    <button class="btn" style="margin-top:14px" onclick="switchPage('pusterom'); startBreath(4)">Ett minutt pust</button>
+  </div>
+
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <div class="foot"><a href="isolation-mirror.html">Isolation Mirror →</a></div>
 </div>
 
 <div id="page-pusterom" class="page">
   <h1>Pusterom</h1>
-  <p class="support">Følg sirkelen. Pust rolig.</p>
+  <p class="support">Følg sirkelen. Inn 4 · hold 2 · ut 6.</p>
   <div class="circle-wrap">
     <div class="circle" id="breathCircle"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
+  <div class="breath-text" id="breathText" aria-live="polite">Trykk start</div>
+  <div class="breath-count" id="breathCount"></div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
 </div>
 
@@ -239,15 +279,18 @@
 
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
+  <div class="tide" id="tide"></div>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-ghost" onclick="exportHistory()">Ta historikken med deg (.txt)</button>
+  <div class="foot"><a href="#" onclick="showFyrlykt(); switchPage('hjem'); return false;">Trenger du noen å snakke med?</a></div>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button data-page="hjem" class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -260,138 +303,226 @@ const actions = [
   "Legg telefonen bort i 10 minutter",
   "Strekk armene over hodet"
 ];
+const MOODS = ['', '😔', '😕', '😐', '🙂', '😌'];
 
 let selectedMood = null;
 let breathing = false;
-let breathInterval = null;
+let breathTimer = null;
 let phase = 0; // 0 inhale, 1 hold, 2 exhale
+let cyclesLeft = Infinity;
+
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch (e) { return fallback; }
+}
+function store(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedMood = btn.dataset.mood;
+    document.getElementById('moodHint').textContent = '';
   });
 });
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    document.getElementById('moodHint').textContent = 'Velg et fjes først – det holder.';
     return;
   }
   const note = document.getElementById('note').value.trim();
-  const entry = {
-    date: new Date().toISOString(),
-    mood: selectedMood,
-    note: note
-  };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
+  const list = load('checkins', []);
+  list.unshift({ date: new Date().toISOString(), mood: selectedMood, note: note });
+  store('checkins', list);
+  const heavy = Number(selectedMood) <= 2;
   document.getElementById('saveMsg').classList.add('show');
   document.getElementById('note').value = '';
   selectedMood = null;
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
   setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
+  if (heavy) showFyrlykt();
   renderHistory();
+}
+
+function showFyrlykt() {
+  document.getElementById('fyrlykt').classList.add('show');
 }
 
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  if (name !== 'pusterom' && breathing) stopBreath();
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  window.scrollTo(0, 0);
 }
 
 function toggleBreath() {
-  const btn = document.getElementById('breathBtn');
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  if (!breathing) {
-    breathing = true;
-    btn.textContent = 'Stopp';
-    phase = 0;
-    runBreathCycle();
-  } else {
-    breathing = false;
-    clearTimeout(breathInterval);
-    btn.textContent = 'Start';
-    text.textContent = 'Trykk start';
-    circle.className = 'circle';
-  }
+  breathing ? stopBreath() : startBreath(Infinity);
+}
+
+function startBreath(cycles) {
+  if (breathing) stopBreath();
+  breathing = true;
+  cyclesLeft = cycles;
+  phase = 0;
+  document.getElementById('breathBtn').textContent = 'Stopp';
+  runBreathCycle();
+}
+
+function stopBreath(doneText) {
+  breathing = false;
+  clearTimeout(breathTimer);
+  document.getElementById('breathBtn').textContent = 'Start';
+  document.getElementById('breathText').textContent = doneText || 'Trykk start';
+  document.getElementById('breathCount').textContent = '';
+  document.getElementById('breathCircle').className = 'circle';
 }
 
 function runBreathCycle() {
   if (!breathing) return;
   const circle = document.getElementById('breathCircle');
   const text = document.getElementById('breathText');
+  const count = document.getElementById('breathCount');
+  count.textContent = isFinite(cyclesLeft) ? cyclesLeft + ' igjen' : '';
   if (phase === 0) {
     text.textContent = 'Pust inn…';
     circle.className = 'circle inhale';
-    breathInterval = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
+    breathTimer = setTimeout(() => { phase = 1; runBreathCycle(); }, 4000);
   } else if (phase === 1) {
     text.textContent = 'Hold…';
-    breathInterval = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
+    circle.className = 'circle hold';
+    breathTimer = setTimeout(() => { phase = 2; runBreathCycle(); }, 2000);
   } else {
     text.textContent = 'Pust ut…';
     circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
+    breathTimer = setTimeout(() => {
+      cyclesLeft -= 1;
+      if (cyclesLeft <= 0) { stopBreath('Bra. Du er her.'); return; }
+      phase = 0;
+      runBreathCycle();
+    }, 6000);
   }
 }
 
 function renderActions() {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  const done = load('doneActions', {});
   const today = new Date().toDateString();
   const list = document.getElementById('actionsList');
   list.innerHTML = '';
   actions.forEach((a, i) => {
-    const isDone = done[today] && done[today].includes(i);
+    const isDone = Array.isArray(done[today]) && done[today].includes(i);
     const card = document.createElement('div');
     card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    card.innerHTML = `<span>${esc(a)}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
     list.appendChild(card);
   });
 }
 
 function toggleAction(i) {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  const done = load('doneActions', {});
   const today = new Date().toDateString();
-  if (!done[today]) done[today] = [];
-  const idx = done[today].indexOf(i);
-  if (idx > -1) done[today].splice(idx, 1);
-  else done[today].push(i);
-  localStorage.setItem('doneActions', JSON.stringify(done));
+  // behold bare i dag – gamle dager er ferdige
+  const todays = Array.isArray(done[today]) ? done[today] : [];
+  const idx = todays.indexOf(i);
+  if (idx > -1) todays.splice(idx, 1); else todays.push(i);
+  store('doneActions', { [today]: todays });
   renderActions();
 }
 
+// Tidevann: snitt-humør per dag siste 14 dager, tegnet som en kystlinje.
+function renderTide(list) {
+  const el = document.getElementById('tide');
+  const days = 14;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const buckets = Array.from({ length: days }, () => []);
+  list.forEach(e => {
+    const d = new Date(e.date);
+    d.setHours(0, 0, 0, 0);
+    const ago = Math.round((now - d) / 86400000);
+    if (ago >= 0 && ago < days) buckets[days - 1 - ago].push(Number(e.mood));
+  });
+  const avg = buckets.map(b => b.length ? b.reduce((s, x) => s + x, 0) / b.length : null);
+  const known = avg.filter(v => v !== null);
+  if (known.length === 0) {
+    el.innerHTML = '<div class="tide-head"><span>Tidevann · 14 dager</span></div><p class="support" style="margin:8px 0">Linjen tegner seg når du sjekker inn.</p>';
+    return;
+  }
+  const W = 280, H = 80, pad = 8;
+  const x = i => pad + i * (W - 2 * pad) / (days - 1);
+  const y = v => H - pad - (v - 1) * (H - 2 * pad) / 4;
+  let path = '', dots = '';
+  avg.forEach((v, i) => {
+    if (v === null) return;
+    path += (path ? ' L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1);
+    dots += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="var(--accent)"/>`;
+  });
+  const first = avg.findIndex(v => v !== null);
+  const last = avg.length - 1 - [...avg].reverse().findIndex(v => v !== null);
+  const fill = `${path} L${x(last).toFixed(1)} ${H} L${x(first).toFixed(1)} ${H} Z`;
+  el.innerHTML =
+    `<div class="tide-head"><span>Tidevann · 14 dager</span><span>${MOODS[Math.round(known[known.length - 1])]} sist</span></div>` +
+    `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Humør siste 14 dager">` +
+    `<path d="${fill}" fill="var(--soft-blue)" opacity="0.7"/>` +
+    `<path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>` +
+    dots + `</svg>` +
+    `<div class="tide-axis"><span>for 2 uker siden</span><span>i dag</span></div>`;
+}
+
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = load('checkins', []);
   const container = document.getElementById('historyList');
   container.innerHTML = '';
+  renderTide(list);
   if (list.length === 0) {
     container.innerHTML = '<p class="support">Ingen sjekk-ins ennå. Det er greit.</p>';
   } else {
     list.slice(0, 20).forEach(e => {
       const d = new Date(e.date);
-      const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} ${d.toLocaleTimeString('no-NO', {hour:'2-digit', minute:'2-digit'})} · ${MOODS[e.mood] || '😐'}</div>${e.note ? '<div>' + esc(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
-  // week count
-  const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
+  const weekAgo = new Date(Date.now() - 7 * 86400000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ${weekCount === 1 ? 'gang' : 'ganger'} denne uken. Det er fint.`;
+}
+
+function exportHistory() {
+  const list = load('checkins', []);
+  const words = ['', 'veldig tungt', 'tungt', 'sånn passe', 'greit', 'rolig'];
+  const lines = ['Pusterom – historikk', 'Eksportert ' + new Date().toLocaleString('no-NO'), ''];
+  if (list.length === 0) lines.push('Ingen sjekk-ins ennå.');
+  list.forEach(e => {
+    const d = new Date(e.date).toLocaleString('no-NO');
+    lines.push(`${d} · ${e.mood}/5 ${words[e.mood] || ''}${e.note ? ' · ' + e.note.replace(/\s+/g, ' ') : ''}`);
+  });
+  const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-historikk.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // init
 renderActions();
 renderHistory();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
