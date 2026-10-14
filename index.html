@@ -201,24 +201,60 @@
     text-align: center;
     margin-top: 24px;
   }
+  .local-line { font-size: 0.8rem; color: var(--muted); text-align: center; margin: 4px 0 24px; }
+  .hint { color: #8a5a4a; font-size: 0.9rem; min-height: 1.2rem; margin: -12px 0 12px; }
+  .message .next { margin-top: 10px; font-weight: 600; }
+  .message .next button { margin-top: 10px; }
+  .insights { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .insight {
+    background: var(--soft-blue);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+  .insight.care { background: var(--soft-beige); }
+  .insight a { color: inherit; }
+  .footer-link { display: block; text-align: center; color: var(--muted); font-size: 0.82rem; margin-top: 28px; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1f1c;
+      --card: #242b26;
+      --text: #e0ebe3;
+      --muted: #8a9a8f;
+      --accent: #a8c5b0;
+      --soft-blue: #2a3640;
+      --soft-beige: #36302a;
+      --soft-green: #2c3a30;
+    }
+    .mood-btn, textarea, .action-card, .history-item, .nav { border-color: #33403a !important; }
+    textarea { color: var(--text); }
+    .btn { color: #1a1f1c; }
+    .hint { color: #d9a08c; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .circle { transition-duration: 0.01s; }
+  }
 </style>
 </head>
 <body>
 
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
+  <p class="local-line">Alt blir på denne enheten. Ingen konto. Ingen sky.</p>
   <p class="support">Hvordan har du det akkurat nå?</p>
   <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+    <button class="mood-btn" data-mood="1" aria-label="Svært tungt">😔</button>
+    <button class="mood-btn" data-mood="2" aria-label="Tungt">😕</button>
+    <button class="mood-btn" data-mood="3" aria-label="Nøytralt">😐</button>
+    <button class="mood-btn" data-mood="4" aria-label="Greit">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-label="Rolig">😌</button>
   </div>
+  <div class="hint" id="moodHint"></div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+  <div class="message" id="saveMsg"></div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <a class="footer-link" href="isolation-mirror.html">Isolation Mirror →</a>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -239,15 +275,17 @@
 
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
+  <div class="insights" id="insights"></div>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" onclick="exportHistory()">Ta historikken med deg</button>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -260,49 +298,70 @@ const actions = [
   "Legg telefonen bort i 10 minutter",
   "Strekk armene over hodet"
 ];
+const MOOD_EMOJI = ['', '😔', '😕', '😐', '🙂', '😌'];
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 let selectedMood = null;
 let breathing = false;
 let breathInterval = null;
+let breathCycles = 0;
 let phase = 0; // 0 inhale, 1 hold, 2 exhale
+
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+}
+function store(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function dayKey(d) { return new Date(d).toDateString(); }
+function avg(xs) { return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; }
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-    selectedMood = btn.dataset.mood;
+    selectedMood = Number(btn.dataset.mood);
+    document.getElementById('moodHint').textContent = '';
   });
 });
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    document.getElementById('moodHint').textContent = 'Velg hvordan du har det først.';
     return;
   }
+  const mood = selectedMood;
   const note = document.getElementById('note').value.trim();
-  const entry = {
-    date: new Date().toISOString(),
-    mood: selectedMood,
-    note: note
-  };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
-  list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
-  document.getElementById('saveMsg').classList.add('show');
+  const list = load('checkins', []);
+  list.unshift({ date: new Date().toISOString(), mood, note });
+  store('checkins', list);
+
+  const msg = document.getElementById('saveMsg');
+  const rec = recommend(mood);
+  msg.innerHTML = 'Takk. Det er bra at du sjekket inn.' +
+    `<div class="next">${esc(rec.text)}</div>` +
+    (rec.page ? `<div class="next"><button class="btn" onclick="switchPage('${rec.page}')">${esc(rec.cta)}</button></div>` : '');
+  msg.classList.add('show');
+
   document.getElementById('note').value = '';
   selectedMood = null;
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
 }
 
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.page === name));
+  if (name !== 'pusterom' && breathing) toggleBreath();
+  if (name !== 'hjem') document.getElementById('saveMsg').classList.remove('show');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  window.scrollTo(0, 0);
 }
 
 function toggleBreath() {
@@ -311,6 +370,7 @@ function toggleBreath() {
   const text = document.getElementById('breathText');
   if (!breathing) {
     breathing = true;
+    breathCycles = 0;
     btn.textContent = 'Stopp';
     phase = 0;
     runBreathCycle();
@@ -318,8 +378,13 @@ function toggleBreath() {
     breathing = false;
     clearTimeout(breathInterval);
     btn.textContent = 'Start';
-    text.textContent = 'Trykk start';
+    text.textContent = breathCycles ? `${breathCycles} rolige pust. Fint.` : 'Trykk start';
     circle.className = 'circle';
+    if (breathCycles >= 3) {
+      const sessions = load('breaths', []);
+      sessions.unshift({ date: new Date().toISOString(), cycles: breathCycles });
+      store('breaths', sessions);
+    }
   }
 }
 
@@ -337,37 +402,138 @@ function runBreathCycle() {
   } else {
     text.textContent = 'Pust ut…';
     circle.className = 'circle exhale';
-    breathInterval = setTimeout(() => { phase = 0; runBreathCycle(); }, 6000);
+    breathInterval = setTimeout(() => { breathCycles++; phase = 0; runBreathCycle(); }, 6000);
   }
 }
 
 function renderActions() {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
+  const done = load('doneActions', {});
+  const today = dayKey(new Date());
+  const best = helpfulAction();
   const list = document.getElementById('actionsList');
   list.innerHTML = '';
   actions.forEach((a, i) => {
     const isDone = done[today] && done[today].includes(i);
     const card = document.createElement('div');
     card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    const tag = best && best.index === i ? ' <small>· pleier å hjelpe deg</small>' : '';
+    card.innerHTML = `<span>${esc(a)}${tag}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
     list.appendChild(card);
   });
 }
 
 function toggleAction(i) {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
-  const today = new Date().toDateString();
+  const done = load('doneActions', {});
+  const today = dayKey(new Date());
   if (!done[today]) done[today] = [];
   const idx = done[today].indexOf(i);
   if (idx > -1) done[today].splice(idx, 1);
   else done[today].push(i);
-  localStorage.setItem('doneActions', JSON.stringify(done));
+  store('doneActions', done);
   renderActions();
 }
 
+/* ---------- Mønster: lokal analyse, ingen nett ---------- */
+
+// Snitt-humør per dag: { dayKey: avgMood }
+function moodByDay(checkins) {
+  const days = {};
+  checkins.forEach(e => (days[dayKey(e.date)] ||= []).push(Number(e.mood)));
+  const out = {};
+  for (const k in days) out[k] = avg(days[k]);
+  return out;
+}
+
+// Finn grepet som oftest henger sammen med bedre dager. Krever minst 2 dager med grepet.
+function helpfulAction() {
+  const days = moodByDay(load('checkins', []));
+  const done = load('doneActions', {});
+  const overall = avg(Object.values(days));
+  if (overall === null) return null;
+  let best = null;
+  actions.forEach((_, i) => {
+    const moods = Object.keys(done).filter(d => done[d].includes(i) && d in days).map(d => days[d]);
+    if (moods.length < 2) return;
+    const lift = avg(moods) - overall;
+    if (lift > 0.25 && (!best || lift > best.lift)) best = { index: i, lift, n: moods.length };
+  });
+  return best;
+}
+
+function recommend(mood) {
+  const best = helpfulAction();
+  if (mood <= 2) return { text: 'Start med pusten. Ett minutt er nok.', page: 'pusterom', cta: 'Pust med meg nå' };
+  if (mood === 3) {
+    const a = best ? actions[best.index] : actions[2];
+    return { text: `Ett lite grep: ${a}.`, page: 'grep', cta: 'Se små grep' };
+  }
+  return { text: 'Godt. Skriv gjerne ned hva som hjalp i dag — da husker appen det for deg.', page: null };
+}
+
+function timeBucket(d) {
+  const h = new Date(d).getHours();
+  if (h >= 5 && h < 11) return 'morgenen';
+  if (h >= 11 && h < 17) return 'dagen';
+  if (h >= 17 && h < 23) return 'kvelden';
+  return 'natta';
+}
+
+function insights() {
+  const checkins = load('checkins', []);
+  const out = [];
+  const now = Date.now();
+
+  // Tre tunge på rad: si det rett ut, gi nummer.
+  const last3 = checkins.slice(0, 3);
+  if (last3.length === 3 && last3.every(e => Number(e.mood) <= 2)) {
+    out.push({ care: true, html: 'De siste tre sjekk-innene har vært tunge. Du trenger ikke bære det alene. ' +
+      'Mental Helse: <a href="tel:116123">116 123</a> · Kirkens SOS: <a href="tel:22400040">22 40 00 40</a> · Akutt: <a href="tel:113">113</a>.' });
+  }
+
+  if (checkins.length < 3) {
+    out.push({ html: `Sjekk inn ${3 - checkins.length} gang${checkins.length === 2 ? '' : 'er'} til, så begynner appen å se mønstre. Alt regnes ut her på enheten.` });
+    return out;
+  }
+
+  // Trend: siste 7 dager mot de 7 før.
+  const recent = checkins.filter(e => now - new Date(e.date) < 7 * DAY_MS).map(e => Number(e.mood));
+  const before = checkins.filter(e => { const t = now - new Date(e.date); return t >= 7 * DAY_MS && t < 14 * DAY_MS; }).map(e => Number(e.mood));
+  if (recent.length >= 2 && before.length >= 2) {
+    const diff = avg(recent) - avg(before);
+    if (diff >= 0.3) out.push({ html: 'Denne uken har vært lettere enn forrige. Legg merke til hva du har gjort annerledes.' });
+    else if (diff <= -0.3) out.push({ html: 'Denne uken har vært tyngre enn forrige. Det er informasjon, ikke en dom.' });
+    else out.push({ html: 'Omtrent som forrige uke. Stabilt er også noe.' });
+  }
+
+  // Tid på døgnet som er tyngst.
+  const buckets = {};
+  checkins.forEach(e => (buckets[timeBucket(e.date)] ||= []).push(Number(e.mood)));
+  const ranked = Object.entries(buckets).filter(([, xs]) => xs.length >= 2).map(([k, xs]) => [k, avg(xs)]).sort((a, b) => a[1] - b[1]);
+  if (ranked.length >= 2 && ranked[ranked.length - 1][1] - ranked[0][1] >= 0.5) {
+    out.push({ html: `Det er oftest tyngst på ${ranked[0][0]}. Kanskje et pusterom der kan hjelpe.` });
+  }
+
+  // Pust eller grep samme dag.
+  const days = moodByDay(checkins);
+  const careDays = new Set([...load('breaths', []).map(b => dayKey(b.date)),
+    ...Object.entries(load('doneActions', {})).filter(([, xs]) => xs.length).map(([d]) => d)]);
+  const withCare = Object.keys(days).filter(d => careDays.has(d)).map(d => days[d]);
+  const without = Object.keys(days).filter(d => !careDays.has(d)).map(d => days[d]);
+  if (withCare.length >= 2 && without.length >= 2 && avg(withCare) - avg(without) >= 0.3) {
+    out.push({ html: 'Dagene du puster eller gjør et lite grep, har du det litt bedre.' });
+  }
+
+  const best = helpfulAction();
+  if (best) out.push({ html: `«${esc(actions[best.index])}» henger sammen med bedre dager for deg (${best.n} dager).` });
+
+  return out;
+}
+
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = load('checkins', []);
+  document.getElementById('insights').innerHTML =
+    insights().map(i => `<div class="insight${i.care ? ' care' : ''}">${i.html}</div>`).join('');
+
   const container = document.getElementById('historyList');
   container.innerHTML = '';
   if (list.length === 0) {
@@ -375,18 +541,31 @@ function renderHistory() {
   } else {
     list.slice(0, 20).forEach(e => {
       const d = new Date(e.date);
-      const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
+      const moodEmoji = MOOD_EMOJI[e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + esc(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
-  // week count
-  const now = new Date();
-  const weekAgo = new Date(now - 7*24*60*60*1000);
-  const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
+  const weekCount = list.filter(e => Date.now() - new Date(e.date) < 7 * DAY_MS).length;
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+}
+
+function exportHistory() {
+  const list = load('checkins', []);
+  const lines = ['Pusterom – historikk', 'Eksportert ' + new Date().toLocaleString('no-NO'), ''];
+  list.slice().reverse().forEach(e => {
+    lines.push(`${new Date(e.date).toLocaleString('no-NO')}  humør ${e.mood}/5${e.note ? '  ' + e.note : ''}`);
+  });
+  const notes = insights().map(i => '- ' + i.html.replace(/<[^>]+>/g, ''));
+  if (notes.length) lines.push('', 'Mønster:', ...notes);
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-historikk.txt';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // init

@@ -13,13 +13,18 @@ Ingen server. Ingen konto.
 | Nøkkel | Innhold |
 |--------|---------|
 | `checkins` | tid, humør 1–5, valgfri note |
-| `doneActions` | hvilke «små grep» merket i dag |
+| `doneActions` | hvilke «små grep» merket, per dag |
+| `breaths` | pusteøkter på 3+ runder: tid, antall |
 
 Ingenting går på nett. Isolation Mirror viser bilde kun i denne fanen. Filen lastes ikke opp.
 
 ## Export
 
-Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
+Historikk → «Ta historikken med deg» → `pusterom-historikk.txt` (inkl. mønster).
+
+## Mønster
+
+Historikk viser innsikt etter 3 sjekk-inns. Alt regnes ut i nettleseren. Se `HULL.md`.
 
 ## Isolation Mirror → Grok-bot
 
