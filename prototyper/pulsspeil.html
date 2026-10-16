@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulsspeil</title>
+<style>
+  :root { --bg:#f5f7f4; --card:#ffffff; --text:#3a4a3f; --muted:#7a8a7f; --accent:#a8c5b0; --warm:#f0d9c4; --line:#e5ebe6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1a1f1c; --card:#2a332c; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; --warm:#4a3a2c; --line:#3a4a3f; }
+  }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); margin:0 auto; padding:20px 16px 40px; max-width:480px; line-height:1.5; transition:background 2s; }
+  h1 { font-size:1.5rem; margin:0 0 6px; font-weight:600; }
+  p { color:var(--muted); font-size:0.92rem; margin:0 0 14px; }
+  a.back { color:var(--muted); font-size:0.82rem; display:inline-block; margin-bottom:14px; }
+  .stage { position:relative; width:100%; aspect-ratio:4/3; border-radius:20px; overflow:hidden; background:#000; }
+  video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  .oval { position:absolute; left:50%; top:46%; width:46%; height:78%; transform:translate(-50%,-50%); border:3px dashed rgba(255,255,255,.7); border-radius:50%; pointer-events:none; }
+  .roi { position:absolute; border:2px solid rgba(168,197,176,.9); border-radius:6px; pointer-events:none; }
+  .row { display:flex; gap:10px; margin:14px 0; }
+  .stat { flex:1; background:var(--card); border-radius:16px; padding:12px; text-align:center; }
+  .stat b { display:block; font-size:1.8rem; font-weight:600; }
+  .stat span { font-size:0.78rem; color:var(--muted); }
+  .q { height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin-top:6px; }
+  .q i { display:block; height:100%; width:0; background:#d98c7a; transition:width .4s, background .4s; }
+  .pacer-wrap { display:flex; flex-direction:column; align-items:center; margin:18px 0 8px; }
+  .pacer { width:140px; height:140px; border-radius:50%; background:var(--accent); opacity:.85; transform:scale(.55); }
+  .pacer-label { margin-top:10px; color:var(--muted); font-size:0.9rem; min-height:1.4em; }
+  canvas#chart { width:100%; height:120px; background:var(--card); border-radius:16px; display:block; }
+  button { width:100%; background:var(--accent); color:#1a1f1c; border:none; border-radius:14px; padding:14px; font-weight:600; font-size:1rem; cursor:pointer; }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--text); margin-top:8px; }
+  label { font-size:0.88rem; color:var(--muted); display:block; margin-top:12px; }
+  input[type=range] { width:100%; }
+  .note { font-size:0.78rem; color:var(--muted); margin-top:18px; }
+  .card { background:var(--card); border-radius:16px; padding:14px; margin-top:14px; display:none; }
+</style>
+</head>
+<body>
+  <a class="back" href="../index.html">← Pusterom</a>
+  <h1>Pulsspeil</h1>
+  <p>Kameraet ser små fargeendringer i huden når hjertet slår. Pust med sirkelen og se pulsen bølge med. Alt skjer på denne enheten. Ingen bilder lagres eller sendes.</p>
+
+  <div class="stage">
+    <video id="video" playsinline muted></video>
+    <div class="oval"></div>
+    <div class="roi" id="roiBox"></div>
+  </div>
+
+  <div class="row">
+    <div class="stat"><b id="bpm">–</b><span>slag/min</span></div>
+    <div class="stat"><b id="rsa">–</b><span>pulsbølge (slag/min)</span>
+      <div class="q"><i id="qbar"></i></div><span id="qtext">signal</span></div>
+  </div>
+
+  <div class="pacer-wrap">
+    <div class="pacer" id="pacer"></div>
+    <div class="pacer-label" id="pacerLabel">Trykk start</div>
+  </div>
+
+  <canvas id="chart" width="900" height="240"></canvas>
+
+  <label>Pustetempo: <b id="rateLabel">5,5</b> pust/min</label>
+  <input type="range" id="rate" min="4.5" max="7" step="0.5" value="5.5">
+
+  <div style="margin-top:16px">
+    <button id="startBtn">Start</button>
+    <button class="ghost" id="stopBtn" style="display:none">Avslutt og lagre</button>
+  </div>
+
+  <div class="card" id="summary"></div>
+
+  <p class="note">Prototype. Ikke medisinsk utstyr. Fungerer best i stillhet, med jevnt lys forfra. Kamerapuls er mindre presis ved bevegelse, svakt lys og mørkere hudtoner — derfor vises signalkvalitet hele tiden.</p>
+
+<script src="pulsspeil-dsp.js"></script>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const video = $('video');
+  const grab = document.createElement('canvas');
+  const gctx = grab.getContext('2d', { willReadFrequently: true });
+  const chart = $('chart'), cctx = chart.getContext('2d');
+
+  const WINDOW_SEC = 10;
+  let stream = null, running = false, t0 = 0, lastEst = 0;
+  let times = [], rgbs = [], series = [], recent = [];
+  let rate = 5.5;
+
+  // ROI: øvre midtre del av ovalen (panne + øvre kinn). Koordinater som andel av videoen.
+  const ROI = { x: 0.40, y: 0.20, w: 0.20, h: 0.28 };
+  const roiBox = $('roiBox');
+  Object.assign(roiBox.style, { left: ROI.x * 100 + '%', top: ROI.y * 100 + '%', width: ROI.w * 100 + '%', height: ROI.h * 100 + '%' });
+
+  $('rate').addEventListener('input', e => { rate = +e.target.value; $('rateLabel').textContent = String(rate).replace('.', ','); });
+
+  $('startBtn').addEventListener('click', async () => {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480, frameRate: 30 }, audio: false });
+    } catch (e) {
+      $('pacerLabel').textContent = 'Fikk ikke tilgang til kamera.';
+      return;
+    }
+    video.srcObject = stream; await video.play();
+    grab.width = 64; grab.height = 48;
+    times = []; rgbs = []; series = []; recent = [];
+    running = true; t0 = performance.now(); lastEst = 0;
+    $('startBtn').style.display = 'none'; $('stopBtn').style.display = 'block'; $('summary').style.display = 'none';
+    requestAnimationFrame(loop);
+  });
+
+  $('stopBtn').addEventListener('click', stop);
+
+  function sampleFrame(now) {
+    const vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw) return;
+    // Videoen er speilvendt i visningen, så ROI speiles tilbake før uttrekk.
+    const sx = (1 - ROI.x - ROI.w) * vw, sy = ROI.y * vh, sw = ROI.w * vw, sh = ROI.h * vh;
+    gctx.drawImage(video, sx, sy, sw, sh, 0, 0, grab.width, grab.height);
+    const d = gctx.getImageData(0, 0, grab.width, grab.height).data;
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+    times.push((now - t0) / 1000); rgbs.push([r / n, g / n, b / n]);
+    while (times.length && times[times.length - 1] - times[0] > WINDOW_SEC) { times.shift(); rgbs.shift(); }
+  }
+
+  function median(a) { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; }
+
+  function loop(now) {
+    if (!running) return;
+    sampleFrame(now);
+    const t = (now - t0) / 1000;
+
+    // Pacer: innpust halve perioden, utpust andre halvdel
+    const period = 60 / rate, phase = (t % period) / period;
+    const inhale = phase < 0.5;
+    const s = inhale ? 0.55 + 0.45 * easeInOut(phase * 2) : 1 - 0.45 * easeInOut((phase - 0.5) * 2);
+    $('pacer').style.transform = `scale(${s})`;
+    $('pacerLabel').textContent = inhale ? 'Pust inn …' : 'Pust ut …';
+
+    if (t - lastEst > 0.5 && times.length > 30 * 5) {
+      lastEst = t;
+      const res = PulsDSP.estimateBpm(times, rgbs);
+      if (res) {
+        $('qbar').style.width = Math.round(res.kvalitet * 100) + '%';
+        $('qbar').style.background = res.kvalitet > 0.6 ? '#7fb38f' : res.kvalitet > 0.35 ? '#e0c068' : '#d98c7a';
+        $('qtext').textContent = res.kvalitet > 0.6 ? 'godt signal' : res.kvalitet > 0.35 ? 'ok signal' : 'svakt signal — sitt stille';
+        if (res.kvalitet > 0.35) {
+          recent.push(res.bpm); if (recent.length > 5) recent.shift();
+          const bpm = median(recent);
+          series.push({ t, bpm, kvalitet: res.kvalitet });
+          $('bpm').textContent = Math.round(bpm);
+          const rsa = PulsDSP.rsaAmplitude(series.filter(p => p.t > t - 60), period);
+          if (rsa != null) {
+            $('rsa').textContent = rsa.toFixed(1);
+            // Bakgrunnen varmes opp når pulsbølgen blir tydelig
+            document.body.style.background = rsa > 6 ? 'var(--warm)' : '';
+          }
+        }
+      }
+      drawChart(t, period);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  function easeInOut(x) { return 0.5 - 0.5 * Math.cos(Math.PI * x); }
+
+  function drawChart(t, period) {
+    const W = chart.width, H = chart.height;
+    cctx.clearRect(0, 0, W, H);
+    const pts = series.filter(p => p.t > t - 60);
+    const css = getComputedStyle(document.documentElement);
+    // Pustefaser som bakgrunnsbånd
+    cctx.fillStyle = css.getPropertyValue('--line');
+    for (let s = Math.floor((t - 60) / period) * period; s < t; s += period) {
+      const x0 = ((s - (t - 60)) / 60) * W, x1 = ((s + period / 2 - (t - 60)) / 60) * W;
+      cctx.fillRect(x0, 0, x1 - x0, H);
+    }
+    if (pts.length < 2) return;
+    const vals = pts.map(p => p.bpm);
+    const lo = Math.min(...vals) - 3, hi = Math.max(...vals) + 3;
+    cctx.strokeStyle = css.getPropertyValue('--text'); cctx.lineWidth = 4; cctx.beginPath();
+    pts.forEach((p, i) => {
+      const x = ((p.t - (t - 60)) / 60) * W, y = H - ((p.bpm - lo) / (hi - lo)) * H;
+      i ? cctx.lineTo(x, y) : cctx.moveTo(x, y);
+    });
+    cctx.stroke();
+  }
+
+  function stop() {
+    running = false;
+    if (stream) stream.getTracks().forEach(tr => tr.stop());
+    $('startBtn').style.display = 'block'; $('stopBtn').style.display = 'none';
+    $('pacer').style.transform = 'scale(.55)'; $('pacerLabel').textContent = 'Ferdig';
+    document.body.style.background = '';
+    if (!series.length) return;
+    const period = 60 / rate;
+    const okt = {
+      start: new Date(Date.now() - series[series.length - 1].t * 1000).toISOString(),
+      varighetSek: Math.round(series[series.length - 1].t),
+      pustPerMin: rate,
+      snittBpm: Math.round(series.reduce((a, p) => a + p.bpm, 0) / series.length),
+      rsaAmplitude: PulsDSP.rsaAmplitude(series, period),
+      bpmSerie: series.map(p => ({ t: +p.t.toFixed(1), bpm: +p.bpm.toFixed(1), kvalitet: +p.kvalitet.toFixed(2) }))
+    };
+    try {
+      const all = JSON.parse(localStorage.getItem('pulsspeilOkter') || '[]');
+      all.push(okt); localStorage.setItem('pulsspeilOkter', JSON.stringify(all));
+    } catch (e) { /* lagring er en bonus, ikke et krav */ }
+    const sum = $('summary');
+    sum.style.display = 'block';
+    sum.innerHTML = `<b>${(okt.varighetSek / 60).toFixed(1).replace('.', ',')} min</b> med ${String(rate).replace('.', ',')} pust/min.<br>
+      Snittpuls ${okt.snittBpm}. Pulsbølge ${okt.rsaAmplitude != null ? okt.rsaAmplitude.toFixed(1) + ' slag/min' : 'for kort økt til å måle'}.<br>
+      <span style="color:var(--muted);font-size:.85rem">Større pulsbølge betyr ofte at pusten og hjertet har funnet hverandre. Prøv et annet tempo neste gang og se hvilket som gir størst bølge.</span>`;
+  }
+})();
+</script>
+</body>
+</html>
