@@ -1,0 +1,12 @@
+{
+  "name": "varsellys",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personlige varselsignaler og kriseplan for bipolar lidelse. MVP.",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=18" }
+}

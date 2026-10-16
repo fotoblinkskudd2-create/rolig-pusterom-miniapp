@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Young+Serif&display=swap">
+<style>
+  html, body { margin: 0; width: 1280px; height: 720px; overflow: hidden; background: #f7f2e7; }
+  #stage { position: relative; width: 1280px; height: 720px; overflow: hidden; font-family: "Atkinson Hyperlegible", system-ui, sans-serif; color: #213b39; }
+  #hero { position: absolute; inset: 0; transform-origin: 70% 50%; }
+  #hero img { width: 100%; height: 100%; display: block; }
+  .card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; opacity: 0; text-align: center; padding: 0 90px; }
+  .big { font-family: "Young Serif", Georgia, serif; font-size: 112px; line-height: 1.05; }
+  .mid { font-family: "Young Serif", Georgia, serif; font-size: 64px; line-height: 1.15; max-width: 1000px; }
+  .coral { color: #c9624b; }
+  .cats { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; max-width: 1100px; }
+  .cat { font-size: 36px; font-weight: 700; padding: 14px 28px; border-radius: 999px; background: #d9e9e5; color: #3f7f7a; opacity: 0; }
+  .phone { width: 210px; border-radius: 28px; border: 8px solid #213b39; }
+  .row { display: flex; align-items: center; gap: 56px; text-align: left; }
+  #url { position: absolute; left: 90px; top: 290px; opacity: 0; }
+  #url .t { font-family: "Young Serif", Georgia, serif; font-size: 64px; line-height: 1.1; }
+  #url .u { margin-top: 18px; font-size: 30px; font-weight: 700; color: #3f7f7a; letter-spacing: .02em; }
+</style></head>
+<body><div id="stage">
+  <div id="hero"><img src="hero.svg" alt=""></div>
+  <div class="card" id="c1"><div class="big">250 ideer.</div></div>
+  <div class="card" id="c2"><div class="cats">
+    <span class="cat">Aldersomsorg</span><span class="cat">Bipolar lidelse</span><span class="cat">Ensomhet</span>
+    <span class="cat">Kronisk smerte og sorg</span><span class="cat">Privatøkonomi</span></div></div>
+  <div class="card" id="c3"><div class="row"><img class="phone" src="mvp-shot.jpg" alt="">
+    <div class="mid">Én prototype<br><span class="coral">fungerer allerede.</span></div></div></div>
+  <div class="card" id="c4"><div class="mid">Det kommer flere.<br><span class="coral">Vi lager dem sammen.</span></div></div>
+  <div id="url"><div class="t">250 ideer som<br>kan <span class="coral">endre liv</span></div><div class="u">[nettadresse kommer]</div></div>
+</div>
+<script>
+// Ren funksjon av tid t (sekunder). Deterministisk, så hver frame kan rendres separat.
+const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+const win = (t, a, b, fi = .8, fo = .8) => Math.min(ease((t - a) / fi), 1 - ease((t - (b - fo)) / fo));
+const $ = id => document.getElementById(id);
+window.render = t => {
+  // 0–3 s: rolig push-in. 3–4 s: krysstoning ut. 26–30 s: tilbake og rolig zoom-out.
+  const inA = 1 - ease((t - 3) / 1), inB = ease((t - 26) / 1.2);
+  const heroOp = Math.max(inA, inB);
+  const scale = t < 5 ? 1 + 0.08 * ease(t / 3) : 1.12 - 0.12 * ease((t - 26) / 4);
+  $('hero').style.opacity = heroOp;
+  $('hero').style.transform = `scale(${scale})`;
+  $('c1').style.opacity = win(t, 3.6, 8.6);
+  $('c1').style.transform = `scale(${1 + 0.03 * ease((t - 3.6) / 5)})`;
+  $('c2').style.opacity = win(t, 8.8, 16.4);
+  document.querySelectorAll('.cat').forEach((el, i) => {
+    const a = ease((t - 9.2 - i * 0.9) / 0.7);
+    el.style.opacity = a; el.style.transform = `translateY(${(1 - a) * 18}px)`;
+  });
+  $('c3').style.opacity = win(t, 16.6, 21.8);
+  $('c4').style.opacity = win(t, 22, 26.2);
+  $('url').style.opacity = ease((t - 27) / 1.4);
+};
+render(0);
+</script></body></html>

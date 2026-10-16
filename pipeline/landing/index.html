@@ -1,0 +1,347 @@
+<title>250 ideer som kan endre liv</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Young+Serif&display=swap">
+<style>
+/* Layout: én rolig spalte (maks 1080px), helt hero med illustrasjon til høyre, myke kort, store bokstaver for alle aldre. */
+:root {
+  --bg: #f7f2e7; --surface: #fffbf3; --sunk: #efe7d6; --ink: #213b39; --muted: #5b6e6b; --line: #e2d9c6;
+  --teal: #3f7f7a; --teal-soft: #d9e9e5; --coral: #c9624b; --coral-soft: #f6ddd4;
+  --display: "Young Serif", Georgia, "Times New Roman", serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --step-0: 1.1875rem; --step-1: 1.4rem; --step-2: 1.9rem; --step-3: clamp(2.3rem, 5.5vw, 3.6rem);
+  --r: 22px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16201f; --surface: #1d2a28; --sunk: #13201e; --ink: #ece4d3; --muted: #a8b6b2; --line: #2e3e3b;
+  --teal: #7fbcb4; --teal-soft: #22403c; --coral: #ee9a84; --coral-soft: #4a2c25; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16201f; --surface: #1d2a28; --sunk: #13201e; --ink: #ece4d3; --muted: #a8b6b2; --line: #2e3e3b;
+  --teal: #7fbcb4; --teal-soft: #22403c; --coral: #ee9a84; --coral-soft: #4a2c25; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: var(--step-0); line-height: 1.6; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section { padding-block: 56px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: var(--step-2); margin-bottom: 12px; }
+h3 { font-size: var(--step-1); }
+p { margin: 0; max-width: 62ch; }
+.lede { color: var(--muted); }
+.eyebrow { font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
+a { color: var(--teal); }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; border-radius: 6px; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 24px; align-items: center; padding-block: 40px 24px; }
+.hero h1 { font-size: var(--step-3); margin: 10px 0 18px; }
+.hero h1 em { font-style: normal; color: var(--coral); }
+.hero .art { min-width: 0; }
+.hero .art svg { width: 100%; height: auto; display: block; border-radius: var(--r); }
+.hero .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.btn { display: inline-block; font: inherit; font-weight: 700; border-radius: 999px; padding: 14px 24px; border: 2px solid var(--teal); background: var(--teal); color: var(--bg); text-decoration: none; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--teal); }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } .hero .art { order: -1; } }
+
+/* Fem kamper */
+.fights { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.fight { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.fight b { font-family: var(--display); font-weight: 400; font-size: 1.7rem; color: var(--coral); font-variant-numeric: tabular-nums; }
+.fight span { font-size: .95rem; color: var(--muted); }
+.fight .src { font-size: .78rem; margin-top: auto; }
+@media (max-width: 900px) { .fights { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .fights { grid-template-columns: 1fr; } }
+
+/* Filter */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+.chip { font: inherit; font-size: 1rem; border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.chip[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); }
+
+/* Topp 15 */
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+.idea { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.idea .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.rank { font-family: var(--display); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag { font-size: .82rem; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: var(--teal-soft); color: var(--teal); white-space: nowrap; }
+.idea.first { border: 2px solid var(--coral); }
+details summary { cursor: pointer; color: var(--teal); font-weight: 700; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "+ "; }
+details[open] summary::before { content: "− "; }
+details .brief { margin-top: 12px; display: grid; gap: 10px; font-size: 1.02rem; }
+details .brief h4 { margin: 0; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+details .brief ul { margin: 0; padding-left: 20px; }
+details .ethics { background: var(--coral-soft); border-radius: 14px; padding: 12px 14px; }
+
+/* MVP */
+.mvp { display: grid; grid-template-columns: 280px 1fr; gap: 36px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 32px; padding: 32px; }
+.mvp img { width: 100%; border-radius: 26px; border: 8px solid var(--ink); display: block; }
+.mvp ul { padding-left: 22px; margin: 14px 0; }
+.mvp code, .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; background: var(--sunk); padding: 2px 7px; border-radius: 6px; }
+pre.run { background: var(--sunk); border-radius: 14px; padding: 14px 16px; overflow-x: auto; font-size: .95rem; margin: 14px 0 0; }
+@media (max-width: 760px) { .mvp { grid-template-columns: 1fr; padding: 20px; } .mvp img { max-width: 260px; margin: 0 auto; } }
+
+/* Alle 250 */
+.search { width: 100%; font: inherit; padding: 14px 18px; border-radius: 999px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+.count { color: var(--muted); font-size: 1rem; margin: 10px 0; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); max-height: 640px; overflow-y: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { position: sticky; top: 0; background: var(--sunk); font-size: .85rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+td.n { color: var(--muted); font-variant-numeric: tabular-nums; }
+td.name { font-weight: 700; white-space: nowrap; }
+tr.top td.name::after { content: " ★"; color: var(--coral); }
+
+/* CTA */
+.ask { background: var(--teal); color: var(--bg); border-radius: 32px; padding: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.ask h2 { color: var(--bg); }
+.ask p { color: var(--bg); opacity: .9; }
+.ask form { display: flex; flex-direction: column; gap: 10px; }
+.ask label { font-weight: 700; }
+.ask textarea, .ask input { font: inherit; border-radius: 16px; border: 0; padding: 14px; background: var(--surface); color: var(--ink); }
+.ask textarea { min-height: 110px; resize: vertical; }
+.ask .btn { background: var(--coral); border-color: var(--coral); color: #fff; align-self: flex-start; }
+.ask .msg { min-height: 1.4em; font-weight: 700; }
+.wall { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+.wall li { background: color-mix(in srgb, var(--bg) 14%, transparent); border-radius: 14px; padding: 10px 14px; font-size: 1rem; }
+@media (max-width: 760px) { .ask { grid-template-columns: 1fr; padding: 22px; } }
+
+footer { padding-block: 40px 60px; color: var(--muted); font-size: 1rem; display: grid; gap: 10px; }
+footer .crisis { color: var(--ink); }
+@media (prefers-reduced-motion: no-preference) {
+  .breath { animation: breath 8s ease-in-out infinite; transform-origin: 1130px 450px; transform-box: view-box; }
+  @keyframes breath { 50% { transform: scale(1.06); } }
+}
+</style>
+
+<header class="wrap hero">
+  <div>
+    <div class="eyebrow">Aldersomsorg · Bipolar · Ensomhet · Smerte og sorg · Økonomi</div>
+    <h1>250 ideer som kan <em>endre liv</em></h1>
+    <p class="lede">Vi har gått gjennom fem av de tyngste kampene folk står i, og funnet samme hull i alle: appene logger, men ingen handler når det gjelder. Her er 250 ideer som lukker det hullet, femten briefs klare til bygging og én prototype som allerede virker.</p>
+    <div class="cta-row">
+      <a class="btn" href="#topp15">Se de 15 beste</a>
+      <a class="btn ghost" href="#prototype">Prøv prototypen</a>
+    </div>
+  </div>
+  <div class="art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="800 80 780 760" role="img" aria-label="Fem rolige symboler rundt en pustende sol: nettbrett med smil, bølgelinje, to sammenkoblede sirkler, hender og en mynt">
+  <defs>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#7fb3ab"/><stop offset=".7" stop-color="#5f9a92"/><stop offset="1" stop-color="#4a857e"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f2b29f" stop-opacity=".55"/><stop offset="1" stop-color="#f2b29f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f3e8"/><stop offset="1" stop-color="#f1e8d6"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#2f5a55" flood-opacity=".12"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1130" cy="450" r="420" fill="url(#glow)"/>
+  <g fill="none" stroke="#5f9a92" stroke-opacity=".18" stroke-width="2">
+    <circle cx="1130" cy="450" r="250"/><circle cx="1130" cy="450" r="320"/><circle cx="1130" cy="450" r="395"/>
+  </g>
+  <circle class="breath" cx="1130" cy="450" r="170" fill="url(#sun)"/>
+  <path d="M1010 455 C1050 405 1080 505 1130 455 S1210 405 1250 455" fill="none" stroke="#f8f3e8" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Aldersomsorg: nettbrett med smil -->
+  <g transform="translate(860 150)" filter="url(#soft)">
+    <rect width="150" height="150" rx="38" fill="#fffaf0"/>
+    <rect x="38" y="30" width="74" height="92" rx="12" fill="none" stroke="#3f7f7a" stroke-width="7"/>
+    <circle cx="62" cy="66" r="5" fill="#3f7f7a"/><circle cx="88" cy="66" r="5" fill="#3f7f7a"/>
+    <path d="M60 88 Q75 102 90 88" fill="none" stroke="#e0806a" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <!-- Bipolar: stemningsbølge -->
+  <g transform="translate(1320 120)" filter="url(#soft)">
+    <rect width="150" height="150" rx="38" fill="#fffaf0"/>
+    <path d="M28 78 C48 30 62 30 75 75 S102 122 122 72" fill="none" stroke="#3f7f7a" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="122" cy="72" r="8" fill="#e0806a"/>
+  </g>
+  <!-- Ensomhet: to sirkler som møtes -->
+  <g transform="translate(1390 390)" filter="url(#soft)">
+    <rect width="150" height="150" rx="38" fill="#fffaf0"/>
+    <circle cx="58" cy="75" r="28" fill="#3f7f7a" fill-opacity=".85"/>
+    <circle cx="92" cy="75" r="28" fill="#e0806a" fill-opacity=".85"/>
+  </g>
+  <!-- Smerte og sorg: hender -->
+  <g transform="translate(1290 650)" filter="url(#soft)">
+    <rect width="150" height="150" rx="38" fill="#fffaf0"/>
+    <path d="M30 95 Q50 60 78 70 L100 78" fill="none" stroke="#3f7f7a" stroke-width="12" stroke-linecap="round"/>
+    <path d="M120 60 Q100 98 72 88 L50 80" fill="none" stroke="#e0806a" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <!-- Økonomi: mynt -->
+  <g transform="translate(850 640)" filter="url(#soft)">
+    <rect width="150" height="150" rx="38" fill="#fffaf0"/>
+    <ellipse cx="75" cy="92" rx="38" ry="14" fill="#e0806a" fill-opacity=".35"/>
+    <circle cx="75" cy="70" r="34" fill="none" stroke="#3f7f7a" stroke-width="8"/>
+    <path d="M75 52 V88 M64 60 H82 Q90 60 90 68 Q90 76 82 76 H66" fill="none" stroke="#3f7f7a" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g fill="#e0806a" fill-opacity=".5"><circle cx="1240" cy="260" r="6"/><circle cx="1030" cy="660" r="5"/><circle cx="1500" cy="320" r="4"/><circle cx="980" cy="330" r="4"/></g>
+</svg>
+</div>
+</header>
+
+<section class="wrap" id="hvorfor">
+  <div class="eyebrow">Hvorfor</div>
+  <h2>Fem kamper, ett tall hver</h2>
+  <div class="fights">
+    <div class="fight"><b>3 av 4</b><span>omsorgspersoner kjenner seg utbrent</span><span class="src">A Place for Mom 2025</span></div>
+    <div class="fight"><b>≈ 50 %</b><span>med bipolar lidelse har perioder uten medisinene sine</span><span class="src">Etablert i fagfeltet</span></div>
+    <div class="fight"><b>1 av 6</b><span>mennesker i verden er ensomme</span><span class="src">WHO-kommisjonen 2025</span></div>
+    <div class="fight"><b>2,7 / 5</b><span>i snittkarakter for appene som skal hjelpe pårørende</span><span class="src">JAGS-gjennomgang</span></div>
+    <div class="fight"><b>176 mrd</b><span>kroner i norsk forbruksgjeld (mai 2026)</span><span class="src">Gjeldsregisteret</span></div>
+  </div>
+</section>
+
+<section class="wrap" id="topp15">
+  <div class="eyebrow">Topp 15 · rangert etter effekt og hvor raskt de kan bygges</div>
+  <h2>De femten vi ville bygget først</h2>
+  <p class="lede">Hver idé har en full brief: problem, løsning, MVP-funksjoner, stack, suksessmål og etikk. Trykk «Les briefen».</p>
+  <div class="chips" id="chips" role="group" aria-label="Filtrer etter kategori"></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="wrap" id="prototype">
+  <div class="eyebrow">Allerede bygget</div>
+  <div class="mvp">
+    <img src="mvp-shot.jpg" alt="Varsellys på mobil: rødt varsel med tre utløste signaler, brukerens egen plan og en knapp for å ringe tillitspersonen">
+    <div>
+      <h2>Varsellys virker</h2>
+      <p>Idé #1 er bygget og fungerer. Du sjekker inn på 30 sekunder: søvn, humør, energi og medisin. Varsellys lærer hva som er normal søvn for deg. Når dine egne varselregler slår ut, får du opp planen du selv skrev mens du var stabil, sammen med en knapp for å ringe tillitspersonen din.</p>
+      <ul>
+        <li>Seks regler du kan slå av og på. To gule samtidig gir rødt.</li>
+        <li>Tillitspersonen ser bare grønt, gult eller rødt. Aldri dagboken.</li>
+        <li>90 dager til behandleren som CSV. Du kan slette alt med ett trykk.</li>
+        <li>Krisenumre står alltid nederst på skjermen.</li>
+      </ul>
+      <p class="lede">Node uten avhengigheter, 8 tester som går grønt. Demo på nett kommer. Kjør den lokalt så lenge:</p>
+      <pre class="run">cd pipeline/mvp-varsellys
+npm run seed &amp;&amp; npm start</pre>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="alle">
+  <div class="eyebrow">Hele samlingen</div>
+  <h2>Alle 250, søkbare</h2>
+  <input class="search" id="q" type="search" placeholder="Søk: «søvn», «Klarna», «demens», «sorg» …" aria-label="Søk i alle 250 ideer">
+  <div class="chips" id="chips2" role="group" aria-label="Filtrer alle ideer etter kategori"></div>
+  <div class="count" id="count"></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>#</th><th>Navn</th><th>Hva den gjør</th><th>For hvem</th><th>Må gjøre godt</th><th>Stack</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap" id="neste">
+  <div class="ask">
+    <div>
+      <h2>Hvilken kamp skal vi ta neste gang?</h2>
+      <p>Fortell oss hva du eller noen du kjenner står i. Det blir neste runde med research, ideer og en prototype.</p>
+      <ul class="wall" id="wall"></ul>
+    </div>
+    <form id="form">
+      <label for="s-text">Kampen</label>
+      <textarea id="s-text" required maxlength="600" placeholder="F.eks. «Foreldre til barn med ADHD som ikke får hjelp før etter to år på venteliste»"></textarea>
+      <label for="s-who">Hvem står i den? (valgfritt)</label>
+      <input id="s-who" maxlength="120" placeholder="F.eks. «meg selv», «søsteren min»">
+      <button class="btn" type="submit">Send forslaget</button>
+      <div class="msg" id="s-msg" role="status"></div>
+    </form>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p class="crisis"><strong>Trenger du hjelp nå?</strong> Ring 113 ved akutt fare, legevakt 116 117, Mental Helse 116 123 eller Kirkens SOS 22 40 00 40.</p>
+  <p>Ideene er forslag, ikke behandling. Kjeden fra research til ideer, briefs, prototype og denne siden er bygget med AI-assistert utvikling. Alle kilder står i <span class="mono">pipeline/01-research.md</span>.</p>
+</footer>
+
+<script>
+const TOP = [{"rank":1,"id":51,"name":"Varsellys","cat":"Bipolar","one":"Dine egne varselsignaler, din egen kriseplan, som slår inn automatisk.","problem":"Mennesker med bipolar lidelse kjenner ofte sine egne varselsignaler (sover 5 t, kjøper ting, snakker fort), men i en episode mister de innsikt akkurat når signalet trengs. Eksisterende apper (eMoods, Daylio) logger, men ingen handler når mønsteret slår ut.","solution":"30-sekunders daglig innsjekk (søvn, humør −3..+3, energi, medisin tatt). Brukeren definerer egne varselregler i stabil fase. Når en regel slår ut, viser appen den forhåndsavtalte planen og kan varsle en tillitsperson med kun grønn/gul/rød.","features":["Daglig innsjekk på 30 sek","Personlig søvnbaseline (14 dager) + regelmotor","Kriseplan skrevet av deg selv i stabil fase","Tillitsperson-lenke som kun viser farge","90-dagers eksport til behandler"],"stack":"Node (ingen avhengigheter) + PWA + JSON-fil/SQLite","success":"≥60 % 30-dagers retensjon; andel varsler brukeren merker som «riktig»; tid fra første signal til kontakt med behandler.","ethics":"Ikke en diagnose eller behandling. Krisenummer (113, Legevakt 116 117, Mental Helse 116 123) alltid synlig. Tillitspersonen ser aldri rådata. Data eies av brukeren og kan slettes med ett klikk. Varsel til andre krever eksplisitt forhåndssamtykke, som kan trekkes."},{"rank":2,"id":201,"name":"Brevåpneren","cat":"Økonomi","one":"Ta bilde av inkassobrevet. Få klarspråk, frist og neste steg.","problem":"Unnvikelse driver gebyrer: folk lar brev ligge av frykt, og purring blir inkasso, så betalingsanmerkning. 7,1 % hadde betalingsproblem i 2025 (SSB).","solution":"Foto → OCR → LLM forklarer i klarspråk: hvem, hvor mye, hvilket stadium, frist, hva det koster å vente, og et ferdig svarbrev (betalingsutsettelse/innsigelse).","features":["Foto → strukturert sammendrag","Stadium i inkassoprosessen","Frist i kalender","Ferdig svarbrev","Lenke til NAV økonomirådgivning"],"stack":"Next.js + vision-LLM + Supabase (valgfri lagring)","success":"Andel brev med handling innen 7 dager; reduksjon i rapporterte gebyrer.","ethics":"Ikke juridisk rådgivning – tydelig merket. Bilder lagres ikke som standard. Ingen kobling til långivere/reklame for lån."},{"rank":3,"id":3,"name":"Ringerunden","cat":"Aldersomsorg","one":"En vennlig stemme ringer hver morgen og forteller familien hvordan det går.","problem":"Eldre alene går dager uten samtale; pårørende får ikke vite om gradvis forfall før noe skjer. Ingen skjerm å lære.","solution":"Vanlig telefonsamtale hver morgen: AI-stemme spør om søvn, mat, smerter, planer. Familien får en kort sammendragslinje + avviksflagg.","features":["Planlagt daglig oppringing","Samtale m/ fast spørsmålssett + småprat","Sammendrag til familie via SMS","Avviksflagg (ikke svart 2 dager, ny smerte)","Eskalering til menneske"],"stack":"Twilio Voice + LLM + Node + SQLite","success":"Svarrate; pårørendes opplevde trygghet; tidlige oppdagelser.","ethics":"Tydelig at det er en maskin. Samtykke fra den eldre selv. Aldri erstatning for besøk; designet for å utløse menneskelig kontakt. Samtaler slettes etter 30 dager."},{"rank":4,"id":101,"name":"Faste Fire","cat":"Ensomhet","one":"Fire mennesker. Samme kafé. Samme tid. Åtte uker.","problem":"Engangsmøter (Meetup) bygger ikke vennskap; gjentatt eksponering gjør. 17–21 % av 13–29-åringer er ensomme (WHO 2025).","solution":"Matcher fire personer på bydel + tidspunkt + én felles interesse. Fast ukentlig møte i 8 uker med samtalekort.","features":["Matching på sted/tid/interesse","Fast kalenderinvitasjon","Ukens samtalekort","Erstatter ved frafall","Avsluttende «fortsette?»-valg"],"stack":"PWA + Supabase + enkel matching-cron","success":"Andel grupper som fullfører 8 uker; andel som fortsetter frivillig.","ethics":"Offentlige møteplasser. Verifisert telefon. Enkel rapportering/blokkering. Ordet «ensom» brukes ikke i markedsføring."},{"rank":5,"id":151,"name":"Pacing-pilot","cat":"Smerte & sorg","one":"Et energitak for i dag, regnet ut fra i går – slutt på boom-bust.","problem":"Kroniske smertepasienter gjør for mye på gode dager og kollapser etterpå. Pacing virker, men er vanskelig å beregne selv.","solution":"Logg smerte og aktivitet. Appen setter dagens aktivitetstak (minutter/poeng) og varsler når du nærmer deg.","features":["3-trykk logg","Dynamisk dagstak","Varsel ved 80 % av tak","Ukegraf","Eksport til fysio"],"stack":"PWA + localStorage + enkel statistikk","success":"Redusert variasjon i smerte; færre kollaps-dager.","ethics":"Ikke medisinsk råd; erstatter ikke behandler. Varselsignaler (ny smerte, nevrologiske symptomer) → kontakt lege."},{"rank":6,"id":202,"name":"Gjeldskartet","cat":"Økonomi","one":"All gjeld i ett bilde, og én dato når du er fri.","problem":"Gjelden er spredt på kort, avbetaling og lån; folk vet ikke totalen eller rekkefølgen.","solution":"Importer fra Gjeldsregisteret (fil) + manuelt. Viser snøball vs skred, og gjeldfri-dato.","features":["Import + manuell","Snøball/skred-sammenligning","Gjeldfri-dato","Ekstra-krone-simulator","Rådgiver-eksport"],"stack":"PWA + IndexedDB","success":"Reduksjon i total gjeld etter 6 mnd; retensjon.","ethics":"Ingen lånereklame. All data lokalt."},{"rank":7,"id":2,"name":"Felles Mor","cat":"Aldersomsorg","one":"Én delt tidslinje for søsken, hjemmetjeneste og fastlege.","problem":"Omsorgen for en forelder koordineres på SMS mellom søsken; ingen oversikt, skjev byrde, utbrenthet (>75 %).","solution":"Felles logg, ukeplan («hvem gjør hva»), spørsmålsliste til lege.","features":["Delt logg","Ukeplan","Rettferdighetsmåler","Legeliste","Varsler"],"stack":"PWA + Supabase","success":"Opplevd byrdefordeling; antall aktive familiemedlemmer.","ethics":"Den eldres samtykke og verdighet; helsedata kryptert; tilgangsnivåer."},{"rank":8,"id":153,"name":"Merkedagen","cat":"Smerte & sorg","one":"Merkedager kommer ikke uforberedt lenger.","problem":"Dødsdager, bursdager og høytider treffer etterlatte hardt, og nettverket har glemt det.","solution":"Registrer datoer. 7 dager før: plan for dagen. Venner du velger får påminnelse om å ta kontakt.","features":["Merkedagsregister","Forberedelsesplan","Venne-påminnelse","Ritualforslag","Etter-dagen-sjekk"],"stack":"PWA + e-post/SMS-cron","success":"Andel merkedager med kontakt fra nettverk.","ethics":"Ved tegn på komplisert sorg eller selvmordstanker → kriselinje og lege."},{"rank":9,"id":52,"name":"Søvnvakt","cat":"Bipolar","one":"Klokka ser søvnfallet før du gjør det.","problem":"Søvnreduksjon er et tidlig maniesignal, men oppleves ikke som et problem av personen selv.","solution":"Leser søvndata fra wearables, varsler ved avvik fra personlig baseline.","features":["HealthKit/Fit-import","Baseline","Avviksvarsel","Kobling til Varsellys"],"stack":"React Native + HealthKit","success":"Andel avvik som går foran episode.","ethics":"Samme som Varsellys; ingen data ut av enheten uten samtykke."},{"rank":10,"id":203,"name":"Kjølebag","cat":"Økonomi","one":"48 timers ventetid på alt over 500 kr.","problem":"Impulskjøp og avbetaling (Klarna) driver forbruksgjeld til 176 mrd.","solution":"Nettleserutvidelse som legger inn en pause på kassen og en påminnelse om 48 t.","features":["Kassedeteksjon","Ventetid","Påminnelse","Sparelogg"],"stack":"Browser extension + PWA","success":"Andel avbrutte kjøp; spart beløp.","ethics":"Brukerstyrt; lett å slå av; ingen salg av handledata."},{"rank":11,"id":152,"name":"Smertebrevet","cat":"Smerte & sorg","one":"30 dagers logg blir til dokumentasjonen legen og NAV trenger.","problem":"Smertepasienter bruker timer på å forklare seg, og dokumentasjonen mangler struktur.","solution":"Daglig logg → LLM lager strukturert sammendrag med funksjonsnivå.","features":["Daglig logg","Funksjonsskala","Generert legebrev","PDF"],"stack":"PWA + LLM + PDF","success":"Opplevd nytte hos lege; tidsbesparelse.","ethics":"Brukeren redigerer før deling; ingen overdrivelse genereres."},{"rank":12,"id":1,"name":"Stuelys","cat":"Aldersomsorg","one":"Strømmåleren forteller når døgnrytmen endrer seg.","problem":"Forfall skjer gradvis; kameraer er invaderende.","solution":"Timesverdier fra strømmåler → læring av normal rytme → varsel ved avvik (ingen kaffetrakter kl 8).","features":["Elhub/Tibber-kobling","Baseline","Avviksvarsel","Ukeoversikt"],"stack":"Node + Tibber API + SMS","success":"Treffsikkerhet; falske alarmer per måned.","ethics":"Samtykke fra den eldre; ingen kamera; minimal data."},{"rank":13,"id":102,"name":"Kaffemaskinen","cat":"Ensomhet","one":"Ti minutter med en kollega du aldri hadde møtt.","problem":"Hjemmekontor tar bort de svake båndene.","solution":"Slack-bot parer tilfeldig på tvers av team ukentlig med et samtaletema.","features":["Ukentlig paring","Tema","Kalenderforslag","Opt-out"],"stack":"Slack bolt + Node","success":"Gjennomførte samtaler; trivselsmåling.","ethics":"Frivillig; ingen rapport til leder."},{"rank":14,"id":154,"name":"Etterlattlista","cat":"Smerte & sorg","one":"Alt det praktiske etter et dødsfall, i riktig rekkefølge.","problem":"Skifte, kontoer og abonnementer kommer midt i sorgen.","solution":"Interaktiv sjekkliste med frister og ferdige brev.","features":["Sjekkliste","Frister","Brevmaler","Del med familie"],"stack":"Web + LLM","success":"Fullførte oppgaver; opplevd belastning.","ethics":"Ikke juridisk råd; henvis til tingrett/advokat."},{"rank":15,"id":104,"name":"Øvingsprat","cat":"Ensomhet","one":"Øv på samtalen med AI, ta den med et menneske.","problem":"Sosial angst stopper første kontakt.","solution":"Stemme-rollespill av konkrete situasjoner, deretter et ekte mikrooppdrag.","features":["Scenarier","Stemme-øving","Tilbakemelding","Ekte oppdrag"],"stack":"LLM voice + PWA","success":"Andel øvinger fulgt av ekte kontakt.","ethics":"AI er bro, ikke erstatning; tidsbegrensning per dag; henvisning ved alvorlig angst."}];
+const ALL = [{"name":"Aldersomsorg","ideas":[[1,"Stuelys","Strømmåler-trend varsler pårørende når mors døgnrytme endrer seg","Pårørende til hjemmeboende","Avviksdeteksjon på strømforbruk per time","Tibber/Elhub API + Node + SMS"],[2,"Felles Mor","Én delt tidslinje for søsken, hjemmetjeneste og fastlege","Søskenflokk med syk forelder","Delt logg + «hvem gjør hva denne uka»","PWA + SB"],[3,"Ringerunden","AI ringer bestemor hver morgen, sjekker form, sender sammendrag","Eldre som bor alene","Daglig telefonsamtale m/ LLM-oppsummering","Twilio Voice + LLM + Node"],[4,"Kjøleskapsvakta","Dørsensor på kjøleskap – ingen åpning før 11 = varsel","Pårørende","Enkel regel på én sensor","Zigbee-sensor + Home Assistant + push"],[5,"Pillestund","Stemmepåminnelse + «har du tatt den?» med ja/nei-knapp","Eldre med mange medisiner","Bekreftet medisininntak til pårørende","RN + Expo notifications"],[6,"Avlastningsbørsen","Pårørende bytter avlastningstimer med hverandre","Omsorgspersoner i samme kommune","Time-bank for avlastning","PWA + SB"],[7,"Livsboka","Barnebarn intervjuer besteforeldre med AI-spørsmål, lager bok","Familier","Guidet intervju → ferdig PDF","Web + Whisper + LLM + PDF"],[8,"Trappevakt","Mobil i lomma oppdager ganghastighet-fall over uker","Eldre med fallrisiko","Gangfart-trend (fallrisiko-markør)","RN + akselerometer"],[9,"Pårørendepuls","30-sek ukentlig sjekk av omsorgspersonens egen utbrenthet","Omsorgspersoner","Utbrenthetsskår + konkret avlastningsforslag","PWA + localStorage"],[10,"Én Knapp","Nettbrett med én stor knapp: «Ring noen som har tid nå»","Ensomme eldre","Ringer første ledige i familie-rota","Web + WebRTC + SB presence"],[11,"Legetimen","Samler spørsmål gjennom uka, lager 1-side til fastlegen","Pårørende + eldre","Spørsmålsliste → legebrief","PWA + LLM"],[12,"Hjemmehjelp-logg","QR på døra – hjemmetjenesten skanner og skriver én linje","Pårørende","Besøkslogg uten innlogging","Web + QR + SB"],[13,"Gåturen","Ukentlige gåturer med nabo matchet på tempo","Mobile eldre","Tempo-matching i nabolag","PWA + geofence"],[14,"Demensklokka","Stor skjerm: dag, del av døgnet, hvem som kommer i dag","Personer med demens","Orientering i tid","Web kiosk + Google Calendar"],[15,"Vannglasset","Drikkepåminnelse koblet til smartflaske/vekt","Eldre (dehydrering)","Væskeinntak per dag","BLE-vekt + RN"],[16,"Fallplan","Sjekkliste-hjemmebefaring med mobilkamera + AI-forslag","Pårørende","Bilde → risikoliste (tepper, lys)","Web + vision-LLM"],[17,"Besøksbanken","Frivillige booker 30 min besøk i kalender","Frivillige + eldre","Booking med faste par","PWA + SB"],[18,"Stemmebrev","Eldre snakker inn brev, barnebarn får tekst + lyd","Eldre uten skrivevaner","Tale → pent brev","Web + Whisper + LLM"],[19,"Kveldsrunden","Sengesensor: oppe om natten > X min = varsel","Pårørende","Nattlig vandring-varsel","Trykksensor + ESP32 + MQTT"],[20,"Papirhjelpen","Fotografer brev fra kommunen → klarspråk + neste steg","Eldre","Brev-OCR + forklaring","Web + vision-LLM"],[21,"Omsorgsmøtet","Agenda + referat for familieråd om forelder","Søsken","Møtemal + beslutningslogg","PWA + LLM"],[22,"Minnekort","Daglige bilde-quiz av familien for kognitiv stimulering","Lett kognitiv svikt","Personlig bildekortstokk","PWA + IndexedDB"],[23,"Middagsvenn","Videosamtale ved middagsbordet – spis sammen på avstand","Eldre som spiser alene","Planlagt «spis sammen»-kall","Web + Jitsi"],[24,"Synsvennlig","Gjør enhver nettside stor og rolig for eldre","Eldre med nedsatt syn","Leseforenkler-utvidelse","Browser extension + LLM"],[25,"Sykehjemsbrua","Daglig foto + én linje fra sykehjem til familie","Pårørende på avstand","Enveis oppdatering fra pleier","PWA + SB"],[26,"Rollatorruta","Kart over benker, toaletter, trinnfrie ruter","Eldre med rullator","Tilgjengelighetskart","Web + OSM"],[27,"Pårørendeavtale","Hvem har fullmakt, passord, nøkler – samlet trygt","Familier","Kryptert «hvis noe skjer»-mappe","PWA + E2E-krypto"],[28,"Sovepuls","Søvntrend fra klokke vises pårørende som enkel farge","Pårørende","Grønn/gul/rød søvnstatus","HealthKit + RN"],[29,"Tekstlyd","Leser opp SMS og e-post høyt, svarer med stemme","Eldre med svak motorikk","Stemmestyrt meldingsinnboks","Android + TTS/STT"],[30,"Turnusstress","Kartlegger pårørendes timer brukt per uke → dokumentasjon til kommunen","Omsorgspersoner","Timelogg → søknad om omsorgsstønad","PWA + PDF"],[31,"Huskelisten","Kjøleskapsskjerm med dagens gjøremål, avkrysses med finger","Eldre m/ hukommelsessvikt","Daglig sjekkliste fjernstyrt av pårørende","Web kiosk + SB realtime"],[32,"Tryggtur","Eldre går tur, pårørende får varsel hvis ikke hjemme innen tid","Eldre som går alene","Tidsvindu-geofence","RN + bakgrunns-GPS"],[33,"Generasjonsbyttet","Unge lærer bort mobil, eldre lærer bort håndverk","Unge + eldre","Ferdighetsbytte-matching","PWA + SB"],[34,"Ernæringsøyet","Foto av tallerken → proteinestimat for underernærte eldre","Pårørende/hjemmetjeneste","Proteininntak-logg","Vision-LLM + PWA"],[35,"Hjelpemiddelguiden","Spørsmål → hvilke hjelpemidler NAV dekker","Pårørende","Behov → NAV-hjelpemiddel-liste","Web + LLM + NAV-data"],[36,"Telefonfilter","Blokkerer svindelanrop mot eldre, varsler familie","Eldre","Svindel-heuristikk på innkommende","Android CallScreening + LLM"],[37,"Bursdagsmaskinen","Påminner familien om å ringe – og logger at noen gjorde det","Familier","Ringe-rota med kvittering","PWA + push"],[38,"Sluttens ønsker","Guidet samtale om ønsker for livets slutt, deles med lege","Eldre + familie","Forhåndssamtale-dokument","Web + LLM + PDF"],[39,"Dagsenteret Digitalt","Strømmet trim, quiz og allsang 3× daglig","Hjemmeboende eldre","Faste live-sendinger","Web + YouTube Live"],[40,"Hjemmetrim","10-min balanseøvelser med kamera som teller","Fallrisiko-eldre","Balansetrening m/ telling","Web + MediaPipe pose"],[41,"Glemmelappen","Smart lapp på døra: «Har du nøkler, mobil, medisin?»","Eldre","Dørsensor + høyttaler-påminnelse","ESP32 + høyttaler"],[42,"Pårørendechat","Anonym chat med andre pårørende i samme situasjon","Omsorgspersoner","Diagnose-baserte smågrupper","PWA + SB"],[43,"Bytte-ukene","Planlegger rettferdig fordeling av besøk mellom søsken","Søsken","Rettferdighetsalgoritme","PWA"],[44,"Lydbokvenn","Sender lydbok-kapittel daglig og ringer for å prate om det","Eldre lesere","Leseklubb for én","Twilio + LLM"],[45,"Hjelpealarm Light","Eldre-mobil-app: hold inne 3 sek = ring tre i rekkefølge","Eldre","Kaskade-oppringing","RN"],[46,"Ukesrapport","Fredagsrapport til familien: besøk, medisin, søvn, humør","Pårørende","Automatisk sammendrag fra datakilder","Node cron + LLM + e-post"],[47,"Pusteknapp","Pustetrening for angst ved demens, stort visuelt","Personer med demens","Visuell pusteveileder","PWA"],[48,"Hagehjelp","Kobler eldre med hage med unge som vil dyrke","Eldre m/ hage","Hage-deling-matching","PWA + kart"],[49,"Sengetid","Lysstyring som støtter døgnrytme hos demens","Demens + sykehjem","Sirkadisk lysplan","Hue API + Node"],[50,"Arvesamtalen","Strukturert verktøy for familier å snakke om arv før konflikt","Familier","Guidet samtalemal + notater","Web + LLM"]]},{"name":"Bipolar lidelse","ideas":[[51,"Varsellys","Personlige varselsignaler + kriseplan som slår inn automatisk","Personer med bipolar lidelse","Signal → plan → handling","Node + PWA + SQLite/JSON"],[52,"Søvnvakt","Varsler når søvn faller ≥2 t under baseline 2 netter","Bipolar","Søvn-avvik (mani-markør)","HealthKit/Google Fit + RN"],[53,"Kjøpsbrems","Forhåndsamtykke: kortgrense senkes når mani-signal tennes","Bipolar m/ økonomirisiko","Automatisk økonomisperre","Open banking + Node"],[54,"Tillitsperson","Valgt person får grønn/gul/rød – aldri rådata","Bipolar + pårørende","Personvernvennlig statusdeling","PWA + SB"],[55,"Psykiaterarket","90 dager → én A4 psykiateren faktisk leser","Bipolar","Grafisk 1-side-rapport","Web + Chart + PDF"],[56,"Medisinmønster","Logger medisin + bivirkninger, ser sammenheng med stemning","Bipolar","Korrelasjon medisin-humør","PWA + stats"],[57,"Litiumlogg","Påminnelse om blodprøve + logger nivå","Litiumbrukere","Blodprøve-kalender + nivågraf","PWA"],[58,"Taletempo","Analyserer taletempo i daglig 30-sek talemelding","Bipolar","Talehastighet-trend (mani-markør)","Web Audio + Whisper"],[59,"Rutinens rytme","Social Rhythm Therapy: logger faste tider (stå opp, mat, kontakt)","Bipolar","SRM-skår (sosial rytme)","PWA"],[60,"Bremseklossen","Store beslutninger må vente 72 t og godkjennes av tillitsperson","Bipolar","Beslutnings-karantene","PWA + SMS"],[61,"Depresjonsbunn","Minimum-modus: 3 knapper på dårlige dager","Bipolar depresjon","Ultralav-terskel innsjekk","PWA"],[62,"Episodekart","Tidslinje over episoder, triggere og hva som hjalp","Bipolar","Livsdiagram (life chart)","Web + D3"],[63,"Lyskalender","Advarer i årstidsoverganger (vår = mani-risiko)","Bipolar","Sesongbasert risikovarsel","PWA + kalender"],[64,"Skrivetrykk","Måler tastaturaktivitet om natten passivt","Bipolar","Natt-skjermaktivitet-signal","Android UsageStats"],[65,"Krisekortet","Låseskjerm-kort: «Jeg har bipolar, ring X, medisiner Y»","Bipolar","Nødinfo på låseskjerm","RN + widget"],[66,"Peer-linja","Matcher med likeperson som har vært i samme fase","Bipolar","Likeperson-matching","PWA + SB"],[67,"Hypomani-sjekk","7 spørsmål ukentlig basert på validerte skalaer","Bipolar","Ukentlig selvtest m/ trend","PWA"],[68,"Søvnanker","Tvungen leggetid-rutine med lys/lyd-nedtrapping","Bipolar","Søvnhygiene-automatisering","Hue + PWA"],[69,"Samtalespeilet","AI-journal som speiler språkmønstre (grandiositet, flukt)","Bipolar","NLP-markører i dagbok","LLM + PWA"],[70,"Pårørendeskolen","Kurs for familie: hva sier man i mani?","Pårørende","Mikrokurs + scenarioøving","Web + LLM-rollespill"],[71,"Forhåndserklæringen","Lag psykiatrisk forhåndserklæring sammen med behandler","Bipolar","Digitalt forhåndsdirektiv","Web + PDF + signering"],[72,"Energibudsjett","Planlegg uka med energi-tak for å unngå oversteering","Bipolar","Ukeplan m/ belastningsgrense","PWA"],[73,"Sosial temperatur","Teller meldinger sendt per døgn (passivt)","Bipolar","Sosial aktivitet-avvik","Android"],[74,"Arbeidsbrua","Tilrettelegging-plan til arbeidsgiver uten å avsløre diagnose","Bipolar i jobb","Generert tilretteleggingsbrev","Web + LLM"],[75,"Koffeinklokke","Logger koffein/alkohol vs søvn og stemning","Bipolar","Rusmiddel-søvn-sammenheng","PWA"],[76,"Mani-notatboka","Ideer i mani lagres, vurderes først i stabil fase","Bipolar","«Idé-fryser» med tidslås","PWA"],[77,"Stemningsvær","Værmelding for humøret basert på egne data","Bipolar","Enkel 3-dagers prognose","PWA + statistikk"],[78,"Behandlerbro","Sikker meldingskanal til DPS med triagert prioritet","Bipolar + DPS","Strukturert henvendelse","Web + Helsenorge-integrasjon"],[79,"Trygg reise","Reiseplan som tar hensyn til tidssoner og medisin","Bipolar","Jetlag-medisinplan","PWA"],[80,"Gravid & bipolar","Støtte rundt graviditet og postpartum-risiko","Gravide m/ bipolar","Postpartum-varselplan","PWA"],[81,"Kjente meg igjen","Bibliotek av anonymiserte episodehistorier","Nydiagnostiserte","Søk i erfaringer","Web + SB"],[82,"Ruskontroll","Varsler når rusbruk øker samtidig med søvnfall","Bipolar + rus","Kombinert risikoskår","PWA"],[83,"Medisinskifte","Logger nedtrapping/opptrapping dag for dag","Bipolar","Titrerings-dagbok","PWA"],[84,"Lommekompis","Grounding-øvelser for blandede tilstander","Bipolar","Akutt-øvelser < 2 min","PWA"],[85,"Uke-speil","Søndagsrefleksjon m/ AI som peker på mønstre","Bipolar","Ukentlig mønsteroppsummering","LLM + PWA"],[86,"Studentvakt","Eksamensperiode-plan for studenter med bipolar","Studenter","Søvnbeskyttet lesepllan","PWA"],[87,"Familiekontrakten","Avtale om hvem gjør hva når signaler tennes","Bipolar + familie","Felles handlingsplan","PWA + signering"],[88,"Stille modus","Skjuler sosiale medier ved høy mani-skår","Bipolar","Automatisk app-blokkering","iOS Screen Time API"],[89,"Dagslys","Måler lyseksponering via sensor/mobil","Bipolar","Lys-humør-sammenheng","RN + lyssensor"],[90,"Restart","Plan for å komme tilbake etter innleggelse","Utskrevne","30-dagers re-entry-plan","PWA"],[91,"Diagnosen min","Forklarer egen diagnose til venner med én lenke","Bipolar","Personlig forklaringsside","Web + LLM"],[92,"Søvnlogg Null","Logger søvn med ett trykk: lagt meg / våknet","Bipolar uten wearable","Minimal manuell søvnlogg","PWA"],[93,"Kreditt-pause","Hjelper å sette opp reservasjon mot kreditt (Gjeldsregisteret)","Bipolar","Steg-for-steg sperreguide","Web"],[94,"Bivirkningsdata","Delte anonyme bivirkningsdata per medisin","Bipolar","Crowdsourcet bivirkningskart","Web + SB"],[95,"Rytmepartner","Venn som sjekker inn på samme tid hver dag","Bipolar","Gjensidig daglig ping","PWA + push"],[96,"Treningsdosering","Varsler om overtrening som mani-tegn","Bipolar","Treningsvolum-avvik","Strava API + Node"],[97,"Nattlinja","Hva gjør jeg kl 03 når jeg ikke sover? Strukturert natt-meny","Bipolar","Natt-protokoll","PWA"],[98,"Klinikk-Dashboard","Behandler ser samtykkede pasientsignaler","DPS-team","Panel med varsler","Web + SB + RLS"],[99,"Humørfarge","Widget som viser dagens skår uten å åpne app","Bipolar","Hjemskjerm-widget","RN widget"],[100,"Overgangen","Støtte ved overgang ung → voksenpsykiatri","Unge med bipolar","Overgangsplan","Web"]]},{"name":"Ensomhet","ideas":[[101,"Faste Fire","Fire personer, samme kafé, samme tid, hver uke i 8 uker","Unge voksne","Gjentatte faste smågrupper","PWA + SB + matching"],[102,"Kaffemaskinen","10-min tilfeldig videoprat med kollega i annet team","Hjemmekontor","Slack-random-coffee m/ tema","Slack bot + Node"],[103,"Naboskapet","Låne/gi-plattform for én blokk","Beboere","Hyperlokal deling","PWA + adressebekreftelse"],[104,"Øvingsprat","Øv på å si hei / be noen på kaffe med AI først","Sosialt engstelige","Samtaleøving → ekte møte","LLM voice + PWA"],[105,"Turvenn","Matcher folk som vil gå samme rute samme tid","Alle","Rute-matching","PWA + OSM"],[106,"Hobbyhuset","Lavterskel-verksteder (strikk, lodding) med drop-in","Voksne","Drop-in-kalender lokalt","Web + SB"],[107,"Brevvenn 2.0","Sakte brev (leveres etter 24 t) med fremmed","Unge + eldre","Forsinket korrespondanse","Web + e-post"],[108,"Middagsklubben","Seks fremmede, roterende hjemmemiddag","Nyinnflyttede","Rotasjonsplanlegger","PWA"],[109,"Hundeparken","Hundeeiere møtes på faste tider","Hundeeiere","Tidsmatching i park","PWA + kart"],[110,"Stille Selskap","Sitte sammen i stillhet på video og jobbe/lese","Hjemmekontor","Body-doubling-rom","Web + WebRTC"],[111,"Nyinnflytter","30-dagers program for å bygge nettverk i ny by","Nyinnflyttede","Ukentlige mikrooppdrag","PWA"],[112,"Takk-maskinen","Påminner deg om å takke/ta kontakt med svake bånd","Alle","Relasjonsvedlikehold-CRM","PWA + kontakter"],[113,"Pensjonistvakt","Nye pensjonister finner rolle og fellesskap","Nypensjonerte","Rolle-matching frivillighet","Web + SB"],[114,"Studenthybel","Matcher studenter i samme bygg på felles ting","Studenter","Bygg-basert aktivitet","PWA"],[115,"Telefonvenn","Fast ukentlig telefonsamtale mellom generasjoner","Eldre + unge","Fast par + påminnelse","PWA + Twilio"],[116,"Spillkvelden","Brettspillgrupper med nivå og tempo","Voksne","Spill-matching","PWA"],[117,"Ensom-ikke-ord","Bot som foreslår én sosial handling per dag basert på energi","Alle","Mikrohandling etter energinivå","PWA + LLM"],[118,"Frivilligsnap","1-times frivillige oppdrag i nærheten i dag","Alle","Mikrofrivillighet-feed","Web + SB"],[119,"Felles Kjøkken","Lag middag samtidig over video med samme oppskrift","Aleneboende","Synkron matlaging","Web + Jitsi"],[120,"Pappagruppa","Nye fedre møtes med barnevogn","Nye fedre","Lokal gruppe-matching","PWA"],[121,"Kirkekaffe Sekulær","Faste søndagsmøter uten religion","Alle","Ukentlig lokal samling","Web"],[122,"Kor For Alle","Finn kor uten opptaksprøve","Voksne","Kor-katalog + prøvetime","Web"],[123,"Lydbrev","Send 1-min lydklipp i stedet for tekst til venner","Alle","Asynkron stemmedeling","PWA + MediaRecorder"],[124,"Samtalekort","Spørsmål som går dypere enn «hva jobber du med»","Grupper","Digitale samtalekort","PWA"],[125,"Arbeidsbord","Co-working-plasser matchet på fag","Frilansere","Fag-match co-working","Web + SB"],[126,"Nattugler","Moderert samtalerom for de som ikke sover","Nattvåkne","Moderert natt-chat","Web + moderering-LLM"],[127,"Gamerbro","Fra online-venn til IRL-møte i trygg form","Gamere","Trygg IRL-overgang","Discord bot"],[128,"Innvandrerbro","Språkvenn-matching med nordmenn","Innvandrere","Språkkafé-matching","PWA"],[129,"Mennesker i nærheten","«Jeg sitter på kafé X og er åpen for prat»","Alle","Midlertidig åpenhets-signal","PWA + geofence"],[130,"Vennskaps-tracker","Ser hvor lenge siden du traff hver venn","Alle","Kontakt-intervall-varsel","PWA"],[131,"Ny på jobb","Onboarding-buddy som faktisk følges opp","Nyansatte","Buddy-program-automatisering","Slack + Node"],[132,"Lytteren","Ringe-tjeneste med opplærte frivillige lyttere","Ensomme","Booking av lyttesamtale","Web + Twilio"],[133,"Treningsmakker","Matcher treningstid og nivå","Alle","Treningsmakker-matching","PWA"],[134,"Ensom i par","Støtte til de som er ensomme i forhold","Par","Samtaleverktøy for par","Web + LLM"],[135,"Bokklubb Mini","3 personer, 1 bok, 1 måned","Lesere","Mikro-bokklubb","PWA"],[136,"Velkommen hjem","Når du kommer hjem fra sykehus: hvem kan stikke innom?","Utskrevne","Besøksrota","PWA"],[137,"Ungdomsbenken","Moderert gruppechat for 13–17 med voksenvakt","Ungdom","Trygg gruppe + vakt","Web + moderering"],[138,"Hobbyprosjekt","Finn folk som bygger samme ting (båt, bil, app)","Hobbyister","Prosjekt-matching","Web"],[139,"Søndagsringen","Hver søndag ringer appen deg til én person du har nevnt","Alle","Planlagt ringing","PWA + push"],[140,"Sorgfritt fellesskap","Felles aktivitet uten prat (fisking, puslespill)","Menn","Aktivitet-først-matching","PWA"],[141,"Kollegakart","Kart over kolleger nær deg på hjemmekontor","Hjemmekontor","Lunsj-match i nærheten","Slack + kart"],[142,"Sosial energi","Lærer når du har sosial kapasitet og foreslår da","Introverte","Energi-kalibrert foreslag","PWA + stats"],[143,"Fremmed-tur","Byvandring med guide og 6 fremmede","Turister/nye","Gruppevandring-booking","Web"],[144,"Kontaktlinje 2.0","Gamle venner: «la oss ta opp kontakten»-mal","Alle","Gjenkontakt-skriver","LLM + PWA"],[145,"Dugnadsappen","Borettslagsdugnad som sosial hendelse","Beboere","Dugnad + grill-koordinering","PWA"],[146,"Felles lytting","Lytt til samme album samtidig og chat","Musikkfolk","Synk-lytting","Web + Spotify API"],[147,"Pensjonist-lunsj","Kantinelunsj for pensjonister på bedrifter","Pensjonister","Ledig-kantineplass-booking","Web"],[148,"Ensomhetsbarometer","Anonym 3-spørsmåls måling, peker til riktig tiltak","Alle","UCLA-3 + ressursmatching","Web"],[149,"Mikrohilsen","Send «tenker på deg» med ett trykk","Alle","Lav-terskel kontaktsignal","PWA + push"],[150,"Bygdebrua","Kobler fraflyttere med hjembygda digitalt","Fraflyttede","Lokal nyhets- og møteplass","Web"]]},{"name":"Kronisk smerte og sorg","ideas":[[151,"Pacing-pilot","Energitak per dag basert på smerte i går, hindrer boom-bust","Kronisk smerte","Dynamisk aktivitetstak","PWA + stats"],[152,"Smertebrevet","Logg 30 dager → AI lager legebrev/NAV-dokumentasjon","Kronisk smerte","Logg → strukturert dokumentasjon","PWA + LLM + PDF"],[153,"Merkedagen","Forbereder deg 7 dager før dødsdag/bursdag","Etterlatte","Merkedag-støtteplan","PWA + kalender"],[154,"Etterlattlista","Steg-for-steg: kontoer, abonnement, skifte, NAV","Etterlatte","Praktisk dødsbo-sjekkliste","Web"],[155,"Kroppskartet","Tegn smerten på kropp, se mønster over tid","Kronisk smerte","Visuelt smertekart","Web canvas"],[156,"Sorgbrev","Skriv til den døde, AI-fri, privat","Etterlatte","Privat brevdagbok","PWA + krypto"],[157,"Blussplan","Forhåndsplan for oppbluss: hva gjør jeg, hvem ringer","Kronisk smerte","Oppblussprotokoll","PWA"],[158,"Værsmerte","Korrelerer smerte med lufttrykk","Leddsmerte","Vær-smerte-sammenheng","PWA + Met.no API"],[159,"Sorggruppa Online","Små lukkede grupper etter type tap","Etterlatte","Tap-type-matching","PWA + SB"],[160,"Minnesiden","Felles minneside der familie legger inn historier","Familier","Samarbeid om minner","Web + SB"],[161,"Smertepust","Pusteøvelser tilpasset smerteintensitet","Kronisk smerte","Smerteadaptiv pust","PWA"],[162,"Søvn med smerte","Søvnstrategi-motor for smertepasienter","Kronisk smerte","KBT-I-elementer","PWA"],[163,"Medisinmåler","Logger smertestillende vs effekt, flagger toleranse","Smertepasienter","Dose-effekt-trend","PWA"],[164,"Sorg-sjekk","Ukentlig PG-13-inspirert sjekk, varsler ved komplisert sorg","Etterlatte","Komplisert sorg-screening","PWA"],[165,"Barnas sorg","Aktiviteter for barn som har mistet noen","Barn + foreldre","Alderstilpasset sorgverktøy","Web"],[166,"Jobbtilpasning","Lager tilretteleggingsforslag for smerte i jobb","Arbeidstakere","Tilretteleggingsbrev","Web + LLM"],[167,"Gode dager-banken","Lagre det som funket på gode dager","Kronisk smerte","Personlig «det som hjelper»-bank","PWA"],[168,"Stemmeminner","Lagrer talemeldinger fra avdøde trygt","Etterlatte","Talemelding-arkiv","PWA + IndexedDB"],[169,"Bevegelsesmeny","2-min bevegelser trygge ved smerte","Kronisk smerte","Gradert bevegelse","PWA + video"],[170,"Sorgpartner","Matcher etterlatte på samme stadium","Etterlatte","1:1 sorgvenn","PWA + SB"],[171,"Selvmordsetterlatte","Spesifikk støtte etter selvmord","Etterlatte","Spesialiserte ressurser + kriselinje","Web"],[172,"Smerte-dagbok Lite","3 trykk: smerte, søvn, humør","Kronisk smerte","Minimal daglig logg","PWA"],[173,"NAV-Navigator","Forklarer AAP/uføre-prosess for smertepasienter","Smertepasienter","Prosessveileder","Web + LLM"],[174,"Tapets rutiner","Hjelp til å lage nye rutiner etter tap av partner","Enker/enkemenn","Ny hverdag-planlegger","PWA"],[175,"Begravelsesplan","Planlegg begravelse uten å drukne","Etterlatte","Begravelses-sjekkliste + budsjett","Web"],[176,"Smerte-ekspert","Søk i evidens om eget smertetilstand forklart enkelt","Kronisk smerte","Evidens-forenkler","LLM + PubMed"],[177,"Fysiolink","Hjemmeøvelser fra fysio med videobekreftelse","Fysiopasienter","Øvelsesprogram + etterlevelse","PWA"],[178,"Sorgstige","Gradvis gjenopptakelse av aktiviteter etter tap","Etterlatte","Atferdsaktivering","PWA"],[179,"Smertefellesskapet","Moderert forum per diagnose","Smertepasienter","Diagnosegrupper","Web + SB"],[180,"Tapsbrev","Mal for å informere bank, arbeidsgiver, venner","Etterlatte","Generert varselbrev","Web + LLM"],[181,"Varmeplan","Logger varme/kulde-behandling og effekt","Smertepasienter","Behandlingseffekt-logg","PWA"],[182,"Perinatal sorg","Støtte etter abort/dødfødsel","Foreldre","Spesialisert sorgforløp","Web"],[183,"Kroppslig sorg","Kobler sorg og kroppslige symptomer","Etterlatte","Somatisk sorg-logg","PWA"],[184,"Hjelpelista","Venner kan melde seg på konkrete oppgaver (mat, hund)","Etterlatte + syke","Hjelpe-tavle","PWA + SB"],[185,"Smerte-briefing","2-min video av egen smerte til ny behandler","Smertepasienter","Selvpresentasjon-mal","Web + opptak"],[186,"Sorg & jul","Høytidspakke for etterlatte","Etterlatte","Høytidsplan","Web"],[187,"Mindful Smerte","Akseptbasert lydbibliotek (ACT)","Kronisk smerte","ACT-øvelser","PWA + lyd"],[188,"Gravstedet","Påminnelse og deling av gravstell","Etterlatte","Felles gravstell-rota","PWA"],[189,"Arbeidsdag-pacer","Pausepåminnelse etter smertelast","Kontorarbeidere m/ smerte","Smart pausetimer","Desktop app (Tauri)"],[190,"Minnefotobok","AI-sortert fotobok fra avdødes bilder","Etterlatte","Bilde-kurering → bok","Web + vision-LLM"],[191,"Smertetrigger","Finner triggere fra logg (mat, søvn, stress)","Smertepasienter","Trigger-analyse","PWA + stats"],[192,"Sorgsamtale","Guidet samtale med venner: hva sier man?","Venner av etterlatte","Hva-sier-jeg-guide","Web"],[193,"Partnersmerte","Partner forstår smerten via delt status","Par","Delt dagsstatus","PWA"],[194,"Akutt-roen","Panikk ved smertetopp: 90-sek protokoll","Smertepasienter","Akutt nedregulering","PWA"],[195,"Digital arv","Hva skjer med Facebook, iCloud, Vipps etter død","Etterlatte","Digital-konto-guide","Web"],[196,"Smerte-ID","Skjema for legevakt: diagnoser, medisiner, hva som funker","Smertepasienter","Legevakt-kort","PWA"],[197,"Livet etter","Langtidsstøtte 1–3 år etter tap","Etterlatte","Månedlig innsjekk","PWA + e-post"],[198,"Gåsmerte","Gradert gåprogram med smerteterskel","Smertepasienter","Gradert eksponering","PWA"],[199,"Sorgforskning","Tilbyr deltakelse i sorgstudier","Etterlatte","Studie-matching","Web"],[200,"Smertespråk","Ordbank for å beskrive smerte presist","Smertepasienter","Smertebeskrivelse-hjelper","Web"]]},{"name":"Privatøkonomi","ideas":[[201,"Brevåpneren","Fotografer inkassobrev → klarspråk, frist, neste steg","Folk i betalingsproblemer","Brev → handlingsplan","Web + vision-LLM"],[202,"Gjeldskartet","Én oversikt over all gjeld + snøball/skred-plan","Gjeldstyngede","Nedbetalingsplan","PWA + Gjeldsregisteret-import"],[203,"Kjølebag","48-t ventetid på alle kjøp > X kr, med påminnelse","Impulskjøpere","Kjøpskarantene","Browser extension + PWA"],[204,"Klarna-speil","Viser all avbetaling som én sum per måned","Unge voksne","BNPL-aggregator","Open banking + Node"],[205,"Regningsbuffer","Automatisk sparekonto for neste måneds faste regninger","Lønnsmottakere","Buffer-regel","Open banking"],[206,"Postdagen","Fast ukentlig «åpne posten»-ritual med belønning","Unnvikende","Rutine + gamifisering","PWA"],[207,"NAV-rådgiver-kobling","Bestill gratis økonomirådgivning før inkasso","Folk i trøbbel","Henvisning + forberedelsesskjema","Web"],[208,"Ukesbudsjett","Ikke måned – uke. Ett tall: hva du kan bruke denne uka","Alle","Ukentlig disponibelt","PWA"],[209,"Gebyrjeger","Finner abonnement og gebyrer du har glemt","Alle","Transaksjonsanalyse","Open banking + LLM"],[210,"Pengeskam-fri","Økonomikurs uten skam, 5 min om dagen","Unge","Mikrolæring","PWA"],[211,"Lønningsdagen","Plan for lønna i det øyeblikket den kommer","Alle","Lønnsdag-fordelingsregel","PWA"],[212,"Gjeldssamtalen","Script for å ringe kreditor og be om betalingsutsettelse","Gjeldstyngede","Samtaleguide + øving","LLM voice"],[213,"Felles økonomi","Par fordeler felleskostnader rettferdig","Par","Proporsjonal fordeling","PWA"],[214,"Barnas lommepenger","Sparemål og lære renter for barn","Foreldre + barn","Barneøkonomi-spill","PWA"],[215,"Spareboost","Rund opp kjøp og spar differansen","Alle","Round-up","Open banking"],[216,"Inkasso-tidslinje","Viser hvor i prosessen du er og hva neste kostnad blir","Gjeldstyngede","Inkassostadie-forklarer","Web"],[217,"Kredittsperre","Guide til å reservere seg mot kreditt","Spillere/bipolar","Sperreguide","Web"],[218,"Pengeangst-pust","2-min pust før du åpner bankappen","Økonomisk angst","Pre-bank-ritual","PWA"],[219,"Strømspar","Finner billigste timer og sparer","Alle","Spotpris-planlegger","PWA + Nordpool"],[220,"Matbudsjett","Ukemeny innenfor budsjett fra tilbudsaviser","Familier","Budsjett-middagsplan","Web + LLM"],[221,"Sidejobb","Matcher ferdigheter med småjobber","Lavinntekt","Inntekts-matching","Web"],[222,"Pantelånsalternativet","Viser billigere alternativer til forbrukslån","Lånesøkende","Lån-sammenligner m/ ærlig ÅOP","Web"],[223,"Bostøtte-sjekk","Sjekk om du har krav på bostøtte/stønader","Lavinntekt","Rettighetssjekker","Web + LLM"],[224,"Gjeldsfri dato","Én dato: når er du gjeldfri med dagens tempo","Gjeldstyngede","Motiverende gjeldfri-dato","PWA"],[225,"Ønskeliste-kjøler","Legg ønsker på liste, kjøp bare om du fortsatt vil om 30 dager","Impulskjøpere","Ønske-karantene","PWA"],[226,"Regningskalender","Alle forfall i én kalender med varsel","Alle","Forfallsoversikt","PWA + ICS"],[227,"Kontant-modus","Digitale «konvolutter» per kategori","Alle","Konvoluttbudsjett","PWA"],[228,"Pengeprat","Anonymt forum om økonomi uten guruer","Alle","Moderert forum","Web"],[229,"Skattesjekk","Forklarer skattemeldingen og fradrag du glemmer","Alle","Fradragsjeger","Web + LLM"],[230,"Arv & Gjeld","Hva skjer med gjeld når noen dør","Etterlatte","Forklarer","Web"],[231,"Studielånshjelper","Plan for Lånekassen, utsettelse, rentefritak","Studenter","Lånekasse-veileder","Web"],[232,"Spillestopp","Blokker pengespill + kobling til Hjelpelinjen","Spillere","Spill-blokkering + hjelp","Extension + DNS"],[233,"Nødfond-bygger","Bygg 10 000 kr buffer i små steg","Alle","Buffer-mål","PWA"],[234,"Kredittkort-alarm","Varsler før rentefri periode utløper","Kortbrukere","Rentefrist-varsel","PWA"],[235,"Inntektsglatteren","For frilansere: jevn ut ujevn inntekt","Frilansere","Utjevningskonto","PWA"],[236,"Pengedagbok","Logg følelsen ved hvert kjøp","Emosjonelle kjøpere","Følelse-kjøp-sammenheng","PWA"],[237,"Gjeldsordning-guide","Steg mot gjeldsordning via namsmann","Overgjeldsatte","Søknadsforberedelse","Web + LLM"],[238,"Abonnementsnøkkel","Si opp abonnement med ett trykk (generert e-post)","Alle","Oppsigelses-generator","Web + LLM"],[239,"Leiekalkulator","Hva har du råd til i leie","Unge","Bolig-budsjett","Web"],[240,"Familieøkonomimøte","Månedlig møte-mal for familien","Familier","Økonomimøte-mal","PWA"],[241,"Penge-buddy","Venn som får ukentlig sparesjekk","Alle","Gjensidig ansvar","PWA"],[242,"Svindelvakt","Forklarer om en betalingsforespørsel er svindel","Alle","Svindel-sjekker","Web + LLM"],[243,"Utgiftsspeil","Viser hvor mange arbeidstimer et kjøp koster","Alle","Timer-per-kjøp","Extension"],[244,"Matsvinn-sparer","Kjøleskapsoversikt som sparer penger","Familier","Kjøleskap-logg","PWA"],[245,"Inkassorettigheter","Hva inkassobyrået ikke får gjøre","Gjeldstyngede","Rettighetsoversikt","Web"],[246,"Bankbytte","Sammenlign og bytt bank enkelt","Alle","Bank-sammenligner","Web"],[247,"Gave-budsjett","Jul og bursdager uten gjeld","Alle","Gavebudsjett","PWA"],[248,"Mikroinvest","Lær investering med 100 kr","Unge","Indeksfond-start","Web"],[249,"Pengeplan i krise","Akutt-plan ved jobbtap/sykdom","Alle","30-dagers krisebudsjett","PWA"],[250,"Økonomi-tvilling","Simulerer ett års budsjettendringer","Alle","Hva-hvis-simulator","Web"]]}];
+const CATS = ["Alle", "Aldersomsorg", "Bipolar", "Ensomhet", "Smerte & sorg", "Økonomi"];
+const CAT_OF_SECTION = { "Aldersomsorg": "Aldersomsorg", "Bipolar lidelse": "Bipolar", "Ensomhet": "Ensomhet", "Kronisk smerte og sorg": "Smerte & sorg", "Privatøkonomi": "Økonomi" };
+const TOP_IDS = new Set(TOP.map(t => t.id));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function chips(el, onPick) {
+  let cur = "Alle";
+  const draw = () => el.innerHTML = CATS.map(c => `<button class="chip" type="button" aria-pressed="${c === cur}">${c}</button>`).join("");
+  el.addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; cur = b.textContent; draw(); onPick(cur); });
+  draw();
+}
+
+function drawTop(cat) {
+  document.getElementById("grid").innerHTML = TOP.filter(t => cat === "Alle" || t.cat === cat).map(t => `
+    <article class="idea${t.rank === 1 ? " first" : ""}">
+      <div class="top"><span class="rank">#${t.rank}</span><span class="tag">${esc(t.cat)}</span></div>
+      <h3>${esc(t.name)}</h3>
+      <p>${esc(t.one)}</p>
+      <details><summary>Les briefen</summary>
+        <div class="brief">
+          <h4>Problem</h4><p>${esc(t.problem)}</p>
+          <h4>Løsning</h4><p>${esc(t.solution)}</p>
+          <h4>MVP</h4><ul>${t.features.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
+          <h4>Stack</h4><p>${esc(t.stack)}</p>
+          <h4>Slik måler vi det</h4><p>${esc(t.success)}</p>
+          <div class="ethics"><h4>Etikk og sikkerhet</h4><p>${esc(t.ethics)}</p></div>
+        </div>
+      </details>
+    </article>`).join("");
+}
+
+let allCat = "Alle";
+function drawAll() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const rows = [];
+  for (const sec of ALL) {
+    const cat = CAT_OF_SECTION[sec.name];
+    if (allCat !== "Alle" && allCat !== cat) continue;
+    for (const r of sec.ideas) if (!q || r.join(" ").toLowerCase().includes(q)) rows.push(r);
+  }
+  document.getElementById("rows").innerHTML = rows.map(r => `<tr class="${TOP_IDS.has(r[0]) ? "top" : ""}"><td class="n">${r[0]}</td><td class="name">${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td></tr>`).join("");
+  document.getElementById("count").textContent = `${rows.length} av 250 ideer · ★ = med blant topp 15`;
+}
+
+chips(document.getElementById("chips"), drawTop);
+chips(document.getElementById("chips2"), c => { allCat = c; drawAll(); });
+document.getElementById("q").addEventListener("input", drawAll);
+drawTop("Alle"); drawAll();
+
+// Forslag: delt lagring når siden kjører med db, ellers bare en lokal kvittering.
+const wall = document.getElementById("wall"), msg = document.getElementById("s-msg");
+let col = null;
+function drawWall(items) {
+  wall.innerHTML = items.length
+    ? items.map(s => `<li>${esc(s.text)}${s.who ? ` <span style="opacity:.75">· ${esc(s.who)}</span>` : ""}</li>`).join("")
+    : `<li style="opacity:.85">Ingen forslag ennå. Ditt blir det første som vises her.</li>`;
+}
+drawWall([]);
+(async () => {
+  const db = await window.claude?.use?.("db");
+  if (!db) return;
+  col = db.collection("suggestions");
+  col.orderBy("at", "desc").limit(6).onSnapshot(s => drawWall(s.docs.map(d => d.data())), () => {});
+})();
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const text = document.getElementById("s-text").value.trim(), who = document.getElementById("s-who").value.trim();
+  if (!text) { msg.textContent = "Skriv noen ord om kampen først."; return; }
+  if (!col) { msg.textContent = "Takk. Forslaget ble ikke lagret, fordi denne visningen ikke har lagring."; return; }
+  try {
+    await col.add({ text: text.slice(0, 600), who: who.slice(0, 120), at: Date.now() });
+    msg.textContent = "Takk. Forslaget er lagt til.";
+    e.target.reset();
+  } catch (err) {
+    msg.textContent = err?.code === "not_granted" || err?.code === "permission_denied"
+      ? "Du har bare lesetilgang til denne siden, så forslaget ble ikke lagret."
+      : "Forslaget ble ikke lagret. Prøv igjen om litt.";
+  }
+});
+</script>
