@@ -5,3 +5,5 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
 Åpne `index.html`. Les `RUN.md`.
+
+**Trading-agent:** se `trading-agent/README.md`. Sju Claude Code-skills (`/trade-ideas`, `/technical-analysis`, `/news-to-trade`, `/backtest`, `/portfolio-risk`, `/trading-journal`, `/trading-plan`) + `trading-desk`-agent.
