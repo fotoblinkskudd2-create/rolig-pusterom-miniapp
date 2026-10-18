@@ -5,3 +5,7 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
 Åpne `index.html`. Les `RUN.md`.
+
+## fodestol/
+
+Eget FoU-prosjekt: **LIVA** — fødeplattform som løfter krakken. Start i [`fodestol/README.md`](fodestol/README.md).

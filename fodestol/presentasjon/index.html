@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIVA Plattform</title>
+<style>
+  :root {
+    --havre: #D8C7A4; --salvie: #7FA08A; --skifer: #3B4045; --rod: #C8341F;
+    --bg: #FBFAF7; --ink: #2B2A28; --muted: #6B6661;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1E2023; --ink: #EDEAE4; --muted: #A9A49C; }
+  }
+  :root[data-theme="dark"] { --bg: #1E2023; --ink: #EDEAE4; --muted: #A9A49C; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
+  .slide { display: none; min-height: 100vh; padding: 6vh 7vw 10vh; flex-direction: column; justify-content: center; gap: 2.4vh; }
+  .slide.on { display: flex; }
+  h1 { font-size: clamp(2.4rem, 7vw, 6rem); margin: 0; letter-spacing: -0.03em; }
+  h2 { font-size: clamp(1.6rem, 4vw, 3rem); margin: 0; letter-spacing: -0.02em; }
+  p, li { font-size: clamp(1rem, 1.9vw, 1.45rem); line-height: 1.45; max-width: 60ch; margin: 0; }
+  ul { margin: 0; padding-left: 1.2em; display: grid; gap: 1vh; }
+  .kicker { text-transform: uppercase; letter-spacing: .14em; font-size: .85rem; color: var(--muted); }
+  .tag { display: inline-block; background: var(--havre); color: #2B2A28; padding: .2em .6em; border-radius: 999px; font-size: .9rem; }
+  .red { color: var(--rod); font-weight: 700; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2vw; }
+  .card { border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 14px; padding: 1.2rem; }
+  .card b { display: block; font-size: 1.25rem; margin-bottom: .4rem; }
+  .big { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 800; letter-spacing: -0.03em; }
+  img.fig { width: 100%; max-height: 62vh; object-fit: contain; background: #FBFAF7; border-radius: 12px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; }
+  .pair img { width: 100%; border-radius: 12px; background: #fff; }
+  table { border-collapse: collapse; font-size: clamp(.85rem, 1.4vw, 1.1rem); max-width: 100%; }
+  td, th { text-align: left; padding: .45em .8em; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); }
+  nav { position: fixed; bottom: 2vh; left: 0; right: 0; display: flex; justify-content: center; gap: 1rem; align-items: center; color: var(--muted); font-size: .9rem; }
+  nav button { background: none; border: 1px solid var(--muted); color: var(--ink); border-radius: 999px; padding: .4rem 1rem; cursor: pointer; font: inherit; }
+  @media (max-width: 700px) { .pair { grid-template-columns: 1fr; } .slide { padding: 5vh 16px 12vh; } }
+  @media print { .slide { display: flex !important; page-break-after: always; } nav { display: none; } }
+</style>
+</head>
+<body>
+
+<section class="slide on">
+  <span class="kicker">Fødeplattform · konsept v0.3</span>
+  <h1>LIVA</h1>
+  <h2>Kvinnen velger stillingen.<br>Jordmor velger høyden.</h2>
+  <p>Krakkens fysiologi. Sengens trygghet. Én plattform.</p>
+</section>
+
+<section class="slide">
+  <span class="kicker">Problemet</span>
+  <h2>Ca. 150 kvinner føder i Norge hver dag. Mange vil opp.</h2>
+  <div class="grid">
+    <div class="card"><b>Krakken</b>Fysiologisk for kvinnen. Jordmor kneler på gulvet, ser dårlig og har ryggen i 60° fleksjon.</div>
+    <div class="card"><b>Sengen</b>Gir arbeidshøyde og trygghet — men geometrien drar kvinnen bakover.</div>
+    <div class="card"><b>Akutt</b>Fra krakk til flatt ryggleie = løft fra gulvet. Sekunder som teller.</div>
+    <div class="card"><b>Blodtap</b>Anslås med øynene. Systematisk underestimert — mest i oppreiste stillinger.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <span class="kicker">Evidensen</span>
+  <h2>Utstyret må kunne alt — fordi kroppene vil forskjellig</h2>
+  <ul>
+    <li><b>Cochrane 2017</b>, utdriving uten epidural: oppreist gir ~25 % færre instrumentelle forløsninger og episiotomier — men flere 2. grads rifter og mer målt blodtap.</li>
+    <li><b>Cochrane 2013</b>, åpningsfase: oppreist/mobil ≈ 1 t 22 min kortere.</li>
+    <li><b>BUMPES, BMJ 2017</b>, med epidural: sideleie ga flere spontane fødsler enn oppreist.</li>
+    <li><b>Norsk perinealprogram</b>: OASIS halvert med hands-on og kontroll — krever innsyn og tilgang.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <span class="kicker">Innsikten</span>
+  <h2>Skill stillingen fra arbeidshøyden.</h2>
+  <img class="fig" src="../tegninger/03-ergonomi-jordmor.svg" alt="Jordmor kneler ved vanlig krakk sammenlignet med jordmor som sitter oppreist ved LIVA">
+  <p>Hesteskosete med eget fotbrett på en løfteplattform: kvinnens knevinkel er den samme som på krakken — men perineum er i jordmorens albuehøyde.</p>
+</section>
+
+<section class="slide">
+  <span class="kicker">Produktet</span>
+  <h2>Seks stillinger. Én ramme.</h2>
+  <img class="fig" src="../tegninger/01-moduser-sidebilde.svg" alt="Sidebilde av LIVA i modusene seng, halvsittende, krakk, kne og gyn">
+</section>
+
+<section class="slide">
+  <span class="kicker">CAD-modell (forhåndsvisning, ikke markedsføringsrender)</span>
+  <div class="pair">
+    <img src="../render/liva-krakk.png" alt="CAD: krakkmodus med fotbrett, U-bøyle og sadelstol">
+    <img src="../render/liva-seng.png" alt="CAD: sengemodus">
+  </div>
+</section>
+
+<section class="slide">
+  <span class="kicker">Sikkerhet</span>
+  <h2><span class="red">Ett grep til flatt.</span> Blodtap er et tall.</h2>
+  <div class="grid">
+    <div class="card"><b class="red">AKUTT FLAT</b>Mekanisk spak, uten strøm. Rygg ned, benseksjon ut, fotbrett opp. Mål: &lt; 10 s fra alle moduser.</div>
+    <div class="card"><b>QBL</b>Trakt + lastcelle under hesteskoåpningen. ±5 g. Tare etter barnet. Trend og terskler — supplerer klinisk vurdering.</div>
+    <div class="card"><b>Hygiene</b>Integralskum uten trekk eller sømmer. Lukkede profiler. IPX6.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <span class="kicker">Hva vi vet — og hva vi skal bevise</span>
+  <table>
+    <tr><th>Påstand</th><th>Status</th><th>Måles med</th></tr>
+    <tr><td>Mindre ryggbelastning for jordmor</td><td>Biomekanisk sannsynlig</td><td>IMU + RULA, n=20 crossover</td></tr>
+    <tr><td>Raskere til flatt / McRoberts</td><td>Teknisk testbar</td><td>Simuleringsdrill, 10 team</td></tr>
+    <tr><td>QBL fanger PPH tidligere</td><td>Indirekte støttet</td><td>Samsvar vs gravimetri, tid til tiltak</td></tr>
+    <tr><td>OASIS ikke økt</td><td>Sikkerhetsendepunkt</td><td>Ikke-underlegenhet, register</td></tr>
+    <tr><td>Bedre fødselsopplevelse</td><td>Hypotese</td><td>CEQ2</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <span class="kicker">Marked og plan</span>
+  <div class="grid">
+    <div class="card"><span class="big">~4 mill.</span>fødsler/år i EU/EØS</div>
+    <div class="card"><span class="big">10–15 år</span>utskiftingssyklus for fødesenger</div>
+    <div class="card"><span class="big">≈ €5,4k</span>tilvirkningskost · målpris €16,5–19,5k + QBL-forbruk</div>
+    <div class="card"><span class="big">~3,5 år</span>P0 lo-fi → CE. 18–26 mill. NOK totalt</div>
+  </div>
+  <p><span class="tag">Klasse I / Im</span> MDR · IEC 60601-1/-1-2 · krav fra -2-52 · ISO 14971 · ISO 13485</p>
+</section>
+
+<section class="slide">
+  <span class="kicker">Ask</span>
+  <h2>Vi trenger én fødeavdeling og ≈ 2 mill. NOK.</h2>
+  <ul>
+    <li><b>Sykehuspartner</b> for innovasjonspartnerskap: 10 jordmødre, simuleringsrom, 6 uker.</li>
+    <li><b>P0 + P1</b> (lo-fi rigg → funksjonell alfa) med Innovasjon Norge-matching.</li>
+    <li><b>Kill-kriterium:</b> Hvis &lt; 70 % av jordmødrene vurderer løftet krakk som klart bedre enn gulvkrakk, legger vi ned kjernen.</li>
+  </ul>
+  <p class="kicker">Konfidensielt — ikke del offentlig før patentvurdering</p>
+</section>
+
+<nav><button id="prev" aria-label="Forrige">←</button><span id="count"></span><button id="next" aria-label="Neste">→</button></nav>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  try { i = Math.min(+localStorage.getItem('liva-slide') || 0, slides.length - 1); } catch (e) {}
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    try { localStorage.setItem('liva-slide', i); } catch (e) {}
+  }
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) show(i + 1);
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) show(i - 1);
+  });
+  show(i);
+</script>
+</body>
+</html>
