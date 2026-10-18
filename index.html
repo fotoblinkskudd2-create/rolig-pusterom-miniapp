@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Pusterom – Rolig mini-app</title>
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1f1c" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <style>
   :root {
     --bg: #f5f7f4;
@@ -14,6 +21,20 @@
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --line: #e5ebe6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1f1c;
+      --card: #242b26;
+      --text: #e0ebe3;
+      --muted: #9aaa9f;
+      --accent: #a8c5b0;
+      --soft-blue: #2e3d48;
+      --soft-beige: #3a342b;
+      --soft-green: #2c3a30;
+      --line: #34403a;
+    }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -56,7 +77,7 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
@@ -71,13 +92,14 @@
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
     background: var(--card);
+    color: var(--text);
     margin-bottom: 16px;
   }
   .btn {
@@ -107,6 +129,9 @@
     display: none;
   }
   .message.show { display: block; }
+  .message.hint { background: var(--soft-beige); }
+  .local-note { font-size: 0.82rem; margin: 28px 0 0; text-align: center; }
+  .mirror-link { display: block; text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 16px; }
   /* Breathing */
   .circle-wrap {
     display: flex;
@@ -142,7 +167,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .action-card.done {
     opacity: 0.6;
@@ -162,7 +187,7 @@
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .history-item .date {
     font-size: 0.85rem;
@@ -177,7 +202,7 @@
     display: flex;
     justify-content: space-around;
     padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    border-top: 1px solid var(--line);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
@@ -201,6 +226,9 @@
     text-align: center;
     margin-top: 24px;
   }
+  @media (prefers-color-scheme: dark) {
+    .btn-secondary { color: var(--text); }
+  }
 </style>
 </head>
 <body>
@@ -217,8 +245,9 @@
   </div>
   <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+  <div class="message" id="saveMsg" role="status" aria-live="polite"></div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <p class="support local-note" id="localNote">Alt blir på denne enheten. Ingen konto, ingen sky.</p>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -241,13 +270,15 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" id="exportBtn" onclick="exportHistory()">Ta historikken med deg</button>
+  <a class="mirror-link" href="isolation-mirror.html">Isolation Mirror →</a>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -274,9 +305,34 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
   });
 });
 
+const MOODS = ['', '😔', '😕', '😐', '🙂', '😌'];
+let msgTimer = null;
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function loadJSON(key, fallback) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key));
+    return v == null ? fallback : v;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function showMsg(text, hint) {
+  const msg = document.getElementById('saveMsg');
+  msg.textContent = text;
+  msg.classList.toggle('hint', !!hint);
+  msg.classList.add('show');
+  clearTimeout(msgTimer);
+  msgTimer = setTimeout(() => msg.classList.remove('show'), 4000);
+}
+
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    showMsg('Velg hvordan du har det først.', true);
     return;
   }
   const note = document.getElementById('note').value.trim();
@@ -285,14 +341,18 @@ function saveCheckin() {
     mood: selectedMood,
     note: note
   };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = loadJSON('checkins', []);
   list.unshift(entry);
-  localStorage.setItem('checkins', JSON.stringify(list));
-  document.getElementById('saveMsg').classList.add('show');
+  try {
+    localStorage.setItem('checkins', JSON.stringify(list));
+  } catch (e) {
+    showMsg('Fikk ikke lagret på denne enheten (privat modus?).', true);
+    return;
+  }
+  showMsg('Takk. Det er bra at du sjekket inn.');
   document.getElementById('note').value = '';
   selectedMood = null;
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
 }
 
@@ -300,7 +360,10 @@ function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  const navBtn = document.querySelector('.nav button[data-page="' + name + '"]');
+  if (navBtn) navBtn.classList.add('active');
+  window.scrollTo(0, 0);
+  if (name !== 'pusterom' && breathing) toggleBreath();
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -342,7 +405,7 @@ function runBreathCycle() {
 }
 
 function renderActions() {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  const done = loadJSON('doneActions', {});
   const today = new Date().toDateString();
   const list = document.getElementById('actionsList');
   list.innerHTML = '';
@@ -356,8 +419,10 @@ function renderActions() {
 }
 
 function toggleAction(i) {
-  const done = JSON.parse(localStorage.getItem('doneActions') || '{}');
+  const done = loadJSON('doneActions', {});
   const today = new Date().toDateString();
+  // keep only today; old days are never read
+  Object.keys(done).forEach(k => { if (k !== today) delete done[k]; });
   if (!done[today]) done[today] = [];
   const idx = done[today].indexOf(i);
   if (idx > -1) done[today].splice(idx, 1);
@@ -367,7 +432,7 @@ function toggleAction(i) {
 }
 
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = loadJSON('checkins', []);
   const container = document.getElementById('historyList');
   container.innerHTML = '';
   if (list.length === 0) {
@@ -375,10 +440,10 @@ function renderHistory() {
   } else {
     list.slice(0, 20).forEach(e => {
       const d = new Date(e.date);
-      const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
+      const moodEmoji = MOODS[e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + escapeHtml(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
@@ -387,6 +452,24 @@ function renderHistory() {
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  document.getElementById('exportBtn').style.display = list.length ? 'block' : 'none';
+}
+
+function exportHistory() {
+  const list = loadJSON('checkins', []);
+  const lines = ['Pusterom – historikk', 'Eksportert ' + new Date().toLocaleString('no-NO'), ''];
+  list.forEach(e => {
+    const d = new Date(e.date).toLocaleString('no-NO', {weekday:'short', day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+    lines.push(d + '  humør ' + e.mood + '/5' + (e.note ? '  ' + e.note.replace(/\s+/g, ' ') : ''));
+  });
+  const blob = new Blob([lines.join('\n') + '\n'], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-historikk.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // init

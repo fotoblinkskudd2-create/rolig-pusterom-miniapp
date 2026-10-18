@@ -2,7 +2,7 @@
 
 ## Åpne
 
-1. Last ned `index.html` og `isolation-mirror.html` i samme mappe.
+1. Last ned `index.html`, `isolation-mirror.html`, `manifest.webmanifest` og `icon.svg` i samme mappe.
 2. Åpne `index.html` i Safari eller Chrome.
 3. På iPhone: Del → Legg til på Hjem-skjerm (valgfritt).
 
@@ -24,3 +24,11 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Test
+
+```
+node tests/smoke.mjs
+```
+
+Krever Playwright med Chromium (lokal eller global `npm i -g playwright`). Kjører hele flyten i lys og mørk modus via file://. Exit 0 = grønt.

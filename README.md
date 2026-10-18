@@ -4,4 +4,6 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
+**1.1 ekte (18.10.2026):** endringene 1.1 lovet, nå faktisk i `index.html`. Pluss dark mode, manifest, XSS-fix og røyktest. Se `HULL.md`.
+
 Åpne `index.html`. Les `RUN.md`.

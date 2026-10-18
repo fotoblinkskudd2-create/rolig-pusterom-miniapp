@@ -37,14 +37,15 @@
       <h3>Labben / Grok-bot</h3>
       <p>Lim dette i Labben eller i Grok-bot med /lab.</p>
       <pre id="labprompt"></pre>
-      <button class="ghost" onclick="copyPrompt()">Kopier prompt</button>
+      <button class="ghost" id="copyBtn" onclick="copyPrompt()">Kopier prompt</button>
     </div>
   </div>
 <script>
 document.getElementById('photo').addEventListener('change', (e) => {
   const f = e.target.files && e.target.files[0];
   const img = document.getElementById('prev');
-  if (!f) { img.style.display = 'none'; return; }
+  if (img.src) URL.revokeObjectURL(img.src);
+  if (!f) { img.removeAttribute('src'); img.style.display = 'none'; return; }
   img.src = URL.createObjectURL(f);
   img.style.display = 'block';
 });
@@ -62,7 +63,25 @@ function generate() {
   document.getElementById('out').style.display = 'block';
 }
 function copyPrompt() {
-  navigator.clipboard.writeText(document.getElementById('labprompt').textContent);
+  const btn = document.getElementById('copyBtn');
+  const text = document.getElementById('labprompt').textContent;
+  const done = (ok) => {
+    btn.textContent = ok ? 'Kopiert ✓' : 'Marker teksten og kopier selv';
+    setTimeout(() => { btn.textContent = 'Kopier prompt'; }, 2500);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => done(true), () => done(false));
+  } else {
+    // file:// on iOS has no async clipboard
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    ta.remove();
+    done(ok);
+  }
 }
 </script>
 </body>
