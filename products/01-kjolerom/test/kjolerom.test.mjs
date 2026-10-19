@@ -157,6 +157,27 @@ await t('eksport → import rundtur', async () => {
   fs.unlinkSync(f);
 });
 
+await t('import filtrerer ugyldige ønsker', async () => {
+  const f = path.join(here, '.tmp-bad.json');
+  const st = await page.evaluate(() => window.__kjolerom.state);
+  st.wishes.push({ id: 'x', title: 'ugyldig', price: 'mye', createdAt: 1, unlockAt: 2, status: 'frozen' }, null);
+  fs.writeFileSync(f, JSON.stringify(st));
+  await page.setInputFiles('#importFile', f);
+  await page.waitForTimeout(100);
+  eq(await page.evaluate(() => window.__kjolerom.state.wishes.length), 3, 'ugyldige ble med');
+  ok(!(await page.content()).includes('NaN'), 'NaN i DOM');
+  fs.unlinkSync(f);
+});
+
+await t('mørk modus rendres', async () => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.click('nav button[data-page=fryser]');
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  eq(bg, 'rgb(16, 24, 30)', 'bakgrunn');
+  await page.screenshot({ path: path.join(shots, 'app-mork.png'), fullPage: true });
+  await page.emulateMedia({ colorScheme: 'light' });
+});
+
 await t('ødelagt lagring krasjer ikke', async () => {
   await page.evaluate(() => localStorage.setItem('kjolerom.v1', '{not json'));
   await page.reload();

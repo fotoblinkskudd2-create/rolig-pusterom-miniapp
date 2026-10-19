@@ -325,7 +325,7 @@ function costLines(w) {
     lines.push(`${kr(c.monthly)} i måneden i ${c.months} måneder.`);
   }
   const d = dailyInterest(state.settings);
-  if (d > 0 && p > 0) lines.push(`Det er like mye som <b>${(c.total / d).toFixed(1)} dager</b> med rentene på gjelden dere har nå.`);
+  if (d > 0 && p > 0) lines.push(`Det er like mye som <b>${(c.total / d).toLocaleString('nb-NO', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} dager</b> med rentene på gjelden dere har nå.`);
   return lines.join('<br>');
 }
 function updateCostPreview() {
@@ -501,7 +501,12 @@ $('importFile').addEventListener('change', async (e) => {
   try {
     const s = JSON.parse(await f.text());
     if (!s || s.v !== 1 || !Array.isArray(s.parts) || !s.parts.length || !Array.isArray(s.wishes)) throw new Error('format');
-    s.handovers = Array.isArray(s.handovers) ? s.handovers : [];
+    const okNum = (x) => typeof x === 'number' && Number.isFinite(x);
+    s.parts = s.parts.filter(p => p && typeof p.id === 'string' && typeof p.name === 'string');
+    if (!s.parts.length) throw new Error('format');
+    s.wishes = s.wishes.filter(w => w && typeof w.id === 'string' && typeof w.title === 'string'
+      && okNum(w.price) && okNum(w.createdAt) && okNum(w.unlockAt) && ['frozen', 'bought', 'released'].includes(w.status));
+    s.handovers = Array.isArray(s.handovers) ? s.handovers.filter(h => h && okNum(h.t)) : [];
     s.settings = Object.assign(defaults().settings, s.settings || {});
     if (!s.parts.some(p => p.id === s.front)) s.front = s.parts[0].id;
     state = s; save(); render(); toast('Importert.');

@@ -15,7 +15,7 @@ Generert av `okonomi/kost.py`. Endre tall der, ikke her. (est.) = antakelse.
 ## 2. Rentedager
 
 Med 250 000 kr gjeld à 18 % (est.) brenner det **123 kr per dag**, **3 699 kr per måned**, før en eneste krone er avdrag.
-Lego-settet på delbetaling = **26.9 rentedager**. Det er tallet appen viser. Ikke for å skremme. For å gjøre en abstrakt rente til en kalender.
+Lego-settet på delbetaling = **26,9 rentedager**. Det er tallet appen viser. Ikke for å skremme. For å gjøre en abstrakt rente til en kalender.
 
 ## 3. Kortkappe — enhetsøkonomi (B2C, sendt i posten)
 

@@ -128,7 +128,7 @@ def main():
     L.append("## 2. Rentedager\n")
     L.append(f"Med {kr(DEBT)} gjeld à {DEBT_APR:.0f} % (est.) brenner det **{kr(daily)} per dag**, "
              f"**{kr(daily * 30)} per måned**, før en eneste krone er avdrag.")
-    L.append(f"Lego-settet på delbetaling = **{cases[2][1] / daily:.1f} rentedager**. "
+    L.append(f"Lego-settet på delbetaling = **{cases[2][1] / daily:.1f} rentedager**".replace(".", ",") + ". "
              "Det er tallet appen viser. Ikke for å skremme. For å gjøre en abstrakt rente til en kalender.\n")
     L.append("## 3. Kortkappe — enhetsøkonomi (B2C, sendt i posten)\n")
     L.append("| Post | Kost |\n|---|---:|")
