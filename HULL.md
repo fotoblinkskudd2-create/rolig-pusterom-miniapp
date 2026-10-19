@@ -20,3 +20,7 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 
 Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+
+## 19.10.2026 — revisjon
+
+1.1 over var dokumentert, men ikke kodet: `index.html` hadde fortsatt `event.currentTarget`, `alert()`, ingen lokal-first-linje, ingen eksport, ingen lenke. I tillegg: notat ble satt inn med `innerHTML` uten escaping. Alt fikset og testet (`test/pusterom.test.mjs`, 7/7).

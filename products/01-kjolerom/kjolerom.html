@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#eef4f8">
+<title>Kjølerom</title>
+<style>
+  :root {
+    --bg: #eef4f8;
+    --card: #ffffff;
+    --text: #23323d;
+    --muted: #5d7080;
+    --line: #d6e2ea;
+    --frost: #b9d6e8;
+    --ice: #dcebf4;
+    --warm: #e9c9a8;
+    --ok: #a8c5b0;
+    --accent: #3d6f8f;
+    --on-accent: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10181e;
+      --card: #18232b;
+      --text: #e3edf3;
+      --muted: #94a8b6;
+      --line: #2a3a46;
+      --frost: #2f5068;
+      --ice: #1f3341;
+      --warm: #6b4a2c;
+      --ok: #3c5a45;
+      --accent: #8fc0de;
+      --on-accent: #10181e;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.5; padding-bottom: 84px; min-height: 100vh;
+  }
+  .page { display: none; padding: 24px 16px 40px; max-width: 460px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.55rem; font-weight: 600; margin-bottom: 6px; }
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 10px; }
+  p.sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin: 12px 0 4px; }
+  input, select, textarea {
+    width: 100%; font: inherit; color: var(--text); background: var(--card);
+    border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  }
+  textarea { min-height: 64px; resize: vertical; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; min-width: 0; }
+  .btn {
+    display: block; width: 100%; border: none; border-radius: 14px; padding: 14px;
+    font: inherit; font-weight: 600; cursor: pointer; margin-top: 14px;
+    background: var(--accent); color: var(--on-accent);
+  }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn.small { display: inline-block; width: auto; padding: 8px 12px; margin: 6px 6px 0 0; font-size: 0.85rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .card.thawed { border-color: var(--warm); box-shadow: 0 0 0 2px var(--warm) inset; }
+  .card.done { opacity: 0.7; }
+  .wish-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .wish-title { font-weight: 600; word-break: break-word; }
+  .price { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+  .bar { height: 6px; background: var(--ice); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--frost); }
+  .cost { background: var(--ice); border-radius: 12px; padding: 10px 12px; margin-top: 12px; font-size: 0.9rem; }
+  .cost b { font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: var(--ice); color: var(--text); margin-right: 4px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .handover { background: var(--ice); border-radius: 16px; padding: 14px; margin-bottom: 16px; }
+  .handover .note { font-style: italic; margin-top: 6px; word-break: break-word; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .stat b { display: block; font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 0.8rem; color: var(--muted); }
+  .parts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .part-btn { border: 2px solid var(--line); background: var(--card); color: var(--text); border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  .part-btn[aria-pressed="true"] { border-color: var(--accent); font-weight: 600; }
+  .empty { text-align: center; color: var(--muted); padding: 28px 8px; }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.9rem; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); display: flex; justify-content: space-around; padding: 8px 0 12px; }
+  .nav button { background: none; border: none; color: var(--muted); font: inherit; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .nav button span { font-size: 1.3rem; }
+  .nav button.active { color: var(--accent); font-weight: 600; }
+  .label-preview { width: 85.6mm; height: 54mm; max-width: 100%; aspect-ratio: 85.6/54; border: 1px dashed var(--muted); border-radius: 3.2mm; padding: 5mm; display: flex; flex-direction: column; justify-content: space-between; background: var(--card); margin: 12px auto; }
+  .label-preview .s { font-size: 13px; font-weight: 600; line-height: 1.3; word-break: break-word; }
+  .label-preview .f { font-size: 9px; color: var(--muted); }
+  a { color: var(--accent); }
+  .fine { font-size: 0.8rem; color: var(--muted); margin-top: 16px; }
+  @media print {
+    body * { visibility: hidden; }
+    #labelPreview, #labelPreview * { visibility: visible; }
+    #labelPreview { position: absolute; left: 10mm; top: 10mm; border: 0.2mm solid #000; background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FRYSER -->
+<section id="page-fryser" class="page active" aria-labelledby="h-fryser">
+  <div class="handover" id="handoverBanner"></div>
+  <h1 id="h-fryser">Kjølerom</h1>
+  <p class="sub">Alt du vil ha er gyldig. Det får bare vente <span id="hoursLabel">48</span> timer.</p>
+  <div id="thawedWrap" hidden><h2>Tint — venter på dere</h2><div id="thawedList"></div></div>
+
+  <form id="wishForm" autocomplete="off">
+    <label for="wTitle">Hva vil du ha?</label>
+    <input id="wTitle" required maxlength="120" placeholder="F.eks. Lego Technic 42171">
+    <div class="row">
+      <div>
+        <label for="wPrice">Pris (kr)</label>
+        <input id="wPrice" type="number" inputmode="decimal" min="0" step="1" required placeholder="2499">
+      </div>
+      <div>
+        <label for="wPay">Betaling</label>
+        <select id="wPay">
+          <option value="debet">Debet / kontant</option>
+          <option value="kort">Kredittkort</option>
+          <option value="delbetaling">Delbetaling / Klarna</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" id="installRow" hidden>
+      <div><label for="wMonths">Måneder</label><input id="wMonths" type="number" min="1" max="120" value="12"></div>
+      <div><label for="wApr">Rente %</label><input id="wApr" type="number" min="0" max="60" step="0.1" value="24.9"></div>
+      <div><label for="wFee">Gebyr/mnd</label><input id="wFee" type="number" min="0" step="1" value="39"></div>
+    </div>
+    <label for="wWhy">Hvorfor nå? (valgfritt, bare for neste som er framme)</label>
+    <textarea id="wWhy" maxlength="400" placeholder="Jeg trenger noe å bygge med hendene."></textarea>
+    <div class="cost" id="costPreview" aria-live="polite"></div>
+    <button class="btn" type="submit">Legg i kjølerommet</button>
+  </form>
+
+  <h2>I kjølerommet</h2>
+  <div id="frozenList"></div>
+</section>
+
+<!-- OVERLEVERING -->
+<section id="page-overlevering" class="page" aria-labelledby="h-over">
+  <h1 id="h-over">Hvem er framme?</h1>
+  <p class="sub">Trykk på den som er her nå. Legg igjen en lapp til den neste.</p>
+  <div class="parts" id="partPicker" role="group" aria-label="Deler"></div>
+  <label for="hoNote">Lapp til neste (valgfritt)</label>
+  <textarea id="hoNote" maxlength="400" placeholder="Jeg spiste. Ingen kjøp i dag. Katten har fått mat."></textarea>
+  <button class="btn" id="hoSave">Lagre overlevering</button>
+
+  <h2>Deler i systemet</h2>
+  <div class="row">
+    <input id="newPart" maxlength="30" placeholder="Navn eller kallenavn" aria-label="Ny del">
+    <button class="btn small" id="addPart" style="flex:0 0 auto;margin-top:0">Legg til</button>
+  </div>
+  <p class="fine">Én del er helt greit. Navn kan være hva som helst — «Morgen-meg», «Lille», «Han som handler».</p>
+
+  <h2>Siste overleveringer</h2>
+  <div id="hoList"></div>
+</section>
+
+<!-- REGNSKAP -->
+<section id="page-regnskap" class="page" aria-labelledby="h-reg">
+  <h1 id="h-reg">Regnskap</h1>
+  <p class="sub">Det som fikk kjølne. Ingen poeng, ingen streak. Bare tall.</p>
+  <div class="stats">
+    <div class="stat"><b id="sReleased">0 kr</b><span>sluppet</span></div>
+    <div class="stat"><b id="sInterest">0 kr</b><span>rente og gebyr unngått</span></div>
+    <div class="stat"><b id="sBought">0 kr</b><span>kjøpt etter kjøling</span></div>
+    <div class="stat"><b id="sFrozen">0</b><span>i kjølerommet nå</span></div>
+  </div>
+  <h2>Avgjort</h2>
+  <div id="decidedList"></div>
+</section>
+
+<!-- KAPPE / INNSTILLINGER -->
+<section id="page-kappe" class="page" aria-labelledby="h-kappe">
+  <h1 id="h-kappe">Kortkappe</h1>
+  <p class="sub">Setningen du ser når du trekker kortet ut. Skriv den til en annen del — eller til deg selv kl 02:40.</p>
+  <label for="sentence">Setning på kappen</label>
+  <textarea id="sentence" maxlength="90" placeholder="Vi har det vi trenger i kveld. Legg det i kjølerommet."></textarea>
+  <div class="label-preview" id="labelPreview">
+    <div class="s" id="labelText"></div>
+    <div class="f">KJØLEROM · 48t · åpne kjolerom.html</div>
+  </div>
+  <button class="btn ghost" id="printLabel">Skriv ut etikett (85,6 × 54 mm)</button>
+  <p class="fine">3D-fil: <a href="cad/kortkappe.stl" download>kortkappe.stl</a> · Tegning og spesifikasjon i <code>SPEC.md</code>.</p>
+
+  <h2>Innstillinger</h2>
+  <div class="row">
+    <div><label for="setHours">Kjøletid (timer)</label><input id="setHours" type="number" min="1" max="168"></div>
+    <div><label for="setCardApr">Kortrente %</label><input id="setCardApr" type="number" min="0" max="60" step="0.1"></div>
+  </div>
+  <div class="row">
+    <div><label for="setDebt">Eksisterende gjeld (kr)</label><input id="setDebt" type="number" min="0" step="1000"></div>
+    <div><label for="setDebtApr">Snittrente %</label><input id="setDebtApr" type="number" min="0" max="60" step="0.1"></div>
+  </div>
+  <p class="fine">Gjeld brukes bare til å regne «rentedager». Det forlater aldri enheten.</p>
+
+  <h2>Ta det med deg</h2>
+  <button class="btn ghost" id="exportJson">Eksporter (JSON)</button>
+  <label for="importFile" class="btn ghost" style="text-align:center">Importer JSON</label>
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+  <p class="fine">Alt blir på denne enheten. Ingen konto, ingen sky, ingen sporing. Ikke medisinsk utstyr. <a href="../../index.html#pusterom">← Pusterom</a></p>
+</section>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button data-page="fryser" class="active"><span aria-hidden="true">🧊</span>Fryser</button>
+  <button data-page="overlevering"><span aria-hidden="true">🤝</span>Overlevering</button>
+  <button data-page="regnskap"><span aria-hidden="true">📒</span>Regnskap</button>
+  <button data-page="kappe"><span aria-hidden="true">💳</span>Kappe</button>
+</nav>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+const KEY = 'kjolerom.v1';
+const HOUR = 3600e3;
+const PART_COLORS = ['#7aa6c2', '#c29a7a', '#8fb59a', '#b48fb5', '#c2b47a', '#7ac2b8', '#c27a8a'];
+
+// ---------- økonomi (speiles i okonomi/kost.py) ----------
+function annuity(principal, aprPct, months) {
+  const r = aprPct / 100 / 12;
+  if (months <= 0) return principal;
+  if (r === 0) return principal / months;
+  return principal * r / (1 - Math.pow(1 + r, -months));
+}
+// Kredittkort: antar nedbetaling over 12 mnd til kortrenten. Konservativt (mange betaler minimum).
+function trueCost(w, settings) {
+  const p = Number(w.price) || 0;
+  if (w.pay === 'delbetaling') {
+    const m = Math.max(1, Math.round(Number(w.months) || 1));
+    const pay = annuity(p, Number(w.apr) || 0, m);
+    return { total: pay * m + (Number(w.fee) || 0) * m, monthly: pay + (Number(w.fee) || 0), months: m };
+  }
+  if (w.pay === 'kort') {
+    const pay = annuity(p, Number(settings.cardApr) || 0, 12);
+    return { total: pay * 12, monthly: pay, months: 12 };
+  }
+  return { total: p, monthly: 0, months: 0 };
+}
+function dailyInterest(settings) {
+  return (Number(settings.debt) || 0) * (Number(settings.debtApr) || 0) / 100 / 365;
+}
+
+// ---------- state ----------
+function defaults() {
+  const id = uid();
+  return {
+    v: 1,
+    settings: { hours: 48, cardApr: 22, debt: 0, debtApr: 0, sentence: '' },
+    parts: [{ id, name: 'Meg', color: PART_COLORS[0] }],
+    front: id,
+    handovers: [],
+    wishes: []
+  };
+}
+function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && s.v === 1 && Array.isArray(s.parts) && s.parts.length) return s;
+  } catch (e) { /* tom eller ødelagt lagring: start på nytt */ }
+  return defaults();
+}
+let state = load();
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch (e) { toast('Kunne ikke lagre på enheten. Eksporter for sikkerhets skyld.'); }
+}
+
+// ---------- hjelpere ----------
+const $ = (id) => document.getElementById(id);
+const kr = (n) => Math.round(n).toLocaleString('nb-NO') + ' kr';
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function part(id) { return state.parts.find(p => p.id === id) || { name: 'Ukjent', color: '#999' }; }
+function fmtTime(t) { return new Date(t).toLocaleString('nb-NO', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+function left(ms) {
+  if (ms <= 0) return 'tint nå';
+  const mins = Math.ceil(ms / 60000), h = Math.floor(mins / 60), m = mins % 60;
+  return h > 0 ? `${h} t ${m} min igjen` : `${m} min igjen`;
+}
+let toastTimer;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function download(name, text, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ---------- navigasjon ----------
+function show(name) {
+  if (!$('page-' + name)) name = 'fryser';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  render();
+}
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => {
+  history.replaceState(null, '', '#' + b.dataset.page); show(b.dataset.page);
+}));
+
+// ---------- fryser ----------
+function formWish() {
+  return {
+    price: $('wPrice').value, pay: $('wPay').value,
+    months: $('wMonths').value, apr: $('wApr').value, fee: $('wFee').value
+  };
+}
+function costLines(w) {
+  const c = trueCost(w, state.settings);
+  const p = Number(w.price) || 0;
+  const lines = [];
+  if (w.pay === 'debet') lines.push(`Koster <b>${kr(p)}</b>. Ingen rente.`);
+  else {
+    lines.push(`Ekte kostnad: <b>${kr(c.total)}</b> (${kr(c.total - p)} i rente og gebyr).`);
+    lines.push(`${kr(c.monthly)} i måneden i ${c.months} måneder.`);
+  }
+  const d = dailyInterest(state.settings);
+  if (d > 0 && p > 0) lines.push(`Det er like mye som <b>${(c.total / d).toFixed(1)} dager</b> med rentene på gjelden dere har nå.`);
+  return lines.join('<br>');
+}
+function updateCostPreview() {
+  const w = formWish();
+  $('installRow').hidden = w.pay !== 'delbetaling';
+  $('costPreview').innerHTML = Number(w.price) > 0 ? costLines(w) : 'Skriv inn pris for å se hva det faktisk koster.';
+}
+['wPrice', 'wPay', 'wMonths', 'wApr', 'wFee'].forEach(id => $(id).addEventListener('input', updateCostPreview));
+
+$('wishForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title = $('wTitle').value.trim();
+  const price = Number($('wPrice').value);
+  if (!title || !(price >= 0)) return;
+  const now = Date.now();
+  const w = {
+    id: uid(), title, price, pay: $('wPay').value,
+    months: Number($('wMonths').value) || 12, apr: Number($('wApr').value) || 0, fee: Number($('wFee').value) || 0,
+    why: $('wWhy').value.trim(), partId: state.front,
+    createdAt: now, unlockAt: now + state.settings.hours * HOUR,
+    status: 'frozen', decidedAt: null, decidedBy: null, refreezes: 0
+  };
+  state.wishes.unshift(w); save();
+  e.target.reset(); updateCostPreview();
+  toast(`«${title}» ligger i kjølerommet til ${fmtTime(w.unlockAt)}.`);
+  render();
+});
+
+function decide(id, verdict) {
+  const w = state.wishes.find(x => x.id === id);
+  if (!w || w.status !== 'frozen') return;
+  if (verdict === 'refreeze') {
+    w.unlockAt = Date.now() + state.settings.hours * HOUR;
+    w.refreezes = (w.refreezes || 0) + 1;
+    toast('Frosset i ' + state.settings.hours + ' timer til.');
+  } else {
+    if (Date.now() < w.unlockAt && verdict === 'bought') return; // kan ikke kjøpe før tint
+    w.status = verdict; w.decidedAt = Date.now(); w.decidedBy = state.front;
+    toast(verdict === 'released' ? 'Sluppet. Det var lov å ville ha det.' : 'Avgjort. Dere ventet. Det teller.');
+  }
+  save(); render();
+}
+
+function ics(w) {
+  const d = (t) => new Date(t).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const text = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Kjolerom//NO', 'BEGIN:VEVENT',
+    'UID:' + w.id + '@kjolerom.local', 'DTSTAMP:' + d(Date.now()),
+    'DTSTART:' + d(w.unlockAt), 'DTEND:' + d(w.unlockAt + 15 * 60000),
+    'SUMMARY:Kjølerom: tin «' + w.title.replace(/[,;\\\n]/g, ' ') + '»',
+    'DESCRIPTION:Åpne Kjølerom og bestem sammen.',
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\r\n');
+  download('kjolerom-' + w.id + '.ics', text, 'text/calendar');
+}
+
+function wishCard(w) {
+  const now = Date.now();
+  const total = w.unlockAt - w.createdAt;
+  const pct = Math.min(100, Math.max(0, (now - w.createdAt) / total * 100));
+  const thawed = w.status === 'frozen' && now >= w.unlockAt;
+  const p = part(w.partId);
+  const by = w.decidedBy ? part(w.decidedBy) : null;
+  let actions = '';
+  if (w.status === 'frozen') {
+    actions = thawed
+      ? `<a class="btn small ghost" href="../../index.html#pusterom">Pust først</a>
+         <button class="btn small" data-act="bought" data-id="${w.id}">Fortsatt ja</button>
+         <button class="btn small ghost" data-act="released" data-id="${w.id}">Slipp</button>
+         <button class="btn small ghost" data-act="refreeze" data-id="${w.id}">Frys ${state.settings.hours} t til</button>`
+      : `<button class="btn small ghost" data-act="released" data-id="${w.id}">Slipp nå</button>
+         <button class="btn small ghost" data-act="ics" data-id="${w.id}">Påminnelse i kalender</button>`;
+  }
+  const status = w.status === 'bought' ? `<span class="pill">kjøpt</span>`
+    : w.status === 'released' ? `<span class="pill">sluppet</span>`
+    : thawed ? `<span class="pill">tint</span>` : '';
+  return `<article class="card ${thawed ? 'thawed' : ''} ${w.status !== 'frozen' ? 'done' : ''}" data-wish="${w.id}">
+    <div class="wish-head"><div class="wish-title">${status}${esc(w.title)}</div><div class="price">${kr(w.price)}</div></div>
+    <div class="meta"><span class="dot" style="background:${esc(p.color)}"></span>${esc(p.name)} · ${fmtTime(w.createdAt)}${w.refreezes ? ' · frosset ' + (w.refreezes + 1) + '×' : ''}</div>
+    ${w.why ? `<div class="meta">«${esc(w.why)}»</div>` : ''}
+    ${w.status === 'frozen' ? `<div class="bar"><i style="width:${pct}%"></i></div><div class="meta">${left(w.unlockAt - now)}</div>` : ''}
+    ${w.status === 'frozen' && w.pay !== 'debet' ? `<div class="cost">${costLines(w)}</div>` : ''}
+    ${by ? `<div class="meta">Avgjort av ${esc(by.name)} · ${fmtTime(w.decidedAt)}</div>` : ''}
+    <div>${actions}</div>
+  </article>`;
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const w = state.wishes.find(x => x.id === b.dataset.id);
+  if (b.dataset.act === 'ics') { if (w) ics(w); return; }
+  decide(b.dataset.id, b.dataset.act);
+});
+
+// ---------- overlevering ----------
+let pickedPart = null;
+function renderParts() {
+  pickedPart = pickedPart || state.front;
+  $('partPicker').innerHTML = state.parts.map(p =>
+    `<button class="part-btn" data-part="${p.id}" aria-pressed="${p.id === pickedPart}"><span class="dot" style="background:${esc(p.color)}"></span>${esc(p.name)}</button>`
+  ).join('');
+}
+$('partPicker').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-part]'); if (!b) return;
+  pickedPart = b.dataset.part; renderParts();
+});
+$('hoSave').addEventListener('click', () => {
+  const to = pickedPart || state.front;
+  state.handovers.unshift({ t: Date.now(), from: state.front, to, note: $('hoNote').value.trim() });
+  state.handovers = state.handovers.slice(0, 200);
+  state.front = to; save();
+  $('hoNote').value = '';
+  toast(part(to).name + ' er framme.');
+  render();
+});
+$('addPart').addEventListener('click', () => {
+  const name = $('newPart').value.trim();
+  if (!name) return;
+  if (state.parts.length >= 40) { toast('Maks 40 deler i denne versjonen.'); return; }
+  state.parts.push({ id: uid(), name, color: PART_COLORS[state.parts.length % PART_COLORS.length] });
+  $('newPart').value = ''; save(); render();
+});
+function renderBanner() {
+  const h = state.handovers[0];
+  const f = part(state.front);
+  const thawed = state.wishes.filter(w => w.status === 'frozen' && Date.now() >= w.unlockAt).length;
+  let html = `<div><span class="dot" style="background:${esc(f.color)}"></span><b>${esc(f.name)}</b> er framme. <a href="#overlevering" data-goto="overlevering">Bytt</a></div>`;
+  if (h) {
+    html += `<div class="meta">Sist overlevert ${fmtTime(h.t)} fra ${esc(part(h.from).name)}.</div>`;
+    if (h.note) html += `<div class="note">«${esc(h.note)}»</div>`;
+  }
+  if (thawed) html += `<div class="meta"><b>${thawed}</b> ønske${thawed > 1 ? 'r' : ''} er tint og venter på dere.</div>`;
+  $('handoverBanner').innerHTML = html;
+}
+document.addEventListener('click', (e) => {
+  const g = e.target.closest('[data-goto]'); if (!g) return;
+  e.preventDefault(); history.replaceState(null, '', '#' + g.dataset.goto); show(g.dataset.goto);
+});
+
+// ---------- regnskap ----------
+function totals() {
+  let released = 0, avoided = 0, bought = 0, frozen = 0;
+  for (const w of state.wishes) {
+    if (w.status === 'released') { const c = trueCost(w, state.settings); released += Number(w.price) || 0; avoided += c.total - (Number(w.price) || 0); }
+    else if (w.status === 'bought') bought += Number(w.price) || 0;
+    else frozen++;
+  }
+  return { released, avoided, bought, frozen };
+}
+
+// ---------- kappe + innstillinger ----------
+function renderKappe() {
+  const s = state.settings;
+  if (document.activeElement !== $('sentence')) $('sentence').value = s.sentence;
+  $('labelText').textContent = s.sentence || 'Vi har det vi trenger i kveld. Legg det i kjølerommet.';
+  for (const [id, k] of [['setHours', 'hours'], ['setCardApr', 'cardApr'], ['setDebt', 'debt'], ['setDebtApr', 'debtApr']])
+    if (document.activeElement !== $(id)) $(id).value = s[k];
+}
+$('sentence').addEventListener('input', (e) => { state.settings.sentence = e.target.value.slice(0, 90); save(); renderKappe(); });
+for (const [id, k, lo, hi] of [['setHours', 'hours', 1, 168], ['setCardApr', 'cardApr', 0, 60], ['setDebt', 'debt', 0, 1e8], ['setDebtApr', 'debtApr', 0, 60]]) {
+  $(id).addEventListener('change', (e) => {
+    const v = Number(e.target.value);
+    state.settings[k] = Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : state.settings[k];
+    save(); render();
+  });
+}
+$('printLabel').addEventListener('click', () => window.print());
+$('exportJson').addEventListener('click', () => {
+  download('kjolerom-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(state, null, 2), 'application/json');
+});
+$('importFile').addEventListener('change', async (e) => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  try {
+    const s = JSON.parse(await f.text());
+    if (!s || s.v !== 1 || !Array.isArray(s.parts) || !s.parts.length || !Array.isArray(s.wishes)) throw new Error('format');
+    s.handovers = Array.isArray(s.handovers) ? s.handovers : [];
+    s.settings = Object.assign(defaults().settings, s.settings || {});
+    if (!s.parts.some(p => p.id === s.front)) s.front = s.parts[0].id;
+    state = s; save(); render(); toast('Importert.');
+  } catch (err) { toast('Filen ble ikke gjenkjent som Kjølerom-eksport.'); }
+  e.target.value = '';
+});
+
+// ---------- render ----------
+function render() {
+  $('hoursLabel').textContent = state.settings.hours;
+  renderBanner();
+  const now = Date.now();
+  const all = state.wishes.filter(w => w.status === 'frozen').sort((a, b) => a.unlockAt - b.unlockAt);
+  const thawed = all.filter(w => now >= w.unlockAt), frozen = all.filter(w => now < w.unlockAt);
+  $('thawedWrap').hidden = !thawed.length;
+  $('thawedList').innerHTML = thawed.map(wishCard).join('');
+  $('frozenList').innerHTML = frozen.length ? frozen.map(wishCard).join('')
+    : '<div class="empty">Kjølerommet er tomt. Det er også helt greit.</div>';
+  const decided = state.wishes.filter(w => w.status !== 'frozen').sort((a, b) => b.decidedAt - a.decidedAt);
+  $('decidedList').innerHTML = decided.length ? decided.map(wishCard).join('')
+    : '<div class="empty">Ingenting avgjort ennå.</div>';
+  const t = totals();
+  $('sReleased').textContent = kr(t.released);
+  $('sInterest').textContent = kr(t.avoided);
+  $('sBought').textContent = kr(t.bought);
+  $('sFrozen').textContent = t.frozen;
+  renderParts();
+  $('hoList').innerHTML = state.handovers.slice(0, 20).map(h =>
+    `<div class="card"><div class="meta">${fmtTime(h.t)} · ${esc(part(h.from).name)} → <b>${esc(part(h.to).name)}</b></div>${h.note ? `<div>«${esc(h.note)}»</div>` : ''}</div>`
+  ).join('') || '<div class="empty">Ingen overleveringer ennå.</div>';
+  renderKappe();
+}
+
+updateCostPreview();
+show((location.hash || '#fryser').slice(1));
+setInterval(() => { if ($('page-fryser').classList.contains('active')) render(); }, 30000);
+window.addEventListener('storage', (e) => { if (e.key === KEY) { state = load(); render(); } });
+// eksponert for tester
+window.__kjolerom = { annuity, trueCost, dailyInterest, get state() { return state; } };
+</script>
+</body>
+</html>

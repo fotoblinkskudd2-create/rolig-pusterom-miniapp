@@ -201,6 +201,9 @@
     text-align: center;
     margin-top: 24px;
   }
+  .local-first { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 28px; }
+  .local-first a { color: var(--muted); }
+  .message.warn { background: var(--soft-beige); }
 </style>
 </head>
 <body>
@@ -219,6 +222,8 @@
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <p class="local-first">Alt blir på denne enheten. Ingen konto, ingen sky.<br>
+    <a href="isolation-mirror.html">Isolation Mirror</a> · <a href="products/01-kjolerom/kjolerom.html">Kjølerom</a></p>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -241,13 +246,14 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" onclick="exportHistory()">Ta historikken med deg</button>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -276,9 +282,13 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    const m = document.getElementById('saveMsg');
+    m.textContent = 'Trykk på et ansikt først. Ingen hast.';
+    m.classList.add('show', 'warn');
+    setTimeout(() => m.classList.remove('show', 'warn'), 3000);
     return;
   }
+  document.getElementById('saveMsg').textContent = 'Takk. Det er bra at du sjekket inn.';
   const note = document.getElementById('note').value.trim();
   const entry = {
     date: new Date().toISOString(),
@@ -297,10 +307,11 @@ function saveCheckin() {
 }
 
 function switchPage(name) {
+  if (!document.getElementById('page-' + name)) name = 'hjem';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  history.replaceState(null, '', '#' + name);
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -378,7 +389,7 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + esc(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
@@ -389,9 +400,23 @@ function renderHistory() {
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function exportHistory() {
+  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const lines = list.map(e => new Date(e.date).toLocaleString('no-NO') + ' · humør ' + e.mood + '/5' + (e.note ? ' · ' + e.note : ''));
+  const text = 'Pusterom — historikk\n\n' + (lines.join('\n') || 'Ingen sjekk-ins ennå.') + '\n';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  a.download = 'pusterom-historikk.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
 // init
 renderActions();
 renderHistory();
+switchPage((location.hash || '#hjem').slice(1));
+window.addEventListener('hashchange', () => switchPage((location.hash || '#hjem').slice(1)));
 </script>
 </body>
 </html>

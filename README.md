@@ -5,3 +5,11 @@ Rolig mini-app. 4 sider: Innsjekk, Pusterom, Små grep, Historikk. Pure HTML. Lo
 **1.1 (29.08.2026):** nav-fix, lokal-first-linje, export av historikk, Isolation Mirror bundet til Labben/Grok-bot.
 
 Åpne `index.html`. Les `RUN.md`.
+
+**1.1 faktisk (19.10.2026):** 1.1-commiten endret bare dokumentene. Nå er fiksene i `index.html`: nav følger siden, `#pusterom`-lenker, ingen `alert()`, lokal-first-linje, eksport, escaping av notater. Verifisert av `node test/pusterom.test.mjs`.
+
+## Produkter
+
+| # | Navn | Hva |
+|---|------|-----|
+| 01 | [Kjølerom + Kortkappe](products/01-kjolerom/) | 48t-fryser for kjøp med overlevering mellom deler + 3D-printet kortkappe |

@@ -1,0 +1,11 @@
+KORTKAPPE v0.1 — CAD-rapport
+Ytre mål      : 87.20 × 57.18 × 2.85 mm
+Lomme         : 86.00 × 54.78 × 1.05 mm (åpen i X=0)
+Kort (ISO)    : 85.6 × 53.98 × 0.76 mm
+Vanntett      : True
+Volum         : 8.81 cm3
+Masse PETG    : 11.2 g
+Kollisjon kort: 1.440 mm3 (tilsiktet: kun ved ryggene, kort hviler på bunnplata)
+Ryggklaring   : 0.70 mm < kort 0.76 mm → klemmer kortet 60 µm
+Print-estimat : ~16 min @ 0.2 mm, 100 % infill (bare vegger)
+Trekanter     : 1308
