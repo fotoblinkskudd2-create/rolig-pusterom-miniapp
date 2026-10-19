@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pustestein</title>
+<style>
+  :root {
+    --bg: #f5f7f4; --card: #ffffff; --text: #3a4a3f; --muted: #66766b; --line: #e0e6e1;
+    --accent: #6f9a7b; --on-accent: #ffffff;
+    --inn: #2a78d6; --hold: #eb6834; --ut: #1baf7a; --stone: #dfe8e1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141a16; --card: #1d251f; --text: #e0ebe3; --muted: #9aab9f; --line: #2c3830;
+      --accent: #a8c5b0; --on-accent: #141a16;
+      --inn: #3987e5; --hold: #d95926; --ut: #199e70; --stone: #2a362d;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 84px; min-height: 100vh; }
+  .page { display: none; padding: 24px 16px 40px; max-width: 460px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.55rem; font-weight: 600; margin-bottom: 6px; }
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 8px; }
+  p.sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 16px; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin: 12px 0 4px; }
+  input[type=number], select { width: 100%; font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+  input[type=range] { width: 100%; }
+  .row { display: flex; gap: 10px; } .row > * { flex: 1; min-width: 0; }
+  .btn { display: block; width: 100%; border: none; border-radius: 14px; padding: 14px; font: inherit; font-weight: 600; cursor: pointer; margin-top: 12px; background: var(--accent); color: var(--on-accent); text-align: center; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .fine { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+  .stone-wrap { display: flex; justify-content: center; margin: 8px 0; }
+  svg.stone { width: 100%; max-width: 360px; height: auto; touch-action: none; }
+  .phase { text-align: center; font-size: 1.4rem; font-weight: 500; min-height: 2.2rem; }
+  .count { text-align: center; color: var(--muted); min-height: 1.5rem; font-variant-numeric: tabular-nums; }
+  .legend { display: flex; justify-content: center; gap: 14px; font-size: 0.8rem; color: var(--muted); margin-top: 6px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+  .cardbox { margin: 12px auto; border: 2px solid var(--accent); border-radius: 3.18mm; background: var(--stone); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 0.8rem; }
+  .big { font-size: 2rem; font-weight: 600; text-align: center; font-variant-numeric: tabular-nums; }
+  .crop { position: relative; width: 100%; aspect-ratio: 45/35; overflow: hidden; border-radius: 10px; background: var(--stone); touch-action: none; cursor: grab; }
+  .crop.portrait { aspect-ratio: 35/45; max-width: 280px; margin: 0 auto; }
+  .crop canvas { width: 100%; height: 100%; display: block; }
+  .crop .win { position: absolute; border: 2px dashed rgba(255,255,255,.9); box-shadow: 0 0 0 9999px rgba(0,0,0,.25); pointer-events: none; }
+  pre { white-space: pre-wrap; font-size: 0.8rem; background: var(--stone); border-radius: 10px; padding: 10px; overflow-x: auto; }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.9rem; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); display: flex; justify-content: space-around; padding: 8px 0 12px; }
+  .nav button { background: none; border: none; color: var(--muted); font: inherit; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .nav button span { font-size: 1.3rem; } .nav button.active { color: var(--accent); font-weight: 600; }
+  a { color: var(--accent); }
+  #printSheet { display: none; }
+  @media print {
+    @page { size: A4; margin: 10mm; }
+    body { background: #fff; padding: 0; }
+    body > *:not(#printSheet) { display: none !important; }
+    #printSheet { display: flex !important; flex-wrap: wrap; gap: 6mm; }
+    #printSheet img { display: block; outline: 0.1mm solid #999; }
+  }
+</style>
+</head>
+<body>
+
+<section id="page-guide" class="page active" aria-labelledby="h-guide">
+  <h1 id="h-guide">Pustestein</h1>
+  <p class="sub">Følg prikken med tommelen — på skjermen nå, i steinen senere. Én runde er ett andedrag.</p>
+  <div class="stone-wrap"><svg class="stone" id="guideSvg" viewBox="-44 -34 88 68" aria-hidden="true"></svg></div>
+  <div class="phase" id="phase" aria-live="polite">Trykk start</div>
+  <div class="count" id="count"></div>
+  <div class="legend"><span><i style="background:var(--inn)"></i>pust inn · grunnes</span><span><i style="background:var(--hold)"></i>hold · knotter</span><span><i style="background:var(--ut)"></i>pust ut · ribber</span></div>
+  <button class="btn" id="guideBtn">Start</button>
+  <label style="display:flex;gap:8px;align-items:center;margin-top:14px"><input type="checkbox" id="vibrate" style="width:auto"> Vibrer ved skifte (øynene lukket, Android)</label>
+  <p class="fine" id="rhythmLine"></p>
+  <p class="fine">Alt blir på denne enheten. Ingen konto, ingen sky. Ikke medisinsk utstyr. <a href="../../index.html#pusterom">← Pusterom</a></p>
+</section>
+
+<section id="page-kalibrer" class="page" aria-labelledby="h-kal">
+  <h1 id="h-kal">Kalibrer tommelen</h1>
+  <p class="sub">Rillen i steinen lages etter <em>din</em> fart. To steg, ett minutt.</p>
+  <h2>1. Legg et bankkort mot skjermen</h2>
+  <p class="sub">Hold kortet <em>stående</em> mot skjermen. Dra til rammen er like bred som kortets korte side. Da vet vi hvor store millimeter er på akkurat din skjerm.</p>
+  <div class="cardbox" id="cardBox">54 mm</div>
+  <input type="range" id="pxmm" min="2" max="8" step="0.01" aria-label="Piksler per millimeter">
+  <p class="fine" id="pxmmLine"></p>
+  <h2>2. Tegn én rolig runde</h2>
+  <p class="sub">Legg tommelen på prikken. Følg sporet én hel runde, i det tempoet som føles som ett langsomt andedrag. Gjør det tre ganger.</p>
+  <div class="stone-wrap"><svg class="stone" id="traceSvg" viewBox="-44 -34 88 68" aria-label="Sporingsflate"></svg></div>
+  <div class="big" id="speedOut">— mm/s</div>
+  <p class="fine" id="traceLine">0 av 3 runder</p>
+  <button class="btn ghost" id="traceReset">Start på nytt</button>
+</section>
+
+<section id="page-bilde" class="page" aria-labelledby="h-bilde">
+  <h1 id="h-bilde">Bildet under steinen</h1>
+  <p class="sub">Valgfritt. Ett bilde, 45 × 35 mm. Det synlige vinduet er 41 × 31. Bildet forlater ikke enheten.</p>
+  <label for="photoIn" class="btn ghost">Velg bilde</label>
+  <input type="file" id="photoIn" accept="image/*" hidden>
+  <div class="row" style="margin-top:8px">
+    <button class="btn ghost" id="rotateBtn" style="margin-top:0">Stående / liggende</button>
+  </div>
+  <div class="crop" id="crop" style="margin-top:12px"><canvas id="cropCanvas" width="531" height="413"></canvas><div class="win" id="cropWin"></div></div>
+  <label for="zoom">Zoom</label>
+  <input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
+  <button class="btn" id="printPhoto">Skriv ut 6 stk på A4 (eksakt mm)</button>
+  <button class="btn ghost" id="savePhoto">Lagre som PNG (300 dpi)</button>
+  <p class="fine">Skriv ut i 100 % / «faktisk størrelse», ikke «tilpass siden». Klipp langs den grå linjen.</p>
+</section>
+
+<section id="page-lag" class="page" aria-labelledby="h-lag">
+  <h1 id="h-lag">Lag din stein</h1>
+  <p class="sub">Rytmen er den samme som i Pusterom: 4 inn, 2 hold, 6 ut. Endre hvis kroppen din vil noe annet.</p>
+  <div class="row">
+    <div><label for="pIn">Inn (s)</label><input type="number" id="pIn" min="2" max="8" step="1"></div>
+    <div><label for="pHold">Hold (s)</label><input type="number" id="pHold" min="0" max="6" step="1"></div>
+    <div><label for="pOut">Ut (s)</label><input type="number" id="pOut" min="3" max="10" step="1"></div>
+  </div>
+  <div class="row">
+    <div><label for="pSpeed">Tommelfart (mm/s)</label><input type="number" id="pSpeed" min="3" max="20" step="0.1"></div>
+    <div><label for="pR">Tommel</label><select id="pR"><option value="6">Liten (R6)</option><option value="7">Middels (R7)</option><option value="8">Stor (R8)</option></select></div>
+  </div>
+  <label for="pFill">Vekt</label>
+  <select id="pFill"><option value="stal">Stålhagl ≈ 195 g</option><option value="sand">Sand ≈ 90 g</option><option value="tom">Tom ≈ 35 g</option></select>
+  <div class="card" style="margin-top:14px">
+    <div id="sumLine"></div>
+    <div class="fine" id="warnLine"></div>
+  </div>
+  <pre id="jsonOut"></pre>
+  <button class="btn" id="dlJson">Last ned parametre.json</button>
+  <p class="fine">Kjør så <code>python3 cad/pustestein.py parametre.json</code> → <code>pustestein.stl</code> + <code>ramme.stl</code>. Print med pause ved Z = 20 mm, hell i fyll til kanten, fortsett.</p>
+</section>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button data-page="guide" class="active"><span aria-hidden="true">🪨</span>Pust</button>
+  <button data-page="kalibrer"><span aria-hidden="true">👍</span>Kalibrer</button>
+  <button data-page="bilde"><span aria-hidden="true">🖼️</span>Bilde</button>
+  <button data-page="lag"><span aria-hidden="true">🛠️</span>Lag</button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<div id="printSheet"></div>
+
+<script>
+'use strict';
+const KEY = 'pustestein.v1';
+const $ = (id) => document.getElementById(id);
+// samme geometri som cad/pustestein.py
+const A = 40, B = 30;
+const K_MIN = 0.30, K_MAX = 0.80;
+const ellipsePerimeter = (a, b) => Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
+const P1 = ellipsePerimeter(A, B);
+
+function defaults() { return { speed_mm_s: 10, inhale: 4, hold: 2, exhale: 6, groove_r: 7, fill: 'stal', pxPerMm: null, traces: [] }; }
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') return Object.assign(defaults(), s); }
+  catch (e) { /* tom eller ødelagt lagring */ }
+  return defaults();
+}
+let st = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* privat modus: fortsett uten lagring */ } }
+let toastT;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
+const fmt = (x, d = 1) => Number(x).toLocaleString('nb-NO', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+// ---------- geometri ----------
+function totalT() { return st.inhale + st.hold + st.exhale; }
+function grooveLen() { return st.speed_mm_s * totalT(); }
+function kFor(L) { return L / P1; }
+// punkter langs sløyfa (mm), jevnt i buelengde, start i +X som i CAD
+function loop(k, n = 400) {
+  const raw = [];
+  for (let i = 0; i <= 2000; i++) { const t = i / 2000 * 2 * Math.PI; raw.push([k * A * Math.cos(t), k * B * Math.sin(t)]); }
+  const cum = [0];
+  for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
+  const L = cum[cum.length - 1], out = [];
+  let j = 0;
+  for (let i = 0; i < n; i++) {
+    const s = i / n * L;
+    while (cum[j + 1] < s) j++;
+    const f = (s - cum[j]) / (cum[j + 1] - cum[j]);
+    out.push([raw[j][0] + f * (raw[j + 1][0] - raw[j][0]), raw[j][1] + f * (raw[j + 1][1] - raw[j][1])]);
+  }
+  return out;
+}
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+// SVG-y peker ned; CAD-y peker opp → speil y så tegningen matcher toppvisningen
+function drawStone(svg, k, withMarks) {
+  svg.innerHTML = '';
+  el('ellipse', { cx: 0, cy: 0, rx: A, ry: B, fill: 'var(--stone)', stroke: 'var(--muted)', 'stroke-width': 0.6 }, svg);
+  const pts = loop(k), n = pts.length, T = totalT();
+  const fi = st.inhale / T, fh = st.hold / T;
+  const seg = (lo, hi, col) => {
+    const a = Math.floor(lo * n), b = Math.ceil(hi * n);
+    const d = pts.slice(a, Math.min(b + 1, n)).concat(hi >= 1 ? [pts[0]] : []).map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(2) + ' ' + (-p[1]).toFixed(2)).join('');
+    el('path', { d, fill: 'none', stroke: col, 'stroke-width': 4.5, 'stroke-linecap': 'round', opacity: 0.85 }, svg);
+  };
+  seg(0, fi, 'var(--inn)'); seg(fi, fi + fh, 'var(--hold)'); seg(fi + fh, 1, 'var(--ut)');
+  if (withMarks) {
+    const nb = Math.round(st.hold) + 1, nr = Math.round(st.exhale);
+    for (let i = 0; i < nb; i++) { const p = pts[Math.floor((fi + fh * (i + 0.5) / nb) * n) % n]; el('circle', { cx: p[0], cy: -p[1], r: 1.1, fill: 'var(--card)' }, svg); }
+    for (let i = 0; i < nr; i++) {
+      const idx = Math.floor((fi + fh + (1 - fi - fh) * (i + 0.5) / nr) * n) % n, p = pts[idx], q = pts[(idx + 1) % n];
+      const tx = q[0] - p[0], ty = -(q[1] - p[1]), l = Math.hypot(tx, ty) || 1, nx = -ty / l * 2.4, ny = tx / l * 2.4;
+      el('line', { x1: p[0] - nx, y1: -p[1] - ny, x2: p[0] + nx, y2: -p[1] + ny, stroke: 'var(--card)', 'stroke-width': 0.8, 'stroke-linecap': 'round' }, svg);
+    }
+  }
+  el('circle', { cx: pts[0][0], cy: -pts[0][1], r: 1.6, fill: 'var(--text)' }, svg);
+  return pts;
+}
+
+// ---------- guide ----------
+let guidePts = [], raf = null, t0 = 0, lastPhase = '';
+const dot = () => $('guideSvg').querySelector('#gdot');
+function setupGuide() {
+  const L = clampLen(grooveLen()).L;
+  guidePts = drawStone($('guideSvg'), kFor(L), true);
+  el('circle', { id: 'gdot', cx: guidePts[0][0], cy: -guidePts[0][1], r: 3, fill: 'var(--text)', opacity: 0.9 }, $('guideSvg'));
+  $('rhythmLine').textContent = `Rytme ${st.inhale}–${st.hold}–${st.exhale} s = ${fmt(60 / totalT())} pust i minuttet. Rille ${Math.round(L)} mm.`;
+}
+function tick(now) {
+  const T = totalT() * 1000, e = (now - t0) % T, u = e / T;
+  const p = guidePts[Math.floor(u * guidePts.length) % guidePts.length];
+  const d = dot(); if (d) { d.setAttribute('cx', p[0]); d.setAttribute('cy', -p[1]); }
+  const sec = e / 1000;
+  let phase, count = '';
+  if (sec < st.inhale) phase = 'Pust inn…';
+  else if (sec < st.inhale + st.hold) phase = 'Hold…';
+  else { phase = 'Pust ut…'; count = String(Math.min(st.exhale, Math.floor(sec - st.inhale - st.hold) + 1)) + ' / ' + st.exhale; }
+  if (phase !== lastPhase) { $('phase').textContent = phase; lastPhase = phase; if ($('vibrate').checked && navigator.vibrate) navigator.vibrate(40); }
+  $('count').textContent = count;
+  raf = requestAnimationFrame(tick);
+}
+$('guideBtn').addEventListener('click', () => {
+  if (raf) { cancelAnimationFrame(raf); raf = null; $('guideBtn').textContent = 'Start'; $('phase').textContent = 'Trykk start'; $('count').textContent = ''; lastPhase = ''; setupGuide(); return; }
+  t0 = performance.now(); $('guideBtn').textContent = 'Stopp'; raf = requestAnimationFrame(tick);
+});
+
+// ---------- kalibrering ----------
+function guessPxMm() { return 96 / 25.4; } // CSS-standard; feil på de fleste mobiler, derfor kortet
+function renderCard() {
+  const p = st.pxPerMm || guessPxMm();
+  // stående kort: kortsiden (53,98 mm) får plass i bredden selv på en 320px-telefon ved ~6 px/mm
+  $('cardBox').style.width = (53.98 * p) + 'px';
+  $('cardBox').style.height = (85.6 * p) + 'px';
+  $('pxmm').value = p;
+  $('pxmmLine').textContent = st.pxPerMm ? `Kalibrert: ${fmt(p, 2)} px per mm.` : 'Ikke kalibrert ennå (bruker standard 3,78 px/mm).';
+  return p;
+}
+$('pxmm').addEventListener('input', (e) => { st.pxPerMm = Number(e.target.value); save(); renderCard(); });
+
+let tracePts = [], tracing = null;
+// sporingsflaten: viewBox rundt sløyfa (mm), vist i ekte størrelse hvis den får plass
+let traceVB = [-44, -34, 88, 68], traceScaled = false;
+function setupTrace() {
+  const k = kFor(clampLen(grooveLen()).L), hw = k * A + 5, hh = k * B + 5, p = st.pxPerMm || guessPxMm();
+  traceVB = [-hw, -hh, 2 * hw, 2 * hh];
+  const svg = $('traceSvg');
+  svg.setAttribute('viewBox', traceVB.join(' '));
+  const avail = Math.min(svg.parentElement.clientWidth || 360, 440);
+  traceScaled = 2 * hw * p > avail;
+  svg.style.width = Math.min(2 * hw * p, avail) + 'px'; svg.style.maxWidth = 'none';
+  tracePts = drawStone(svg, k, false);
+  renderTrace();
+}
+function svgPoint(svg, ev) { const r = svg.getBoundingClientRect(); return [(ev.clientX - r.left) / r.width * traceVB[2] + traceVB[0], (ev.clientY - r.top) / r.height * traceVB[3] + traceVB[1]]; }
+$('traceSvg').addEventListener('pointerdown', (ev) => {
+  ev.preventDefault(); $('traceSvg').setPointerCapture(ev.pointerId);
+  tracing = { last: svgPoint($('traceSvg'), ev), lastPx: [ev.clientX, ev.clientY], distPx: 0, t: ev.timeStamp, ang: 0, lastAng: null };
+});
+$('traceSvg').addEventListener('pointermove', (ev) => {
+  if (!tracing) return;
+  const p = svgPoint($('traceSvg'), ev);
+  // fart måles i skjerm-px ÷ kalibrert px/mm — uavhengig av hvordan flaten er skalert
+  tracing.distPx += Math.hypot(ev.clientX - tracing.lastPx[0], ev.clientY - tracing.lastPx[1]);
+  tracing.lastPx = [ev.clientX, ev.clientY];
+  const a = Math.atan2(-p[1] / B, p[0] / A);
+  if (tracing.lastAng !== null) { let d = a - tracing.lastAng; if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI; tracing.ang += d; }
+  tracing.lastAng = a; tracing.last = p;
+  el('circle', { cx: p[0], cy: p[1], r: 0.5, fill: 'var(--text)', opacity: 0.4, class: 'ink' }, $('traceSvg'));
+});
+function endTrace(ev) {
+  if (!tracing) return;
+  const secs = (ev.timeStamp - tracing.t) / 1000, laps = Math.abs(tracing.ang) / (2 * Math.PI);
+  const tr = tracing; tracing = null;
+  $('traceSvg').querySelectorAll('.ink').forEach(n => n.remove());
+  if (laps < 0.85 || secs < 3) { toast('Prøv én hel runde, rolig.'); return; }
+  const v = tr.distPx / (st.pxPerMm || guessPxMm()) / secs;
+  st.traces.push(Number(v.toFixed(2))); st.traces = st.traces.slice(-3);
+  if (st.traces.length >= 3) { st.speed_mm_s = Number(median(st.traces).toFixed(1)); toast(`Din fart: ${fmt(st.speed_mm_s)} mm/s`); }
+  save(); renderTrace();
+}
+$('traceSvg').addEventListener('pointerup', endTrace);
+$('traceSvg').addEventListener('pointercancel', () => { tracing = null; });
+$('traceReset').addEventListener('click', () => { st.traces = []; save(); renderTrace(); });
+function median(a) { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+function renderTrace() {
+  $('traceLine').textContent = `${st.traces.length} av 3 runder` + (st.traces.length ? ' · ' + st.traces.map(v => fmt(v)).join(' / ') + ' mm/s' : '')
+    + (traceScaled ? ' · Sporet er forminsket for å få plass; farten måles likevel i ekte mm.' : '')
+    + (st.pxPerMm ? '' : ' · Kalibrer med kortet først for riktig fart.');
+  $('speedOut').textContent = (st.traces.length >= 3 ? fmt(st.speed_mm_s) : '—') + ' mm/s';
+}
+
+// ---------- bilde ----------
+let img = null, portrait = false, zoom = 1, off = [0, 0];
+const OUT_DPI = 300, MM = OUT_DPI / 25.4;
+function outSize() { return portrait ? [35, 45] : [45, 35]; }
+function setupCrop() {
+  const [w, h] = outSize(), c = $('cropCanvas');
+  c.width = Math.round(w * MM); c.height = Math.round(h * MM);
+  $('crop').classList.toggle('portrait', portrait);
+  const win = portrait ? [31, 41] : [41, 31];
+  Object.assign($('cropWin').style, { left: ((w - win[0]) / 2 / w * 100) + '%', top: ((h - win[1]) / 2 / h * 100) + '%', width: (win[0] / w * 100) + '%', height: (win[1] / h * 100) + '%' });
+  drawCrop();
+}
+function drawCrop() {
+  const c = $('cropCanvas'), g = c.getContext('2d');
+  g.fillStyle = '#dfe8e1'; g.fillRect(0, 0, c.width, c.height);
+  if (!img) { g.fillStyle = '#66766b'; g.font = '28px system-ui'; g.textAlign = 'center'; g.fillText('Ingen bilde valgt', c.width / 2, c.height / 2); return; }
+  const s = Math.max(c.width / img.width, c.height / img.height) * zoom;
+  const dw = img.width * s, dh = img.height * s;
+  off[0] = Math.min(0, Math.max(c.width - dw, off[0])); off[1] = Math.min(0, Math.max(c.height - dh, off[1]));
+  g.drawImage(img, off[0], off[1], dw, dh);
+}
+function centerImg() { const c = $('cropCanvas'); const s = Math.max(c.width / img.width, c.height / img.height) * zoom; off = [(c.width - img.width * s) / 2, (c.height - img.height * s) / 2]; }
+$('photoIn').addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const url = URL.createObjectURL(f), im = new Image();
+  im.onload = () => { img = im; zoom = 1; $('zoom').value = 1; centerImg(); drawCrop(); };
+  im.onerror = () => toast('Klarte ikke å lese bildet.');
+  im.src = url;
+});
+$('rotateBtn').addEventListener('click', () => { portrait = !portrait; setupCrop(); if (img) { centerImg(); drawCrop(); } });
+$('zoom').addEventListener('input', (e) => {
+  if (!img) return;
+  const c = $('cropCanvas'), old = zoom; zoom = Number(e.target.value);
+  const cx = c.width / 2, cy = c.height / 2; off = [cx - (cx - off[0]) * zoom / old, cy - (cy - off[1]) * zoom / old]; drawCrop();
+});
+let drag = null;
+$('crop').addEventListener('pointerdown', (e) => { if (!img) return; drag = [e.clientX, e.clientY]; $('crop').setPointerCapture(e.pointerId); });
+$('crop').addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const r = $('crop').getBoundingClientRect(), sc = $('cropCanvas').width / r.width;
+  off[0] += (e.clientX - drag[0]) * sc; off[1] += (e.clientY - drag[1]) * sc; drag = [e.clientX, e.clientY]; drawCrop();
+});
+$('crop').addEventListener('pointerup', () => { drag = null; });
+$('savePhoto').addEventListener('click', () => {
+  if (!img) { toast('Velg et bilde først.'); return; }
+  $('cropCanvas').toBlob((b) => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'pustestein-bilde.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }, 'image/png');
+});
+$('printPhoto').addEventListener('click', () => {
+  if (!img) { toast('Velg et bilde først.'); return; }
+  const [w, h] = outSize(), src = $('cropCanvas').toDataURL('image/png');
+  $('printSheet').innerHTML = Array.from({ length: 6 }, () => `<img src="${src}" style="width:${w}mm;height:${h}mm" alt="">`).join('');
+  setTimeout(() => window.print(), 50);
+});
+
+// ---------- lag ----------
+function clampLen(L) {
+  const lo = K_MIN * P1, hi = K_MAX * P1;
+  return { L: Math.min(hi, Math.max(lo, L)), clamped: L < lo || L > hi, lo, hi };
+}
+function params() { return { speed_mm_s: st.speed_mm_s, inhale: st.inhale, hold: st.hold, exhale: st.exhale, groove_r: st.groove_r, fill: st.fill }; }
+function renderLag() {
+  for (const [id, k] of [['pIn', 'inhale'], ['pHold', 'hold'], ['pOut', 'exhale'], ['pSpeed', 'speed_mm_s'], ['pR', 'groove_r'], ['pFill', 'fill']])
+    if (document.activeElement !== $(id)) $(id).value = st[k];
+  const L = grooveLen(), c = clampLen(L);
+  $('sumLine').innerHTML = `Rille <b>${Math.round(L)} mm</b> · ${totalT()} s · ${fmt(60 / totalT())} pust/min · ${Math.round(st.hold) + 1} knotter · ${Math.round(st.exhale)} ribber`;
+  $('warnLine').textContent = c.clamped
+    ? `Rillen må være ${Math.round(c.lo)}–${Math.round(c.hi)} mm for å få plass på steinen. Senk farten eller korte ned rytmen.`
+    : 'Passer på steinen.';
+  $('dlJson').disabled = c.clamped;
+  $('jsonOut').textContent = JSON.stringify(params(), null, 2);
+}
+const LIMITS = { inhale: [2, 8], hold: [0, 6], exhale: [3, 10], speed_mm_s: [3, 20] };
+for (const [id, k] of [['pIn', 'inhale'], ['pHold', 'hold'], ['pOut', 'exhale'], ['pSpeed', 'speed_mm_s']]) {
+  $(id).addEventListener('change', (e) => {
+    const v = Number(e.target.value), [lo, hi] = LIMITS[k];
+    if (Number.isFinite(v)) st[k] = Math.min(hi, Math.max(lo, k === 'speed_mm_s' ? v : Math.round(v)));
+    save(); renderAll();
+  });
+}
+$('pR').addEventListener('change', (e) => { st.groove_r = Number(e.target.value); save(); renderLag(); });
+$('pFill').addEventListener('change', (e) => { st.fill = e.target.value; save(); renderLag(); });
+$('dlJson').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(params(), null, 2) + '\n'], { type: 'application/json' }));
+  a.download = 'parametre.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+// ---------- nav ----------
+function renderAll() { if (!raf) setupGuide(); renderCard(); setupTrace(); renderLag(); }
+function show(name) {
+  if (!$('page-' + name)) name = 'guide';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  renderAll();
+}
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => { history.replaceState(null, '', '#' + b.dataset.page); show(b.dataset.page); }));
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+setupCrop();
+show((location.hash || '#guide').slice(1));
+window.__stein = { get st() { return st; }, grooveLen, clampLen, kFor, P1, median };
+</script>
+</body>
+</html>

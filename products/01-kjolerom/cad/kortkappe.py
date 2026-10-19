@@ -16,6 +16,8 @@ from trimesh.creation import extrude_polygon
 
 HERE = Path(__file__).resolve().parent
 IMG = HERE.parent / "bilder"
+import sys
+sys.path.insert(0, str(HERE.parents[2] / "tools"))
 IMG.mkdir(exist_ok=True)
 
 # ---- parametre (mm) ----
@@ -193,11 +195,13 @@ Trekanter     : {len(body.faces)}
     (HERE / "rapport.txt").write_text(report)
     print(report)
 
-    render_iso([(body, np.array([0.55, 0.72, 0.84]))], IMG / "cad-kappe-iso.png", title="Kortkappe v0.1 — PETG, 2,85 mm")
-    exploded = card.copy(); exploded.apply_translation([-45, 0, 6])
-    render_iso([(body, np.array([0.55, 0.72, 0.84])), (exploded, np.array([0.80, 0.62, 0.46]))],
-               IMG / "cad-kappe-eksplodert.png", elev=34, azim=-120, title="Eksplodert: kortet skyves inn fra åpen ende")
-    render_iso([(body, np.array([0.55, 0.72, 0.84]))], IMG / "cad-kappe-under.png", elev=-30, azim=-40, title="Undersiden: tommelutsparing gjennom")
+    from render import render
+    ice, warm = (0.55, 0.72, 0.84), (0.80, 0.62, 0.46)
+    render([(body, ice)], IMG / "cad-kappe-iso.png", elev=30, azim=-58, title="Kortkappe v0.1 — PETG, 2,85 mm")
+    exploded = card.copy(); exploded.apply_translation([-50, 0, 8])
+    render([(body, ice), (exploded, warm)], IMG / "cad-kappe-eksplodert.png", elev=34, azim=-120,
+           title="Eksplodert: kortet skyves inn fra åpen ende")
+    render([(body, ice)], IMG / "cad-kappe-under.png", elev=-30, azim=-40, title="Undersiden: tommelhull gjennom")
     drawing(IMG / "cad-kappe-tegning.png")
 
 
