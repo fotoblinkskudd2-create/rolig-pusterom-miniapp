@@ -1,0 +1,10 @@
+GRANATBELTE-STATIV v0.1 — CAD-rapport
+Kort          : 8 × ID-1 (85.6 × 53.98), spor 1.3 mm, 9.0 mm dypt, helling 12.0°
+Ytre mål      : 92.8 × 68.0 × 71.3 mm
+Trinn         : 7.83 mm høyde, 8.0 mm dybde
+Synlig bånd   : 7.83 mm per kort bak (krav ≥ 7.0 mm tallbånd)  ·  øverste korttopp Z=108.8
+Kort-kollisjon: 0.000 mm3 (skal være 0)  ·  laveste kortpunkt Z=2.15
+Gulv under spor: 1.60 mm (krav ≥ 1.6)
+Vanntett      : True
+Volum massiv  : 243.4 cm3  ·  med 15 % infill ≈ 102 g PLA
+Print-estimat : ~158 min (0.2 mm, 15 % infill, uten støtte — trinn og 12° spor er selvbærende)

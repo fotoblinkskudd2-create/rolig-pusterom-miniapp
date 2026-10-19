@@ -81,7 +81,7 @@ def render(meshes, path, elev=30, azim=-55, size=(1400, 1000), title=None, bg=(1
                 continue
             ns = []
             for vi in (i0, i1, i2):
-                ns.append(vn[vi] if vn[vi] @ n > 0.92 else n)
+                ns.append(vn[vi] if vn[vi] @ n > 0.995 else n)
             nn = w0[..., None] * ns[0] + w1[..., None] * ns[1] + w2[..., None] * ns[2]
             nn /= np.linalg.norm(nn, axis=-1, keepdims=True) + 1e-12
             diff = np.clip(nn @ L, 0, 1)

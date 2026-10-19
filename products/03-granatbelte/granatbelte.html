@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Granatbelte</title>
+<style>
+  :root {
+    --bg: #f4f1ec; --card: #ffffff; --text: #2b2622; --muted: #6e655c; --line: #e2dbd2;
+    --accent: #a8432a; --on-accent: #ffffff; --warn: #b7791f; --bad: #b42318; --ok: #2f7d4f; --paper: #fbf8f3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171412; --card: #221d1a; --text: #efe8e1; --muted: #a89d92; --line: #3a322c;
+      --accent: #e0775c; --on-accent: #171412; --warn: #e0a84a; --bad: #f07a6e; --ok: #6cc08f; --paper: #1d1916;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 84px; min-height: 100vh; }
+  .page { display: none; padding: 20px 16px 40px; max-width: 760px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 20px 0 8px; }
+  p.sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin: 10px 0 4px; }
+  input, select, textarea { width: 100%; font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  textarea#editor { min-height: 46vh; font-family: ui-serif, Georgia, serif; font-size: 1.05rem; line-height: 1.6; background: var(--paper); resize: vertical; }
+  textarea#editor.raw { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; } .row > * { flex: 1; min-width: 0; }
+  .btn { display: inline-block; border: none; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--on-accent); text-align: center; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn.block { display: block; width: 100%; margin-top: 10px; }
+  .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+  .bar .grow { flex: 1; }
+  .status { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .gcard { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; }
+  .gval { font-weight: 800; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+  .slug { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--muted); }
+  .trust { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; align-self: start; }
+  .trust.primær { color: var(--ok); } .trust.sekundær { color: var(--warn); } .trust.egen { color: var(--muted); } .trust.uverifisert { color: var(--bad); }
+  .meta { font-size: 0.8rem; color: var(--muted); grid-column: 1 / -1; word-break: break-word; }
+  .issue { border-left: 4px solid var(--warn); padding: 8px 10px; background: var(--card); border-radius: 0 10px 10px 0; margin-bottom: 8px; font-size: 0.9rem; }
+  .issue.bad { border-color: var(--bad); }
+  .issue .rule { font-size: 0.75rem; color: var(--muted); }
+  .issue q { font-family: ui-serif, Georgia, serif; }
+  .preview { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; font-family: ui-serif, Georgia, serif; font-size: 1.05rem; }
+  .preview p { margin-bottom: 0.9em; }
+  .preview .g { font-weight: 700; }
+  .preview .g.miss { color: var(--bad); text-decoration: underline wavy; }
+  .preview sup { font-size: 0.7em; }
+  .preview ol { font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--muted); padding-left: 20px; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  .chip { border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: 0.8rem; cursor: pointer; }
+  .chip.bad { border-color: var(--bad); color: var(--bad); }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.9rem; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 5; }
+  .toast.show { opacity: 1; }
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); display: flex; justify-content: space-around; padding: 8px 0 12px; z-index: 4; }
+  .nav button { background: none; border: none; color: var(--muted); font: inherit; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .nav button span { font-size: 1.3rem; } .nav button.active { color: var(--accent); font-weight: 600; }
+  .fine { font-size: 0.78rem; color: var(--muted); margin-top: 12px; }
+  a { color: var(--accent); }
+  #printCards { display: none; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; color: #000; padding: 0; }
+    body > *:not(#printCards) { display: none !important; }
+    #printCards { display: grid !important; grid-template-columns: 85.6mm 85.6mm; gap: 4mm; }
+    .pc { width: 85.6mm; height: 54mm; border: 0.2mm solid #999; border-radius: 3.18mm; padding: 0 4mm 3mm; display: flex; flex-direction: column; overflow: hidden; break-inside: avoid; font-family: system-ui, sans-serif; }
+    .pc .top { height: 7mm; display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 5mm; border-bottom: 0.3mm solid #000; }
+    .pc .top small { font-size: 2.4mm; font-weight: 600; }
+    .pc .claim { font-size: 3.2mm; line-height: 1.25; margin-top: 2mm; flex: 1; }
+    .pc .src { font-size: 2.3mm; color: #444; word-break: break-all; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SKRIV -->
+<section id="page-skriv" class="page active" aria-labelledby="h-skriv">
+  <h1 id="h-skriv">Granatbelte</h1>
+  <div class="bar">
+    <select id="draftSel" class="grow" aria-label="Utkast"></select>
+    <button class="btn ghost" id="newDraft">Nytt</button>
+  </div>
+  <input id="draftTitle" placeholder="Tittel" aria-label="Tittel" maxlength="140">
+  <div class="bar">
+    <label for="rawMin" style="margin:0">Rå-økt</label>
+    <select id="rawMin" style="width:auto"><option>5</option><option>10</option><option selected>15</option><option>25</option><option>45</option></select>
+    <span class="status">min</span>
+    <select id="rawPart" style="width:auto" aria-label="Hvem skriver"></select>
+    <button class="btn" id="rawBtn">Start rå</button>
+    <span class="status grow" id="rawStatus"></span>
+  </div>
+  <textarea id="editor" spellcheck="false" aria-label="Tekst" placeholder="Start midt i helvete. Sett inn tall med {{kortnavn}}."></textarea>
+  <div class="status" id="counts"></div>
+  <h2>Granater — trykk for å sette inn</h2>
+  <div class="chips" id="chipList"></div>
+  <p class="fine">Alt lagres på denne enheten hvert sekund. Ingen sky, ingen konto, ingen maskin som skriver for deg. <a href="../../index.html#pusterom">← Pusterom</a></p>
+</section>
+
+<!-- LINT -->
+<section id="page-lint" class="page" aria-labelledby="h-lint">
+  <h1 id="h-lint">Granatsjekk</h1>
+  <p class="sub">Reglene er dine, ordrett fra instruksen. Lint sier ifra — den stopper ingenting.</p>
+  <div id="issueList"></div>
+  <h2>Forhåndsvisning</h2>
+  <div class="preview" id="preview"></div>
+  <div class="row" style="margin-top:10px">
+    <button class="btn" id="exportMd">Eksporter Markdown med fotnoter</button>
+    <button class="btn ghost" id="exportTxt">Ren tekst</button>
+  </div>
+  <h2>Økter</h2>
+  <div id="sessionList"></div>
+</section>
+
+<!-- GRANATER -->
+<section id="page-granater" class="page" aria-labelledby="h-gran">
+  <h1 id="h-gran">Granater</h1>
+  <p class="sub">Ett tall, én påstand, én kilde, én dato. Uten kilde er det en blindgjenger.</p>
+  <form id="cardForm" class="card" autocomplete="off">
+    <div class="row">
+      <div><label for="cSlug">Kortnavn (brukes som {{navn}})</label><input id="cSlug" required pattern="[a-z0-9æøå_\-]{2,24}" maxlength="24" placeholder="bacon"></div>
+      <div><label for="cTrust">Tillit</label>
+        <select id="cTrust"><option value="primær">Primærkilde</option><option value="sekundær">Sekundær / kommersiell</option><option value="egen">Egen beregning</option><option value="uverifisert">Uverifisert</option></select></div>
+    </div>
+    <div class="row">
+      <div><label for="cValue">Tall</label><input id="cValue" required maxlength="24" placeholder="84,6"></div>
+      <div><label for="cUnit">Enhet</label><input id="cUnit" maxlength="24" placeholder="mill USD"></div>
+    </div>
+    <label for="cClaim">Påstand</label><input id="cClaim" required maxlength="200" placeholder="Bacon-triptyk fra Astrup Fearnley-samlingen solgt hos Sotheby's i 2020">
+    <div class="row">
+      <div><label for="cSource">Kilde</label><input id="cSource" maxlength="120" placeholder="Sotheby's pressemelding"></div>
+      <div><label for="cDate">Hentet</label><input id="cDate" type="date"></div>
+    </div>
+    <label for="cUrl">Lenke</label><input id="cUrl" type="url" maxlength="400" placeholder="https://…">
+    <label for="cNote">Notat (vises ikke i tekst)</label><input id="cNote" maxlength="300">
+    <button class="btn block" type="submit" id="cSave">Lagre granat</button>
+  </form>
+  <div class="bar"><span class="grow"></span><button class="btn ghost" id="printBtn">Skriv ut kort (ID-1, 8 per A4)</button></div>
+  <div id="cardList"></div>
+</section>
+
+<!-- MER -->
+<section id="page-mer" class="page" aria-labelledby="h-mer">
+  <h1 id="h-mer">Belte</h1>
+  <p class="sub">Ta med alt — tekster, granater, økter — som én fil.</p>
+  <button class="btn block" id="exportAll">Eksporter alt (JSON)</button>
+  <label for="importAll" class="btn ghost block">Importer JSON</label>
+  <input type="file" id="importAll" accept=".json,application/json" hidden>
+  <h2>Reglene</h2>
+  <div id="ruleList" class="card"></div>
+  <p class="fine">Stativet for kortene: <code>cad/granatbelte.stl</code>. Kort i ID-1-format (85,6 × 54 mm), tallet i 7 mm-båndet øverst, så det synes over kortet foran.</p>
+</section>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button data-page="skriv" class="active"><span aria-hidden="true">✍️</span>Skriv</button>
+  <button data-page="lint"><span aria-hidden="true">🧨</span>Sjekk</button>
+  <button data-page="granater"><span aria-hidden="true">💣</span>Granater</button>
+  <button data-page="mer"><span aria-hidden="true">🎒</span>Belte</button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<div id="printCards"></div>
+
+<script>
+'use strict';
+const KEY = 'granatbelte.v1';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+let toastT;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2800); }
+
+// ---------- startgranater: research 19.10.2026 (se MARKED.md) ----------
+const SEED_CARDS = [
+  { slug: 'inkasso', value: 'over 30', unit: '%', claim: 'av utestående forbruksgjeld lå hos inkassoselskaper ved utgangen av 2025', source: 'Norges Bank, Bankplassen 2026', url: 'https://www.norges-bank.no/bankplassen/arkiv/2026/dyrtid-og-hoye-renter-har-ikke-fort-til-storre-forbrukslan/', fetched: '2026-10-19', trust: 'primær', note: '' },
+  { slug: 'usikret', value: '177,3', unit: 'mrd kr', claim: 'usikret gjeld i Norge ved utgangen av 2025', source: 'Kortio (kommersiell analyse av Gjeldsregisteret)', url: 'https://kortio.no/undersokelser/total-kredittkortgjeld-i-norge/', fetched: '2026-10-19', trust: 'sekundær', note: 'Samme side oppgir også 172 mrd. Verifiser mot gjeldsregisteret.com.' },
+  { slug: 'bacon', value: '84,6', unit: 'mill USD', claim: 'Bacon-triptyk (Oresteia) fra Astrup Fearnley-samlingen solgt hos Sotheby\'s i 2020', source: 'Sotheby\'s pressemelding', url: 'https://www.sothebys.com/en/press/sothebys-to-offer-francis-bacons-large-format-triptych-inspired-by-the-oresteia-of-aeschylus-this-may-in-new-york', fetched: '2026-10-19', trust: 'primær', note: '' },
+  { slug: 'bacon-nok', value: '818', unit: 'mill kr', claim: 'Norges dyreste kunstverk solgt på auksjon (DN-overskrift)', source: 'Dagens Næringsliv, emneside Francis Bacon', url: 'https://www.dn.no/topic/Francis_Bacon', fetched: '2026-10-19', trust: 'sekundær', note: 'Utdraget sier ikke hvilket verk. 84,6 mill USD ≈ 820 mill kr ved 2020-kurs (est.) — konsistent.' },
+  { slug: 'kunst', value: '3,1', unit: 'mrd kr', claim: 'brukt på visuell kunst i 2024', source: '', url: '', fetched: '', trust: 'uverifisert', note: 'Fant ingen kilde 19.10.2026. Sjekk Prop. 1 S (2023–2024) kap. 320/325 eller Kulturrådets årsrapport 2024.' },
+  { slug: 'lego', value: '818', unit: 'kr', claim: 'ekstra for et Lego-sett til 2 499 kr på delbetaling (24,9 % + 39 kr/mnd, 12 mnd)', source: 'Egen beregning, products/01-kjolerom/OKONOMI.md', url: '', fetched: '2026-10-19', trust: 'egen', note: '' },
+  { slug: 'rentedag', value: '123', unit: 'kr per dag', claim: 'i rente på 250 000 kr gjeld à 18 % (est.)', source: 'Egen beregning, products/01-kjolerom/OKONOMI.md', url: '', fetched: '2026-10-19', trust: 'egen', note: 'Renten er antatt.' }
+];
+const SEED_TEXT = `Jeg satt der med inkassobrevet åpent og to tall som ikke ville slutte å se på hverandre. Bacon: {{bacon-nok}}. Lego på delbetaling: {{lego}} i ren rente. Samme sifre! Åtte-en-åtte. Den ene for et maleri av furier som jager en mann gjennom evigheten, den andre for retten til å slippe å vente til lønning.
+
+Og staten svidde {{kunst}} på visuell kunst i fjor — sier jeg, sier hodet mitt, sier en del som har lest det et sted — mens {{inkasso}} av forbruksgjelden allerede ligger hos inkassobyråene.
+
+Hvem eier tiden min?`;
+
+function defaults() {
+  const d = { id: uid(), title: 'Åtte-en-åtte', text: SEED_TEXT, created: Date.now(), updated: Date.now() };
+  return {
+    v: 1,
+    cards: SEED_CARDS.map(c => Object.assign({ id: uid() }, c)),
+    drafts: [d], current: d.id,
+    sessions: [],
+    settings: { rawMin: 15 }
+  };
+}
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1 && Array.isArray(s.drafts) && s.drafts.length && Array.isArray(s.cards)) return s; }
+  catch (e) { /* tom eller ødelagt lagring */ }
+  return defaults();
+}
+let st = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { toast('Kunne ikke lagre. Eksporter nå.'); } }
+const draft = () => st.drafts.find(d => d.id === st.current) || st.drafts[0];
+const cardBy = (slug) => st.cards.find(c => c.slug === slug);
+
+// ---------- deler (deles med Kjølerom hvis samme opphav) ----------
+function parts() {
+  try { const k = JSON.parse(localStorage.getItem('kjolerom.v1')); if (k && Array.isArray(k.parts) && k.parts.length) return { list: k.parts, front: k.front }; }
+  catch (e) { /* ingen Kjølerom-data */ }
+  return { list: [{ id: 'meg', name: 'Meg' }], front: 'meg' };
+}
+
+// ---------- tokens ----------
+const TOKEN = /\{\{\s*([a-z0-9æøå_-]+)\s*\}\}/gi;
+function cardText(c) { return (c.value + (c.unit ? ' ' + c.unit : '')).trim(); }
+function sourced(c) { return c && c.trust !== 'uverifisert' && (c.source || c.url); }
+
+// ---------- lint: reglene fra instruksen ----------
+const RULES = [
+  { id: 'usikret', sev: 'bad', name: 'Usikret granat', quote: 'Grav tallene … bruk dem som granater', fix: 'Lag et kort med kilde og bruk {{navn}}.' },
+  { id: 'kildelos', sev: 'bad', name: 'Granat uten sikring', quote: 'Bland fakta med rus — men fakta', fix: 'Legg til kilde, eller merk teksten som påstand.' },
+  { id: 'ukjent', sev: 'bad', name: 'Ukjent granat', quote: '', fix: 'Kortet finnes ikke. Skrivefeil i navnet?' },
+  { id: 'intro', sev: 'warn', name: 'Intro', quote: 'Start midt i helvete. Ikke intro. Ikke «i dag tenkte jeg».', fix: 'Stryk første setning og se om teksten blir bedre.' },
+  { id: 'jeg', sev: 'warn', name: 'Tredjeperson', quote: 'Førsteperson. Alltid.', fix: '«Jeg» er hovedpersonen.' },
+  { id: 'begge', sev: 'warn', name: 'Begge sider', quote: 'Ingen objektivitet. Ingen «begge sider».', fix: 'Velg side.' },
+  { id: 'filler', sev: 'warn', name: 'Filler', quote: 'Hver setning må kutte. Ingen filler.', fix: 'Stryk ordet.' },
+  { id: 'pen', sev: 'warn', name: 'Pen slutt', quote: 'Slutt aldri pent.', fix: 'Avslutt med et smell, et spørsmål, eller stillhet.' }
+];
+const FILLER = ['egentlig', 'liksom', 'på en måte', 'litt sånn', 'i grunn', 'kanskje litt', 'ganske', 'faktisk'];
+const INTRO = /^(i dag|idag|jeg tenkte|hei\b|hallo\b|velkommen|dette innlegget|i denne teksten|først vil jeg)/i;
+const PEN = /(takk for at du leste|lykke til|ha en fin|klem\b|alt i alt|til syvende og sist|kort oppsummert|håper dette)/i;
+const BEGGE = /(på den ene siden|på den andre siden|begge sider|nyansert bilde|det finnes argumenter for og mot)/i;
+// tall med enhet som ser ut som en påstand: 3,1 mrd · 818 mill · 30 % · 2 499 kr · 53 mph
+const NUM = /(?<![\w{])(\d{1,3}(?:[  .]\d{3})*(?:[.,]\d+)?|\d+(?:[.,]\d+)?)\s?(mrd|milliard(?:er)?|mill(?:ioner)?|mill\.|%|prosent|kr|kroner|usd|dollar|euro|mph|km\/t|tonn|k\b)/gi;
+
+function lint(text) {
+  const out = [];
+  const masked = text.replace(TOKEN, m => ' '.repeat(m.length)); // tokens teller ikke som usikrede tall
+  for (const m of masked.matchAll(NUM)) out.push({ rule: 'usikret', at: m.index, hit: m[0] });
+  const used = new Set();
+  for (const m of text.matchAll(TOKEN)) {
+    const slug = m[1].toLowerCase(), c = cardBy(slug);
+    if (!c) out.push({ rule: 'ukjent', at: m.index, hit: m[0] });
+    else if (!sourced(c)) { if (!used.has(slug)) out.push({ rule: 'kildelos', at: m.index, hit: m[0] + ' = ' + cardText(c) }); }
+    used.add(slug);
+  }
+  const trimmed = text.trim();
+  const first = (trimmed.split(/(?<=[.!?…])\s+/)[0] || '');
+  if (INTRO.test(first)) out.push({ rule: 'intro', at: text.indexOf(first), hit: first.slice(0, 80) });
+  if (trimmed.length > 200 && !/\b(jeg|meg|min|mitt|mine)\b/i.test(trimmed)) out.push({ rule: 'jeg', at: 0, hit: '' });
+  for (const m of text.matchAll(new RegExp(BEGGE.source, 'gi'))) out.push({ rule: 'begge', at: m.index, hit: m[0] });
+  for (const w of FILLER) for (const m of text.matchAll(new RegExp('(?<![\\wæøå])' + w + '(?![\\wæøå])', 'gi'))) out.push({ rule: 'filler', at: m.index, hit: m[0] });
+  const paras = trimmed.split(/\n\s*\n/), last = paras[paras.length - 1] || '';
+  if (PEN.test(last)) out.push({ rule: 'pen', at: text.lastIndexOf(last), hit: last.match(PEN)[0] });
+  return out.sort((a, b) => a.at - b.at);
+}
+
+// ---------- render tekst m/ fotnoter ----------
+function footnoted(text) {
+  const order = [];
+  const idx = (slug) => { let i = order.indexOf(slug); if (i < 0) { order.push(slug); i = order.length - 1; } return i + 1; };
+  const html = text.split(/\n\s*\n/).map(p => '<p>' + esc(p).replace(/\{\{\s*([a-z0-9æøå_-]+)\s*\}\}/gi, (m, s) => {
+    const c = cardBy(s.toLowerCase());
+    if (!c) return `<span class="g miss">${esc(m)}</span>`;
+    const n = idx(c.slug);
+    return `<span class="g${sourced(c) ? '' : ' miss'}">${esc(cardText(c))}</span><sup>${n}</sup>`;
+  }).replace(/\n/g, '<br>') + '</p>').join('');
+  const notes = order.map(s => {
+    const c = cardBy(s);
+    const src = sourced(c) ? `${esc(c.claim)} — ${esc(c.source)}${c.url ? ` <a href="${esc(c.url)}" rel="noopener">lenke</a>` : ''}${c.fetched ? ` (hentet ${esc(c.fetched)})` : ''}` : `<b>KILDE MANGLER</b> — ${esc(c.claim)}`;
+    return `<li>${src}</li>`;
+  }).join('');
+  return html + (notes ? `<ol>${notes}</ol>` : '');
+}
+function toMarkdown(d) {
+  const order = [];
+  const body = d.text.replace(TOKEN, (m, s) => {
+    const c = cardBy(s.toLowerCase());
+    if (!c) return m + ' [UKJENT GRANAT]';
+    let i = order.indexOf(c.slug); if (i < 0) { order.push(c.slug); i = order.length - 1; }
+    return cardText(c) + (sourced(c) ? '' : ' [KILDE MANGLER]') + `[^${i + 1}]`;
+  });
+  const notes = order.map((s, i) => {
+    const c = cardBy(s);
+    return `[^${i + 1}]: ` + (sourced(c) ? `${c.claim} — ${c.source}${c.url ? ' ' + c.url : ''}${c.fetched ? ' (hentet ' + c.fetched + ')' : ''}` : `KILDE MANGLER — ${c.claim}`);
+  });
+  return `# ${d.title || 'Uten tittel'}\n\n${body.trim()}\n` + (notes.length ? '\n' + notes.join('\n') + '\n' : '');
+}
+function toPlain(d) { return d.text.replace(TOKEN, (m, s) => { const c = cardBy(s.toLowerCase()); return c ? cardText(c) : m; }); }
+
+// ---------- skriv ----------
+function words(t) { return (t.replace(TOKEN, 'x').match(/[\wæøåÆØÅ'’-]+/g) || []).length; }
+function renderSkriv() {
+  $('draftSel').innerHTML = st.drafts.map(d => `<option value="${d.id}"${d.id === st.current ? ' selected' : ''}>${esc(d.title || 'Uten tittel')}</option>`).join('');
+  const d = draft();
+  if (document.activeElement !== $('editor')) $('editor').value = d.text;
+  if (document.activeElement !== $('draftTitle')) $('draftTitle').value = d.title;
+  const p = parts();
+  $('rawPart').innerHTML = p.list.map(x => `<option value="${esc(x.id)}"${x.id === p.front ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
+  $('rawPart').hidden = p.list.length < 2;
+  $('rawMin').value = String(st.settings.rawMin);
+  const issues = lint(d.text), bad = issues.filter(i => RULES.find(r => r.id === i.rule).sev === 'bad').length;
+  $('counts').textContent = `${words(d.text)} ord · ${issues.length} merknad${issues.length === 1 ? '' : 'er'}${bad ? ` · ${bad} usikret` : ''}`;
+  $('chipList').innerHTML = st.cards.map(c => `<button class="chip${sourced(c) ? '' : ' bad'}" data-ins="${esc(c.slug)}" title="${esc(c.claim)}">${esc(c.slug)} · ${esc(cardText(c))}</button>`).join('');
+}
+let saveT;
+$('editor').addEventListener('input', () => {
+  const d = draft(); d.text = $('editor').value; d.updated = Date.now();
+  clearTimeout(saveT); saveT = setTimeout(() => { save(); renderSkriv(); }, 600);
+});
+$('draftTitle').addEventListener('input', () => { draft().title = $('draftTitle').value; save(); });
+$('draftTitle').addEventListener('change', renderSkriv);
+$('draftSel').addEventListener('change', (e) => { st.current = e.target.value; save(); renderSkriv(); });
+$('newDraft').addEventListener('click', () => {
+  const d = { id: uid(), title: '', text: '', created: Date.now(), updated: Date.now() };
+  st.drafts.unshift(d); st.current = d.id; save(); renderSkriv(); $('editor').focus();
+});
+$('chipList').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-ins]'); if (!b) return;
+  const ed = $('editor'), tok = `{{${b.dataset.ins}}}`;
+  const s = ed.selectionStart ?? ed.value.length, en = ed.selectionEnd ?? s;
+  ed.setRangeText(tok, s, en, 'end'); ed.focus();
+  ed.dispatchEvent(new Event('input'));
+});
+$('rawMin').addEventListener('change', (e) => { st.settings.rawMin = Number(e.target.value); save(); });
+
+// ---------- rå-modus: ingen sletting før fristen ----------
+let raw = null;
+function rawActive() { return raw && Date.now() < raw.end; }
+function blockDelete(e) {
+  if (!rawActive()) return;
+  if (e.type === 'keydown') {
+    const k = e.key;
+    const del = k === 'Backspace' || k === 'Delete' || ((e.ctrlKey || e.metaKey) && (k === 'z' || k === 'x' || k === 'Z' || k === 'X'));
+    if (del) { e.preventDefault(); nudge(); }
+  } else if (e.type === 'beforeinput') {
+    if (/^(delete|historyUndo|historyRedo)/.test(e.inputType)) { e.preventDefault(); nudge(); }
+    // å skrive over en markering er også sletting
+    const ed = $('editor');
+    if (ed.selectionStart !== ed.selectionEnd && /^insert/.test(e.inputType)) { e.preventDefault(); ed.selectionStart = ed.selectionEnd; nudge(); }
+  } else if (e.type === 'cut' || e.type === 'drop') { e.preventDefault(); nudge(); }
+}
+let nudgeT = 0;
+function nudge() { if (Date.now() - nudgeT > 3000) { toast('Rå-modus. Ingen sletting. Skriv videre.'); nudgeT = Date.now(); } }
+for (const ev of ['keydown', 'beforeinput', 'cut', 'drop']) $('editor').addEventListener(ev, blockDelete);
+function rawTick() {
+  if (!raw) return;
+  const left = raw.end - Date.now();
+  const w = words($('editor').value) - raw.startWords;
+  if (left <= 0) { endRaw(true); return; }
+  const m = Math.floor(left / 60000), s = Math.floor(left % 60000 / 1000);
+  $('rawStatus').textContent = `RÅ ${m}:${String(s).padStart(2, '0')} · +${Math.max(0, w)} ord`;
+  raw.timer = setTimeout(rawTick, 250);
+}
+function endRaw(deadline) {
+  clearTimeout(raw.timer);
+  const w = Math.max(0, words($('editor').value) - raw.startWords);
+  st.sessions.unshift({ t: raw.start, min: raw.min, words: w, part: raw.part, draft: draft().id, done: deadline });
+  st.sessions = st.sessions.slice(0, 300);
+  raw = null; save();
+  $('editor').classList.remove('raw'); $('rawBtn').textContent = 'Start rå'; $('rawStatus').textContent = deadline ? `Deadline. +${w} ord.` : `Avbrutt. +${w} ord.`;
+  if (deadline) toast('Deadline. Send det ut før det blir pent.');
+  renderSkriv();
+}
+$('rawBtn').addEventListener('click', () => {
+  if (raw) { endRaw(false); return; }
+  const min = st.settings.rawMin;
+  raw = { start: Date.now(), end: Date.now() + min * 60000, min, startWords: words($('editor').value), part: $('rawPart').value || 'meg' };
+  $('editor').classList.add('raw'); $('rawBtn').textContent = 'Avbryt';
+  const ed = $('editor'); ed.focus(); ed.selectionStart = ed.selectionEnd = ed.value.length;
+  rawTick();
+});
+
+// ---------- lint-side ----------
+function renderLint() {
+  const d = draft(), issues = lint(d.text);
+  $('issueList').innerHTML = issues.length ? issues.map(i => {
+    const r = RULES.find(x => x.id === i.rule);
+    return `<div class="issue ${r.sev === 'bad' ? 'bad' : ''}" data-rule="${r.id}"><b>${esc(r.name)}</b>${i.hit ? ` — <q>${esc(i.hit)}</q>` : ''}<div>${esc(r.fix)}</div>${r.quote ? `<div class="rule">Regel: «${esc(r.quote)}»</div>` : ''}</div>`;
+  }).join('') : '<div class="card">Ingen merknader. Send den.</div>';
+  $('preview').innerHTML = (d.title ? `<h2 style="margin-top:0">${esc(d.title)}</h2>` : '') + footnoted(d.text);
+  const p = parts();
+  $('sessionList').innerHTML = st.sessions.slice(0, 15).map(s => {
+    const who = (p.list.find(x => x.id === s.part) || { name: s.part }).name;
+    return `<div class="card status">${new Date(s.t).toLocaleString('nb-NO', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} · ${esc(who)} · ${s.min} min · +${s.words} ord${s.done ? '' : ' · avbrutt'}</div>`;
+  }).join('') || '<div class="status">Ingen rå-økter ennå.</div>';
+}
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const fname = (d, ext) => ((d.title || 'utkast').toLowerCase().replace(/æ/g, 'ae').replace(/ø/g, 'o').replace(/å/g, 'a').normalize('NFKD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '') || 'utkast') + ext;
+$('exportMd').addEventListener('click', () => { const d = draft(); download(fname(d, '.md'), toMarkdown(d), 'text/markdown'); });
+$('exportTxt').addEventListener('click', () => { const d = draft(); download(fname(d, '.txt'), toPlain(d), 'text/plain'); });
+
+// ---------- granater ----------
+let editing = null;
+function renderCards() {
+  $('cardList').innerHTML = st.cards.map(c => `<div class="card gcard" data-card="${esc(c.slug)}">
+    <div><div class="gval">${esc(cardText(c))}</div><div>${esc(c.claim)}</div></div>
+    <span class="trust ${esc(c.trust)}">${esc(c.trust)}</span>
+    <div class="meta"><span class="slug">{{${esc(c.slug)}}}</span> · ${c.source ? esc(c.source) : '<b>ingen kilde</b>'}${c.fetched ? ' · ' + esc(c.fetched) : ''}${c.url ? ` · <a href="${esc(c.url)}" rel="noopener">lenke</a>` : ''}${c.note ? '<br>' + esc(c.note) : ''}
+    <br><button class="btn ghost" data-edit="${esc(c.slug)}" style="padding:4px 10px;margin-top:6px">Rediger</button> <button class="btn ghost" data-del="${esc(c.slug)}" style="padding:4px 10px;margin-top:6px">Slett</button></div>
+  </div>`).join('');
+}
+function fillForm(c) {
+  $('cSlug').value = c ? c.slug : ''; $('cTrust').value = c ? c.trust : 'primær'; $('cValue').value = c ? c.value : ''; $('cUnit').value = c ? c.unit : '';
+  $('cClaim').value = c ? c.claim : ''; $('cSource').value = c ? c.source : ''; $('cDate').value = c ? c.fetched : new Date().toISOString().slice(0, 10);
+  $('cUrl').value = c ? c.url : ''; $('cNote').value = c ? c.note : ''; $('cSave').textContent = c ? 'Oppdater granat' : 'Lagre granat';
+}
+$('cardForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const slug = $('cSlug').value.trim().toLowerCase();
+  if (!/^[a-z0-9æøå_-]{2,24}$/.test(slug)) { toast('Kortnavn: 2–24 tegn, a–å, 0–9, - og _.'); return; }
+  const c = { slug, trust: $('cTrust').value, value: $('cValue').value.trim(), unit: $('cUnit').value.trim(), claim: $('cClaim').value.trim(),
+    source: $('cSource').value.trim(), fetched: $('cDate').value, url: $('cUrl').value.trim(), note: $('cNote').value.trim() };
+  if (c.url && !/^https?:\/\//i.test(c.url)) { toast('Lenken må starte med http:// eller https://'); return; }
+  if (c.trust !== 'uverifisert' && c.trust !== 'egen' && !c.source && !c.url) { c.trust = 'uverifisert'; toast('Ingen kilde → merket uverifisert.'); }
+  const ex = st.cards.find(x => x.slug === (editing || slug));
+  if (ex && !editing) { toast('Kortnavnet finnes. Velg et annet, eller rediger.'); return; }
+  if (editing && editing !== slug && cardBy(slug)) { toast('Kortnavnet finnes.'); return; }
+  if (ex) {
+    if (editing !== slug) for (const d of st.drafts) d.text = d.text.replace(new RegExp('\\{\\{\\s*' + editing.replace(/[-]/g, '\\-') + '\\s*\\}\\}', 'gi'), `{{${slug}}}`);
+    Object.assign(ex, c);
+  } else st.cards.unshift(Object.assign({ id: uid() }, c));
+  editing = null; save(); fillForm(null); renderCards(); toast('Granat sikret.');
+});
+$('cardList').addEventListener('click', (e) => {
+  const ed = e.target.closest('[data-edit]'), del = e.target.closest('[data-del]');
+  if (ed) { editing = ed.dataset.edit; fillForm(cardBy(editing)); $('cSlug').focus(); window.scrollTo(0, 0); }
+  if (del) {
+    const slug = del.dataset.del, inUse = st.drafts.some(d => new RegExp('\\{\\{\\s*' + slug.replace(/[-]/g, '\\-') + '\\s*\\}\\}', 'i').test(d.text));
+    if (inUse && !confirm(`{{${slug}}} brukes i en tekst. Slette likevel?`)) return;
+    st.cards = st.cards.filter(c => c.slug !== slug); save(); renderCards();
+  }
+});
+$('printBtn').addEventListener('click', () => {
+  $('printCards').innerHTML = st.cards.map(c => `<div class="pc"><div class="top"><span>${esc(cardText(c))}</span><small>${esc(c.trust).toUpperCase()}</small></div>
+    <div class="claim">${esc(c.claim)}</div><div class="src">${c.source ? esc(c.source) : 'KILDE MANGLER'}${c.fetched ? ' · ' + esc(c.fetched) : ''}${c.url ? '<br>' + esc(c.url) : ''}</div></div>`).join('');
+  setTimeout(() => window.print(), 50);
+});
+
+// ---------- belte ----------
+$('exportAll').addEventListener('click', () => download('granatbelte-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(st, null, 2), 'application/json'));
+$('importAll').addEventListener('change', async (e) => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  try {
+    const s = JSON.parse(await f.text());
+    if (!s || s.v !== 1 || !Array.isArray(s.drafts) || !Array.isArray(s.cards)) throw new Error('format');
+    s.drafts = s.drafts.filter(d => d && typeof d.id === 'string' && typeof d.text === 'string');
+    s.cards = s.cards.filter(c => c && typeof c.slug === 'string' && /^[a-z0-9æøå_-]{2,24}$/.test(c.slug) && typeof c.value === 'string')
+      .map(c => Object.assign({ unit: '', claim: '', source: '', url: '', fetched: '', note: '', trust: 'uverifisert' }, c, { url: /^https?:\/\//i.test(c.url || '') ? c.url : '' }));
+    if (!s.drafts.length) throw new Error('tom');
+    s.sessions = Array.isArray(s.sessions) ? s.sessions : [];
+    s.settings = Object.assign({ rawMin: 15 }, s.settings || {});
+    if (!s.drafts.some(d => d.id === s.current)) s.current = s.drafts[0].id;
+    st = s; save(); renderAll(); toast('Importert.');
+  } catch (err) { toast('Filen ble ikke gjenkjent.'); }
+  e.target.value = '';
+});
+function renderRules() {
+  $('ruleList').innerHTML = RULES.filter(r => r.quote).map(r => `<p style="margin-bottom:8px"><b>${esc(r.name)}</b> — «${esc(r.quote)}»</p>`).join('');
+}
+
+// ---------- nav ----------
+function renderAll() { renderSkriv(); renderLint(); renderCards(); renderRules(); }
+function show(name) {
+  if (!$('page-' + name)) name = 'skriv';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  renderAll();
+}
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => { history.replaceState(null, '', '#' + b.dataset.page); show(b.dataset.page); }));
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+fillForm(null);
+show((location.hash || '#skriv').slice(1));
+save();
+window.__granat = { lint, toMarkdown, footnoted, words, get st() { return st; } };
+</script>
+</body>
+</html>
