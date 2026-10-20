@@ -1,0 +1,57 @@
+{
+  "front": {
+    "tett": true,
+    "volum_cm3": 51.7,
+    "masse_g_petg": 65.6,
+    "boks_mm": [
+      194.2,
+      18.0,
+      149.2
+    ],
+    "trekanter": 2288
+  },
+  "bakdeksel": {
+    "tett": true,
+    "volum_cm3": 60.1,
+    "masse_g_petg": 76.4,
+    "boks_mm": [
+      189.4,
+      3.8,
+      144.4
+    ],
+    "trekanter": 4054
+  },
+  "fot": {
+    "tett": true,
+    "volum_cm3": 49.7,
+    "masse_g_petg": 63.1,
+    "boks_mm": [
+      204.2,
+      44.0,
+      9.0
+    ],
+    "trekanter": 308
+  },
+  "linsedeksel": {
+    "tett": true,
+    "volum_cm3": 0.3,
+    "masse_g_petg": 0.4,
+    "boks_mm": [
+      16.0,
+      1.4,
+      14.8
+    ],
+    "trekanter": 76
+  },
+  "knapp": {
+    "tett": true,
+    "volum_cm3": 0.2,
+    "masse_g_petg": 0.2,
+    "boks_mm": [
+      8.2,
+      8.2,
+      3.4
+    ],
+    "trekanter": 252
+  }
+}

@@ -22,9 +22,9 @@ struct SolDag {
 
 namespace sol_detalj {
 
-constexpr double PI = 3.14159265358979323846;
-inline double rad(double g) { return g * PI / 180.0; }
-inline double grad(double r) { return r * 180.0 / PI; }
+constexpr double PI_ = 3.14159265358979323846;  // ikke «PI»: Arduino.h definerer det som makro
+inline double rad(double g) { return g * PI_ / 180.0; }
+inline double grad(double r) { return r * 180.0 / PI_; }
 
 // Deklinasjon (rad) og tidsjevning (min) for et tidspunkt i julianske århundrer fra J2000.
 inline void sol_param(double t, double& dekl, double& eqtid) {

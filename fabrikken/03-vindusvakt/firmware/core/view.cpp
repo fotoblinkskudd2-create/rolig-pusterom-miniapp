@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "qrcodegen.hpp"
+
 namespace vindusvakt {
 
 namespace {
@@ -227,6 +229,29 @@ std::string lys_linje(const Sted& st, ms_t naa) {
          (diff == 0 ? "like mye som i går." : std::to_string(std::abs(diff)) + " min " + (diff > 0 ? "mer" : "mindre") + " enn i går.");
 }
 
+// Tilkoblingsboks over hva som helst: QR + nett + passord. Format på c.kobling: "nett|passord|url".
+static void kobling(const Ctx& c, Skjerm& s) {
+  const size_t a = c.kobling.find('|'), b = c.kobling.find('|', a + 1);
+  if (a == std::string::npos || b == std::string::npos) return;
+  const std::string nett = c.kobling.substr(0, a), pass = c.kobling.substr(a + 1, b - a - 1), url = c.kobling.substr(b + 1);
+  const int bx = 200, by = 90, bw = 400, bh = 300;
+  s.fill(bx - 4, by - 4, bw + 8, bh + 8, true);
+  s.fill(bx, by, bw, bh, false);
+  using qrcodegen::QrCode;
+  const QrCode q = QrCode::encodeText(("http://" + url + "/").c_str(), QrCode::Ecc::MEDIUM);
+  const int n = q.getSize(), sk = 200 / (n + 2), x0 = bx + 16, y0 = by + (bh - (n + 2) * sk) / 2;
+  for (int y = 0; y < n; ++y)
+    for (int x = 0; x < n; ++x)
+      if (q.getModule(x, y)) s.fill(x0 + (x + 1) * sk, y0 + (y + 1) * sk, sk, sk);
+  const int tx = x0 + (n + 2) * sk + 16;
+  s.text(F_S, tx, by + 70, "NETT");
+  s.text(F_M, tx, by + 94, nett);
+  s.text(F_S, tx, by + 140, "PASSORD");
+  s.text(F_M, tx, by + 164, pass);
+  s.text(F_S, tx, by + 210, "ÅPNE");
+  s.text(F_M, tx, by + 234, url);
+}
+
 void tegn(const Arkiv& a, const Ctx& c, Skjerm& s) {
   s.clear();
   switch (c.side) {
@@ -234,6 +259,7 @@ void tegn(const Arkiv& a, const Ctx& c, Skjerm& s) {
     case Side::Aret: aret(a, c, s); break;
     default: uke(a, c, s); break;
   }
+  if (!c.kobling.empty()) kobling(c, s);
 }
 
 }  // namespace vindusvakt

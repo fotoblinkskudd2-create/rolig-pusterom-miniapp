@@ -18,6 +18,7 @@ struct Ctx {
   Side side = Side::Uke;
   Sted sted;
   bool privat = false;  // linsedekselet bak er lukket
+  std::string kobling;  // ikke tom: vis tilkoblingsboks (AP-navn|passord|url)
 };
 
 void tegn(const Arkiv& a, const Ctx& c, Skjerm& s);
