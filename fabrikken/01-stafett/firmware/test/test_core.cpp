@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../core/view.h"
+#include "../core/api.h"
 
 using namespace stafett;
 
@@ -250,7 +250,73 @@ static void test_fuzz() {
   SJEKK(true);
 }
 
+static void test_api_og_hjul() {
+  Enhet e;
+  Api api(e);
+  api.nokkel = "hemmelig";
+  bool klokke_ok = false;
+  ms_t satt = 0;
+  api.sett_klokke = [&](ms_t t) { if (klokke_ok) satt = t; return klokke_ok; };
+  LIK(api.handle("GET", "/api/state", "", "", T0).kode, 401);
+  LIK(api.handle("GET", "/api/state", "", "hemmeli", T0).kode, 401);
+  LIK(api.handle("GET", "/api/state?k=hemmelig", "", "", T0).kode, 200);
+  LIK(api.handle("GET", "/", "", "", T0).kode, 200);  // UI er åpent, data er ikke
+  LIK(api.handle("GET", "/hemmelig.txt", "", "hemmelig", T0).kode, 404);
+  // Telefonklokke avvist: svaret bruker enhetens tid
+  auto r = api.handle("GET", "/api/state?now=" + std::to_string(T0 + 2 * TIME), "", "hemmelig", T0);
+  SJEKK(r.kropp.find("\"naa\":" + std::to_string(T0) + ",") != std::string::npos);
+  klokke_ok = true;
+  r = api.handle("GET", "/api/state?now=" + std::to_string(T0 + 2 * TIME), "", "hemmelig", T0);
+  LIK(satt, T0 + 2 * TIME);
+  SJEKK(r.kropp.find("\"naa\":" + std::to_string(T0 + 2 * TIME) + ",") != std::string::npos);
+  // POST
+  LIK(api.handle("POST", "/api/kjol", "{ikke json", "hemmelig", T0).kode, 400);
+  r = api.handle("POST", "/api/kjol", R"({"ting":"Lego","ore":189900,"del":"Lille"})", "hemmelig", T0);
+  LIK(r.kode, 200);
+  LIK(e.s.kjol().size(), static_cast<size_t>(1));
+  SJEKK(e.skitten);
+  r = api.handle("POST", "/api/kjol/avgjor", R"({"id":1,"valg":"kjop"})", "hemmelig", T0 + TIME);
+  LIK(r.kode, 400);
+  SJEKK(r.kropp.find("ikke ferdig") != std::string::npos);
+  LIK(api.handle("POST", "/api/hjul", R"({"h":"trykk"})", "hemmelig", T0).kode, 404);  // ikke på ekte enhet
+  LIK(api.handle("GET", "/api/kjol", "", "hemmelig", T0).kode, 405);
+  r = api.handle("GET", "/api/eksport.txt", "", "hemmelig", T0);
+  SJEKK(r.type.find("text/plain") == 0 && r.kropp.find("Lego") != std::string::npos);
+  LIK(api.handle("GET", "/skjerm.pbm", "", "hemmelig", T0).kropp.size(), static_cast<size_t>(Fb::BYTES + 11));
+  LIK(Api::param("/x?a=1&now=42&b", "now"), std::string("42"));
+  LIK(Api::param("/x?a=1", "now"), std::string(""));
+
+  // Hjulet
+  Enhet h;
+  h.s.her(T0 - 20 * TIME, "");
+  h.trykk(T0);
+  SJEKK(h.ctx.overlay == Overlay::Velkommen);
+  LIK(h.ctx.borte_ms, 20 * TIME);
+  h.tick(T0 + OVERLAY_TID + 1);
+  SJEKK(h.ctx.overlay == Overlay::Ingen);
+  h.trykk(T0 + TIME);  // kort fravær: ingen velkomst
+  SJEKK(h.ctx.overlay == Overlay::Ingen);
+  h.vri(-1, T0);
+  SJEKK(h.ctx.side == Side::Tidslinje);
+  h.vri(1, T0);
+  SJEKK(h.ctx.side == Side::Oversikt);
+  h.hold(HOLD_QR, T0);
+  SJEKK(h.ctx.overlay == Overlay::Qr);
+  h.vri(1, T0);
+  SJEKK(h.ctx.overlay == Overlay::Ingen && h.ctx.side == Side::Oversikt);  // vri lukker, blar ikke
+  bool slettet = false;
+  h.slett_alt = [&]() { slettet = true; };
+  h.hold(HOLD_RESET, T0);
+  SJEKK(h.ctx.overlay == Overlay::Reset);
+  h.vri(1, T0);  // avbryt
+  SJEKK(!slettet && !h.s.aktivitet().empty());
+  h.hold(HOLD_RESET, T0);
+  h.trykk(T0);
+  SJEKK(slettet && h.s.aktivitet().empty());
+}
+
 int main() {
+  test_api_og_hjul();
   test_tid();
   test_kroner();
   test_json();

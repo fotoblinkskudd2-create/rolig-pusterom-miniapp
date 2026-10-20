@@ -58,7 +58,7 @@ void boks(Fb& fb, int x, int y, bool kryss) {
 }
 
 std::string nedtelling(const Kjol& k, ms_t naa) {
-  return k.klar(naa) ? "klar" : varighet(k.frist - naa) + " igjen";
+  return k.klar(naa) ? "klar" : igjen(k.frist - naa) + " igjen";
 }
 
 std::string forfall_dato(int32_t v) { return to_siffer(v % 100) + "." + to_siffer((v / 100) % 100); }
@@ -281,7 +281,7 @@ void velkommen(const State& s, const Ctx& c, Fb& fb) {
 void qr(const State&, const Ctx& c, Fb& fb) {
   topp(fb, c, "KOBLE TIL");
   using qrcodegen::QrCode;
-  const QrCode q = QrCode::encodeText(("http://" + c.url + "/").c_str(), QrCode::Ecc::MEDIUM);
+  const QrCode q = QrCode::encodeText(("http://" + c.url + "/" + (c.nokkel.empty() ? "" : "#k=" + c.nokkel)).c_str(), QrCode::Ecc::MEDIUM);
   const int n = q.getSize();
   const int skala = 180 / (n + 4);
   const int x0 = M + 4, y0 = TOPP + 24;

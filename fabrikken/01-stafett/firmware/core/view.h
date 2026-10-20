@@ -17,6 +17,7 @@ struct Ctx {
   std::string url = "stafett.local";
   std::string ap_navn = "Stafett";
   std::string ap_pass;
+  std::string nokkel;              // parring: QR-koden bærer nøkkelen til telefonen
   int batteri = -1;               // -1 = på USB
 };
 

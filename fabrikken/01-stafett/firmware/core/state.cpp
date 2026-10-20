@@ -186,7 +186,7 @@ Resultat State::kjol_avgjor(ms_t naa, uint32_t id, const std::string& valg) {
   if (!k) return Resultat::Feil("finner ikke tingen");
   if (k->valg != Valg::Venter) return Resultat::Feil("allerede avgjort");
   if (valg != "kjop" && valg != "dropp" && valg != "forleng") return Resultat::Feil("ukjent valg");
-  if (valg != "dropp" && !k->klar(naa)) return Resultat::Feil("ikke ferdig kjølt: " + varighet(k->frist - naa) + " igjen");
+  if (valg != "dropp" && !k->klar(naa)) return Resultat::Feil("ikke ferdig kjølt: " + igjen(k->frist - naa) + " igjen");
   return send({{"t", json::str("kv")}, {"id", json::num(id)}, {"ts", json::num(naa)}, {"valg", json::str(valg)}});
 }
 
@@ -308,7 +308,7 @@ std::string State::eksport_tekst(ms_t naa) const {
     o += "[" + std::to_string(k.id) + "] " + k.ting + " · " + kroner(k.ore);
     if (!k.butikk.empty()) o += " · " + k.butikk;
     o += " · lagt inn " + naar(k.lagt_inn, naa) + " av " + k.del + " · ";
-    if (k.valg == Valg::Venter) o += k.klar(naa) ? "klar til å avgjøre" : varighet(k.frist - naa) + " igjen";
+    if (k.valg == Valg::Venter) o += k.klar(naa) ? "klar til å avgjøre" : igjen(k.frist - naa) + " igjen";
     else o += std::string(k.valg == Valg::Kjopt ? "kjøpt " : "droppet ") + naar(k.avgjort, naa);
     if (k.forlenget) o += " · forlenget " + std::to_string(k.forlenget) + "×";
     o += "\n";

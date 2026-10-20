@@ -113,4 +113,11 @@ inline std::string varighet(ms_t d) {
   return std::to_string((d + MIN - 1) / MIN) + " min";
 }
 
+// Nedtelling rundes opp: nettopp lagt inn = «48 t», ikke «47 t».
+inline std::string igjen(ms_t d) {
+  if (d <= 0) return "0 min";
+  if (d > TIME) return std::to_string((d + TIME - 1) / TIME) + " t";
+  return std::to_string((d + MIN - 1) / MIN) + " min";
+}
+
 }  // namespace stafett

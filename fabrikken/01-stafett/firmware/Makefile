@@ -1,11 +1,11 @@
 CXX ?= g++
 CXXFLAGS = -std=c++17 -O1 -g -Wall -Wextra -Werror -Wno-missing-field-initializers
 SAN = -fsanitize=address,undefined -fno-omit-frame-pointer
-CORE = core/state.cpp core/view.cpp core/qrcodegen.cpp
+CORE = core/state.cpp core/view.cpp core/enhet.cpp core/api.cpp core/qrcodegen.cpp
 HDR = $(wildcard core/*.h core/*.hpp)
 BUILD = build
 
-.PHONY: test render fonts clean
+.PHONY: test render dev fonts clean
 
 test: $(BUILD)/test_core
 	./$(BUILD)/test_core
@@ -19,6 +19,12 @@ $(BUILD)/test_core: test/test_core.cpp $(CORE) $(HDR)
 $(BUILD)/render: tools/render.cpp $(CORE) $(HDR)
 	@mkdir -p $(BUILD)
 	$(CXX) $(CXXFLAGS) -O2 -o $@ tools/render.cpp $(CORE)
+
+dev: $(BUILD)/devserver
+
+$(BUILD)/devserver: tools/devserver.cpp $(CORE) $(HDR)
+	@mkdir -p $(BUILD)
+	$(CXX) $(CXXFLAGS) -O2 -o $@ tools/devserver.cpp $(CORE)
 
 fonts:
 	python3 tools/genfont.py

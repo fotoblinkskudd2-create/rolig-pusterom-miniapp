@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e1e1c">
+<title>Stafett</title>
+<style>
+  :root {
+    --papir: #e7e5de; --kort: #f3f1ec; --blekk: #1e1e1c; --dempet: #6b6a64; --linje: #cfccc3;
+    --aksent: #1e1e1c; --paa-aksent: #f3f1ec; --ok: #2f5d3a; --feil: #8a2b20;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --papir: #161615; --kort: #22221f; --blekk: #e7e5de; --dempet: #9a988f; --linje: #3a3934;
+            --aksent: #e7e5de; --paa-aksent: #161615; --ok: #8fc29a; --feil: #e69a8f; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--papir); color: var(--blekk); }
+  body { font: 16px/1.45 -apple-system, system-ui, "Inter", sans-serif; padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  header { position: sticky; top: 0; z-index: 2; background: var(--blekk); color: var(--papir); padding: 12px 16px;
+           display: flex; justify-content: space-between; align-items: center; font-weight: 700; letter-spacing: .06em; font-size: 13px; }
+  header button { background: none; border: 1px solid currentColor; color: inherit; border-radius: 999px; padding: 4px 10px;
+                  font: inherit; letter-spacing: 0; font-weight: 600; }
+  main { max-width: 520px; margin: 0 auto; padding: 16px; }
+  section[data-fane] { display: none; }
+  section[data-fane].aktiv { display: block; }
+  h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin: 22px 0 8px; color: var(--dempet); }
+  .kort { background: var(--kort); border: 1px solid var(--linje); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+  .meta { font-size: 13px; color: var(--dempet); font-weight: 600; }
+  .tekst { white-space: pre-wrap; margin-top: 4px; }
+  .svar { margin-left: 18px; border-left: 3px solid var(--linje); }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
+  input, textarea { width: 100%; font: inherit; color: inherit; background: var(--kort); border: 1px solid var(--linje);
+                    border-radius: 12px; padding: 12px; }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--blekk); outline-offset: 1px; }
+  .rad { display: flex; gap: 8px; }
+  .rad > * { flex: 1; }
+  .knapp { display: block; width: 100%; margin-top: 12px; padding: 14px; border: 0; border-radius: 12px; background: var(--aksent);
+           color: var(--paa-aksent); font: inherit; font-weight: 700; cursor: pointer; }
+  .knapp.sekundar { background: transparent; color: var(--blekk); border: 1px solid var(--blekk); }
+  .knapp.liten { display: inline-block; width: auto; margin: 8px 6px 0 0; padding: 8px 14px; font-size: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--linje); background: var(--kort); color: inherit; border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; }
+  .chip[aria-pressed="true"] { background: var(--blekk); color: var(--papir); border-color: var(--blekk); }
+  .stolpe { height: 8px; border: 1px solid var(--blekk); border-radius: 4px; margin: 8px 0 6px; overflow: hidden; }
+  .stolpe > i { display: block; height: 100%; background: var(--blekk); }
+  .linje { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .linje b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .melding { min-height: 1.4em; font-size: 14px; margin-top: 8px; font-weight: 600; }
+  .melding.ok { color: var(--ok); } .melding.feil { color: var(--feil); }
+  .tom { color: var(--dempet); }
+  .spart { font-size: 14px; color: var(--dempet); margin-top: 8px; }
+  nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--kort); border-top: 1px solid var(--linje);
+        display: flex; padding-bottom: env(safe-area-inset-bottom); }
+  nav button { flex: 1; background: none; border: 0; color: var(--dempet); font: inherit; font-size: 13px; font-weight: 600; padding: 14px 4px; }
+  nav button[aria-current="page"] { color: var(--blekk); box-shadow: inset 0 3px 0 var(--blekk); }
+  .lokal { font-size: 13px; color: var(--dempet); margin-top: 24px; }
+  .skjult { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <span>STAFETT</span>
+  <button id="hvem" type="button" aria-label="Hvem skriver?">ukjent del</button>
+</header>
+
+<main>
+  <div id="kobling" class="kort skjult" role="alert"></div>
+
+  <!-- OVERLEVER -->
+  <section data-fane="noter" class="aktiv" aria-label="Overlevering">
+    <div id="velg-del" class="kort skjult">
+      <div class="meta">Hvem skriver nå? (valgfritt — huskes bare til du lukker fanen)</div>
+      <div class="chips" id="del-chips" style="margin-top:8px"></div>
+      <div class="rad" style="margin-top:8px">
+        <input id="ny-del" placeholder="Navn på del" maxlength="40" aria-label="Navn på del">
+        <button class="knapp liten" id="lagre-del" type="button" style="flex:0 0 auto">Bruk</button>
+      </div>
+    </div>
+    <label for="note">Til den som kommer etter deg</label>
+    <textarea id="note" maxlength="600" placeholder="Hva skjedde? Hva bør neste vite? Ingen må forklare seg."></textarea>
+    <div id="svar-paa" class="meta skjult"></div>
+    <button class="knapp" id="send-note" type="button">Legg igjen stafetten</button>
+    <div class="melding" id="m-note" aria-live="polite"></div>
+    <h2>Siste noter</h2>
+    <div id="noter"></div>
+  </section>
+
+  <!-- KJØLEROM -->
+  <section data-fane="kjol" aria-label="Kjølerom">
+    <p class="tom" style="margin-top:0">Det du vil ha, venter her i 48 timer. Etterpå bestemmer du: kjøp, dropp eller 48 t til. Ingenting er forbudt.</p>
+    <label for="ting">Hva vil du ha?</label>
+    <input id="ting" maxlength="80" placeholder="Lego 10316" autocomplete="off">
+    <div class="rad">
+      <div><label for="pris">Pris (kr)</label><input id="pris" inputmode="decimal" placeholder="1899"></div>
+      <div><label for="butikk">Hvor</label><input id="butikk" maxlength="40" placeholder="Komplett" autocomplete="off"></div>
+    </div>
+    <button class="knapp" id="send-kjol" type="button">Legg i kjølerommet</button>
+    <div class="melding" id="m-kjol" aria-live="polite"></div>
+    <h2>Venter</h2>
+    <div id="kjol"></div>
+    <div class="spart" id="spart"></div>
+    <h2>Avgjort</h2>
+    <div id="kjol-ferdig"></div>
+  </section>
+
+  <!-- FORFALL -->
+  <section data-fane="forfall" aria-label="Forfall">
+    <p class="tom" style="margin-top:0">Bare neste forfall vises på skjermen. Ingen totalsum, ingen alarm.</p>
+    <label for="ff-navn">Hva</label>
+    <input id="ff-navn" maxlength="40" placeholder="Klarna">
+    <div class="rad">
+      <div><label for="ff-ore">Beløp (kr)</label><input id="ff-ore" inputmode="decimal" placeholder="1412"></div>
+      <div><label for="ff-dato">Forfall</label><input id="ff-dato" type="date"></div>
+    </div>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:500"><input id="ff-mnd" type="checkbox" style="width:auto"> Hver måned</label>
+    <button class="knapp" id="send-ff" type="button">Legg til forfall</button>
+    <div class="melding" id="m-ff" aria-live="polite"></div>
+    <h2>Kommer</h2>
+    <div id="forfall"></div>
+  </section>
+
+  <!-- MER -->
+  <section data-fane="mer" aria-label="Mer">
+    <h2>Ta med deg alt</h2>
+    <div class="kort">
+      <div>Én tekstfil med alle noter, kjølerom og forfall. Lagre den et trygt sted — enheten kan gå i stykker.</div>
+      <a class="knapp sekundar" id="eksport" href="#" download="stafett-eksport.txt" style="text-align:center;text-decoration:none">Last ned eksport (.txt)</a>
+    </div>
+    <h2>Sist borte</h2>
+    <div class="kort" id="borte"><span class="tom">Ingen lange fravær registrert.</span></div>
+    <h2>Hjulet</h2>
+    <div class="kort">
+      <div><b>Trykk</b> — jeg er her. Etter et langt fravær sier skjermen hvor lenge.</div>
+      <div><b>Vri</b> — bla: oversikt, noter, kjølerom, tidslinje.</div>
+      <div><b>Hold 3 s</b> — QR-kode for å koble til en ny telefon.</div>
+      <div><b>Hold 10 s</b> — slett alt (må bekreftes på skjermen).</div>
+    </div>
+    <p class="lokal">Alt blir på enheten på pulten. Ingenting sendes på internett. Ingen konto. Ingen del kan slette en annen dels note.</p>
+  </section>
+</main>
+
+<nav aria-label="Faner">
+  <button type="button" data-til="noter" aria-current="page">Overlever</button>
+  <button type="button" data-til="kjol">Kjølerom</button>
+  <button type="button" data-til="forfall">Forfall</button>
+  <button type="button" data-til="mer">Mer</button>
+</nav>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const UKJENT = 'ukjent del';
+  const lager = {
+    get(k, s) { try { return (s ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
+    set(k, v, s) { try { (s ? sessionStorage : localStorage).setItem(k, v); } catch (e) {} },
+  };
+
+  // Nøkkel fra QR-koden (#k=...) huskes på denne telefonen.
+  function lesHash() {
+    const k = new URLSearchParams(location.hash.slice(1)).get('k');
+    if (k) { lager.set('stafett_k', k); history.replaceState(null, '', location.pathname); }
+    return k;
+  }
+  lesHash();
+  let nokkel = lager.get('stafett_k') || '';
+  window.addEventListener('hashchange', () => { const k = lesHash(); if (k) { nokkel = k; last(); } });
+
+  let tilstand = null;
+  let del = lager.get('stafett_del', true) || UKJENT;
+  let svarTil = 0;
+
+  async function api(sti, kropp) {
+    const r = await fetch(sti, {
+      method: kropp ? 'POST' : 'GET',
+      headers: Object.assign({ 'X-Stafett-Nokkel': nokkel }, kropp ? { 'Content-Type': 'application/json' } : {}),
+      body: kropp ? JSON.stringify(kropp) : undefined,
+    });
+    const j = await r.json().catch(() => ({ ok: false, feil: 'uventet svar' }));
+    if (r.status === 401) visKobling(j.feil);
+    return j;
+  }
+
+  function visKobling(t) {
+    const k = $('#kobling');
+    k.textContent = 'Ikke koblet: ' + t + '.';
+    k.classList.remove('skjult');
+  }
+
+  function melding(id, ok, t) {
+    const m = $(id);
+    m.className = 'melding ' + (ok ? 'ok' : 'feil');
+    m.textContent = t;
+    if (ok) setTimeout(() => { if (m.textContent === t) m.textContent = ''; }, 4000);
+  }
+
+  const kr = (ore) => {
+    const hel = Math.trunc(Math.abs(ore) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const rest = Math.abs(ore) % 100;
+    return (ore < 0 ? '-' : '') + hel + (rest ? ',' + String(rest).padStart(2, '0') : '') + ' kr';
+  };
+  const tilOre = (s) => {
+    const v = String(s || '').replace(/\s/g, '').replace(',', '.');
+    if (!/^\d+(\.\d{1,2})?$/.test(v)) return null;
+    return Math.round(parseFloat(v) * 100);
+  };
+  const DAGER = ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør'];
+  const to = (n) => String(n).padStart(2, '0');
+  function naar(ts) {
+    const d = new Date(ts), n = new Date(tilstand ? tilstand.naa : Date.now());
+    const kl = to(d.getHours()) + ':' + to(d.getMinutes());
+    const dag = (x) => Math.floor((x.getTime() - x.getTimezoneOffset() * 60000) / 86400000);
+    if (dag(d) === dag(n)) return 'i dag ' + kl;
+    if (dag(d) === dag(n) - 1) return 'i går ' + kl;
+    return DAGER[d.getDay()] + ' ' + to(d.getDate()) + '.' + to(d.getMonth() + 1) + ' ' + kl;
+  }
+  function varighet(ms) {
+    if (ms < 0) ms = 0;
+    if (ms >= 3 * 864e5) return Math.floor(ms / 864e5) + ' døgn';
+    if (ms >= 36e5) return Math.floor(ms / 36e5) + ' t';
+    return Math.ceil(ms / 6e4) + ' min';
+  }
+  const igjen = (ms) => ms <= 0 ? '0 min' : ms > 36e5 ? Math.ceil(ms / 36e5) + ' t' : Math.ceil(ms / 6e4) + ' min';
+  const datoTekst = (v) => to(v % 100) + '.' + to(Math.floor(v / 100) % 100) + '.' + Math.floor(v / 10000);
+  const el = (tag, attrs, ...barn) => {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+    }
+    for (const b of barn) if (b != null) e.append(b);
+    return e;
+  };
+
+  // ---------- del ----------
+  function tegnDel() {
+    $('#hvem').textContent = del;
+    const chips = $('#del-chips');
+    chips.replaceChildren();
+    const alle = [UKJENT, ...((tilstand && tilstand.deler) || [])];
+    for (const d of alle) {
+      chips.append(el('button', { class: 'chip', type: 'button', 'aria-pressed': String(d === del),
+        onclick: () => { settDel(d); } }, d));
+    }
+  }
+  function settDel(d) {
+    del = (d || '').trim() || UKJENT;
+    lager.set('stafett_del', del, true);
+    $('#velg-del').classList.add('skjult');
+    tegnDel();
+  }
+  $('#hvem').addEventListener('click', () => { $('#velg-del').classList.toggle('skjult'); tegnDel(); });
+  $('#lagre-del').addEventListener('click', () => { settDel($('#ny-del').value); $('#ny-del').value = ''; });
+
+  // ---------- faner ----------
+  function fane(navn) {
+    document.querySelectorAll('section[data-fane]').forEach((s) => s.classList.toggle('aktiv', s.dataset.fane === navn));
+    document.querySelectorAll('nav button').forEach((b) => b.toggleAttribute('aria-current', b.dataset.til === navn));
+    document.querySelectorAll('nav button[aria-current]').forEach((b) => b.setAttribute('aria-current', 'page'));
+  }
+  document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => fane(b.dataset.til)));
+  if (location.pathname === '/kjol') fane('kjol');  // NFC-merket peker hit
+
+  // ---------- tegning ----------
+  function noteKort(h) {
+    return el('div', { class: 'kort' + (h.svar ? ' svar' : '') },
+      el('div', { class: 'meta' }, (h.svar ? '→ svar · ' : '') + naar(h.ts) + ' · ' + h.del),
+      el('div', { class: 'tekst' }, h.tekst),
+      el('button', { class: 'knapp sekundar liten', type: 'button', onclick: () => {
+        svarTil = h.svar || h.id;
+        const s = $('#svar-paa');
+        s.textContent = 'Svarer på noten fra ' + naar(h.ts) + ' · ' + h.del + '  (trykk her for å avbryte)';
+        s.classList.remove('skjult');
+        $('#note').focus();
+      } }, 'Svar'));
+  }
+  // Tråder: nyeste tråd øverst (etter siste aktivitet), svar under i rekkefølge.
+  function tegnNoter() {
+    const liste = $('#noter');
+    liste.replaceChildren();
+    const hs = tilstand.handoffs;
+    if (!hs.length) liste.append(el('div', { class: 'tom' }, 'Ingen noter ennå. Den første blir stående øverst på skjermen.'));
+    const svar = new Map();
+    for (const h of hs) if (h.svar) { if (!svar.has(h.svar)) svar.set(h.svar, []); svar.get(h.svar).push(h); }
+    const rot = hs.filter((h) => !h.svar).map((h) => {
+      const s = svar.get(h.id) || [];
+      return { h, s, sist: s.length ? s[s.length - 1].ts : h.ts };
+    }).sort((a, b) => b.sist - a.sist);
+    for (const t of rot.slice(0, 30)) {
+      liste.append(noteKort(t.h));
+      for (const s of t.s) liste.append(noteKort(s));
+    }
+  }
+  $('#svar-paa').addEventListener('click', () => { svarTil = 0; $('#svar-paa').classList.add('skjult'); });
+
+  function tegnKjol() {
+    const v = $('#kjol'), f = $('#kjol-ferdig');
+    v.replaceChildren(); f.replaceChildren();
+    const naa = tilstand.naa;
+    const venter = tilstand.kjol.filter((k) => k.valg === 'venter').sort((a, b) => (b.klar - a.klar) || (a.frist - b.frist));
+    if (!venter.length) v.append(el('div', { class: 'tom' }, 'Tomt.'));
+    for (const k of venter) {
+      const total = Math.max(1, k.frist - k.ts);
+      const pst = Math.min(100, Math.max(0, ((naa - k.ts) / total) * 100));
+      const valg = async (hva) => {
+        const r = await api('/api/kjol/avgjor', { id: k.id, valg: hva });
+        if (r.ok) melding('#m-kjol', true, hva === 'kjop' ? 'Kjøpt. Det er lov.' : hva === 'dropp' ? 'Droppet. Pengene ble værende.' : '48 timer til.');
+        else melding('#m-kjol', false, r.feil);
+        last();
+      };
+      const knapper = k.klar
+        ? el('div', {},
+            el('button', { class: 'knapp liten', type: 'button', onclick: () => valg('kjop') }, 'Kjøp'),
+            el('button', { class: 'knapp sekundar liten', type: 'button', onclick: () => valg('dropp') }, 'Dropp'),
+            el('button', { class: 'knapp sekundar liten', type: 'button', onclick: () => valg('forleng') }, '48 t til'))
+        : el('div', {}, el('button', { class: 'knapp sekundar liten', type: 'button', onclick: () => valg('dropp') }, 'Dropp nå'));
+      v.append(el('div', { class: 'kort', 'data-id': k.id },
+        el('div', { class: 'linje' }, el('span', {}, k.ting), el('b', {}, kr(k.ore))),
+        el('div', { class: 'stolpe', role: 'progressbar', 'aria-valuenow': Math.round(pst), 'aria-valuemin': 0, 'aria-valuemax': 100 },
+          el('i', { style: 'width:' + pst.toFixed(1) + '%' })),
+        el('div', { class: 'linje meta' },
+          el('span', {}, naar(k.ts) + ' · ' + k.del + (k.butikk ? ' · ' + k.butikk : '')),
+          el('span', {}, k.klar ? 'klar' : igjen(k.frist - naa) + ' igjen')),
+        knapper));
+    }
+    const d = tilstand.droppet30;
+    $('#spart').textContent = d.antall ? 'Latt være siste 30 døgn: ' + d.antall + ' ting · ' + kr(d.ore) : '';
+    const ferdig = tilstand.kjol.filter((k) => k.valg !== 'venter').sort((a, b) => b.avgjort - a.avgjort).slice(0, 15);
+    if (!ferdig.length) f.append(el('div', { class: 'tom' }, 'Ingenting avgjort ennå.'));
+    for (const k of ferdig) {
+      f.append(el('div', { class: 'kort' },
+        el('div', { class: 'linje' }, el('span', {}, k.ting), el('b', {}, kr(k.ore))),
+        el('div', { class: 'meta' }, (k.valg === 'kjopt' ? 'kjøpt ' : 'droppet ') + naar(k.avgjort))));
+    }
+  }
+
+  function nesteForekomst(f) {
+    if (f.avsluttet) return null;
+    const pluss = (v, n) => {
+      let y = Math.floor(v / 10000), m = Math.floor(v / 100) % 100 + n, d = v % 100;
+      while (m > 12) { m -= 12; y++; }
+      const maks = new Date(Date.UTC(y, m, 0)).getUTCDate();
+      return y * 10000 + m * 100 + Math.min(d, maks);
+    };
+    for (let k = 0; k < (f.mnd ? 1200 : 1); k++) {
+      const occ = f.mnd ? pluss(f.dato, k) : f.dato;
+      if (!f.betalt.includes(occ)) return occ;
+    }
+    return null;
+  }
+
+  function tegnForfall() {
+    const l = $('#forfall');
+    l.replaceChildren();
+    const n = new Date(tilstand.naa);
+    const idag = n.getFullYear() * 10000 + (n.getMonth() + 1) * 100 + n.getDate();
+    const rader = tilstand.forfall.map((f) => ({ f, occ: nesteForekomst(f) })).filter((r) => r.occ).sort((a, b) => a.occ - b.occ);
+    if (!rader.length) l.append(el('div', { class: 'tom' }, 'Ingenting registrert.'));
+    for (const { f, occ } of rader) {
+      l.append(el('div', { class: 'kort' },
+        el('div', { class: 'linje' }, el('span', {}, f.navn), el('b', {}, kr(f.ore))),
+        el('div', { class: 'meta' }, (occ < idag ? 'FORFALT ' : '') + datoTekst(occ) + (f.mnd ? ' · hver måned' : '')),
+        el('button', { class: 'knapp liten', type: 'button', onclick: async () => {
+          const r = await api('/api/forfall/betalt', { id: f.id, dato: occ });
+          melding('#m-ff', r.ok, r.ok ? 'Markert betalt.' : r.feil);
+          last();
+        } }, 'Betalt'),
+        el('button', { class: 'knapp sekundar liten', type: 'button', onclick: async () => {
+          const r = await api('/api/forfall/avslutt', { id: f.id });
+          melding('#m-ff', r.ok, r.ok ? 'Avsluttet.' : r.feil);
+          last();
+        } }, 'Avslutt')));
+    }
+  }
+
+  function tegnMer() {
+    $('#eksport').href = '/api/eksport.txt' + (nokkel ? '?k=' + encodeURIComponent(nokkel) : '');
+    const b = tilstand.borte;
+    $('#borte').replaceChildren(b
+      ? el('span', {}, naar(b.fra) + ' → ' + naar(b.til) + ' (' + varighet(b.til - b.fra) + ')')
+      : el('span', { class: 'tom' }, 'Ingen lange fravær registrert.'));
+  }
+
+  async function last() {
+    try {
+      const j = await api('/api/state?now=' + Date.now());
+      if (j.ok === false) return;
+      tilstand = j;
+      $('#kobling').classList.add('skjult');
+      tegnDel(); tegnNoter(); tegnKjol(); tegnForfall(); tegnMer();
+    } catch (e) {
+      visKobling('finner ikke enheten. Er du på samme nett som Stafett?');
+    }
+  }
+
+  // ---------- handlinger ----------
+  $('#send-note').addEventListener('click', async () => {
+    const tekst = $('#note').value;
+    if (!tekst.trim()) return melding('#m-note', false, 'Skriv noe først — én setning holder.');
+    const r = await api('/api/handoff', { del, tekst, svar: svarTil });
+    if (r.ok) {
+      $('#note').value = '';
+      svarTil = 0;
+      $('#svar-paa').classList.add('skjult');
+      melding('#m-note', true, 'Lagt igjen. Den står på skjermen nå.');
+    } else melding('#m-note', false, r.feil);
+    last();
+  });
+
+  $('#send-kjol').addEventListener('click', async () => {
+    const ore = tilOre($('#pris').value);
+    if (ore === null) return melding('#m-kjol', false, 'Skriv prisen i kroner, f.eks. 1899 eller 249,50.');
+    const r = await api('/api/kjol', { del, ting: $('#ting').value, ore, butikk: $('#butikk').value });
+    if (r.ok) {
+      $('#ting').value = ''; $('#pris').value = ''; $('#butikk').value = '';
+      melding('#m-kjol', true, 'Ligger i kjølerommet. Kom tilbake om 48 timer.');
+    } else melding('#m-kjol', false, r.feil);
+    last();
+  });
+
+  $('#send-ff').addEventListener('click', async () => {
+    const ore = tilOre($('#ff-ore').value);
+    const d = $('#ff-dato').value;
+    if (ore === null) return melding('#m-ff', false, 'Skriv beløpet i kroner.');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return melding('#m-ff', false, 'Velg en dato.');
+    const r = await api('/api/forfall', { navn: $('#ff-navn').value, ore, dato: parseInt(d.replace(/-/g, ''), 10), mnd: $('#ff-mnd').checked });
+    if (r.ok) { $('#ff-navn').value = ''; $('#ff-ore').value = ''; melding('#m-ff', true, 'Lagt til.'); }
+    else melding('#m-ff', false, r.feil);
+    last();
+  });
+
+  last();
+  setInterval(last, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) last(); });
+})();
+</script>
+</body>
+</html>
