@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace morkerom {
+namespace felles {
 
 Gra skaler_fyll(const Gra& inn, int w, int h) {
   Gra ut;
@@ -63,10 +63,10 @@ std::vector<uint8_t> atkinson(const Gra& g) {
   return ut;
 }
 
-std::vector<uint8_t> fremkall(const Gra& inn, int w, int h) {
+std::vector<uint8_t> fremkall(const Gra& inn, int w, int h, bool strekk_niva) {
   Gra g = skaler_fyll(inn, w, h);
-  strekk(g);
+  if (strekk_niva) strekk(g);
   return atkinson(g);
 }
 
-}  // namespace morkerom
+}  // namespace felles

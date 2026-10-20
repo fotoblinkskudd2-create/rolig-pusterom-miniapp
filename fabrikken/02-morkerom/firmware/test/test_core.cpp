@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "../core/api.h"
-#include "../core/dither.h"
+#include "dither.h"
 #include "../core/krypt.h"
 #include "../core/oppdrag.h"
 

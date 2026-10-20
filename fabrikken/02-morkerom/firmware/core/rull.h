@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "json.h"
+#include "dither.h"
 #include "tid.h"
 
 namespace morkerom {

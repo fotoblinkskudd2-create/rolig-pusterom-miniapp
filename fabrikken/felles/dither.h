@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace morkerom {
+namespace felles {
 
 struct Gra {
   int w = 0, h = 0;
@@ -21,7 +21,7 @@ void strekk(Gra& g);
 // Atkinson til pakket 1-bit (MSB først, 1 = sort), w må være delelig med 8.
 std::vector<uint8_t> atkinson(const Gra& g);
 
-// Hele kjeden: inn → w×h 1-bit
-std::vector<uint8_t> fremkall(const Gra& inn, int w, int h);
+// Hele kjeden: inn → w×h 1-bit. strekk=false for nattbilder: å strekke et mørkt bilde lager bare støy.
+std::vector<uint8_t> fremkall(const Gra& inn, int w, int h, bool strekk_niva = true);
 
-}  // namespace morkerom
+}  // namespace felles

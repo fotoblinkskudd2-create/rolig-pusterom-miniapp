@@ -2,7 +2,7 @@ CXX ?= g++
 FELLES = ../../felles
 CXXFLAGS = -std=c++17 -O1 -g -Wall -Wextra -Werror -Wno-missing-field-initializers -Icore -I$(FELLES)
 SAN = -fsanitize=address,undefined -fno-omit-frame-pointer
-CORE = core/rull.cpp core/dither.cpp core/krypt.cpp core/view.cpp core/enhet.cpp core/api.cpp $(FELLES)/qrcodegen.cpp
+CORE = core/rull.cpp $(FELLES)/dither.cpp core/krypt.cpp core/view.cpp core/enhet.cpp core/api.cpp $(FELLES)/qrcodegen.cpp
 HDR = $(wildcard core/*.h $(FELLES)/*.h $(FELLES)/*.hpp)
 LIBS = -lmbedcrypto
 BUILD = build

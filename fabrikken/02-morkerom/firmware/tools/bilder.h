@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "../core/dither.h"
+#include "dither.h"
 #include "../core/krypt.h"
 #include "../core/view.h"
 #pragma GCC diagnostic push
