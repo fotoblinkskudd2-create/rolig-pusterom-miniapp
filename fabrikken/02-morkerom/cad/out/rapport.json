@@ -1,0 +1,57 @@
+{
+  "front": {
+    "tett": true,
+    "volum_cm3": 24.9,
+    "masse_g_petg": 31.6,
+    "boks_mm": [
+      111.0,
+      25.0,
+      61.9
+    ],
+    "trekanter": 4552
+  },
+  "bakdel": {
+    "tett": true,
+    "volum_cm3": 18.0,
+    "masse_g_petg": 22.9,
+    "boks_mm": [
+      111.0,
+      14.0,
+      61.9
+    ],
+    "trekanter": 2084
+  },
+  "deksel": {
+    "tett": true,
+    "volum_cm3": 1.5,
+    "masse_g_petg": 1.9,
+    "boks_mm": [
+      32.0,
+      1.6,
+      30.0
+    ],
+    "trekanter": 108
+  },
+  "utloser": {
+    "tett": true,
+    "volum_cm3": 0.3,
+    "masse_g_petg": 0.4,
+    "boks_mm": [
+      10.2,
+      10.2,
+      3.8
+    ],
+    "trekanter": 380
+  },
+  "bla": {
+    "tett": true,
+    "volum_cm3": 0.1,
+    "masse_g_petg": 0.2,
+    "boks_mm": [
+      8.2,
+      2.4,
+      8.2
+    ],
+    "trekanter": 252
+  }
+}
