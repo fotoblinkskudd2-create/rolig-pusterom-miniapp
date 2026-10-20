@@ -1,0 +1,328 @@
+<title>Vindusvakt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Libre+Franklin:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: et nordvendt vindu i desember. Kaldt blågrått papir, blekk, én fjordblå aksent. Tall i kondensert display, data i mono. */
+:root {
+  --papir: #e8ecef; --ark: #f4f6f7; --blekk: #1b2125; --dempet: #5f6a73; --linje: #c9d1d7; --fjord: #2b5d78; --natt: #b7c2cb;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-tekst: "Libre Franklin", system-ui, -apple-system, sans-serif;
+  --f-data: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --papir: #11161a; --ark: #192026; --blekk: #e2e8ec; --dempet: #8c98a2; --linje: #2a333b; --fjord: #86bcd8; --natt: #26313a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --papir: #11161a; --ark: #192026; --blekk: #e2e8ec; --dempet: #8c98a2; --linje: #2a333b; --fjord: #86bcd8; --natt: #26313a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--papir); color: var(--blekk); font: 400 17px/1.6 var(--f-tekst);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 72px; }
+.kol { max-width: 700px; margin: 0 auto; }
+.bred { max-width: 1120px; margin: 0 auto; }
+header.topp { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; padding-block: 22px 12px; border-bottom: 2px solid var(--blekk); margin-bottom: 40px; }
+.merke { font: 700 15px/1 var(--f-display); letter-spacing: .2em; }
+.meta { font: 400 12px/1.45 var(--f-data); color: var(--dempet); }
+h1 { font: 700 clamp(64px, 15vw, 156px)/.84 var(--f-display); text-transform: uppercase; letter-spacing: .01em; margin: 0 0 14px; }
+.under { font: italic 400 clamp(20px, 3vw, 26px)/1.3 var(--f-tekst); margin: 0 0 30px; max-width: 34ch; }
+h2 { font: 700 15px/1 var(--f-display); letter-spacing: .2em; text-transform: uppercase; margin: 68px 0 16px; color: var(--fjord); }
+p { margin: 0 0 1em; }
+.gonzo { font-size: 19px; }
+img { display: block; max-width: 100%; height: auto; }
+figure { margin: 0; }
+figcaption { font: 400 12px/1.45 var(--f-data); color: var(--dempet); margin-top: 8px; }
+.helt { background: #f7f7f7; border-radius: 3px; overflow: hidden; }
+.skjerm img { border: 9px solid #121212; border-radius: 5px; image-rendering: pixelated; width: 100%; }
+.rutenett { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.rutenett.tre { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+.regner { background: var(--ark); border: 1px solid var(--linje); border-radius: 6px; padding: 20px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { font: 500 14px/1 var(--f-tekst); border: 1px solid var(--linje); background: var(--papir); color: var(--blekk); border-radius: 999px; padding: 8px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--fjord); border-color: var(--fjord); color: var(--ark); }
+.chip:focus-visible, input:focus-visible { outline: 2px solid var(--fjord); outline-offset: 2px; }
+.dato { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font: 400 13px/1 var(--f-data); color: var(--dempet); }
+.dato input[type=range] { flex: 1; min-width: 180px; accent-color: var(--fjord); }
+.tall { font: 700 clamp(72px, 16vw, 128px)/.9 var(--f-display); margin: 18px 0 4px; font-variant-numeric: tabular-nums; }
+.tall small { font-size: .32em; font-weight: 500; letter-spacing: .02em; }
+.linje { font-size: 18px; }
+canvas#aar { width: 100%; height: 200px; display: block; margin-top: 14px; }
+.tabell { overflow-x: auto; margin: 8px 0 20px; }
+table { border-collapse: collapse; width: 100%; font: 400 13px/1.45 var(--f-data); font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--linje); vertical-align: top; }
+th { color: var(--dempet); font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+td.r, th.r { text-align: right; }
+.merk { font: 600 10px/1 var(--f-data); letter-spacing: .06em; padding: 3px 5px; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.merk.dok { color: #3d7a4e; } .merk.uav { color: #a33a2a; } .merk.hyp { color: var(--dempet); }
+.fakta { display: grid; gap: 1px; background: var(--linje); border: 1px solid var(--linje); grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); margin: 8px 0 20px; }
+.fakta div { background: var(--ark); padding: 14px 16px; }
+.fakta b { display: block; font: 700 32px/1 var(--f-display); }
+.fakta span { font: 400 12px/1.35 var(--f-data); color: var(--dempet); }
+.ikke { border-left: 3px solid #a33a2a; padding: 4px 0 4px 16px; }
+.lenker { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.lenker a { font: 600 12.5px/1 var(--f-data); color: var(--blekk); text-decoration: none; border: 1px solid var(--linje); padding: 10px 12px; border-radius: 2px; }
+.lenker a:hover, .lenker a:focus-visible { border-color: var(--fjord); color: var(--fjord); outline: none; }
+.slutt { font: 700 clamp(30px, 6vw, 54px)/1 var(--f-display); text-transform: uppercase; margin-top: 72px; text-wrap: balance; }
+</style>
+
+<header class="topp bred">
+  <span class="merke">FABRIKKEN · 03</span>
+  <span class="meta">20.10.2026 · prototyp v0.1 · tredje produkt samme ettermiddag</span>
+</header>
+
+<main>
+  <section class="kol">
+    <h1>Vindusvakt</h1>
+    <p class="under">Verden fortsatte. Her er beviset.</p>
+  </section>
+  <figure class="bred helt"><img src="img/helt.webp" alt="Vindusvakt: en lys e-blekk-ramme i en sokkel. Skjermen viser uka i vinduet, sju dager med fire små bilder hver." width="1400" height="1050"></figure>
+
+  <section class="kol" style="margin-top:40px">
+    <p class="gonzo">Du har ikke vært ute på fire dager. Det er greit. Men fjorden utenfor skiftet farge 96 ganger mens du lå der, og ingen så det. Vindusvakt så det. Én gang i timen, et lite kornete bilde, og så tilbake i søvn.</p>
+    <p class="gonzo">Og så kommer mørketida. Fra 28. november til 15. januar står ikke sola opp i Tromsø. Da teller rammen ned. 36. 35. 34. En morgen står det null.</p>
+  </section>
+
+  <section class="kol">
+    <h2>Lysregneren</h2>
+    <p>Samme solberegning som i rammen, her i nettleseren. Velg et sted og en dag.</p>
+    <div class="regner">
+      <div class="chips" id="steder" role="group" aria-label="Sted"></div>
+      <div class="dato"><span id="dato-tekst"></span><input type="range" id="dag" min="0" max="364" value="0" aria-label="Dag i året"></div>
+      <div class="tall" id="tall">–</div>
+      <div class="linje" id="linje"></div>
+      <canvas id="aar" aria-label="Dagslengde gjennom året for valgt sted"></canvas>
+      <p class="meta" style="margin:8px 0 0">NOAA-algoritmen med refraksjon (−0,833°). Blåtime = sola mellom −6° og 0°. Tidspunkter i norsk tid. Kryssjekket mot fastvarens C++ for Oslo og Tromsø.</p>
+    </div>
+  </section>
+
+  <section class="kol"><h2>Skjermen</h2></section>
+  <div class="bred rutenett">
+    <figure class="skjerm"><img src="img/s-oslo-1.webp" alt="Uka i vinduet, Oslo i oktober: sju kolonner, fire rader" width="1600" height="960"><figcaption>Uka i vinduet · Oslo, oktober</figcaption></figure>
+    <figure class="skjerm"><img src="img/s-tromso-morketid-2.webp" alt="I dag, Tromsø 10. desember: 36 dager til sola, blåtime 09:14–13:58" width="1600" height="960"><figcaption>I dag · Tromsø, 10. desember</figcaption></figure>
+    <figure class="skjerm"><img src="img/s-oslo-3.webp" alt="Året, Oslo: dagslengdekurven med en prikk der vi er nå" width="1600" height="960"><figcaption>Året · du er her</figcaption></figure>
+    <figure class="skjerm"><img src="img/s-tromso-midnattssol-2.webp" alt="Midnattssol i Tromsø: 24 t, sola går ikke ned" width="1600" height="960"><figcaption>Midnattssol · Tromsø, juni</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Personvern i jernet</h2>
+    <p>Et kamera som peker ut av et vindu kan se veien og naboen. Datatilsynet er tydelig på at et privat kamera normalt ikke skal fange offentlig område eller andres eiendom. Derfor finnes ikke originalbildet:</p>
+    <div class="fakta">
+      <div><b>320×240</b><span>gråtoner rett fra sensoren, aldri JPEG</span></div>
+      <div><b>112×84</b><span>1-bit, det eneste som lagres per time</span></div>
+      <div><b>1–2 px</b><span>en person 20 m unna</span></div>
+      <div><b>0</b><span>byte sendt på nett</span></div>
+    </div>
+    <p>Skyv linsedekselet over, og rammen tar ingen bilder. En hall-bryter merker det, og skjermen sier «LINSE LUKKET». Juridisk status er likevel <span class="merk uav">UAVKLART</span> til Datatilsynet er spurt.</p>
+  </section>
+  <div class="bred rutenett tre">
+    <figure class="helt"><img src="img/bak.webp" alt="Baksiden mot vinduet: kamera og linsedeksel" width="900" height="675"><figcaption>Bak, mot ruta</figcaption></figure>
+    <figure class="helt"><img src="img/lukket.webp" alt="Linsedekselet skjøvet over kameraet" width="900" height="675"><figcaption>Linse lukket = privat</figcaption></figure>
+    <figure class="helt"><img src="img/eksplodert.webp" alt="Eksplodert visning: front, panel, bakdeksel, sokkel" width="900" height="675"><figcaption>Front, panel, bak, sokkel</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Rammen</h2>
+    <div class="fakta">
+      <div><b>7,5″</b><span>e-blekk 800×480</span></div>
+      <div><b>194×149</b><span>mm, 10° bakover i sokkel</span></div>
+      <div><b>~352 døgn</b><span>på 2 000 mAh, BEREGNET</span></div>
+      <div><b>1 690 kr</b><span>break-even 318 stk</span></div>
+    </div>
+
+    <h2>Bevist</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Test</th><th class="r">Resultat</th></tr></thead>
+      <tbody>
+        <tr><td>Enhetstester, inkl. sol mot kjente datoer i Oslo, Tromsø, Svalbard og ekvator</td><td class="r">125 / 125</td></tr>
+        <tr><td>Ende-til-ende: oktober → mørketid i Tromsø, time for time</td><td class="r">30 / 30</td></tr>
+        <tr><td>ESP32-S3-firmware kompilerer</td><td class="r">1 414 kB · 44 %</td></tr>
+        <tr><td>CAD-deler vanntette</td><td class="r">5 / 5</td></tr>
+        <tr><td>Ren klon → simulator</td><td class="r">40 s</td></tr>
+      </tbody>
+    </table></div>
+    <p>Den mest lærerike feilen: konstanten <code>PI</code> i den delte solkoden kolliderte med en makro i Arduino. Testene på vertsmaskinen var grønne, men fastvaren ville ikke bygge. Delt kode som bare bygger ett sted, er ikke delt.</p>
+    <div class="ikke"><p><b>Ikke bevist:</b> ingenting har kjørt på maskinvare. Utsikten er simulert (lyset følger ekte solhøyde). Refleksjoner i ruta, dugg og lading under 0 °C er ikke løst.</p></div>
+
+    <h2>Markedet, merket</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Påstand</th><th>Merking</th></tr></thead>
+      <tbody>
+        <tr><td>Tromsø: sola under horisonten ca. 28.11–15.01</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>TRMNL, 7,5″ e-blekk-ramme, 39, henter fra sky</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>14,5 % av voksne plaget av ensomhet (SSB 2025)</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>112×84 1-bit uten original er ikke kameraovervåking</td><td><span class="merk uav">UAVKLART</span></td></tr>
+        <tr><td>Å se dagslengden øke hjelper i mørketida</td><td><span class="merk hyp">HYPOTESE</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Filene</h2>
+    <div class="lenker">
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/tree/claude/fabrikken/fabrikken/03-vindusvakt">Hele mappa</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/03-vindusvakt/SPEC.md">SPEC</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/03-vindusvakt/HULL.md">HULL</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/felles/sol.h">sol.h</a>
+      <a href="https://claude.ai/artifact/J4z2nBfKFJxCMcAYwrcKvw">← 01 STAFETT</a>
+      <a href="https://claude.ai/artifact/TZ7Q8C97m7SrT3bxJJzZRx">← 02 MØRKEROM</a>
+    </div>
+
+    <p class="slutt" id="slutt">Hvor mange dager er det til sola der du er?</p>
+  </section>
+</main>
+
+<script>
+// JS-port av felles/sol.h (NOAA). Samme tall som rammen.
+const SOL = (() => {
+  const PI = Math.PI, rad = (g) => g * PI / 180, grad = (r) => r * 180 / PI, DOGN = 864e5;
+  function param(t) {
+    const l0 = ((280.46646 + t * (36000.76983 + t * 0.0003032)) % 360);
+    const m = 357.52911 + t * (35999.05029 - 0.0001537 * t);
+    const e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
+    const c = Math.sin(rad(m)) * (1.914602 - t * (0.004817 + 0.000014 * t)) + Math.sin(rad(2 * m)) * (0.019993 - 0.000101 * t) + Math.sin(rad(3 * m)) * 0.000289;
+    const omega = 125.04 - 1934.136 * t;
+    const lambda = l0 + c - 0.00569 - 0.00478 * Math.sin(rad(omega));
+    const eps0 = 23 + (26 + (21.448 - t * (46.815 + t * (0.00059 - t * 0.001813))) / 60) / 60;
+    const eps = eps0 + 0.00256 * Math.cos(rad(omega));
+    const dekl = Math.asin(Math.sin(rad(eps)) * Math.sin(rad(lambda)));
+    const y = Math.tan(rad(eps / 2)) ** 2;
+    const eq = 4 * grad(y * Math.sin(2 * rad(l0)) - 2 * e * Math.sin(rad(m)) + 4 * e * y * Math.sin(rad(m)) * Math.cos(2 * rad(l0)) - 0.5 * y * y * Math.sin(4 * rad(l0)) - 1.25 * e * e * Math.sin(2 * rad(m)));
+    return [dekl, eq];
+  }
+  const jh = (ms) => (ms / DOGN + 2440587.5 - 2451545) / 36525;
+  function tv(lat, dekl, senit) {
+    const c = (Math.cos(rad(senit)) - Math.sin(rad(lat)) * Math.sin(dekl)) / (Math.cos(rad(lat)) * Math.cos(dekl));
+    if (c > 1) return [NaN, 1]; if (c < -1) return [NaN, -1];
+    return [grad(Math.acos(c)), 0];
+  }
+  function hendelse(dag, lat, lon, senit, opp) {
+    let t = dag * DOGN + 12 * 36e5;
+    for (let i = 0; i < 2; i++) {
+      const [dekl, eq] = param(jh(t));
+      const [h, f] = tv(lat, dekl, senit);
+      if (f) return null;
+      t = dag * DOGN + Math.trunc((720 - 4 * (lon + (opp ? h : -h)) - eq) * 60000);
+    }
+    return t;
+  }
+  function dag(d, lat, lon) {
+    const [dekl, eq] = param(jh(d * DOGN + 12 * 36e5));
+    const s = { type: 'normal', opp: 0, ned: 0, lengde: 0, bla: null };
+    s.middag = d * DOGN + Math.trunc((720 - 4 * lon - eq) * 60000);
+    s.maks = 90 - Math.abs(lat - grad(dekl));
+    const f = tv(lat, dekl, 90.833)[1];
+    if (f > 0) s.type = 'morketid'; else if (f < 0) s.type = 'midnattssol';
+    if (s.type === 'normal') {
+      const a = hendelse(d, lat, lon, 90.833, true), b = hendelse(d, lat, lon, 90.833, false);
+      if (a === null || b === null) s.type = s.maks > 0 ? 'midnattssol' : 'morketid';
+      else { s.opp = a; s.ned = b; s.lengde = Math.trunc((b - a) / 6e4); }
+    }
+    if (s.type === 'midnattssol') s.lengde = 1440;
+    if (s.type === 'morketid') {
+      const a = hendelse(d, lat, lon, 96, true), b = hendelse(d, lat, lon, 96, false);
+      if (a !== null && b !== null) s.bla = [a, b];
+    }
+    return s;
+  }
+  function tilSol(d, lat, lon) { for (let i = 0; i < 366; i++) if (dag(d + i, lat, lon).type !== 'morketid') return i; return -1; }
+  function tilNed(d, lat, lon) { for (let i = 0; i < 366; i++) if (dag(d + i, lat, lon).type !== 'midnattssol') return i; return -1; }
+  return { dag, tilSol, tilNed };
+})();
+
+
+(() => {
+  const STEDER = [['Oslo', 59.9139, 10.7522], ['Bergen', 60.3913, 5.3221], ['Trondheim', 63.4305, 10.3951], ['Bodø', 67.2804, 14.4049],
+    ['Tromsø', 69.6492, 18.9553], ['Hammerfest', 70.6634, 23.6821], ['Vardø', 70.3705, 31.1107], ['Longyearbyen', 78.2232, 15.6267]];
+  const DOGN = 864e5;
+  const MND = ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des'];
+  const fmtKl = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit' });
+  const fmtDag = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const kl = (t) => fmtKl.format(new Date(t));
+  const datoKort = (d) => { const x = new Date(d * DOGN); return x.getUTCDate() + '. ' + MND[x.getUTCMonth()]; };
+  let valgt = 4;
+  const iso = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Oslo' }).format(new Date());
+  const [Y, M, D] = iso.split('-').map(Number);
+  const nyttar = Math.floor(Date.UTC(Y, 0, 1) / DOGN);
+  const dagerIAar = Math.floor(Date.UTC(Y + 1, 0, 1) / DOGN) - nyttar;
+  const slider = document.getElementById('dag');
+  slider.max = String(dagerIAar - 1);
+  slider.value = String(Math.floor(Date.UTC(Y, M - 1, D) / DOGN) - nyttar);
+
+  const chips = document.getElementById('steder');
+  STEDER.forEach(([n], i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = n;
+    b.addEventListener('click', () => { valgt = i; tegn(); });
+    chips.append(b);
+  });
+
+  function farge(navn) { return getComputedStyle(document.documentElement).getPropertyValue(navn).trim(); }
+
+  function tegnAar(lat, lon, d0) {
+    const c = document.getElementById('aar');
+    const w = c.clientWidth, h = c.clientHeight, dpr = window.devicePixelRatio || 1;
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+    const g = c.getContext('2d');
+    g.scale(dpr, dpr);
+    g.clearRect(0, 0, w, h);
+    const venstre = 34, bunn = h - 22, topp = 8, bredde = w - venstre - 6;
+    g.font = '11px "IBM Plex Mono", monospace';
+    g.fillStyle = farge('--dempet');
+    g.strokeStyle = farge('--linje');
+    g.lineWidth = 1;
+    for (const t of [0, 6, 12, 18, 24]) {
+      const y = bunn - (bunn - topp) * t / 24;
+      g.beginPath(); g.moveTo(venstre, y); g.lineTo(venstre + bredde, y); g.stroke();
+      g.fillText(t + ' t', 2, y + 4);
+    }
+    for (let m = 0; m < 12; m++) {
+      const x = venstre + bredde * (Math.floor(Date.UTC(Y, m, 1) / DOGN) - nyttar) / dagerIAar;
+      g.fillText(MND[m], x + 3, h - 6);
+    }
+    // mørketid
+    g.fillStyle = farge('--natt');
+    for (let i = 0; i < dagerIAar; i++) {
+      if (SOL.dag(nyttar + i, lat, lon).type === 'morketid') g.fillRect(venstre + bredde * i / dagerIAar, bunn - 10, bredde / dagerIAar + 0.6, 10);
+    }
+    g.strokeStyle = farge('--blekk');
+    g.lineWidth = 2;
+    g.beginPath();
+    for (let i = 0; i < dagerIAar; i++) {
+      const s = SOL.dag(nyttar + i, lat, lon);
+      const x = venstre + bredde * i / dagerIAar, y = bunn - (bunn - topp) * s.lengde / 1440;
+      if (i === 0) g.moveTo(x, y); else g.lineTo(x, y);
+    }
+    g.stroke();
+    const s = SOL.dag(d0, lat, lon);
+    const x = venstre + bredde * (d0 - nyttar) / dagerIAar, y = bunn - (bunn - topp) * s.lengde / 1440;
+    g.strokeStyle = farge('--fjord');
+    g.beginPath(); g.moveTo(x, topp); g.lineTo(x, bunn); g.stroke();
+    g.fillStyle = farge('--fjord');
+    g.beginPath(); g.arc(x, y, 6, 0, Math.PI * 2); g.fill();
+  }
+
+  function tegn() {
+    const [navn, lat, lon] = STEDER[valgt];
+    [...chips.children].forEach((b, i) => b.setAttribute('aria-pressed', String(i === valgt)));
+    const d0 = nyttar + Number(slider.value);
+    document.getElementById('dato-tekst').textContent = fmtDag.format(new Date(d0 * DOGN + 12 * 36e5));
+    const s = SOL.dag(d0, lat, lon), ig = SOL.dag(d0 - 1, lat, lon);
+    const tall = document.getElementById('tall'), linje = document.getElementById('linje');
+    if (s.type === 'morketid') {
+      const n = SOL.tilSol(d0, lat, lon);
+      tall.innerHTML = n + ' <small>' + (n === 1 ? 'dag' : 'dager') + ' til sola</small>';
+      linje.textContent = 'Mørketid i ' + navn + '. Sola er tilbake ' + datoKort(d0 + n) + '.' + (s.bla ? ' Blåtime ' + kl(s.bla[0]) + '–' + kl(s.bla[1]) + '.' : ' Ingen blåtime i dag.');
+    } else if (s.type === 'midnattssol') {
+      const n = SOL.tilNed(d0, lat, lon);
+      tall.innerHTML = '24 t <small>midnattssol</small>';
+      linje.textContent = 'Sola går ikke ned i ' + navn + ' i dag' + (n > 0 ? ', og ikke før ' + datoKort(d0 + n) + '.' : '.');
+    } else {
+      const diff = s.lengde - (ig.type === 'normal' ? ig.lengde : s.lengde);
+      tall.innerHTML = Math.floor(s.lengde / 60) + ' t <small>' + (s.lengde % 60) + ' min lys</small>';
+      linje.textContent = 'Sola opp ' + kl(s.opp) + ', ned ' + kl(s.ned) + '. ' + (diff === 0 ? 'Like mye som dagen før.' : Math.abs(diff) + ' min ' + (diff > 0 ? 'mer' : 'mindre') + ' enn dagen før.');
+    }
+    tegnAar(lat, lon, d0);
+  }
+  slider.addEventListener('input', tegn);
+  window.addEventListener('resize', tegn);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', tegn);
+  tegn();
+})();
+</script>

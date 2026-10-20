@@ -1,6 +1,6 @@
 # HULL — Vindusvakt v0.1
 
-Testet 20.10.2026, ca. 16:35–17:10 UTC, i en container uten vindu, kamera eller panel.
+Testet 20.10.2026, ca. 16:35–17:00 UTC, i en container uten vindu, kamera eller panel.
 
 ## Bevist (kjørt, grønt)
 
