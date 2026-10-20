@@ -43,7 +43,7 @@ utmattelse eller natt. Kjølerom løser overleveringsproblemet, ikke viljestyrke
 
 ## Kanaler (null annonsebudsjett)
 
-1. **Gjeldsrådgivere** — NAV økonomirådgivning (800GJELD), kommunale rådgivere. B2B-bulk, de gir den bort.
+1. **Gjeldsrådgivere** — NAV økonomi- og gjeldsrådgivning (55 55 33 39), kommunale rådgivere. B2B-bulk, de gir den bort.
 2. **Flersystem-miljøer** — Discord/Reddit-fellesskap for DID/OSDD, ADHD Norge. Åpen kildekode = tillit.
 3. **Maker-miljø** — Printables/Thingiverse: gratis STL med lenke til appen. Hver print = én bruker.
 4. **Forbrukerrådet-vinkelen** — de har allerede tatt BNPL. Et gratis motverktøy er en historie de kan løfte.

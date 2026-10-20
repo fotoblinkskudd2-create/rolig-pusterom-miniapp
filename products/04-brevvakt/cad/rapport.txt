@@ -1,0 +1,10 @@
+BREVHYLLE v0.1 — CAD-rapport
+Ytre mål      : 120 × 58 × 80 mm  (passer 180 mm-plate)
+Spor          : Uåpnet 14 mm (front, leppe 30 mm) · Håndtert 20 mm (bak, vegg 80 mm)
+Brevåpner     : spor 2.4 × 8.0 mm langs X · blad 9×13×0.5 mm vannrett, egg på tvers mot −X, 5.0 mm under topp (3 mm over folden)
+Blad krysser spor: 10.80 mm3 (> 0 kreves)
+Blad-kollisjon: 0.000 mm3 (0 kreves)
+Blad fanget   : True  ·  innervegg bak lomme 0.6 mm
+Fingersikker  : True  (spor 2.4 mm, lomme-slisse 0.8 mm)
+Vanntett      : True
+Volum massiv  : 148.3 cm3 · 15 % infill ≈ 99 g PLA · ~153 min

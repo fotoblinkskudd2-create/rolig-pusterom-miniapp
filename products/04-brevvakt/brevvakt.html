@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brevvakt</title>
+<style>
+  :root {
+    --bg: #f3f5f7; --card: #ffffff; --text: #1f2a33; --muted: #5f6e7a; --line: #dbe2e8;
+    --accent: #2f5d7c; --on-accent: #ffffff; --ok: #2f7d4f; --bad: #b42318; --warn: #a15c00; --soft: #e8eef3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11171c; --card: #19222a; --text: #e4ecf2; --muted: #98a8b5; --line: #2b3843;
+      --accent: #8ec1e3; --on-accent: #11171c; --ok: #6cc08f; --bad: #f07a6e; --warn: #e0a84a; --soft: #1f2b35;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 84px; min-height: 100vh; }
+  .page { display: none; padding: 20px 16px 40px; max-width: 560px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.5rem; font-weight: 650; margin-bottom: 4px; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 20px 0 8px; }
+  p.sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 14px; }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin: 10px 0 4px; }
+  input, select, textarea { width: 100%; font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  input.found { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok) inset; }
+  textarea { min-height: 120px; resize: vertical; }
+  .row { display: flex; gap: 8px; } .row > * { flex: 1; min-width: 0; }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; margin: 8px 0; color: var(--text); }
+  .check input { width: auto; margin-top: 4px; }
+  .check small { display: block; color: var(--muted); font-size: 0.78rem; }
+  .btn { display: block; width: 100%; border: none; border-radius: 12px; padding: 13px; font: inherit; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--on-accent); text-align: center; margin-top: 12px; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+  .calm { background: var(--soft); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .calm b { font-size: 1.05rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+  td, th { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  tr.over td { color: var(--bad); font-weight: 600; }
+  .verdict { border-radius: 14px; padding: 14px; margin: 12px 0; font-weight: 600; }
+  .verdict.ok { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+  .verdict.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
+  .verdict.warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+  .verdict small { display: block; font-weight: 400; color: var(--text); margin-top: 4px; }
+  pre.letter { white-space: pre-wrap; font-family: ui-serif, Georgia, serif; font-size: 0.92rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .meta { font-size: 0.8rem; color: var(--muted); }
+  .fine { font-size: 0.78rem; color: var(--muted); margin-top: 12px; }
+  .steps { padding-left: 20px; font-size: 0.92rem; } .steps li { margin-bottom: 6px; }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.9rem; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 5; }
+  .toast.show { opacity: 1; }
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); display: flex; justify-content: space-around; padding: 8px 0 12px; z-index: 4; }
+  .nav button { background: none; border: none; color: var(--muted); font: inherit; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .nav button span { font-size: 1.3rem; } .nav button.active { color: var(--accent); font-weight: 600; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<section id="page-brev" class="page active" aria-labelledby="h-brev">
+  <div class="calm"><b>Du har åpnet brevet.</b> Det var det vanskeligste. Nå finner vi ut hva det er, hvor lang tid du har, og om de krever mer enn loven tillater. <a href="../../index.html#pusterom">Ett pust først?</a></div>
+  <h1 id="h-brev">Brevvakt</h1>
+  <label for="paste">Lim inn teksten fra brevet, e-posten eller SMS-en (valgfritt — du kan også fylle ut selv)</label>
+  <textarea id="paste" placeholder="Hovedstol: 2 499,00&#10;Forfallsdato: 01.03.2026&#10;Purregebyr: 38,00&#10;Inkassosalær: 600,00 …"></textarea>
+  <button class="btn ghost" id="parseBtn">Finn beløp og datoer</button>
+  <p class="fine" id="parseLine">Teksten forlater ikke enheten. Tips: på iPhone/Android kan du markere tekst rett i et bilde av brevet.</p>
+
+  <h2>Brevet</h2>
+  <label for="fType">Hva slags brev er det?</label>
+  <select id="fType">
+    <option value="purring">Purring (fra kreditor)</option>
+    <option value="varsel">Inkassovarsel (fra kreditor)</option>
+    <option value="oppfordring" selected>Betalingsoppfordring (fra inkassoselskap)</option>
+    <option value="krav">Inkassokrav / ny oppfordring etter fristen</option>
+    <option value="rettslig">Forliksklage / varsel om utlegg</option>
+  </select>
+  <label for="fCreditor">Kreditor (hvem du skylder)</label><input id="fCreditor" maxlength="80" placeholder="F.eks. en lånebank, et teleselskap, legekontoret">
+  <label for="fCollector">Inkassoselskap (hvis noen)</label><input id="fCollector" maxlength="80">
+  <label for="fRef">Saksnummer</label><input id="fRef" maxlength="40">
+  <div class="row">
+    <div><label for="fMain">Hovedkrav (kr)</label><input id="fMain" type="number" inputmode="decimal" min="0" step="0.01"></div>
+    <div><label for="fDue">Opprinnelig forfall</label><input id="fDue" type="date"></div>
+  </div>
+  <div class="row">
+    <div><label for="fFee">Salær krevd (kr)</label><input id="fFee" type="number" inputmode="decimal" min="0" step="0.01" value="0"></div>
+    <div><label for="fGeb">Gebyrer krevd (kr)</label><input id="fGeb" type="number" inputmode="decimal" min="0" step="0.01" value="0"></div>
+  </div>
+  <div class="row">
+    <div><label for="fRente">Forsinkelsesrente krevd (kr)</label><input id="fRente" type="number" inputmode="decimal" min="0" step="0.01" value="0"></div>
+    <div><label for="fFrist">Frist i dette brevet</label><input id="fFrist" type="date"></div>
+  </div>
+  <div class="row">
+    <div><label for="fOppfFrist">Frist i betalingsoppfordringen</label><input id="fOppfFrist" type="date"></div>
+    <div><label for="fToday">Regn til dato</label><input id="fToday" type="date"></div>
+  </div>
+  <label class="check"><input type="checkbox" id="fConsumer" checked><span>Kravet gjelder noe jeg kjøpte som privatperson<small>Forbruker. Ellers er takene 1,5 ganger høyere (§ 2-1).</small></span></label>
+  <label class="check"><input type="checkbox" id="fMva" checked><span>Kreditor er mva-pliktig (butikk, telefon, strøm …)<small>Rene lån og kredittkort, forsikring, lege og tannlege er som regel <em>ikke</em> mva-pliktige — da legges 25 % mva til taket (§ 2-2 annet ledd). Faktura fra et kjøp i butikk (også via Klarna o.l.) stammer som regel fra mva-pliktig salg. Usikker? La den stå på: det gir det strengeste taket.</small></span></label>
+  <label class="check"><input type="checkbox" id="fAvdrag"><span>Jeg har avtalt avdragsordning med mer enn fire avdrag<small>Øker taket med 1 125 kr (§ 2-4).</small></span></label>
+  <button class="btn" id="checkBtn">Sjekk mot loven</button>
+</section>
+
+<section id="page-svar" class="page" aria-labelledby="h-svar">
+  <h1 id="h-svar">Svar</h1>
+  <div id="calmSummary" class="calm"></div>
+  <div id="verdict"></div>
+  <div class="card"><table id="calcTable"></table></div>
+  <div class="card"><h2 style="margin-top:0">Hva nå</h2><ol class="steps" id="steps"></ol></div>
+  <div id="letterWrap" hidden>
+    <h2>Innsigelse — klar til å sende</h2>
+    <pre class="letter" id="letter"></pre>
+    <div class="row"><button class="btn" id="copyLetter">Kopier</button><button class="btn ghost" id="dlLetter">Last ned .txt</button></div>
+  </div>
+  <button class="btn ghost" id="saveCase">Lagre saken på enheten</button>
+  <button class="btn ghost" id="icsBtn">Frist i kalenderen</button>
+  <p class="fine">Ikke juridisk rådgivning. Beregningen bruker inkassoforskriften (sist endret 19.12.2025, i kraft 1.1.2026), inkassosats 750 kr, og Finanstilsynets forsinkelsesrenter 2020–2026. Gratis hjelp: NAV 55 55 33 39 (økonomi og gjeld) · Finanstilsynet fører tilsyn med inkassoselskaper.</p>
+</section>
+
+<section id="page-saker" class="page" aria-labelledby="h-saker">
+  <h1 id="h-saker">Saker</h1>
+  <p class="sub">Bare på denne enheten. Sortert etter frist.</p>
+  <div id="caseList"></div>
+  <button class="btn ghost" id="exportCases">Eksporter alle (JSON)</button>
+</section>
+
+<section id="page-regler" class="page" aria-labelledby="h-reg">
+  <h1 id="h-reg">Reglene</h1>
+  <p class="sub">Det appen regner med. Kilde og dato for hvert tall.</p>
+  <div class="card" id="ruleCard"></div>
+</section>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button data-page="brev" class="active"><span aria-hidden="true">✉️</span>Brev</button>
+  <button data-page="svar"><span aria-hidden="true">⚖️</span>Svar</button>
+  <button data-page="saker"><span aria-hidden="true">🗂️</span>Saker</button>
+  <button data-page="regler"><span aria-hidden="true">📜</span>Regler</button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+// ================= LOVEN (verifisert 19.10.2026) =================
+// Inkassoforskriften (FOR-1989-07-14-562), sist endret 19.12.2025 nr. 2709, i kraft 1.1.2026.
+const INKASSOSATS = 750;                     // § 1-2 / Finanstilsynet: «Inkassosatsen i 2026 blir 750 kroner»
+const GEBYR_PURRING = 38, GEBYR_OPPF = 113;  // 1/20 og 3/20 av satsen (§ 1-2)
+const STEPS = [                              // § 2-2 (lett) og § 2-3 (tungt), forbruker, faktor × inkassosats
+  { upTo: 500, lett: 0.25, tung: 0.5 },
+  { upTo: 1000, lett: 0.35, tung: 0.7 },
+  { upTo: 2500, lett: 0.4, tung: 0.8 },
+  { upTo: 10000, lett: 0.8, tung: 1.6 },
+  { upTo: 50000, lett: 1.6, tung: 3.2 },
+  { upTo: 250000, lett: 3.6, tung: 7.2 },
+  { upTo: Infinity, lett: 7.2, tung: 14.4 }
+];
+const TUNG_DAGER = 28;                       // § 2-3: fristen i betalingsoppfordringen oversittet med mer enn 28 dager
+const NON_CONSUMER = 1.5, MVA = 1.25, AVDRAG_TILLEGG = 1.5 * INKASSOSATS;
+// Forsinkelsesrente, Finanstilsynet (halvårlig)
+const RENTER = [
+  ['2020-01-01', 9.50], ['2020-07-01', 8.00], ['2021-01-01', 8.00], ['2021-07-01', 8.00],
+  ['2022-01-01', 8.50], ['2022-07-01', 9.25], ['2023-01-01', 10.75], ['2023-07-01', 11.75],
+  ['2024-01-01', 12.50], ['2024-07-01', 12.50], ['2025-01-01', 12.50], ['2025-07-01', 12.25],
+  ['2026-01-01', 12.00], ['2026-07-01', 12.25]
+];
+const RENTE_TIL = '2026-12-31';
+
+const DAY = 86400e3;
+const d2n = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+const n2d = (n) => new Date(n).toISOString().slice(0, 10);
+const days = (a, b) => Math.round((d2n(b) - d2n(a)) / DAY);
+
+function step(main) { return STEPS.find(s => main <= s.upTo); }
+function cap({ main, consumer = true, mva = true, avdrag = false, tung = false }) {
+  const s = step(main);
+  let c = (tung ? s.tung : s.lett) * INKASSOSATS;
+  if (!consumer) c *= NON_CONSUMER;
+  if (!mva) c *= MVA;
+  if (avdrag) c += AVDRAG_TILLEGG;
+  return Math.round(c * 100) / 100;
+}
+function tungAllowed(oppfFrist, today) { return !!oppfFrist && !!today && days(oppfFrist, today) > TUNG_DAGER; }
+// Enkel rente, faktiske dager/365, fra dagen etter forfall til og med «today».
+function forsinkelsesrente(main, due, today) {
+  const out = { total: 0, parts: [], unknownDays: 0, beyondDays: 0 };
+  if (!main || !due || !today || d2n(today) <= d2n(due)) return out;
+  let cur = d2n(due);
+  const end = d2n(today);
+  if (cur < d2n(RENTER[0][0])) { out.unknownDays = Math.round((Math.min(end, d2n(RENTER[0][0])) - cur) / DAY); cur = Math.min(end, d2n(RENTER[0][0])); }
+  for (let i = 0; i < RENTER.length && cur < end; i++) {
+    const ps = d2n(RENTER[i][0]), pe = i + 1 < RENTER.length ? d2n(RENTER[i + 1][0]) : d2n(RENTE_TIL) + DAY;
+    if (cur >= pe) continue;
+    const a = Math.max(cur, ps), b = Math.min(end, pe);
+    if (b <= a) continue;
+    const n = Math.round((b - a) / DAY), r = main * RENTER[i][1] / 100 * n / 365;
+    out.parts.push({ from: n2d(a), days: n, rate: RENTER[i][1], amount: r }); out.total += r; cur = b;
+  }
+  if (cur < end) out.beyondDays = Math.round((end - cur) / DAY);
+  out.total = Math.round(out.total * 100) / 100;
+  return out;
+}
+function assess(f) {
+  const tung = tungAllowed(f.oppfFrist, f.today);
+  const c = cap({ main: f.main, consumer: f.consumer, mva: f.mva, avdrag: f.avdrag, tung });
+  const costs = (f.fee || 0) + (f.geb || 0);
+  const rente = forsinkelsesrente(f.main, f.due, f.today);
+  const overCost = Math.max(0, Math.round((costs - c) * 100) / 100);
+  const overRente = rente.unknownDays || rente.beyondDays ? 0 : Math.max(0, Math.round((f.rente - rente.total - 1) * 100) / 100); // 1 kr avrundingsslakk
+  return { tung, cap: c, costs, rente, overCost, overRente, over: Math.round((overCost + overRente) * 100) / 100 };
+}
+
+// ================= UTLESING AV BREVTEKST =================
+function parseAmount(s) {
+  const m = String(s).replace(/kr\.?|nok|,-/gi, ' ').match(/\d{1,3}(?:[ . ]\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?/);
+  if (!m) return null;
+  let t = m[0].replace(/[  ]/g, '');
+  if (/,\d{1,2}$/.test(t)) t = t.replace(/\./g, '').replace(',', '.');
+  else if (/\.\d{3}(\.|$)/.test(t)) t = t.replace(/\./g, '');
+  const v = Number(t); return Number.isFinite(v) ? v : null;
+}
+function parseDate(s) {
+  const m = String(s).match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
+  if (!m) return null;
+  let [, d, mo, y] = m; y = y.length === 2 ? '20' + y : y;
+  const iso = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  return isNaN(d2n(iso)) ? null : iso;
+}
+const FIELDS = [
+  { key: 'main', re: /(hovedstol|hovedkrav|opprinnelig (?:krav|beløp)|fakturabeløp|restbeløp faktura)/i, kind: 'amount' },
+  { key: 'fee', re: /(salær|inkassosalær|inkassokostnad)/i, kind: 'amount', sum: true },
+  { key: 'geb', re: /(gebyr|purregebyr|varselgebyr|purring)/i, kind: 'amount', sum: true },
+  { key: 'rente', re: /(forsinkelsesrente|renter?\b(?! fra))/i, kind: 'amount', sum: true },
+  { key: 'due', re: /(forfall|forfallsdato|opprinnelig forfall)/i, kind: 'date' },
+  { key: 'frist', re: /(betales innen|betalingsfrist|frist|innen)/i, kind: 'date' },
+  { key: 'ref', re: /(saksnr|saksnummer|referanse|kid)/i, kind: 'text' }
+];
+function parseLetter(text) {
+  const found = {};
+  for (const line of String(text).split(/\n/)) {
+    for (const f of FIELDS) {
+      if (!f.re.test(line)) continue;
+      if (f.key === 'rente' && /sats|%|prosent/.test(line) && !/kr|\d+,\d\d/.test(line.replace(/\d+[.,]\d+\s*%/, ''))) continue; // bare rentesats, ikke beløp
+      if (f.kind === 'amount') {
+        const after = line.slice(line.search(f.re));
+        const v = parseAmount(after.replace(f.re, '').replace(/\d+(?:[.,]\d+)?\s*%/g, ' ')); // rentesats er ikke et beløp
+        if (v != null) found[f.key] = f.sum && found[f.key] != null ? found[f.key] + v : v;
+      } else if (f.kind === 'date') {
+        const v = parseDate(line); if (v && found[f.key] == null) found[f.key] = v;
+      } else if (f.kind === 'text') {
+        const m = line.match(/[:\s]\s*([A-Z0-9-]{4,})\s*$/i); if (m && found.ref == null) found.ref = m[1];
+      }
+      break; // én kategori per linje
+    }
+  }
+  if (/betalingsoppfordring/i.test(text)) found.type = 'oppfordring';
+  else if (/inkassovarsel|varsel om inkasso/i.test(text)) found.type = 'varsel';
+  else if (/forliks|utlegg|namsmann/i.test(text)) found.type = 'rettslig';
+  else if (/purring/i.test(text)) found.type = 'purring';
+  return found;
+}
+
+// ================= UI =================
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const kr = (n) => (Math.round(n * 100) / 100).toLocaleString('nb-NO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kr';
+const fmtD = (s) => s ? new Date(d2n(s)).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : '—';
+const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+let toastT;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+const KEY = 'brevvakt.v1';
+function loadCases() { try { const s = JSON.parse(localStorage.getItem(KEY)); return Array.isArray(s) ? s : []; } catch (e) { return []; } }
+let cases = loadCases();
+function saveCases() { try { localStorage.setItem(KEY, JSON.stringify(cases)); } catch (e) { toast('Kunne ikke lagre.'); } }
+
+$('fToday').value = todayIso();
+function num(id) { const v = Number($(id).value); return Number.isFinite(v) && $(id).value !== '' ? v : 0; }
+function form() {
+  return {
+    type: $('fType').value, creditor: $('fCreditor').value.trim(), collector: $('fCollector').value.trim(), ref: $('fRef').value.trim(),
+    main: num('fMain'), due: $('fDue').value, fee: num('fFee'), geb: num('fGeb'), rente: num('fRente'),
+    frist: $('fFrist').value, oppfFrist: $('fOppfFrist').value, today: $('fToday').value || todayIso(),
+    consumer: $('fConsumer').checked, mva: $('fMva').checked, avdrag: $('fAvdrag').checked
+  };
+}
+function setForm(f) {
+  const map = { type: 'fType', creditor: 'fCreditor', collector: 'fCollector', ref: 'fRef', main: 'fMain', due: 'fDue', fee: 'fFee', geb: 'fGeb', rente: 'fRente', frist: 'fFrist', oppfFrist: 'fOppfFrist', today: 'fToday' };
+  for (const k in map) if (f[k] != null) $(map[k]).value = f[k];
+  for (const [k, id] of [['consumer', 'fConsumer'], ['mva', 'fMva'], ['avdrag', 'fAvdrag']]) if (f[k] != null) $(id).checked = !!f[k];
+}
+
+$('parseBtn').addEventListener('click', () => {
+  document.querySelectorAll('input.found').forEach(e => e.classList.remove('found'));
+  const p = parseLetter($('paste').value);
+  const ids = { main: 'fMain', fee: 'fFee', geb: 'fGeb', rente: 'fRente', due: 'fDue', frist: 'fFrist', ref: 'fRef' };
+  let n = 0;
+  for (const k in ids) if (p[k] != null) { $(ids[k]).value = typeof p[k] === 'number' ? Math.round(p[k] * 100) / 100 : p[k]; $(ids[k]).classList.add('found'); n++; }
+  if (p.type) { $('fType').value = p.type; if (p.type === 'oppfordring' && p.frist && !$('fOppfFrist').value) $('fOppfFrist').value = p.frist; }
+  $('parseLine').textContent = n ? `Fant ${n} felt (grønne). Sjekk dem mot brevet — det er forslag, ikke fasit.` : 'Fant ingen beløp. Fyll ut selv; det går fint.';
+});
+
+const TYPE_TXT = {
+  purring: { what: 'en purring fra den du skylder', next: 'Neste steg kan være et inkassovarsel. Du skal få minst 14 dagers frist i hvert av dem.' },
+  varsel: { what: 'et inkassovarsel', next: 'Hvis det ikke betales innen fristen (minst 14 dager), kan saken sendes til et inkassoselskap. Da kommer det salær i tillegg.' },
+  oppfordring: { what: 'en betalingsoppfordring fra et inkassoselskap', next: `Hvis fristen oversittes med mer enn ${TUNG_DAGER} dager, kan de kreve tungt salær (dobbelt). Senere kan saken gå til forliksråd eller namsmann.` },
+  krav: { what: 'et inkassokrav etter betalingsoppfordringen', next: 'Neste steg kan være rettslig inndriving: forliksråd eller namsmann.' },
+  rettslig: { what: 'et rettslig skritt (forliksråd eller utlegg)', next: 'Her gjelder egne frister. Les fristen i brevet nøye og ring NAV 55 55 33 39 eller en advokat i dag.' }
+};
+
+let last = null;
+function render(f, a) {
+  last = { f, a };
+  const t = TYPE_TXT[f.type];
+  const left = f.frist ? days(f.today, f.frist) : null;
+  $('calmSummary').innerHTML = `Dette er <b>${esc(t.what)}</b>${f.creditor ? ` om et krav fra <b>${esc(f.creditor)}</b>` : ''}.<br>`
+    + (f.frist ? (left >= 0 ? `Fristen er <b>${fmtD(f.frist)}</b> — <b>${left} dag${left === 1 ? '' : 'er'}</b> igjen.` : `Fristen var <b>${fmtD(f.frist)}</b>, ${-left} dager siden. Det er ikke for sent å ta kontakt.`) : 'Ingen frist registrert.')
+    + `<br><span class="meta">${esc(t.next)}</span>`;
+  let v;
+  if (!f.main) v = `<div class="verdict warn">Mangler hovedkrav.<small>Uten hovedkravet kan ikke taket regnes ut.</small></div>`;
+  else if (a.over > 0) v = `<div class="verdict bad">De krever ${kr(a.over)} mer enn forskriften tillater.<small>Det betyr ikke at du skal la være å betale hovedkravet. Det betyr at du kan kreve at overskuddet strykes. Innsigelsen er skrevet under.</small></div>`;
+  else v = `<div class="verdict ok">Innenfor taket.<small>Salær og gebyrer er ${kr(a.costs)} av lovlige ${kr(a.cap)}${a.rente.total ? `, og renten er innenfor ${kr(a.rente.total + 1)}` : ''}.</small></div>`;
+  if (a.rente.unknownDays) v += `<div class="verdict warn">Forfall før 2020: ${a.rente.unknownDays} dager rente er ikke sjekket.<small>Renten er regnet fra 1.1.2020.</small></div>`;
+  if (a.rente.beyondDays) v += `<div class="verdict warn">Datoen er etter ${RENTE_TIL}: renten for de siste ${a.rente.beyondDays} dagene er ikke i tabellen ennå.</div>`;
+  $('verdict').innerHTML = v;
+  const rows = [
+    ['Hovedkrav', f.main, null],
+    [`Salær + gebyrer krevd`, a.costs, a.overCost > 0],
+    [`Lovlig maks (${a.tung ? 'tungt' : 'lett'} salær${f.consumer ? '' : ', næring ×1,5'}${f.mva ? '' : ', +25 % mva'}${f.avdrag ? ', +1 125 avdrag' : ''})`, a.cap, null],
+    ['Forsinkelsesrente krevd', f.rente, a.overRente > 0],
+    [`Forsinkelsesrente beregnet (${a.rente.parts.reduce((s, p) => s + p.days, 0)} dager)`, a.rente.total, null]
+  ];
+  $('calcTable').innerHTML = '<tr><th>Post</th><th class="n">Beløp</th></tr>' + rows.map(r => `<tr class="${r[2] ? 'over' : ''}"><td>${esc(r[0])}</td><td class="n">${kr(r[1] || 0)}</td></tr>`).join('')
+    + `<tr><td><b>Overkrav</b></td><td class="n"><b>${kr(a.over)}</b></td></tr>`
+    + a.rente.parts.map(p => `<tr><td class="meta">· fra ${fmtD(p.from)}: ${p.days} d à ${p.rate.toLocaleString('nb-NO')} %</td><td class="n meta">${kr(p.amount)}</td></tr>`).join('');
+  const steps = [];
+  if (a.over > 0) steps.push('Send innsigelsen under til inkassoselskapet, skriftlig (e-post holder). Ta vare på kopi.');
+  if (f.main) steps.push(`Betal hovedkravet${a.over > 0 ? ' og det som er lovlig' : ''} hvis du kan — eller ring og be om en avdragsordning. Det er lov å spørre.`);
+  if (!a.tung && f.type === 'oppfordring' && f.oppfFrist) steps.push(`Tungt salær kan tidligst kreves etter ${fmtD(n2d(d2n(f.oppfFrist) + (TUNG_DAGER + 1) * DAY))}. Betaling eller avtale før det holder kostnadene nede.`);
+  steps.push('Usikker på om kravet er riktig? Bestrid det skriftlig og si hvorfor. Inkassoselskapet skal da vurdere det før de går videre.');
+  steps.push('Gratis hjelp: NAV 55 55 33 39 (økonomi og gjeld). Du trenger ikke ha alle papirene klare for å ringe.');
+  $('steps').innerHTML = steps.map(s => `<li>${esc(s)}</li>`).join('');
+  $('letterWrap').hidden = !(a.over > 0);
+  if (a.over > 0) $('letter').textContent = letter(f, a);
+}
+function letter(f, a) {
+  const L = [];
+  L.push(`Til: ${f.collector || f.creditor || '[inkassoselskap]'}`);
+  L.push(`Saksnummer: ${f.ref || '[saksnummer]'}`);
+  L.push(`Dato: ${fmtD(f.today)}`, '');
+  L.push('INNSIGELSE MOT INNDRIVINGSKOSTNADER', '');
+  L.push(`Jeg viser til deres krav${f.creditor ? ` på vegne av ${f.creditor}` : ''} med hovedkrav ${kr(f.main)}.`, '');
+  if (a.overCost > 0) {
+    L.push(`Dere krever ${kr(a.costs)} i salær og gebyrer. Etter inkassoforskriften §§ 2-1 og ${a.tung ? '2-3' : '2-2'} er samlet erstatning for inndrivingskostnader begrenset til ${kr(a.cap)} for et krav av denne størrelsen (inkassosats ${INKASSOSATS} kr, ${a.tung ? 'tungt' : 'lett'} salær${f.consumer ? ', forbrukerkrav' : ''}${f.mva ? '' : ', tillagt merverdiavgift fordi kravet ikke stammer fra mva-pliktig virksomhet (§ 2-2 annet ledd)'}${f.avdrag ? ', tillegg for avdragsordning (§ 2-4)' : ''}). Purre- og varselgebyrer inngår i maksimalsatsen.`);
+    if (!a.tung && f.oppfFrist) L.push(`Fristen i betalingsoppfordringen (${fmtD(f.oppfFrist)}) er ikke oversittet med mer enn ${TUNG_DAGER} dager, så tungt salær kan ikke kreves (§ 2-3).`);
+    L.push('');
+  }
+  if (a.overRente > 0) {
+    L.push(`Dere krever ${kr(f.rente)} i forsinkelsesrente. Med Finanstilsynets fastsatte satser fra forfall ${fmtD(f.due)} til ${fmtD(f.today)} utgjør forsinkelsesrenten på hovedkravet ${kr(a.rente.total)}.`, '');
+  }
+  L.push(`Jeg ber om at kravet reduseres med ${kr(a.over)}, og om en oppdatert, spesifisert oppstilling skriftlig. Jeg ber også om at saken ikke sendes til rettslig inndriving før dette er besvart.`, '');
+  L.push('Jeg bestrider ikke hovedkravet med dette brevet.', '');
+  L.push('Med vennlig hilsen', '[Navn]', '[Adresse]');
+  return L.join('\n');
+}
+$('checkBtn').addEventListener('click', () => {
+  const f = form(); render(f, assess(f)); go('svar');
+});
+$('copyLetter').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('letter').textContent); toast('Kopiert.'); } catch (e) { toast('Marker teksten og kopier manuelt.'); }
+});
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+$('dlLetter').addEventListener('click', () => download('innsigelse.txt', $('letter').textContent, 'text/plain'));
+$('saveCase').addEventListener('click', () => {
+  if (!last) { toast('Sjekk et brev først.'); return; }
+  cases.unshift(Object.assign({ id: Math.random().toString(36).slice(2, 10), saved: Date.now(), over: last.a.over, cap: last.a.cap }, last.f));
+  saveCases(); toast('Lagret på enheten.'); renderCases();
+});
+$('icsBtn').addEventListener('click', () => {
+  if (!last || !last.f.frist) { toast('Ingen frist registrert.'); return; }
+  const f = last.f, dt = f.frist.replace(/-/g, '');
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Brevvakt//NO', 'BEGIN:VEVENT', `UID:${dt}-${Math.random().toString(36).slice(2)}@brevvakt.local`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`, `DTSTART;VALUE=DATE:${dt}`,
+    `SUMMARY:Frist: ${(f.creditor || 'brev').replace(/[,;\\\n]/g, ' ')}`, 'BEGIN:VALARM', 'TRIGGER:-P3D', 'ACTION:DISPLAY', 'DESCRIPTION:Frist om 3 dager', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  download('frist.ics', ics, 'text/calendar');
+});
+function renderCases() {
+  const sorted = [...cases].sort((a, b) => (a.frist || '9999').localeCompare(b.frist || '9999'));
+  $('caseList').innerHTML = sorted.map(c => `<div class="card"><b>${esc(c.creditor || 'Ukjent kreditor')}</b> · ${kr(c.main)}<div class="meta">${esc(TYPE_TXT[c.type] ? TYPE_TXT[c.type].what : '')} · frist ${fmtD(c.frist)}${c.over > 0 ? ` · <span style="color:var(--bad)">overkrav ${kr(c.over)}</span>` : ''}</div>
+    <button class="btn ghost" data-open="${esc(c.id)}" style="padding:6px;margin-top:8px">Åpne</button> <button class="btn ghost" data-del="${esc(c.id)}" style="padding:6px;margin-top:6px">Slett</button></div>`).join('') || '<div class="card">Ingen lagrede saker.</div>';
+}
+$('caseList').addEventListener('click', (e) => {
+  const o = e.target.closest('[data-open]'), d = e.target.closest('[data-del]');
+  if (o) { const c = cases.find(x => x.id === o.dataset.open); if (c) { setForm(c); render(form(), assess(form())); go('svar'); } }
+  if (d) { cases = cases.filter(x => x.id !== d.dataset.del); saveCases(); renderCases(); }
+});
+$('exportCases').addEventListener('click', () => download('brevvakt-saker.json', JSON.stringify(cases, null, 2), 'application/json'));
+function renderRules() {
+  $('ruleCard').innerHTML = `<p><b>Inkassosats 2026:</b> ${INKASSOSATS} kr · purring/varsel ${GEBYR_PURRING} kr · betalingsoppfordring fra kreditor ${GEBYR_OPPF} kr (inkassoforskriften § 1-2).</p>
+    <h2>Maks salær, forbruker (§ 2-2 lett / § 2-3 tungt)</h2>
+    <table><tr><th>Hovedkrav t.o.m.</th><th class="n">Lett</th><th class="n">Tungt</th></tr>${STEPS.map(s => `<tr><td>${s.upTo === Infinity ? 'over 250 000' : s.upTo.toLocaleString('nb-NO')}</td><td class="n">${kr(s.lett * INKASSOSATS)}</td><td class="n">${kr(s.tung * INKASSOSATS)}</td></tr>`).join('')}</table>
+    <p class="fine">Tungt salær: fristen i betalingsoppfordringen oversittet med mer enn ${TUNG_DAGER} dager. Ikke-forbruker: × 1,5. Kreditor ikke mva-pliktig: + 25 % mva. Avdrag > 4: + 1 125 kr. Purre- og varselgebyr inngår i maks. Kilde: Lovdata, FOR-1989-07-14-562, sist endret 19.12.2025.</p>
+    <h2>Forsinkelsesrente (Finanstilsynet)</h2>
+    <table>${RENTER.map(r => `<tr><td>fra ${fmtD(r[0])}</td><td class="n">${r[1].toLocaleString('nb-NO', { minimumFractionDigits: 2 })} %</td></tr>`).join('')}</table>
+    <p class="fine">Enkel rente, faktiske dager / 365, på hovedkravet. Verifisert 19.10.2026. Neste fastsettelse gjelder fra 1.1.2027 — oppdater tabellen.</p>`;
+}
+
+function go(name) {
+  if (!$('page-' + name)) name = 'brev';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  history.replaceState(null, '', '#' + name);
+  if (name === 'svar' && !last) { const f = form(); render(f, assess(f)); }
+  if (name === 'saker') renderCases();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
+renderRules(); renderCases();
+go((location.hash || '#brev').slice(1));
+window.__brev = { cap, tungAllowed, forsinkelsesrente, assess, parseLetter, parseAmount, parseDate, letter, STEPS, INKASSOSATS };
+</script>
+</body>
+</html>
