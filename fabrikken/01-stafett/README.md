@@ -13,6 +13,7 @@ En e-blekk-kile på pulten for hoder med flere sjåfører. Viser siste overlever
 | Økonomi | [`okonomi/OKONOMI.md`](okonomi/OKONOMI.md) |
 | Marked | [`marked/MARKED.md`](marked/MARKED.md) |
 | Testrapport | [`HULL.md`](HULL.md) |
+| Koblingsskjema | [`SKJEMA.md`](SKJEMA.md) |
 
 ## Prøv det på 60 sekunder (uten maskinvare)
 

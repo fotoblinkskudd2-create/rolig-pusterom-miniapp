@@ -17,6 +17,8 @@ MVA = 0.25
 # (del, antall, USD stk ved 1, USD stk ved 500, merking, kilde/kommentar)
 BOM = [
     ("E-blekk 4,2\" 400×300 SSD1683", 1, 24.95, 14.00, "DOKUMENTERT / HYPOTESE", "Adafruit 6381 $24,95 (1–9 stk); 500-pris er anslag mot fabrikk"),
+    ("E-blekk-booster: FPC 24p 0,5 mm, spole 10 µH, MOSFET, 3 dioder, 9 kond.", 1, 2.20, 0.75, "HYPOTESE", "råpanel krever ekstern boost (som Waveshare-driverkortet)"),
+    ("Strømvei: Schottky + P-MOSFET (USB/batteri)", 1, 0.40, 0.12, "HYPOTESE", "lastdeling mens den lader"),
     ("ESP32-C3-MINI-1-N4", 1, 1.29, 1.01, "DOKUMENTERT", "LCSC C2838502: $1,29 (1+), $1,01 (100+)"),
     ("Kretskort 2-lag 100×50", 1, 2.00, 0.45, "HYPOTESE", "typisk kinesisk prototyp-/serie-pris"),
     ("Montering (PCBA) + passive", 1, 8.00, 2.20, "HYPOTESE", ""),
