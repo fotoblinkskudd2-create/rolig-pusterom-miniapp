@@ -1,5 +1,7 @@
 #include "view.h"
 
+#include <algorithm>
+
 #include "qrcodegen.hpp"
 
 namespace stafett {
@@ -144,16 +146,31 @@ void noter(const State& s, const Ctx& c, Fb& fb) {
   const auto& hs = s.handoffs();
   int y = TOPP + 20;
   if (hs.empty()) fb.text(BODY, M, y + 10, "Ingen noter ennå.");
-  for (size_t i = hs.size(); i-- > 0 && y < BUNN - 30;) {
-    const Handoff& h = hs[i];
+  // Samme tråding som telefonen: nyeste tråd først, svar under i rekkefølge.
+  std::vector<const Handoff*> rekke;
+  std::vector<std::pair<ms_t, const Handoff*>> rot;
+  for (const auto& h : hs) {
+    if (h.svar_til) continue;
+    ms_t sist = h.ts;
+    for (const auto& r : hs) if (r.svar_til == h.id && r.ts > sist) sist = r.ts;
+    rot.emplace_back(sist, &h);
+  }
+  std::stable_sort(rot.begin(), rot.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
+  for (const auto& r : rot) {
+    rekke.push_back(r.second);
+    for (const auto& h : hs) if (h.svar_til == r.second->id) rekke.push_back(&h);
+  }
+  for (size_t i = 0; i < rekke.size() && y < BUNN - 30; ++i) {
+    const Handoff& h = *rekke[i];
     std::string hode = naar(h.ts, c.naa) + "  ·  " + h.del;
     if (h.svar_til) hode = "→ svar  ·  " + hode;
-    fb.text(LAB, M, y, Fb::fit(LAB, hode, R - M));
+    const int inn = h.svar_til ? 14 : 0;
+    fb.text(LAB, M + inn, y, Fb::fit(LAB, hode, R - M - inn));
     y += 20;
     const int plass = (BUNN - 8 - y) / 20;
     const int maks = plass < 3 ? plass : 3;
     if (maks <= 0) break;
-    for (const auto& l : Fb::wrap(BODY, h.tekst, R - M - 10, maks)) { fb.text(BODY, M + 10, y, l); y += 20; }
+    for (const auto& l : Fb::wrap(BODY, h.tekst, R - M - 10 - inn, maks)) { fb.text(BODY, M + 10 + inn, y, l); y += 20; }
     y += 8;
   }
   bunn(fb, c);
