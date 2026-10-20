@@ -1,0 +1,3 @@
+normal (6 sidebytter)     4.55 mAh/døgn →   352 døgn på 2 000 mAh
+mye bruk (20 bytter)      5.23 mAh/døgn →   306 døgn på 2 000 mAh
+med 10 min telefon       21.22 mAh/døgn →    75 døgn på 2 000 mAh
