@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sekken</title>
+<style>
+  :root { --bg: #f5f7f4; --card: #ffffff; --text: #3a4a3f; --muted: #66766b; --line: #e0e6e1; --accent: #6f9a7b; --on-accent: #fff; --bad: #b42318; --ok: #2f7d4f; --soft: #e0ebe3; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141a16; --card: #1d251f; --text: #e0ebe3; --muted: #9aab9f; --line: #2c3830; --accent: #a8c5b0; --on-accent: #141a16; --bad: #f07a6e; --ok: #6cc08f; --soft: #223026; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+  main { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.55rem; font-weight: 600; margin-bottom: 6px; }
+  h2 { font-size: 1.02rem; font-weight: 600; margin: 22px 0 8px; }
+  p.sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .app { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+  .app:last-child { border-bottom: none; }
+  .app small { color: var(--muted); display: block; font-size: 0.78rem; }
+  .app .n { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+  .btn { display: block; width: 100%; border: none; border-radius: 14px; padding: 14px; font: inherit; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--on-accent); text-align: center; margin-top: 10px; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn.bad { background: transparent; color: var(--bad); border: 1px solid var(--bad); }
+  .status { background: var(--soft); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .status.warn { box-shadow: 0 0 0 2px var(--bad) inset; }
+  label.check { display: flex; gap: 8px; align-items: center; padding: 6px 0; font-size: 0.92rem; }
+  label.check input { width: auto; }
+  input[type=text] { width: 100%; font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  .fine { font-size: 0.78rem; color: var(--muted); margin-top: 12px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.9rem; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  a { color: var(--accent); }
+</style>
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../ikoner/ikon-192.png">
+<link rel="apple-touch-icon" href="../../ikoner/ikon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rolig">
+<script src="../../rolig-pwa.js" defer></script>
+</head>
+<body>
+<main>
+  <a href="../../index.html" style="font-size:.85rem;color:var(--muted)">← Rolig</a>
+  <h1>Sekken</h1>
+  <p class="sub">Alt du har lagt i Rolig bor bare på denne enheten. Det er trygt — og skjørt. Én tømt nettleser, og det er borte. Sekken tar alt med i én fil.</p>
+
+  <div class="status" id="status"></div>
+
+  <div class="card" id="appList"></div>
+  <button class="btn" id="backupBtn">Pakk sekken (last ned én fil)</button>
+  <button class="btn ghost" id="persistBtn">Be nettleseren om å ikke rydde bort data</button>
+
+  <h2>Pakk ut</h2>
+  <label for="restoreIn" class="btn ghost">Velg sekk-fil …</label>
+  <input type="file" id="restoreIn" accept=".json,application/json" hidden>
+  <div id="restorePick" class="card" hidden>
+    <div id="restoreInfo" class="fine" style="margin-top:0"></div>
+    <div id="restoreKeys"></div>
+    <button class="btn" id="restoreBtn">Pakk ut valgte</button>
+  </div>
+  <button class="btn ghost" id="undoBtn" hidden>Angre utpakking</button>
+
+  <h2>Installer</h2>
+  <div class="card" style="font-size:.92rem">
+    <p><b>iPhone / iPad:</b> åpne i Safari → Del → «Legg til på Hjem-skjerm».</p>
+    <p style="margin-top:6px"><b>Android:</b> Chrome-meny → «Installer app».</p>
+    <p class="fine" id="pwaLine"></p>
+  </div>
+
+  <h2>Tøm alt</h2>
+  <p class="sub">Skriv SLETT for å fjerne alle Rolig-data fra denne enheten. Pakk sekken først.</p>
+  <input type="text" id="wipeWord" autocomplete="off" aria-label="Skriv SLETT">
+  <button class="btn bad" id="wipeBtn" disabled>Tøm alle Rolig-data</button>
+  <p class="fine">Ingenting her sendes noe sted. Filen du laster ned er din. Ikke medisinsk utstyr.</p>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let toastT;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+const APPS = [
+  { keys: ['checkins', 'doneActions'], name: 'Pusterom', desc: (v) => pl(count(v.checkins), 'sjekk-in', 'sjekk-ins') },
+  { keys: ['kjolerom.v1'], name: 'Kjølerom', desc: (v) => { const s = v['kjolerom.v1']; return s ? `${pl((s.wishes || []).length, 'ønske', 'ønsker')} · ${pl((s.parts || []).length, 'del', 'deler')}` : ''; } },
+  { keys: ['pustestein.v1'], name: 'Pustestein', desc: (v) => { const s = v['pustestein.v1']; return s ? `${s.speed_mm_s} mm/s · ${s.inhale}–${s.hold}–${s.exhale}` : ''; } },
+  { keys: ['granatbelte.v1'], name: 'Granatbelte', desc: (v) => { const s = v['granatbelte.v1']; return s ? `${(s.drafts || []).length} utkast · ${pl((s.cards || []).length, 'granat', 'granater')}` : ''; } },
+  { keys: ['brevvakt.v1'], name: 'Brevvakt', desc: (v) => pl(count(v['brevvakt.v1']), 'sak', 'saker') }
+];
+const META = 'sekken.v1';
+const ALL_KEYS = APPS.flatMap(a => a.keys);
+function pl(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
+function count(x) { return Array.isArray(x) ? x.length : 0; }
+function read(k) { try { const s = localStorage.getItem(k); return s == null ? undefined : JSON.parse(s); } catch (e) { return undefined; } }
+function raw(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function meta() { return read(META) || {}; }
+function setMeta(m) { try { localStorage.setItem(META, JSON.stringify(m)); } catch (e) { /* ignorer */ } }
+function bytes(n) { return n < 1024 ? n + ' B' : (n / 1024).toFixed(1).replace('.', ',') + ' kB'; }
+
+function render() {
+  const vals = Object.fromEntries(ALL_KEYS.map(k => [k, read(k)]));
+  let total = 0;
+  $('appList').innerHTML = APPS.map(a => {
+    const size = a.keys.reduce((s, k) => s + (raw(k) || '').length, 0); total += size;
+    const has = a.keys.some(k => vals[k] !== undefined);
+    return `<div class="app"><div><b>${esc(a.name)}</b><small>${has ? esc(a.desc(vals)) : 'tom'}</small></div><span class="n">${has ? bytes(size) : '—'}</span></div>`;
+  }).join('');
+  const m = meta(), daysSince = m.lastBackup ? Math.floor((Date.now() - m.lastBackup) / 864e5) : null;
+  const warn = total > 0 && (daysSince == null || daysSince > 14);
+  $('status').className = 'status' + (warn ? ' warn' : '');
+  $('status').innerHTML = total === 0 ? 'Sekken er tom. Ingenting å miste ennå.'
+    : daysSince == null ? `<b>Aldri pakket.</b> ${bytes(total)} med dine ting ligger bare her.`
+    : `Sist pakket for <b>${daysSince} dag${daysSince === 1 ? '' : 'er'}</b> siden.` + (warn ? ' Pakk igjen.' : '');
+  const p = $('pwaLine');
+  p.textContent = /^https?:$/.test(location.protocol) ? 'Etter første besøk virker alle Rolig-sidene uten nett.' : 'Åpnet som fil: installering og offline krever at mappen ligger på en webserver (f.eks. GitHub Pages).';
+}
+
+function pack() {
+  const keys = {};
+  for (const k of ALL_KEYS) { const v = raw(k); if (v != null) keys[k] = v; }
+  return { format: 'rolig-sekk', v: 1, created: new Date().toISOString(), keys };
+}
+function download(name, text) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+$('backupBtn').addEventListener('click', () => {
+  const s = pack();
+  download('rolig-sekk-' + s.created.slice(0, 10) + '.json', JSON.stringify(s, null, 2));
+  setMeta(Object.assign(meta(), { lastBackup: Date.now() }));
+  toast('Sekken er pakket.'); render();
+});
+$('persistBtn').addEventListener('click', async () => {
+  if (!navigator.storage || !navigator.storage.persist) { toast('Denne nettleseren støtter ikke det. Pakk sekken jevnlig.'); return; }
+  const ok = await navigator.storage.persist().catch(() => false);
+  toast(ok ? 'Nettleseren lover å ikke rydde bort dataene.' : 'Nettleseren sa nei. Installer på Hjem-skjerm, eller pakk sekken jevnlig.');
+});
+
+let incoming = null, undo = null;
+$('restoreIn').addEventListener('change', async (e) => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const s = JSON.parse(await f.text());
+    if (!s || s.format !== 'rolig-sekk' || s.v !== 1 || typeof s.keys !== 'object') throw new Error('format');
+    const known = Object.keys(s.keys).filter(k => ALL_KEYS.includes(k) && typeof s.keys[k] === 'string');
+    for (const k of known) JSON.parse(s.keys[k]); // må være gyldig JSON
+    if (!known.length) throw new Error('tom');
+    incoming = { created: s.created, keys: Object.fromEntries(known.map(k => [k, s.keys[k]])) };
+    $('restoreInfo').textContent = `Pakket ${s.created ? new Date(s.created).toLocaleString('nb-NO') : 'ukjent dato'}. Valgte apper erstattes; de andre røres ikke.`;
+    $('restoreKeys').innerHTML = APPS.filter(a => a.keys.some(k => known.includes(k))).map(a =>
+      `<label class="check"><input type="checkbox" data-app="${esc(a.name)}" checked> ${esc(a.name)}</label>`).join('');
+    $('restorePick').hidden = false;
+  } catch (err) { toast('Dette er ikke en sekk-fil fra Rolig.'); }
+});
+$('restoreBtn').addEventListener('click', () => {
+  if (!incoming) return;
+  const chosen = [...document.querySelectorAll('#restoreKeys input:checked')].map(i => i.dataset.app);
+  const keys = APPS.filter(a => chosen.includes(a.name)).flatMap(a => a.keys).filter(k => k in incoming.keys);
+  undo = Object.fromEntries(keys.map(k => [k, raw(k)]));
+  try { for (const k of keys) localStorage.setItem(k, incoming.keys[k]); }
+  catch (e) { toast('Ikke nok plass. Ingenting endret.'); for (const k in undo) restoreKey(k, undo[k]); return; }
+  $('restorePick').hidden = true; $('undoBtn').hidden = false; incoming = null;
+  toast(`Pakket ut: ${chosen.join(', ')}.`); render();
+});
+function restoreKey(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ignorer */ } }
+$('undoBtn').addEventListener('click', () => { if (!undo) return; for (const k in undo) restoreKey(k, undo[k]); undo = null; $('undoBtn').hidden = true; toast('Angret.'); render(); });
+$('wipeWord').addEventListener('input', (e) => { $('wipeBtn').disabled = e.target.value.trim() !== 'SLETT'; });
+$('wipeBtn').addEventListener('click', () => {
+  if ($('wipeWord').value.trim() !== 'SLETT') return;
+  for (const k of [...ALL_KEYS, META]) restoreKey(k, null);
+  $('wipeWord').value = ''; $('wipeBtn').disabled = true; toast('Tømt.'); render();
+});
+window.addEventListener('storage', render);
+render();
+window.__sekken = { pack, ALL_KEYS };
+</script>
+</body>
+</html>

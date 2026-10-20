@@ -7,3 +7,4 @@ node products/01-kjolerom/test/kjolerom.test.mjs
 node products/02-pustestein/test/pustestein.test.mjs
 node products/03-granatbelte/test/granatbelte.test.mjs
 node products/04-brevvakt/test/brevvakt.test.mjs
+node products/05-sekken/test/sekken.test.mjs
