@@ -22,7 +22,7 @@ $(BUILD)/render: tools/render.cpp tools/bilder.h $(CORE) $(HDR)
 	$(CXX) $(CXXFLAGS) -O2 -Wno-unused-function -o $@ tools/render.cpp $(CORE) $(LIBS)
 
 dev: $(BUILD)/devserver
-$(BUILD)/devserver: tools/devserver.cpp tools/bilder.h $(CORE) $(HDR)
+$(BUILD)/devserver: tools/devserver.cpp tools/bilder.h $(FELLES)/devhttp.h $(CORE) $(HDR)
 	@mkdir -p $(BUILD)
 	$(CXX) $(CXXFLAGS) -O2 -Wno-unused-function -o $@ tools/devserver.cpp $(CORE) $(LIBS)
 

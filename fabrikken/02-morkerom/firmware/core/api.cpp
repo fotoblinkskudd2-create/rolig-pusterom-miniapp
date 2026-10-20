@@ -70,7 +70,7 @@ std::string Api::kontaktark(ms_t naa, int& w, int& h) const {
   w = kol * tw + (kol + 1) * gap;
   w = (w + 7) / 8 * 8;
   h = rader * th + (rader + 1) * gap;
-  std::vector<uint8_t> ut(static_cast<size_t>(w) * h / 8, 0xFF);  // sort ark, som negativpapir
+  std::vector<uint8_t> ut(static_cast<size_t>(w) * h / 8, 0x00);  // hvitt ark; hvert bilde får sort ramme
   auto sett = [&](int x, int y, bool sort) {
     const size_t i = (static_cast<size_t>(y) * w + x) >> 3;
     const uint8_t m = 0x80 >> (x & 7);
@@ -93,6 +93,8 @@ std::string Api::kontaktark(ms_t naa, int& w, int& h) const {
         }
         sett(ox + x, oy + y, sort);
       }
+    for (int x = -1; x <= tw; ++x) { sett(ox + x, oy - 1, true); sett(ox + x, oy + th, true); }
+    for (int y = -1; y <= th; ++y) { sett(ox - 1, oy + y, true); sett(ox + tw, oy + y, true); }
   }
   return std::string(reinterpret_cast<const char*>(ut.data()), ut.size());
 }
@@ -146,6 +148,15 @@ Svar Api::handle(const std::string& metode, const std::string& full, const std::
       return s;
     }
     return feil(404, "finnes ikke");
+  }
+  if (metode == "GET" && sti == "/api/skjerm.pbm") {
+    Skjerm sk;
+    e_.ctx.naa = naa;
+    tegn(r, e_.ctx, sk);
+    Svar s;
+    s.type = "image/x-portable-bitmap";
+    s.kropp = "P4\n200 200\n" + std::string(reinterpret_cast<const char*>(sk.buf), Skjerm::BYTES);
+    return s;
   }
   if (metode == "GET" && sti == "/api/kontaktark.pbm") {
     int w, h;

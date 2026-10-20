@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0d0c">
+<title>Mørkerom</title>
+<style>
+  /* Et mørkerom: nær sort, rødt arbeidslys som eneste aksent, bildene er det eneste lyse. */
+  :root {
+    --rom: #0e0d0c; --benk: #191715; --linje: #2c2825; --papir: #e7e5de; --dempet: #8d877f;
+    --rodt: #c8402f; --rodt-svak: #3a1713;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--rom); color: var(--papir); }
+  body { font: 16px/1.45 -apple-system, system-ui, sans-serif; padding: 0 0 calc(32px + env(safe-area-inset-bottom)); }
+  header { position: sticky; top: 0; z-index: 3; background: var(--rom); border-bottom: 1px solid var(--linje);
+           padding: calc(12px + env(safe-area-inset-top)) 16px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .merke { font-weight: 800; letter-spacing: .16em; font-size: 13px; }
+  .lys { width: 9px; height: 9px; border-radius: 50%; background: var(--rodt); box-shadow: 0 0 12px var(--rodt); display: inline-block; margin-right: 8px; }
+  main { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+  h2 { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--dempet); margin: 28px 0 10px; font-weight: 700; }
+  .morket { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; }
+  .morket b { font-size: 64px; line-height: .9; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .morket span { color: var(--dempet); }
+  .prikker { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 2px; }
+  .prikker i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--dempet); display: block; position: relative; overflow: hidden; }
+  .prikker i::after { content: ""; position: absolute; inset: 0; background: var(--rodt); transform-origin: left; transform: scaleX(var(--p, 0)); }
+  .oppdrag { border-left: 3px solid var(--rodt); padding: 4px 0 4px 14px; font-size: 20px; line-height: 1.3; }
+  .rutenett { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .rutenett button { padding: 0; border: 0; background: var(--benk); aspect-ratio: 25 / 18; overflow: hidden; border-radius: 2px; cursor: pointer; }
+  .rutenett img, .rutenett canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tom { color: var(--dempet); }
+  .knapp { display: inline-block; font: inherit; font-weight: 700; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--papir);
+           background: transparent; color: var(--papir); cursor: pointer; text-decoration: none; }
+  .knapp.fare { border-color: var(--rodt); color: var(--rodt); }
+  .knapp.fylt { background: var(--papir); color: var(--rom); }
+  .knapp:focus-visible, .rutenett button:focus-visible { outline: 2px solid var(--rodt); outline-offset: 2px; }
+  .rad { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .melding { min-height: 1.4em; margin-top: 8px; font-size: 14px; color: var(--dempet); }
+  .lysbord { position: fixed; inset: 0; z-index: 5; background: var(--rom); display: flex; flex-direction: column;
+             padding: calc(14px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom)); }
+  .lysbord[hidden] { display: none; }
+  .lysbord .bilde { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  .lysbord img, .lysbord canvas { max-width: 100%; max-height: 100%; image-rendering: auto; }
+  .lysbord canvas.d1 { image-rendering: pixelated; width: 100%; height: auto; outline: 1px solid var(--linje); }
+  .lysbord .tekst { padding: 12px 0 0; }
+  .lysbord .meta { color: var(--dempet); font-size: 14px; }
+  .vekslar { display: inline-flex; border: 1px solid var(--linje); border-radius: 999px; overflow: hidden; }
+  .vekslar button { background: none; border: 0; color: var(--dempet); padding: 8px 14px; font: inherit; font-size: 14px; }
+  .vekslar button[aria-pressed="true"] { background: var(--papir); color: var(--rom); }
+  canvas#ark { width: 100%; height: auto; image-rendering: pixelated; border-radius: 2px; }
+  .kobling { background: var(--rodt-svak); border: 1px solid var(--rodt); padding: 12px; border-radius: 10px; margin-top: 16px; }
+  .liten { font-size: 13px; color: var(--dempet); margin-top: 28px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="merke"><span class="lys" aria-hidden="true"></span>MØRKEROM</span>
+  <span class="tom" id="klokke"></span>
+</header>
+<main>
+  <div id="kobling" class="kobling" hidden></div>
+
+  <div class="morket"><b id="antall">–</b><span id="antall-tekst">i mørket</span></div>
+  <div class="prikker" id="prikker" aria-hidden="true"></div>
+  <div class="tom" id="neste"></div>
+
+  <h2>Dagens oppdrag</h2>
+  <div class="oppdrag" id="oppdrag">…</div>
+
+  <h2>Fremkalt</h2>
+  <div class="rutenett" id="fremkalte"></div>
+  <div class="tom" id="ingen" hidden>Ingenting er fremkalt ennå. Det første kommer ut 48 timer etter at du tok det.</div>
+
+  <h2>Kontaktark</h2>
+  <canvas id="ark" width="416" height="80" aria-label="Kontaktark med alle fremkalte bilder"></canvas>
+
+  <h2>Fremkall alt nå</h2>
+  <p class="tom" style="margin-top:0">Alt som ligger i mørket kommer ut med en gang. Det er lov. Det telles: <b id="tvunget">0</b> fremkalt tidlig så langt.</p>
+  <div class="rad">
+    <button class="knapp fare" id="tvang" type="button">Fremkall alt nå</button>
+    <button class="knapp fylt" id="tvang-ja" type="button" hidden>Ja, fremkall</button>
+    <button class="knapp" id="tvang-nei" type="button" hidden>Nei, la dem ligge</button>
+  </div>
+  <div class="melding" id="m-tvang" aria-live="polite"></div>
+
+  <p class="liten">Bildene ligger kryptert på minnekortet i kameraet. De forlater det bare når du henter dem hit, over kameraets eget nett. Ingen sky, ingen konto.</p>
+</main>
+
+<div class="lysbord" id="lysbord" hidden role="dialog" aria-modal="true" aria-label="Bilde">
+  <div class="rad" style="margin:0;justify-content:space-between;align-items:center">
+    <div class="vekslar" role="group" aria-label="Visning">
+      <button type="button" id="v-d1" aria-pressed="true">Fremkalt</button>
+      <button type="button" id="v-org" aria-pressed="false">Original</button>
+    </div>
+    <button class="knapp" id="lukk" type="button">Lukk</button>
+  </div>
+  <div class="bilde" id="lb-bilde"></div>
+  <div class="tekst">
+    <div id="lb-oppdrag"></div>
+    <div class="meta" id="lb-meta"></div>
+    <div class="rad">
+      <a class="knapp" id="lb-last" href="#" download>Last ned original</a>
+      <button class="knapp fare" id="lb-kast" type="button">Kast bildet</button>
+      <button class="knapp fylt" id="lb-kast-ja" type="button" hidden>Ja, kast for godt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const lager = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  };
+  function lesHash() {
+    const k = new URLSearchParams(location.hash.slice(1)).get('k');
+    if (k) { lager.set('morkerom_k', k); history.replaceState(null, '', location.pathname); }
+    return k;
+  }
+  lesHash();
+  let nokkel = lager.get('morkerom_k') || '';
+  window.addEventListener('hashchange', () => { const k = lesHash(); if (k) { nokkel = k; last(); } });
+  const q = () => (nokkel ? 'k=' + encodeURIComponent(nokkel) : '');
+
+  async function api(sti, kropp) {
+    const r = await fetch(sti, {
+      method: kropp ? 'POST' : 'GET',
+      headers: Object.assign({ 'X-Morkerom-Nokkel': nokkel }, kropp ? { 'Content-Type': 'application/json' } : {}),
+      body: kropp ? JSON.stringify(kropp) : undefined,
+    });
+    if (r.status === 401) { const j = await r.json(); visKobling(j.feil); return null; }
+    return r;
+  }
+  function visKobling(t) { const k = $('#kobling'); k.textContent = 'Ikke koblet: ' + t + '.'; k.hidden = false; }
+
+  const to = (n) => String(n).padStart(2, '0');
+  const DAGER = ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør'];
+  const dato = (ts) => { const d = new Date(ts); return DAGER[d.getDay()] + ' ' + to(d.getDate()) + '.' + to(d.getMonth() + 1) + ' ' + to(d.getHours()) + ':' + to(d.getMinutes()); };
+  const om = (ms) => ms <= 0 ? 'nå' : ms > 36e5 ? Math.ceil(ms / 36e5) + ' t' : Math.ceil(ms / 6e4) + ' min';
+
+  // PBM (P4) → canvas
+  async function pbmTilCanvas(url, canvas) {
+    const r = await fetch(url, { headers: { 'X-Morkerom-Nokkel': nokkel } });
+    if (!r.ok) return false;
+    const b = new Uint8Array(await r.arrayBuffer());
+    let i = 0, felt = [], cur = '';
+    while (felt.length < 3) { const c = b[i++]; if (c === 10 || c === 32) { if (cur) felt.push(cur); cur = ''; } else cur += String.fromCharCode(c); }
+    const w = +felt[1], h = +felt[2], rad = Math.ceil(w / 8);
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(w, h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const sort = b[i + y * rad + (x >> 3)] & (0x80 >> (x & 7));
+      const p = (y * w + x) * 4;
+      const v = sort ? [14, 13, 12] : [231, 229, 222];
+      img.data[p] = v[0]; img.data[p + 1] = v[1]; img.data[p + 2] = v[2]; img.data[p + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    return true;
+  }
+
+  let tilstand = null, aapent = null, visOrg = false;
+
+  function tegn() {
+    const s = tilstand;
+    $('#klokke').textContent = dato(s.naa).slice(4);
+    $('#antall').textContent = s.i_morket;
+    $('#antall-tekst').textContent = (s.i_morket === 1 ? 'bilde' : 'bilder') + ' i mørket · ' + s.igjen + ' igjen på rull ' + s.rull;
+    const p = $('#prikker');
+    p.replaceChildren();
+    for (const m of s.morket.slice().sort((a, b) => a.fremkalles - b.fremkalles)) {
+      const i = document.createElement('i');
+      const pst = 1 - Math.max(0, m.fremkalles - s.naa) / (48 * 36e5);
+      i.style.setProperty('--p', pst.toFixed(3));
+      i.title = 'fremkalles om ' + om(m.fremkalles - s.naa);
+      p.append(i);
+    }
+    $('#neste').textContent = s.neste ? 'Neste fremkalles om ' + om(s.neste - s.naa) + '.' : 'Ingenting i mørket. Gå ut og se.';
+    $('#oppdrag').textContent = s.oppdrag.tekst;
+    $('#tvunget').textContent = s.tvunget;
+    $('#tvang').disabled = s.i_morket === 0;
+    const g = $('#fremkalte');
+    g.replaceChildren();
+    $('#ingen').hidden = s.fremkalte.length > 0;
+    for (const f of s.fremkalte) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Bilde tatt ' + dato(f.tatt) + (f.oppdrag ? ', ' + f.oppdrag : ''));
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = '';
+      img.src = '/api/bilde/' + f.id + '.jpg?' + q();
+      b.append(img);
+      b.addEventListener('click', () => aapne(f));
+      g.append(b);
+    }
+    pbmTilCanvas('/api/kontaktark.pbm?' + q(), $('#ark'));
+  }
+
+  async function last() {
+    try {
+      const r = await api('/api/state?now=' + Date.now());
+      if (!r) return;
+      tilstand = await r.json();
+      $('#kobling').hidden = true;
+      tegn();
+    } catch (e) { visKobling('finner ikke kameraet. Er telefonen på nettet «Morkerom-…»?'); }
+  }
+
+  async function visBilde() {
+    const f = aapent, holder = $('#lb-bilde');
+    holder.replaceChildren();
+    $('#v-d1').setAttribute('aria-pressed', String(!visOrg));
+    $('#v-org').setAttribute('aria-pressed', String(visOrg));
+    if (visOrg) {
+      const img = document.createElement('img');
+      img.alt = 'Originalen';
+      img.src = '/api/bilde/' + f.id + '.jpg?' + q();
+      holder.append(img);
+    } else {
+      const c = document.createElement('canvas');
+      c.className = 'd1';
+      c.setAttribute('aria-label', 'Fremkalt 1-bit-versjon');
+      holder.append(c);
+      await pbmTilCanvas('/api/bilde/' + f.id + '.pbm?' + q(), c);
+    }
+  }
+  function aapne(f) {
+    aapent = f; visOrg = false;
+    $('#lb-oppdrag').textContent = f.oppdrag || (f.tvunget ? 'fremkalt tidlig' : '');
+    $('#lb-meta').textContent = 'Tatt ' + dato(f.tatt) + ' · fremkalt ' + dato(f.fremkalt) + (f.tvunget ? ' (tidlig)' : '');
+    $('#lb-last').href = '/api/bilde/' + f.id + '.jpg?' + q();
+    $('#lb-last').setAttribute('download', 'morkerom-' + String(f.id).padStart(4, '0') + '.jpg');
+    $('#lb-kast-ja').hidden = true;
+    $('#lysbord').hidden = false;
+    visBilde();
+    $('#lukk').focus();
+  }
+  $('#lukk').addEventListener('click', () => { $('#lysbord').hidden = true; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('#lysbord').hidden = true; });
+  $('#v-d1').addEventListener('click', () => { visOrg = false; visBilde(); });
+  $('#v-org').addEventListener('click', () => { visOrg = true; visBilde(); });
+  $('#lb-kast').addEventListener('click', () => { $('#lb-kast-ja').hidden = false; });
+  $('#lb-kast-ja').addEventListener('click', async () => {
+    const r = await api('/api/kast', { id: aapent.id });
+    if (r && r.ok) { $('#lysbord').hidden = true; last(); }
+  });
+
+  $('#tvang').addEventListener('click', () => { $('#tvang').hidden = true; $('#tvang-ja').hidden = false; $('#tvang-nei').hidden = false; });
+  $('#tvang-nei').addEventListener('click', () => { $('#tvang').hidden = false; $('#tvang-ja').hidden = true; $('#tvang-nei').hidden = true; });
+  $('#tvang-ja').addEventListener('click', async () => {
+    const r = await api('/api/fremkall-alt', { bekreft: true });
+    $('#tvang').hidden = false; $('#tvang-ja').hidden = true; $('#tvang-nei').hidden = true;
+    if (r) {
+      const j = await r.json();
+      $('#m-tvang').textContent = j.ok ? 'Fremkalt. De ligger under «Fremkalt».' : j.feil;
+    }
+    last();
+  });
+
+  last();
+  setInterval(last, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) last(); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mørkerom simulator</title>
+<style>
+  body { margin: 0; background: #1c1b19; color: #e7e5de; font: 15px/1.4 system-ui, sans-serif; }
+  .flate { display: flex; flex-wrap: wrap; gap: 32px; padding: 24px; justify-content: center; align-items: flex-start; }
+  .kamera { background: #2f2d2a; padding: 22px; border-radius: 22px; box-shadow: 0 30px 60px rgba(0,0,0,.5); width: 470px; }
+  canvas { display: block; width: 400px; height: 400px; image-rendering: pixelated; border: 10px solid #0d0d0c; border-radius: 6px; margin: 0 auto; }
+  .knapper { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+  button { background: #e7e5de; color: #1e1e1c; border: 0; border-radius: 10px; padding: 9px 12px; font: inherit; font-weight: 700; cursor: pointer; }
+  button.ghost { background: transparent; color: #e7e5de; border: 1px solid #77756d; }
+  button.rodt { background: #c8402f; color: #fff; }
+  .tid { margin-top: 12px; font-size: 13px; color: #b8b6ad; text-align: center; }
+  iframe { width: 390px; height: 760px; border: 10px solid #000; border-radius: 36px; background: #0e0d0c; }
+  h1 { font-size: 13px; letter-spacing: .1em; margin: 0 0 12px; color: #b8b6ad; text-align: center; }
+</style>
+</head>
+<body>
+<div class="flate">
+  <div class="kamera">
+    <h1>MØRKEROM · BAKSKJERM 200×200 (samme kode som kameraet)</h1>
+    <canvas id="skjerm" width="200" height="200"></canvas>
+    <div class="knapper">
+      <button id="aapne" class="ghost" type="button">åpne deksel</button>
+      <button id="lukk" class="ghost" type="button">lukk deksel</button>
+      <button id="utloser" class="rodt" type="button">● utløser</button>
+      <button id="bla" type="button">bla</button>
+      <button id="hold3" class="ghost" type="button">hold bla 3 s</button>
+      <button id="hold10" class="ghost" type="button">hold bla 10 s</button>
+    </div>
+    <div class="knapper">
+      <button class="ghost" data-hopp="3600000" type="button">+1 t</button>
+      <button class="ghost" data-hopp="43200000" type="button">+12 t</button>
+      <button class="ghost" data-hopp="172800000" type="button">+48 t</button>
+    </div>
+    <div class="tid" id="tid"></div>
+  </div>
+  <iframe id="telefon" title="Telefon"></iframe>
+</div>
+<script>
+const K = new URLSearchParams(location.hash.slice(1)).get('k') || '';
+const H = { 'X-Morkerom-Nokkel': K, 'Content-Type': 'application/json' };
+document.getElementById('telefon').src = '/' + (K ? '#k=' + encodeURIComponent(K) : '');
+const ctx = document.getElementById('skjerm').getContext('2d');
+async function tegn() {
+  const b = new Uint8Array(await (await fetch('/api/skjerm.pbm', { headers: H })).arrayBuffer());
+  let i = 0, nl = 0;
+  while (nl < 2) if (b[i++] === 10) nl++;
+  const img = ctx.createImageData(200, 200);
+  for (let p = 0; p < 40000; p++) {
+    const c = (b[i + (p >> 3)] & (0x80 >> (p & 7))) ? [30, 30, 28] : [231, 229, 222];
+    img.data.set([c[0], c[1], c[2], 255], p * 4);
+  }
+  ctx.putImageData(img, 0, 0);
+  const s = await (await fetch('/api/state', { headers: H })).json();
+  document.getElementById('tid').textContent = 'Kameraets klokke: ' + new Date(s.naa).toLocaleString('no-NO');
+}
+const knapp = (k) => fetch('/api/knapp', { method: 'POST', headers: H, body: JSON.stringify({ k }) }).then(tegn);
+for (const id of ['aapne', 'lukk', 'utloser', 'bla', 'hold3', 'hold10']) document.getElementById(id).onclick = () => knapp(id);
+document.querySelectorAll('[data-hopp]').forEach((b) => b.onclick = async () => {
+  await fetch('/sim/hopp', { method: 'POST', headers: H, body: JSON.stringify({ ms: +b.dataset.hopp }) });
+  await tegn();
+  document.getElementById('telefon').contentWindow.location.reload();
+});
+tegn();
+setInterval(tegn, 2000);
+</script>
+</body>
+</html>
