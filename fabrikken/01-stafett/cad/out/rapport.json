@@ -1,0 +1,36 @@
+{
+  "skall": {
+    "tett": true,
+    "volum_cm3": 80.0,
+    "masse_g_petg": 101.6,
+    "boks_mm": [
+      132.0,
+      84.0,
+      86.0
+    ],
+    "trekanter": 4840
+  },
+  "bunn": {
+    "tett": true,
+    "volum_cm3": 31.3,
+    "masse_g_petg": 39.7,
+    "boks_mm": [
+      126.8,
+      78.8,
+      7.0
+    ],
+    "trekanter": 8352
+  },
+  "hjul": {
+    "tett": true,
+    "volum_cm3": 12.0,
+    "masse_g_petg": 15.2,
+    "boks_mm": [
+      32.0,
+      32.0,
+      16.0
+    ],
+    "trekanter": 4184
+  },
+  "vekt_staal_g": 150.7
+}
