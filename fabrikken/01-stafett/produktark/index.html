@@ -1,0 +1,233 @@
+<title>Stafett</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500;62..125,800&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: et e-blekk-ark. Smal lesekolonne, bilder som bryter ut i full bredde, data i monospace-tabeller. */
+:root {
+  --papir: #e7e5de;
+  --ark: #f1efe9;
+  --blekk: #1e1e1c;
+  --dempet: #66645d;
+  --linje: #c9c6bc;
+  --signal: #2f5d3a;
+  --varsel: #8a2b20;
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-tekst: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --f-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papir: #171716; --ark: #20201e; --blekk: #e7e5de; --dempet: #a19f97; --linje: #3a3934;
+    --signal: #8fc29a; --varsel: #e69a8f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papir: #171716; --ark: #20201e; --blekk: #e7e5de; --dempet: #a19f97; --linje: #3a3934;
+  --signal: #8fc29a; --varsel: #e69a8f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--papir); color: var(--blekk); font: 400 17px/1.6 var(--f-tekst);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.kol { max-width: 720px; margin: 0 auto; }
+.bred { max-width: 1120px; margin: 0 auto; }
+header.topp {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  border-bottom: 3px solid var(--blekk); padding-block: 22px 10px; margin-bottom: 36px;
+}
+.merke { font: 800 15px/1 var(--f-display); font-stretch: 125%; letter-spacing: .14em; }
+.meta { font: 400 12px/1.4 var(--f-data); color: var(--dempet); }
+h1 {
+  font: 800 clamp(56px, 13vw, 132px)/.86 var(--f-display); font-stretch: 125%; letter-spacing: -.01em;
+  margin: 0 0 18px; text-wrap: balance;
+}
+.under { font: 500 clamp(20px, 3vw, 26px)/1.3 var(--f-display); font-stretch: 85%; max-width: 30ch; margin: 0 0 28px; text-wrap: balance; }
+h2 {
+  font: 800 13px/1 var(--f-display); font-stretch: 125%; letter-spacing: .16em; text-transform: uppercase;
+  border-top: 1px solid var(--blekk); padding-top: 12px; margin: 64px 0 18px;
+}
+h3 { font: 800 22px/1.2 var(--f-display); font-stretch: 100%; margin: 0 0 6px; text-wrap: balance; }
+p { margin: 0 0 1em; }
+.gonzo { font-size: 19px; line-height: 1.55; }
+.gonzo em { font-style: italic; }
+figure { margin: 0; }
+figure img { display: block; width: 100%; height: auto; border-radius: 3px; }
+figcaption { font: 400 12px/1.45 var(--f-data); color: var(--dempet); margin-top: 8px; }
+.helt { background: #f7f7f7; border-radius: 4px; overflow: hidden; }
+.helt img { mix-blend-mode: multiply; }
+.rutenett { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.rutenett.tre { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.skjerm img { border: 8px solid #1b1b19; border-radius: 6px; image-rendering: pixelated; }
+.tall { display: grid; gap: 1px; background: var(--linje); border: 1px solid var(--linje); grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); margin: 8px 0 20px; }
+.tall div { background: var(--ark); padding: 14px 16px; }
+.tall b { display: block; font: 600 28px/1.1 var(--f-data); font-variant-numeric: tabular-nums; }
+.tall span { font: 400 12px/1.35 var(--f-data); color: var(--dempet); }
+.tabell { overflow-x: auto; margin: 8px 0 20px; }
+table { border-collapse: collapse; width: 100%; font: 400 13.5px/1.45 var(--f-data); font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--linje); vertical-align: top; }
+th { font-weight: 600; color: var(--dempet); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+td.r, th.r { text-align: right; }
+.merk { font: 600 10.5px/1 var(--f-data); letter-spacing: .06em; padding: 3px 5px; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.merk.dok { color: var(--signal); }
+.merk.hyp { color: var(--dempet); }
+.merk.uav { color: var(--varsel); }
+.hjul { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; font-size: 16px; }
+.hjul dt { font: 600 14px/1.6 var(--f-data); }
+.hjul dd { margin: 0; }
+.prinsipper { counter-reset: p; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.prinsipper li { counter-increment: p; display: grid; grid-template-columns: 2.2em 1fr; }
+.prinsipper li::before { content: counter(p); font: 800 22px/1.1 var(--f-display); }
+.feil li { margin-bottom: 6px; }
+.ikke { border-left: 3px solid var(--varsel); padding: 4px 0 4px 16px; }
+.lenker { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.lenker a {
+  font: 600 13px/1 var(--f-data); color: var(--blekk); text-decoration: none; border: 1px solid var(--blekk);
+  padding: 9px 12px; border-radius: 2px;
+}
+.lenker a:hover, .lenker a:focus-visible { background: var(--blekk); color: var(--papir); outline: none; }
+.slutt { font: 800 clamp(28px, 5vw, 44px)/1.05 var(--f-display); font-stretch: 85%; margin-top: 64px; text-wrap: balance; }
+</style>
+
+<header class="topp bred">
+  <span class="merke">FABRIKKEN · 01</span>
+  <span class="meta">20.10.2026 · prototyp v0.1 · bygget på én ettermiddag i en container uten lodde­bolt</span>
+</header>
+
+<main>
+  <section class="kol">
+    <h1>STAFETT</h1>
+    <p class="under">Den som tar over, får vite hva som skjedde.</p>
+  </section>
+
+  <figure class="bred helt">
+    <img src="img/helt.webp" alt="Stafett: en hvit kile med 4,2 tommers e-blekkskjerm og et sort hjul på toppen. Skjermen viser siste note, kjølerom og neste forfall." width="1400" height="1050">
+  </figure>
+  <p class="kol meta" style="margin-top:8px">CAD-render fra <code>cad/stafett.scad</code>. Skjermbildet i panelet er tegnet av den samme C++-koden som skal kjøre på enheten.</p>
+
+  <section class="kol" style="margin-top:40px">
+    <p class="gonzo">Klokka er 14:02 og en del av hodet ditt kjøper Lego på Klarna. Klokka 09:30 dagen etter våkner en annen del med pakkevarsel og en bank-app som eneste vitne. Hver budsjett-app i App Store er bygget for én bruker. Det er der feilen sitter. <em>De antar at den som kommer tilbake, er den samme som gikk.</em></p>
+    <p class="gonzo">Stafett er en kile på pulten. Ett hjul. E-blekk som står på uten strøm. Den viser hva forrige sjåfør gjorde, hva som ligger og kjøler seg i 48 timer, hva som forfaller neste gang, og hvor lenge du var borte. Ingen sky. Ingen konto. Ingen del kan slette en annen dels note.</p>
+  </section>
+
+  <section class="kol">
+    <h2>Hva skjermen viser</h2>
+  </section>
+  <div class="bred rutenett">
+    <figure class="skjerm"><img src="img/s1.webp" alt="Oversikt: sist ute, kjølerom, neste forfall, borte, latt være" width="800" height="600"><figcaption>OVERSIKT. Det første du ser når du kommer tilbake.</figcaption></figure>
+    <figure class="skjerm"><img src="img/s5.webp" alt="Hei. Du var borte i 15 t." width="800" height="600"><figcaption>TRYKK ETTER LANGT FRAVÆR. Bare tid, ingen tolkning.</figcaption></figure>
+    <figure class="skjerm"><img src="img/s3.webp" alt="Kjølerom med 48-timers stolper" width="800" height="600"><figcaption>KJØLEROM. Nekter ingenting. Viser bare nedtellingen.</figcaption></figure>
+    <figure class="skjerm"><img src="img/s4.webp" alt="Tidslinje over sju dager med skraverte fravær" width="800" height="600"><figcaption>TIDSLINJE. Skravert = ingen spor i over 12 timer.</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Fem prinsipper som ikke forhandles</h2>
+    <ol class="prinsipper">
+      <li><span><b>Lokal.</b> Data lever i enhetens flash. Den kobler seg aldri til internett.</span></li>
+      <li><span><b>Ingen del kan slette en annen dels overlevering.</b> Noter kan besvares, ikke fjernes.</span></li>
+      <li><span><b>Kjølerommet nekter ingenting.</b> Etter 48 timer spør det: kjøp, dropp eller 48 timer til.</span></li>
+      <li><span><b>Gjeld er en plan, ikke en alarm.</b> Bare neste forfall. Ingen totalsum på forsiden.</span></li>
+      <li><span><b>Ingen helsepåstander.</b> Det er en notatbok med skjerm.</span></li>
+    </ol>
+
+    <h2>Hjulet</h2>
+    <dl class="hjul">
+      <dt>trykk</dt><dd>Jeg er her. Etter et langt fravær sier skjermen hvor lenge.</dd>
+      <dt>vri</dt><dd>Bla: oversikt, noter, kjølerom, tidslinje.</dd>
+      <dt>hold 3 s</dt><dd>QR-kode. Telefonen kobles til og får nøkkelen.</dd>
+      <dt>hold 10 s</dt><dd>Slett alt, med bekreftelse på skjermen.</dd>
+    </dl>
+
+    <h2>Telefonen</h2>
+    <p>Enheten serverer sin egen side på <code>stafett.local</code>. Du skriver noter, legger ting i kjølerommet og registrerer forfall der. Et NFC-merke under logoen åpner kjølerommet direkte når du holder telefonen mot det.</p>
+  </section>
+  <div class="bred rutenett tre">
+    <figure><img src="img/t-noter.webp" alt="Telefon: overlevering med trådede svar" width="600" height="1298"><figcaption>Overlever. Svar ligger under noten de svarer på.</figcaption></figure>
+    <figure><img src="img/t-kjol.webp" alt="Telefon: kjølerom med nedtelling" width="600" height="1298"><figcaption>Kjølerom. «Dropp nå» går alltid. «Kjøp» kommer etter 48 t.</figcaption></figure>
+    <figure><img src="img/t-forfall.webp" alt="Telefon: forfall" width="600" height="1298"><figcaption>Forfall. Betalt flytter den til neste måned.</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Maskinvaren</h2>
+    <div class="tall">
+      <div><b>132×84×86</b><span>mm, kile, 60° skjermflate</span></div>
+      <div><b>4,2″</b><span>e-blekk 400×300, SSD1683</span></div>
+      <div><b>~310 g</b><span>med 151 g stålplate i bunnen</span></div>
+      <div><b>~45 døgn</b><span>på batteri, BEREGNET</span></div>
+    </div>
+  </section>
+  <div class="bred rutenett">
+    <figure class="helt"><img src="img/eksplodert.webp" alt="Eksplodert visning: skall, panel, PCB, stålplate, bunn" width="1000" height="750"><figcaption>Eksplodert: skall, panel, kort med LiPo, stålvekt, bunnplate.</figcaption></figure>
+    <figure class="helt"><img src="img/snitt.webp" alt="Snitt gjennom kabinettet ved hjulet" width="1000" height="750"><figcaption>Snitt ved hjulet: EC11, kretskort, vegg 2,4 mm.</figcaption></figure>
+  </div>
+  <div class="bred" style="margin-top:20px">
+    <figure><img src="img/tegning.webp" alt="Målsatt arbeidstegning: front, side og topp" width="1600" height="1130"><figcaption>Arbeidstegning generert fra de samme parameterne som CAD-modellen.</figcaption></figure>
+  </div>
+  <div class="bred" style="margin-top:20px">
+    <figure><img src="img/skjema.webp" alt="Koblingsskjema på blokknivå" width="1600" height="985"><figcaption>Koblingsskjema. Hjulknappen sitter på BOOT-pinnen med vilje: hold den inne mens du setter i USB, så oppdateres fastvaren.</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Bevist</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Test</th><th class="r">Resultat</th></tr></thead>
+      <tbody>
+        <tr><td>Enhetstester, kjerne (ASan + UBSan, fuzzing 30 000 runder)</td><td class="r">156 / 156</td></tr>
+        <tr><td>Ende-til-ende, telefon i Chromium mot ekte kjerne</td><td class="r">37 / 37</td></tr>
+        <tr><td>ESP32-C3-firmware kompilerer</td><td class="r">1 507 kB · 47 %</td></tr>
+        <tr><td>CAD-deler vanntette</td><td class="r">3 / 3</td></tr>
+        <tr><td>Ren klon → kjørende simulator</td><td class="r">48 s</td></tr>
+      </tbody>
+    </table></div>
+    <p>Tolv feil ble funnet og drept før de nådde noen. Den verste: API-et brukte telefonens klokke i svaret selv når enheten nektet å stille sin egen. Nedtellinger og fravær ble feil. Ende-til-ende-testen fant den. Nå finnes det en enhetstest som aldri slipper den tilbake.</p>
+    <div class="ikke">
+      <p><b>Ikke bevist:</b> ingenting har kjørt på ekte maskinvare. Strømtallene er beregnet, ikke målt. Kabinett-toleransene er ikke printet. Om Stafett faktisk hjelper, kan bare én ting vise: fire uker på en ekte pult.</p>
+    </div>
+
+    <h2>Økonomi</h2>
+    <div class="tall">
+      <div><b>1 490 kr</b><span>ferdig, inkl. mva</span></div>
+      <div><b>418 kr</b><span>varekost ved 500 stk, BEREGNET</span></div>
+      <div><b>590 kr</b><span>dekningsbidrag per stk</span></div>
+      <div><b>244 stk</b><span>break-even</span></div>
+    </div>
+  </section>
+  <div class="bred rutenett">
+    <figure><img src="img/breakeven.webp" alt="Resultat etter engangskostnader mot solgte enheter. Break-even ved 244." width="1200" height="600"><figcaption>Den største faste posten er CE/RED-testing, ikke verktøy. Print-farm til 500 stk.</figcaption></figure>
+    <figure><img src="img/bom.webp" alt="Stykkliste ved 500 stk fordelt på deler. Panelet er den største posten." width="1200" height="630"><figcaption>Panelet er nesten halve stykklisten.</figcaption></figure>
+  </div>
+  <section class="kol">
+    <p style="margin-top:20px"><b>Ikke selg den på Klarna.</b> Målgruppen kjøper impulsivt på kreditt. Kassen får kort og Vipps, ingen delbetaling, og en egen knapp: <i>legg i kjølerommet i stedet.</i> Det koster salg. Det er hele poenget.</p>
+    <p>Programvaren gis bort i Pusterom. Maskinvaren selges til dem som trenger en fysisk ting i rommet, noe som står der når telefonen ligger i en annen dels lomme.</p>
+
+    <h2>Markedet, merket</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Påstand</th><th>Merking</th></tr></thead>
+      <tbody>
+        <tr><td>~25 % av voksne nordmenn hadde rentebærende usikret gjeld i 2025 (OsloMet/SIFO)</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>171 407 personer hadde utleggstrekk i 2025</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>Forbrukertilsynet: «Kjøp nå, betal senere» er kreditt. Tvangsmulkt 9 mill. kr per uke (2024)</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>DID 1,1–1,5 % livstid</td><td><span class="merk uav">UAVKLART</span></td></tr>
+        <tr><td>En fysisk ting hjelper mer enn en app når telefonen følger én del</td><td><span class="merk hyp">HYPOTESE</span></td></tr>
+      </tbody>
+    </table></div>
+    <p>Naboene: Simply Plural og Plural Star lever i telefonen. TRMNL ($139) er en e-blekk-ramme for sky-dashbord uten inndata. Ingen av dem står på pulten og antar at den som kommer tilbake, er en annen enn den som gikk.</p>
+
+    <h2>Filene</h2>
+    <div class="lenker">
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/tree/claude/fabrikken/fabrikken/01-stafett">Hele mappa</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/01-stafett/LAB.md">LAB</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/01-stafett/SPEC.md">SPEC</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/01-stafett/okonomi/OKONOMI.md">ØKONOMI</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/01-stafett/marked/MARKED.md">MARKED</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/01-stafett/HULL.md">HULL</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/tree/claude/fabrikken/fabrikken/01-stafett/cad">CAD</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/tree/claude/fabrikken/fabrikken/01-stafett/firmware">FIRMWARE</a>
+    </div>
+
+    <p class="slutt">Pakken kommer torsdag. Hvem åpner den?</p>
+  </section>
+</main>
