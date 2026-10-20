@@ -29,5 +29,5 @@ Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test
 
 - [x] PWA/ikon: `manifest.webmanifest`, `ikoner/`, `sw.js` (alle sider offline, testet med nettet av)
 - [x] iOS Hjem-skjerm: `apple-touch-icon`, `apple-mobile-web-app-*` på alle sider
-- [x] Dark mode: alle nye sider (Kjølerom, Pustestein, Granatbelte, Brevvakt, Sekken). `index.html` mangler fortsatt
+- [x] Dark mode: alle sider, også `index.html`
 - [ ] Test på ekte iPhone — krever at repoet serveres over https (f.eks. GitHub Pages)

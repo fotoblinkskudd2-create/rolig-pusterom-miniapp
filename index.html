@@ -14,6 +14,15 @@
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --line: #e5ebe6;
+    --on-accent: #2a3a2f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141a16; --card: #1d251f; --text: #e0ebe3; --muted: #9aab9f; --accent: #a8c5b0;
+      --soft-blue: #24333d; --soft-beige: #332d25; --soft-green: #223026; --line: #2c3830; --on-accent: #141a16;
+    }
+    textarea { color: var(--text); }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -56,7 +65,7 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
@@ -71,7 +80,7 @@
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
@@ -84,7 +93,7 @@
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: var(--on-accent);
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -96,6 +105,7 @@
   .btn:active { opacity: 0.85; }
   .btn-secondary {
     background: var(--soft-blue);
+    color: var(--text);
     margin-top: 12px;
   }
   .message {
@@ -142,7 +152,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .action-card.done {
     opacity: 0.6;
@@ -162,7 +172,7 @@
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .history-item .date {
     font-size: 0.85rem;
@@ -177,7 +187,7 @@
     display: flex;
     justify-content: space-around;
     padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    border-top: 1px solid var(--line);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
