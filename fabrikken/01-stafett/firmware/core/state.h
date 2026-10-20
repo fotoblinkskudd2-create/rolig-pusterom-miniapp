@@ -11,6 +11,8 @@
 
 namespace stafett {
 
+using namespace felles;
+
 constexpr ms_t KJOL_TID = 48 * TIME;
 constexpr ms_t BORTE_TERSKEL = 12 * TIME;  // en vanlig natt skal ikke telle som «borte»
 constexpr size_t MAKS_TEKST = 600;  // byte UTF-8

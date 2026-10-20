@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-namespace stafett {
+namespace felles {
 namespace json {
 
 struct Val {
@@ -197,4 +197,4 @@ inline std::string dump(const Obj& o) {
 }
 
 }  // namespace json
-}  // namespace stafett
+}  // namespace felles

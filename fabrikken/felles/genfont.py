@@ -1,23 +1,16 @@
 #!/usr/bin/env python3
-"""Rasteriser Inter til 1-bit bitmap-fonter for e-blekk (400x300).
+"""Rasteriser Inter til 1-bit bitmap-fonter for e-blekk.
 
-Skriver firmware/core/fonts.h. Kjøres på nytt når tegnsett eller størrelser endres:
-    python3 firmware/tools/genfont.py
+    python3 felles/genfont.py <ut/fonts.h> NAVN:fil:px:terskel [NAVN:fil:px:terskel ...]
+    fil = Inter-filnavn uten sti, f.eks. Inter-Medium.otf
 """
+import sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = Path(__file__).resolve().parents[1]
 INTER = Path("/usr/share/fonts/opentype/inter")
 DEJAVU = Path("/usr/share/fonts/truetype/dejavu")
 
-# (navn, fil, piksler, terskel)
-FONTS = [
-    ("F_BODY", INTER / "Inter-Medium.otf", 16, 120),
-    ("F_LABEL", INTER / "Inter-Bold.otf", 12, 120),
-    ("F_BIG", INTER / "InterDisplay-Bold.otf", 26, 128),
-    ("F_HUGE", INTER / "InterDisplay-Bold.otf", 44, 128),
-]
 SYMBOL_FALLBACK = {"→", "←", "✓", "…", "·", "–", "—", "×", "°"}
 CHARS = [chr(c) for c in range(32, 127)] + list("æøåÆØÅéÉèüöäÜÖÄ«»") + sorted(SYMBOL_FALLBACK)
 
@@ -48,15 +41,19 @@ def render_glyph(font, ch, threshold):
 
 
 def main():
+    dest = Path(sys.argv[1])
+    fonts = []
+    for spec in sys.argv[2:]:
+        name, fil, px, thr = spec.split(":")
+        fonts.append((name, INTER / fil, int(px), int(thr)))
     out = [
-        "// GENERERT av tools/genfont.py — ikke rediger for hånd.",
+        "// GENERERT av felles/genfont.py — ikke rediger for hånd.",
+        "// " + " ".join(sys.argv[2:]),
         "#pragma once",
-        "#include <cstdint>",
-        "namespace stafett {",
-        "struct Glyph { uint32_t cp; uint8_t w, h; int8_t x, y; uint8_t adv; uint32_t off; };",
-        "struct Font { const Glyph* glyphs; uint16_t count; const uint8_t* bits; uint8_t ascent; uint8_t line; };",
+        '#include "font.h"',
+        "namespace felles {",
     ]
-    for name, path, size, thr in FONTS:
+    for name, path, size, thr in fonts:
         main_font = ImageFont.truetype(str(path), size)
         sym_font = ImageFont.truetype(str(DEJAVU / ("DejaVuSans-Bold.ttf" if "Bold" in path.name else "DejaVuSans.ttf")), size)
         glyphs, bits = [], []
@@ -78,8 +75,7 @@ def main():
         out.append(
             f"static const Font {name} = {{ {lower}_glyphs, {len(glyphs)}, {lower}_bits, {ascent}, {ascent + descent} }};"
         )
-    out.append("}  // namespace stafett")
-    dest = ROOT / "core" / "fonts.h"
+    out.append("}  // namespace felles")
     dest.write_text("\n".join(out) + "\n", encoding="utf-8")
     print(f"skrev {dest} ({dest.stat().st_size // 1024} KB)")
 

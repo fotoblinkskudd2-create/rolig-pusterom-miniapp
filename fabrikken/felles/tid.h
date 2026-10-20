@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-namespace stafett {
+namespace felles {
 
 using ms_t = int64_t;
 constexpr ms_t SEK = 1000;
@@ -120,4 +120,4 @@ inline std::string igjen(ms_t d) {
   return std::to_string((d + MIN - 1) / MIN) + " min";
 }
 
-}  // namespace stafett
+}  // namespace felles

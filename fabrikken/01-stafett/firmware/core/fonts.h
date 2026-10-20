@@ -1,9 +1,8 @@
-// GENERERT av tools/genfont.py — ikke rediger for hånd.
+// GENERERT av felles/genfont.py — ikke rediger for hånd.
+// F_BODY:Inter-Medium.otf:16:120 F_LABEL:Inter-Bold.otf:12:120 F_BIG:InterDisplay-Bold.otf:26:128 F_HUGE:InterDisplay-Bold.otf:44:128
 #pragma once
-#include <cstdint>
-namespace stafett {
-struct Glyph { uint32_t cp; uint8_t w, h; int8_t x, y; uint8_t adv; uint32_t off; };
-struct Font { const Glyph* glyphs; uint16_t count; const uint8_t* bits; uint8_t ascent; uint8_t line; };
+#include "font.h"
+namespace felles {
 static const uint8_t f_body_bits[] = {
   6,6,6,6,4,4,4,4,0,0,6,4,36,36,36,36,36,0,0,0,0,0,0,0,
   152,1,136,1,136,0,254,3,204,0,204,0,204,0,204,0,255,1,68,0,68,0,70,0,
@@ -1427,4 +1426,4 @@ static const Glyph f_huge_glyphs[] = {
   {10003,37,28,0,13,37,13119},
 };
 static const Font F_HUGE = { f_huge_glyphs, 121, f_huge_bits, 43, 54 };
-}  // namespace stafett
+}  // namespace felles
