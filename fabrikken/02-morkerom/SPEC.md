@@ -54,6 +54,15 @@ Et lite kamera uten skjerm, på størrelse med et engangskamera. Du ser gjennom 
 | Bilde: oppvåkning + eksponering + JPEG + kryptering + SD | ~260 mA i ~1,2 s |
 | E-blekk-oppfrisking | ~8 mA i ~1,5 s |
 
+| Bruk per døgn | mAh/døgn | Batteritid (1 000 mAh, 80 %) |
+|---|---:|---:|
+| lukket hele døgnet (timesoppvåkning) | 0,89 | begrenset av LiPo-selvutlading, ikke elektronikken |
+| 10 min åpent, 3 bilder | 8,7 | ~92 døgn |
+| 30 min åpent, 8 bilder | 24,1 | ~33 døgn |
+| 2 t åpent, 24 bilder | 93,0 | ~9 døgn |
+
+Åpent deksel er den store posten. Derfor er dekselet av/på-bryteren: lukker du det, sover kameraet.
+
 ## 4. Programvare
 
 ```

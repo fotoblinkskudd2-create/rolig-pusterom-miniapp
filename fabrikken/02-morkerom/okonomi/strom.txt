@@ -1,0 +1,4 @@
+lukket hele døgnet         lukket  0.89  åpent    0.0  bilder  0.00  =   0.89 mAh/døgn →    896 døgn
+10 min åpent, 3 bilder     lukket  0.89  åpent    7.5  bilder  0.26  =   8.65 mAh/døgn →     92 døgn
+30 min åpent, 8 bilder     lukket  0.89  åpent   22.5  bilder  0.69  =  24.09 mAh/døgn →     33 døgn
+2 t åpent, 24 bilder       lukket  0.89  åpent   90.0  bilder  2.08  =  92.97 mAh/døgn →      9 døgn
