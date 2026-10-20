@@ -123,4 +123,11 @@ inline int dager_til_sol(int64_t dag, double lat, double lon) {
   return -1;
 }
 
+// Dager til første dag med solnedgang igjen (0 = i dag). -1 hvis ingen innen et år.
+inline int dager_til_solnedgang(int64_t dag, double lat, double lon) {
+  for (int i = 0; i < 366; ++i)
+    if (sol_dag(dag + i, lat, lon).type != SolType::Midnattssol) return i;
+  return -1;
+}
+
 }  // namespace felles
