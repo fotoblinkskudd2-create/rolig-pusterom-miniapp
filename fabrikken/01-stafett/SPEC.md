@@ -46,18 +46,28 @@ Skjermen står alltid på uten å bruke strøm. Det den viser, er det første du
 | Strøm | USB-C 5 V (alltid på) + 1 200 mAh LiPo som reserve | Overlever strømbrudd og flytting. |
 | Lading | MCP73831 (500 mA) | Enkel, robust |
 | Regulator | ME6211C33 LDO 3,3 V, 500 mA | Lav hvilestrøm (40 µA) |
-| NFC | NTAG215-klistremerke under logoen (passiv, ingen elektronikk) | Telefon mot logoen → åpner `http://stafett.local/kjol`. 3 kr. |
+| NFC | NTAG213-klistremerke under logoen (passiv, ingen elektronikk) | Telefon mot logoen → åpner `http://stafett.local/kjol`. ~1 kr. |
 | Vekt | Stålplate 80×60×4 mm i bunnen (~150 g) | Kilen skal ikke gli når du trykker på hjulet |
 
-### Strømbudsjett (BEREGNET, se `okonomi/strom.py`)
+### Strømbudsjett (BEREGNET fra antatte strømmer, se `okonomi/strom.py`)
 
-| Tilstand | Strøm | Tid per døgn |
-|----------|-------|--------------|
-| Deep sleep (RTC + 32k) | ~10 µA | ~23,8 t |
-| Våken, oppdater skjerm | ~25 mA | 1 min-oppdateringer à 1,2 s → ~29 min |
-| Wi-Fi AP/STA aktiv (telefon koblet) | ~90 mA | antatt 10 min |
+**På USB (normaldrift):** alltid våken, Wi-Fi alltid på, skjermen oppdateres hvert minutt.
 
-Batteri alene: se beregning. USB er normaldrift.
+**På batteri (strømbrudd, flytting):** lett søvn mellom oppdateringer (dyp søvn er umulig: hjulknappen sitter på GPIO9, som ikke kan vekke C3 fra dyp søvn). Wi-Fi er *av* — 90 mA ville tømt batteriet på ~13 t.
+Trykk på hjulet vekker Wi-Fi i 10 minutter, så telefonen kan koble til. Klokka går videre på 32 kHz-krystallen.
+
+| Oppdatering på batteri | mAh/døgn | Batteritid (1 200 mAh, 80 % brukbart) |
+|---|---:|---:|
+| hvert minutt | 31,1 | ~31 døgn |
+| hvert 5. minutt (standard på batteri) | 21,5 | ~45 døgn |
+| bare ved endring | 19,4 | ~49 døgn |
+
+Wi-Fi-økter (10 min/døgn) er den største posten. HYPOTESE til den er målt på ekte maskinvare.
+
+### Komponentrisiko
+
+- **ESP32-C3-MINI-1 er merket «Not For New Designs» hos Digi-Key** (DOKUMENTERT 20.10.2026). LCSC har fortsatt lager. Kjernen er ren C++ uten Arduino-avhengigheter, så flytting til ESP32-C6-MINI-1 eller ESP32-C3-MINI-1U er en ny HAL-fil, ikke en omskriving. Må avklares før PCB-revisjon 2.
+- NFC: **NTAG213** holder (URL-en er 24 byte). Billigere enn NTAG215.
 
 ## 4. Programvare
 
@@ -88,6 +98,8 @@ firmware/
 | POST | `/api/her` | `{del}` | tilstedemerke (samme som trykk på hjulet) |
 | GET | `/api/eksport.txt` | — | alt, lesbart, én fil |
 | GET | `/skjerm.pbm` | — | nåværende skjermbilde (for test) |
+
+Alle `/api/*` krever nøkkel (header `X-Stafett-Nokkel` eller `?k=`). Nøkkelen genereres ved første oppstart og ligger i QR-koden (hold hjulet 3 s). Telefonen husker den. Uten nøkkel: 401 og en forklaring, ingen data.
 
 ### Hjulet
 
