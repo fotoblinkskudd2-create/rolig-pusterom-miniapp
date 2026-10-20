@@ -1,0 +1,267 @@
+<title>Mørkerom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: et mørkerom. Nær sort, rødt arbeidslys som eneste aksent. Bildene er det eneste lyse, som papir i fremkallerbadet. */
+:root {
+  --rom: #0f0e0d;
+  --benk: #191715;
+  --linje: #2e2a27;
+  --papir: #ebe8e1;
+  --dempet: #958e85;
+  --rodt: #d2452f;
+  --f-display: "Big Shoulders Display", "Arial Narrow", system-ui, sans-serif;
+  --f-tekst: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--rom); color: var(--papir); font: 400 18px/1.6 var(--f-tekst);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 72px;
+}
+.kol { max-width: 700px; margin: 0 auto; }
+.bred { max-width: 1120px; margin: 0 auto; }
+header.topp { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 22px 12px; border-bottom: 1px solid var(--linje); margin-bottom: 40px; }
+.lys { display: inline-flex; align-items: center; gap: 10px; font: 600 12px/1 var(--f-data); letter-spacing: .14em; }
+.lys::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--rodt); box-shadow: 0 0 14px var(--rodt); }
+.meta { font: 400 12px/1.45 var(--f-data); color: var(--dempet); }
+h1 { font: 800 clamp(64px, 16vw, 168px)/.82 var(--f-display); letter-spacing: .01em; margin: 0 0 16px; text-transform: uppercase; }
+.under { font: italic 400 clamp(20px, 3.2vw, 28px)/1.3 var(--f-tekst); margin: 0 0 32px; color: var(--papir); max-width: 32ch; }
+h2 { font: 500 15px/1 var(--f-display); letter-spacing: .22em; text-transform: uppercase; color: var(--dempet); margin: 72px 0 18px; display: flex; align-items: center; gap: 12px; }
+h2::after { content: ""; flex: 1; height: 1px; background: var(--linje); }
+p { margin: 0 0 1em; }
+.gonzo { font-size: 20px; }
+figure { margin: 0; }
+img { display: block; max-width: 100%; height: auto; }
+figcaption { font: 400 12px/1.45 var(--f-data); color: var(--dempet); margin-top: 8px; }
+.helt { background: #f7f7f7; border-radius: 3px; overflow: hidden; }
+.oppdrag { border-left: 3px solid var(--rodt); padding: 6px 0 6px 18px; margin: 4px 0 8px; }
+.oppdrag b { display: block; font: 800 clamp(30px, 6vw, 52px)/1.02 var(--f-display); letter-spacing: .01em; text-transform: lowercase; }
+.oppdrag span { font: 400 12px/1.4 var(--f-data); color: var(--dempet); }
+.bad { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.bad button { all: unset; cursor: pointer; display: block; position: relative; border-radius: 2px; overflow: hidden; background: var(--benk); }
+.bad button:focus-visible { outline: 2px solid var(--rodt); outline-offset: 3px; }
+.bad img { width: 100%; aspect-ratio: 25 / 18; object-fit: cover; }
+.bad img.d1 { image-rendering: pixelated; }
+.bad .merke { position: absolute; left: 8px; top: 8px; font: 600 10.5px/1 var(--f-data); letter-spacing: .08em; padding: 5px 7px; background: rgba(15, 14, 13, .82); color: var(--papir); border-radius: 2px; }
+.bad .merke.org { color: var(--rodt); }
+.skjermer { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
+.skjermer img { border: 7px solid #050505; border-radius: 4px; image-rendering: pixelated; width: 100%; }
+.rutenett { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.rutenett.tre { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.tall { display: grid; gap: 1px; background: var(--linje); border: 1px solid var(--linje); grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); margin: 8px 0 22px; }
+.tall div { background: var(--benk); padding: 14px 16px; }
+.tall b { display: block; font: 800 32px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.tall span { font: 400 12px/1.35 var(--f-data); color: var(--dempet); }
+.tabell { overflow-x: auto; margin: 8px 0 22px; }
+table { border-collapse: collapse; width: 100%; font: 400 13px/1.45 var(--f-data); font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 10px 9px 0; border-bottom: 1px solid var(--linje); vertical-align: top; }
+th { color: var(--dempet); font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+td.r, th.r { text-align: right; }
+.merk { font: 600 10px/1 var(--f-data); letter-spacing: .06em; padding: 3px 5px; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.merk.dok { color: #8fc29a; } .merk.uav { color: var(--rodt); } .merk.hyp { color: var(--dempet); }
+.prinsipper { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.prinsipper li { padding-left: 22px; position: relative; }
+.prinsipper li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--rodt); }
+.ikke { border-left: 3px solid var(--rodt); padding: 4px 0 4px 16px; }
+.lenker { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.lenker a { font: 600 12.5px/1 var(--f-data); color: var(--papir); text-decoration: none; border: 1px solid var(--linje); padding: 10px 12px; border-radius: 2px; }
+.lenker a:hover, .lenker a:focus-visible { border-color: var(--rodt); color: var(--rodt); outline: none; }
+.slutt { font: 800 clamp(30px, 6vw, 56px)/1 var(--f-display); text-transform: uppercase; margin-top: 72px; text-wrap: balance; }
+code { font-family: var(--f-data); font-size: .85em; }
+@media (prefers-reduced-motion: no-preference) {
+  .bad img { transition: filter .5s ease; }
+}
+</style>
+
+<header class="topp bred">
+  <span class="lys">FABRIKKEN · 02</span>
+  <span class="meta">20.10.2026 · prototyp v0.1 · bygget samme ettermiddag som Stafett</span>
+</header>
+
+<main>
+  <section class="kol">
+    <h1>Mørkerom</h1>
+    <p class="under">Ta bildet. La det ligge. Se det om 48 timer.</p>
+  </section>
+
+  <figure class="bred helt">
+    <img src="img/helt.webp" alt="Mørkerom: et sort kamera på størrelse med et engangskamera, med objektiv, skyvedeksel, søker og rød utløser." width="1400" height="1050">
+  </figure>
+
+  <section class="kol" style="margin-top:44px">
+    <p class="gonzo">650 000 nordmenn er ganske eller veldig plaget av ensomhet, sier SSB. Hver eneste av dem har en telefon som tar bildet, viser det med en gang, legger det ut, teller hjerter og så ingenting. Kameraet i lomma er laget for at andre skal se deg. Jeg ville bygge et som får <em>deg</em> til å se.</p>
+    <p class="gonzo">Mørkerom har ingen skjerm foran. Du ser gjennom en søker, trykker, og bildet forsvinner inn i mørket. 48 timer senere kommer det fram som et kornete 1-bit-bilde på en liten e-blekk-rute bak, og du har glemt at du tok det. Det er det som er poenget.</p>
+  </section>
+
+  <section class="kol">
+    <h2>Dagens oppdrag</h2>
+    <div class="oppdrag"><b id="oppdrag">noe som er til for andre</b><span id="oppdrag-meta">tirsdag 20.10.2026 · oppdrag 39 av 64</span></div>
+    <p class="meta">Beregnet her på siden med samme stokkealgoritme som kameraets fastvare: 64 oppdrag, ingen gjentakelse innen 64 dager, samme oppdrag hele dagen i Oslo-tid.</p>
+  </section>
+
+  <section class="kol">
+    <h2>Fremkallingen</h2>
+    <p>Trykk på et bilde for å veksle mellom originalen og det kameraet viser bak etter 48 timer: beskåret, skalert, strukket og Atkinson-dithret til 200 × 144 piksler sort og hvitt.</p>
+  </section>
+  <div class="bred bad" id="bad">
+    <button type="button" data-org="img/org-fjord.webp" data-d1="img/f1.webp" aria-label="Fjord i skumring: vis original"><img class="d1" src="img/f1.webp" alt="Fjord i skumring, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+    <button type="button" data-org="img/org-kopp.webp" data-d1="img/f2.webp" aria-label="Kopp med damp: vis original"><img class="d1" src="img/f2.webp" alt="Kopp med damp, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+    <button type="button" data-org="img/org-lampe.webp" data-d1="img/f3.webp" aria-label="Lampe i mørkt rom: vis original"><img class="d1" src="img/f3.webp" alt="Lampe i mørkt rom, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+    <button type="button" data-org="img/org-sno.webp" data-d1="img/f4.webp" aria-label="Trær i snø: vis original"><img class="d1" src="img/f4.webp" alt="Trær i snø, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+    <button type="button" data-org="img/org-trapp.webp" data-d1="img/f5.webp" aria-label="Trapp: vis original"><img class="d1" src="img/f5.webp" alt="Trapp, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+    <button type="button" data-org="img/org-vindu.webp" data-d1="img/f6.webp" aria-label="Vindu med plante: vis original"><img class="d1" src="img/f6.webp" alt="Vindu med plante, fremkalt i 1-bit" width="400" height="288"><span class="merke">FREMKALT</span></button>
+  </div>
+  <p class="kol meta" style="margin-top:10px">Motivene er prosedyrisk genererte «fotografier»: containeren som bygde dette har verken vindu eller fjord. Ditheringen er ekte, og det er de 200 × 200 pikslene fra bakskjermen som vises over (med bildeteksten beskåret bort).</p>
+
+  <section class="kol">
+    <h2>Bakskjermen</h2>
+  </section>
+  <div class="bred skjermer">
+    <figure><img src="img/s-status.webp" alt="Status: 7 bilder i mørket, neste fremkalles om 39 t, dagens oppdrag" width="400" height="400"><figcaption>Status</figcaption></figure>
+    <figure><img src="img/s-tatt.webp" alt="Inn i mørket. Fremkalles tor 22.10 17:29" width="400" height="400"><figcaption>Rett etter trykk</figcaption></figure>
+    <figure><img src="img/s-nye.webp" alt="6 fremkalt. Trykk bla for å se" width="400" height="400"><figcaption>Når mørket slipper</figcaption></figure>
+    <figure><img src="img/s-full.webp" alt="Rullen er full. Se på noe i mellomtiden" width="400" height="400"><figcaption>24 i mørket</figcaption></figure>
+    <figure><img src="img/s-tvang.webp" alt="Fremkalle alt nå? Det er lov. Det telles." width="400" height="400"><figcaption>Hold bla 10 s</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Regler</h2>
+    <ul class="prinsipper">
+      <li>Ingen skjerm å se bildet på når det er tatt. Ikke på kameraet, ikke på telefonen. API-et svarer 403.</li>
+      <li>48 timer per bilde. Bare <em>neste</em> fremkalling vises.</li>
+      <li>24 bilder per rull. Er rullen full, må du se på noe i stedet.</li>
+      <li>Ett oppdrag om dagen. Ingen poeng, ingen streak.</li>
+      <li>Ingen sperre er absolutt. «Fremkall alt nå» ligger bak 10 sekunders hold. Det er lov, og det telles.</li>
+      <li>Bildene ligger AES-256-GCM-kryptert på minnekortet. Kortet alene er ubrukelig. Ingen sky, ingen konto.</li>
+    </ul>
+
+    <h2>Kameraet</h2>
+    <div class="tall">
+      <div><b>110×62×34</b><span>mm</span></div>
+      <div><b>OV5640</b><span>5 MP, JPEG i sensoren</span></div>
+      <div><b>1,54″</b><span>e-blekk 200×200 bak</span></div>
+      <div><b>~33 døgn</b><span>30 min åpent per døgn, BEREGNET</span></div>
+    </div>
+    <p>Skyvedekselet over objektivet er av/på-bryteren. En magnet og en hall-bryter merker når det åpnes. Lukket: dypsøvn, og kameraet våkner én gang i timen for å sjekke om noe er fremkalt.</p>
+  </section>
+  <div class="bred rutenett">
+    <figure class="helt"><img src="img/bak.webp" alt="Baksiden: e-blekk-ruta viser en fremkalt kopp" width="1000" height="750"><figcaption>Bak: bildet på e-blekk-ruta er tegnet av den ekte kjernen og lagt inn i CAD-renderen.</figcaption></figure>
+    <figure class="helt"><img src="img/lukket.webp" alt="Kameraet med dekselet lukket over objektivet" width="900" height="675"><figcaption>Deksel lukket = av.</figcaption></figure>
+  </div>
+  <div class="bred" style="margin-top:18px">
+    <figure><img src="img/tegning.webp" alt="Målsatt arbeidstegning: front, bak og topp" width="1600" height="1000" style="background:#fff;border-radius:3px"><figcaption>Arbeidstegning fra parameterne i <code>cad/morkerom.scad</code>.</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Fremkallingsrommet</h2>
+    <p>Telefonen kobler seg til kameraets eget nett. Der ligger det fremkalte, i original og 1-bit. Det som ligger i mørket, vises bare som prikker som fylles.</p>
+  </section>
+  <div class="bred rutenett tre">
+    <figure><img src="img/t-morket.webp" alt="Telefon: 24 bilder i mørket som prikker" width="600" height="1298"><figcaption>24 i mørket. Bare prikker.</figcaption></figure>
+    <figure><img src="img/t-fremkalt.webp" alt="Telefon: fremkalte bilder og kontaktark" width="600" height="1298"><figcaption>Fremkalt + kontaktark.</figcaption></figure>
+    <figure><img src="img/t-lysbord.webp" alt="Telefon: lysbord med et 1-bit-bilde av en lampe" width="600" height="1298"><figcaption>Lysbordet. Kast krever to trykk.</figcaption></figure>
+  </div>
+
+  <section class="kol">
+    <h2>Bevist</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Test</th><th class="r">Resultat</th></tr></thead>
+      <tbody>
+        <tr><td>Enhetstester (ASan + UBSan, fuzzing)</td><td class="r">2 290 / 2 290</td></tr>
+        <tr><td>Ende-til-ende i Chromium mot ekte kjerne og kryptering</td><td class="r">44 / 44</td></tr>
+        <tr><td>ESP32-S3-firmware kompilerer</td><td class="r">1 438 kB · 45 %</td></tr>
+        <tr><td>CAD-deler vanntette</td><td class="r">5 / 5</td></tr>
+        <tr><td>Ren klon → bilde i mørket</td><td class="r">46 s</td></tr>
+      </tbody>
+    </table></div>
+    <p>Den viktigste feilen i runden: på telefonen overstyrte knappestilen <code>hidden</code>, så «Ja, kast for godt» var synlig hele tiden. Ett feiltrykk og et bilde noen hadde ventet 48 timer på, ville vært borte. Et skjermbilde fra testen viste det. Nå sjekker testen at knappen er skjult.</p>
+    <div class="ikke"><p><b>Ikke bevist:</b> ingenting har kjørt på et ekte kamera. Bildene er prosedyriske. Strømtall er beregnet. Optikken er tegnet, ikke printet. Om 48 timer er riktig, vet bare folk som har prøvd det.</p></div>
+
+    <h2>Økonomi</h2>
+    <div class="tall">
+      <div><b>1 190 kr</b><span>inkl. mva</span></div>
+      <div><b>403 kr</b><span>varekost ved 500 stk, BEREGNET</span></div>
+      <div><b>384 kr</b><span>dekningsbidrag per stk</span></div>
+      <div><b>395 stk</b><span>break-even</span></div>
+    </div>
+  </section>
+  <div class="bred rutenett">
+    <figure><img src="img/breakeven.webp" alt="Resultat mot solgte enheter, break-even ved 395" width="1200" height="600" style="background:#fff;border-radius:3px"></figure>
+    <figure><img src="img/bom.webp" alt="Stykkliste ved 500 stk" width="1200" height="630" style="background:#fff;border-radius:3px"></figure>
+  </div>
+  <section class="kol">
+    <p style="margin-top:18px">Camp Snap koster $69. Mørkerom koster 1 190 kr. Forskjellen er fremkallingen, e-blekk-ruta, krypteringen og oppdragene. Det er et annet kamera, ikke et billigere. Og det selges ikke på Klarna.</p>
+
+    <h2>Markedet, merket</h2>
+    <div class="tabell"><table>
+      <thead><tr><th>Påstand</th><th>Merking</th></tr></thead>
+      <tbody>
+        <tr><td>14,5 % av voksne nordmenn plaget av ensomhet (SSB 2025)</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>Camp Snap, skjermløst, $69; CS-Pro $99</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>Gudak (2017): 24 bilder, 72 t, kunne jukses med datoen</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>Foto-hver-dag som egenomsorg (Brewster &amp; Cox 2019, liten kvalitativ studie)</td><td><span class="merk dok">DOKUMENTERT</span></td></tr>
+        <tr><td>Fotobaserte tiltak: lovende, få gode studier</td><td><span class="merk uav">UAVKLART</span></td></tr>
+        <tr><td>48 t er riktig ventetid</td><td><span class="merk hyp">HYPOTESE</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Filene</h2>
+    <div class="lenker">
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/tree/claude/fabrikken/fabrikken/02-morkerom">Hele mappa</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/02-morkerom/LAB.md">LAB</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/02-morkerom/SPEC.md">SPEC</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/02-morkerom/okonomi/OKONOMI.md">ØKONOMI</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/02-morkerom/marked/MARKED.md">MARKED</a>
+      <a href="https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/blob/claude/fabrikken/fabrikken/02-morkerom/HULL.md">HULL</a>
+      <a href="https://claude.ai/artifact/J4z2nBfKFJxCMcAYwrcKvw">← 01 STAFETT</a>
+    </div>
+
+    <p class="slutt">Du tok et bilde i forgårs. Hva var det av?</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  const OPPDRAG = ["noe som er varmt","et lys du ikke la merke til i går","noe som har ventet lenge","skyggen av noe","noe blått","det første du ser utenfor døra","noe noen har laget for hånd","en dør","noe lite og helt","vann, i en eller annen form","noe som er slitt fordi det blir brukt","et vindu sett utenfra","noe som vokser","noe du holder i hånda","noe som lager lyd","noe rundt","tre ting som står sammen","et sted du pleier å sitte","himmelen akkurat nå","noe som er reparert","noe som minner deg om noen","bakken under deg","noe du er glad du har","noe stille","et mønster","noe som står åpent","det som er rett foran deg","noe som er varmere enn det ser ut","noe gammelt","noe nytt","en vei","noe som henger","noe symmetrisk","en refleksjon i noe som ikke er et speil","lys gjennom noe","noe rotete som er helt greit","noe du kan spise","noe som venter på våren","noe som er til for andre","et hjørne","noe hvitt","noe som beveger seg","noe du ikke vet navnet på","en hylle","noe tungt","noe lett","et spor etter noen","noe mykt","en trapp","noe utenfor rekkevidde","noe nær vann","noe grønt","noe som gir lys","en kopp","noe som står alene og klarer seg","noe som holder noe annet sammen","to farger som passer","noe kaldt","et tak","noe du har gått forbi hundre ganger","noe nede ved gulvet","noe halvferdig","det fineste i rommet","noe som er sant akkurat nå"];
+  // Samme som oppdrag_for_dag() i firmware/core/oppdrag.h
+  function oppdragForDag(dag) {
+    const N = 64, periode = Math.floor(dag / N), indeks = dag - periode * N;
+    const r = [...Array(N).keys()];
+    let x = (Number((BigInt(periode) * 2654435761n) % 4294967296n) ^ 0x4D524B31) >>> 0;
+    for (let i = N - 1; i > 0; i--) {
+      x = (x ^ (x << 13)) >>> 0; x = (x ^ (x >>> 17)) >>> 0; x = (x ^ (x << 5)) >>> 0;
+      const j = x % (i + 1);
+      [r[i], r[j]] = [r[j], r[i]];
+    }
+    return r[indeks];
+  }
+  try {
+    const iso = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Oslo' }).format(new Date());
+    const [y, m, d] = iso.split('-').map(Number);
+    const dag = Math.floor(Date.UTC(y, m - 1, d) / 864e5);
+    const nr = oppdragForDag(dag);
+    const navn = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date());
+    document.getElementById('oppdrag').textContent = OPPDRAG[nr];
+    document.getElementById('oppdrag-meta').textContent = navn + ' · oppdrag ' + (nr + 1) + ' av 64';
+  } catch (e) { /* standardteksten står */ }
+
+  document.querySelectorAll('#bad button').forEach((b) => {
+    const img = b.querySelector('img'), merke = b.querySelector('.merke');
+    // beskjær bort bildeteksten fra bakskjermen: vis bare de øverste 144 av 200 linjene
+    img.style.objectPosition = 'top';
+    b.addEventListener('click', () => {
+      const org = img.classList.contains('d1');
+      img.src = org ? b.dataset.org : b.dataset.d1;
+      img.classList.toggle('d1', !org);
+      merke.textContent = org ? 'ORIGINAL' : 'FREMKALT';
+      merke.classList.toggle('org', org);
+      b.setAttribute('aria-label', b.getAttribute('aria-label').replace(org ? 'vis original' : 'vis fremkalt', org ? 'vis fremkalt' : 'vis original'));
+    });
+  });
+})();
+</script>

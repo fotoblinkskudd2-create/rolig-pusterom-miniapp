@@ -1,6 +1,6 @@
 # HULL — Mørkerom v0.1
 
-Testet 20.10.2026, ca. 15:55–16:45 UTC, i en container uten kamera og uten loddebolt.
+Testet 20.10.2026, ca. 15:55–16:30 UTC, i en container uten kamera og uten loddebolt.
 
 ## Bevist (kjørt, grønt)
 
