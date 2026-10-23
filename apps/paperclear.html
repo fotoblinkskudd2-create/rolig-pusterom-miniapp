@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperClear</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main>
+  <header class="app">
+    <a class="back" href="index.html">← All apps</a>
+    <h1>PaperClear</h1>
+    <p class="sub">Photograph a scary letter. Get what it is, how much, by when, and a reply you can send today.</p>
+  </header>
+
+  <div class="card"><div class="ai-bar" id="aiBar"></div></div>
+
+  <div class="card">
+    <h2>The letter</h2>
+    <label for="letter">Paste the text</label>
+    <textarea id="letter" placeholder="Paste a bill, debt-collection notice, payment reminder or tax letter"></textarea>
+    <label for="file">…or a photo / PDF (Claude mode only)</label>
+    <input type="file" id="file" accept="image/*,application/pdf">
+    <label for="goal">What do you want?</label>
+    <select id="goal">
+      <option value="plan">Ask for a payment plan</option>
+      <option value="dispute">Dispute the claim</option>
+      <option value="info">Ask for documentation</option>
+      <option value="pay">I will pay — just confirm the details</option>
+    </select>
+    <button id="run">Read the letter</button>
+    <button class="ghost" id="sample" type="button">Load a sample debt-collection notice</button>
+    <p class="note" id="status"></p>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="card">
+    <h2>Deadlines</h2>
+    <ul class="clean" id="deadlines"></ul>
+  </div>
+  <p class="note">General information, not legal advice. In Norway, free debt advice: NAV økonomirådgivning 55 55 33 39.</p>
+</main>
+
+<script src="ai.js"></script>
+<script>
+const SAMPLE = `INKASSOVARSEL
+Fra: Nordisk Inkasso AS, org.nr 912 345 678
+Til: Kari Nordmann
+Oppdragsgiver: Telefonselskapet AS
+Fakturanr 55120, forfalt 02.09.2026
+Hovedstol: kr 1 849,00
+Purregebyr: kr 35,00
+Forsinkelsesrenter: kr 21,40
+Totalt å betale: kr 1 905,40
+Betalingsfrist: 06.11.2026
+Dersom beløpet ikke betales innen fristen, vil saken bli sendt til inkasso og det påløper salærer.
+Kontonummer 1234.56.78901, KID 55120009`;
+
+const SCHEMA = obj({
+  type: { type: 'string', enum: ['invoice', 'payment_reminder', 'debt_collection_warning', 'debt_collection_demand', 'court_or_enforcement', 'tax', 'other'] },
+  sender: str,
+  creditor: str,
+  amount_total: str,
+  amount_breakdown: arr(obj({ label: str, amount: str })),
+  deadline: { type: 'string', description: 'ISO date YYYY-MM-DD, or empty string if none' },
+  urgency: { type: 'string', enum: ['low', 'medium', 'high'] },
+  plain_explanation: str,
+  legitimacy_checks: arr(str),
+  your_rights: arr(str),
+  reply_subject: str,
+  reply_body: str
+});
+
+const SYSTEM = `You help people understand financial letters (bills, reminders, debt collection, tax) and reply calmly.
+Extract facts only from the letter. If a field is missing, use an empty string.
+legitimacy_checks: concrete things to verify (is the sender registered, does the amount match the original invoice, are fees within legal limits).
+your_rights: short, general rights relevant to the letter's country; mark them as general information, not legal advice.
+Write the reply in the same language as the letter, polite and firm, with placeholders like [your name] where needed.
+Never encourage ignoring a court or enforcement letter.`;
+
+const GOAL_TEXT = {
+  plan: 'The user wants to ask for a payment plan they can afford.',
+  dispute: 'The user disputes the claim and wants it put on hold while it is examined.',
+  info: 'The user wants full documentation of the claim before doing anything.',
+  pay: 'The user will pay and wants a short confirmation of the payment details.'
+};
+
+// Demo mode: keyword and regex reading for Norwegian and English letters.
+function demoRead(text, goal) {
+  const t = text.toLowerCase();
+  let type = 'other';
+  if (/namsmann|forliksråd|utlegg|court|enforcement/.test(t)) type = 'court_or_enforcement';
+  else if (/betalingsoppfordring|debt collection demand/.test(t)) type = 'debt_collection_demand';
+  else if (/inkassovarsel|collection warning|final notice/.test(t)) type = 'debt_collection_warning';
+  else if (/purring|reminder/.test(t)) type = 'payment_reminder';
+  else if (/skatteetaten|restskatt|tax/.test(t)) type = 'tax';
+  else if (/faktura|invoice/.test(t)) type = 'invoice';
+
+  const amounts = [...text.matchAll(/^(.*?):?\s*kr\.?\s*([\d\s]+,\d{2})/gim)].map((m) => ({ label: m[1].trim(), amount: 'kr ' + m[2].trim() }));
+  const total = amounts.find((a) => /total|å betale|sum/i.test(a.label)) || amounts[amounts.length - 1];
+  const dateMatch = text.match(/(frist|deadline|innen|due)[^\d]{0,20}(\d{2})\.(\d{2})\.(\d{4})/i);
+  const deadline = dateMatch ? `${dateMatch[4]}-${dateMatch[3]}-${dateMatch[2]}` : '';
+  const sender = (text.match(/^Fra:\s*(.+)$/im) || ['', ''])[1];
+  const creditor = (text.match(/^Oppdragsgiver:\s*(.+)$/im) || ['', ''])[1];
+  const urgency = type === 'court_or_enforcement' || type === 'debt_collection_demand' ? 'high' : type === 'debt_collection_warning' ? 'medium' : 'low';
+
+  const replies = {
+    plan: `Hei,\n\nJeg viser til deres brev om ${creditor || 'kravet'} (totalt ${total ? total.amount : '[beløp]'}). Jeg ønsker å gjøre opp kravet, men ber om en nedbetalingsavtale på [beløp] kr per måned fra [dato].\n\nJeg ber om at det ikke påløper ytterligere salær mens avtalen gjelder.\n\nVennlig hilsen\n[ditt navn]`,
+    dispute: `Hei,\n\nJeg bestrider kravet fra ${creditor || '[oppdragsgiver]'}. Begrunnelse: [kort begrunnelse].\n\nJeg ber om at saken stilles i bero og at dere sender meg dokumentasjon på kravet.\n\nVennlig hilsen\n[ditt navn]`,
+    info: `Hei,\n\nFør jeg tar stilling til kravet ber jeg om kopi av opprinnelig faktura, oversikt over gebyrer og renter, og bekreftelse på hvem som er oppdragsgiver.\n\nVennlig hilsen\n[ditt navn]`,
+    pay: `Hei,\n\nJeg bekrefter at jeg betaler ${total ? total.amount : '[beløp]'} innen fristen ${deadline || '[dato]'} med oppgitt KID.\n\nVennlig hilsen\n[ditt navn]`
+  };
+
+  return {
+    type, sender, creditor,
+    amount_total: total ? total.amount : '',
+    amount_breakdown: amounts,
+    deadline, urgency,
+    plain_explanation: 'Demo mode reading based on keywords. Turn on Claude for a full explanation.',
+    legitimacy_checks: [
+      'Look up the sender in the official company register (Brønnøysundregistrene in Norway).',
+      'Compare the principal with your original invoice.',
+      'Check that fees do not exceed the legal maximum for this stage.',
+      'Pay only to the account number printed on the letter, never one sent by SMS.'
+    ],
+    your_rights: [
+      'You can dispute a claim in writing; the collector must then assess your objection.',
+      'You can ask for a payment plan. Ask in writing and keep a copy.'
+    ],
+    reply_subject: 'Ang. sak ' + ((text.match(/Fakturanr\s*(\d+)/i) || ['', ''])[1] || '[saksnummer]'),
+    reply_body: replies[goal]
+  };
+}
+
+const TYPE_LABEL = {
+  invoice: 'Invoice', payment_reminder: 'Payment reminder', debt_collection_warning: 'Debt-collection warning',
+  debt_collection_demand: 'Debt-collection demand', court_or_enforcement: 'Court / enforcement', tax: 'Tax', other: 'Other'
+};
+
+const statusEl = document.getElementById('status');
+let deadlines = store.get('paperclear_deadlines', []);
+
+AI.mountKeyBar(document.getElementById('aiBar'));
+document.getElementById('sample').onclick = () => { document.getElementById('letter').value = SAMPLE; };
+
+document.getElementById('run').onclick = async () => {
+  const text = document.getElementById('letter').value.trim();
+  const file = document.getElementById('file').files[0];
+  const goal = document.getElementById('goal').value;
+  if (!text && !file) { statusEl.textContent = 'Paste the letter or choose a file first.'; return; }
+  const btn = document.getElementById('run');
+  btn.disabled = true;
+  try {
+    let r;
+    if (AI.enabled()) {
+      statusEl.textContent = 'Reading with Claude…';
+      const content = [];
+      const block = await AI.fileBlock(file);
+      if (block) content.push(block);
+      content.push({ type: 'text', text: `${GOAL_TEXT[goal]}\nToday is ${new Date().toISOString().slice(0, 10)}.\n\nLetter text:\n${text || '(see attached file)'}` });
+      r = await AI.json({ system: SYSTEM, content, schema: SCHEMA, effort: 'medium' });
+    } else {
+      if (!text) throw new Error('Demo mode reads pasted text only. Turn on Claude to read photos and PDFs.');
+      r = demoRead(text, goal);
+    }
+    statusEl.textContent = '';
+    show(r);
+    if (r.deadline) {
+      deadlines.push({ date: r.deadline, what: `${TYPE_LABEL[r.type]} — ${r.creditor || r.sender || 'unknown'} (${r.amount_total})` });
+      deadlines.sort((a, b) => a.date.localeCompare(b.date));
+      store.set('paperclear_deadlines', deadlines);
+      drawDeadlines();
+    }
+  } catch (e) {
+    statusEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function show(r) {
+  const u = r.urgency === 'high' ? 'danger' : r.urgency === 'medium' ? 'warn' : '';
+  document.getElementById('result').innerHTML = `
+    <div class="card">
+      <span class="pill ${u}">${esc(r.urgency)} urgency</span> <span class="pill">${esc(TYPE_LABEL[r.type] || r.type)}</span>
+      <h2 style="margin-top:10px">${esc(r.amount_total || 'Amount not found')}</h2>
+      <p class="muted">${r.deadline ? 'Deadline ' + esc(r.deadline) : 'No deadline found'} · ${esc(r.creditor || r.sender)}</p>
+      <p style="margin-top:8px">${esc(r.plain_explanation)}</p>
+      ${r.amount_breakdown.length ? `<h3>Breakdown</h3><ul class="clean">${r.amount_breakdown.map((a) => `<li class="row"><span>${esc(a.label)}</span><span style="text-align:right">${esc(a.amount)}</span></li>`).join('')}</ul>` : ''}
+    </div>
+    <div class="card"><h2>Check before paying</h2><ul class="clean">${r.legitimacy_checks.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>
+    <div class="card"><h2>Your rights</h2><ul class="clean">${r.your_rights.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>
+    <div class="card"><h2>Reply</h2><p class="muted">${esc(r.reply_subject)}</p><pre class="out" id="reply">${esc(r.reply_body)}</pre>
+      <button class="ghost" id="copy" type="button">Copy reply</button></div>`;
+  document.getElementById('copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(r.reply_body); document.getElementById('copy').textContent = 'Copied'; }
+    catch (e) { document.getElementById('copy').textContent = 'Select the text and copy it manually'; }
+  };
+}
+
+function drawDeadlines() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('deadlines').innerHTML = deadlines.map((d, i) => `
+    <li class="row"><span><span class="pill ${d.date < today ? 'danger' : ''}">${esc(d.date)}</span> ${esc(d.what)}</span>
+    <button class="small ghost" data-i="${i}" type="button" style="flex:0">Done</button></li>`).join('') || '<li class="muted">Nothing tracked yet</li>';
+  document.querySelectorAll('#deadlines button').forEach((b) => b.onclick = () => {
+    deadlines.splice(b.dataset.i, 1);
+    store.set('paperclear_deadlines', deadlines);
+    drawDeadlines();
+  });
+}
+drawDeadlines();
+</script>
+</body>
+</html>

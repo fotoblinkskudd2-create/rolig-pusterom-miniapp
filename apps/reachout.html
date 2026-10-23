@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rolig ReachOut</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main>
+  <header class="app">
+    <a class="back" href="index.html">← All apps</a>
+    <h1>Rolig ReachOut</h1>
+    <p class="sub">Not an AI friend. A small push back toward real people — one low-pressure message at a time.</p>
+  </header>
+
+  <div class="card"><div class="ai-bar" id="aiBar"></div>
+    <p class="note">Your list stays on this device. With Claude on, only the first name, relationship and your note are sent to write the message.</p></div>
+
+  <div class="card">
+    <h2>This week</h2>
+    <p id="week" class="muted"></p>
+  </div>
+
+  <div class="card">
+    <h2>Your people</h2>
+    <ul class="clean" id="people"></ul>
+    <div class="row" style="margin-top:10px">
+      <input id="pName" placeholder="First name">
+      <select id="pRel"><option>friend</option><option>family</option><option>old colleague</option><option>neighbour</option></select>
+      <button class="small" id="addP" type="button" style="flex:0">Add</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="compose">
+    <h2 id="cTitle"></h2>
+    <label for="energy">How much energy do you have?</label>
+    <select id="energy">
+      <option value="low">Very little — one line</option>
+      <option value="mid">Some — a short message</option>
+      <option value="high">Enough to suggest meeting</option>
+    </select>
+    <label for="noteIn">Anything to mention? (optional)</label>
+    <input id="noteIn" placeholder="e.g. saw a dog like theirs, their new job">
+    <button id="gen">Write it for me</button>
+    <pre class="out hidden" id="msg"></pre>
+    <div class="row hidden" id="actions">
+      <button class="ghost" id="copy" type="button">Copy</button>
+      <button id="sent" type="button">I sent it</button>
+    </div>
+    <p class="note">Rolig is not therapy. If you are in crisis, call 116 123 (Mental Helse, Norway) or your local emergency number.</p>
+  </div>
+</main>
+
+<script src="ai.js"></script>
+<script>
+const TEMPLATES = {
+  low: [
+    'Hei {name}! Kom på deg i dag 🙂',
+    'Hei {name}, lenge siden! Håper du har det fint.',
+    'Tenkte på deg, {name}. Ingen grunn, bare hei.'
+  ],
+  mid: [
+    'Hei {name}! Det er alt for lenge siden. Hvordan går det med deg for tida?{note}',
+    'Hei {name} 🙂 Kom på deg i dag og ble glad. Hva skjer hos deg?{note}'
+  ],
+  high: [
+    'Hei {name}! Lyst til å ta en kaffe eller en tur en dag de neste ukene? Jeg savner å prate med deg.{note}',
+    'Hei {name}! Skal vi finne på noe snart? Jeg er ledig {day}, men tilpasser meg deg.{note}'
+  ]
+};
+
+let people = store.get('reachout_people', []);
+let log = store.get('reachout_log', []);
+let current = null;
+
+AI.mountKeyBar(document.getElementById('aiBar'));
+
+const daysSince = (iso) => iso ? Math.floor((Date.now() - new Date(iso)) / 86400000) : null;
+
+function draw() {
+  const weekAgo = Date.now() - 7 * 86400000;
+  const n = log.filter((t) => new Date(t) > weekAgo).length;
+  document.getElementById('week').textContent = n
+    ? `You reached out ${n} time${n > 1 ? 's' : ''} in the last 7 days. 🌱`
+    : 'No messages yet this week. One is enough.';
+  const sorted = [...people].sort((a, b) => (daysSince(b.last) ?? 9999) - (daysSince(a.last) ?? 9999));
+  document.getElementById('people').innerHTML = sorted.map((p) => {
+    const d = daysSince(p.last);
+    const label = d === null ? 'never logged' : d === 0 ? 'today' : `${d} days ago`;
+    return `<li class="row"><span><strong>${esc(p.name)}</strong> <span class="muted">${esc(p.rel)} · ${label}</span></span>
+      <button class="small ghost" data-id="${p.id}" data-act="write" type="button" style="flex:0">Write</button>
+      <button class="small ghost" data-id="${p.id}" data-act="del" type="button" style="flex:0">✕</button></li>`;
+  }).join('') || '<li class="muted">Add two or three people you miss.</li>';
+  document.querySelectorAll('#people button').forEach((b) => b.onclick = () => {
+    const p = people.find((x) => x.id === b.dataset.id);
+    if (b.dataset.act === 'del') {
+      people = people.filter((x) => x !== p);
+      store.set('reachout_people', people);
+      if (current === p) document.getElementById('compose').classList.add('hidden');
+      draw();
+    } else open(p);
+  });
+}
+
+function open(p) {
+  current = p;
+  document.getElementById('compose').classList.remove('hidden');
+  document.getElementById('cTitle').textContent = 'Message to ' + p.name;
+  ['msg', 'actions'].forEach((id) => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('compose').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.getElementById('addP').onclick = () => {
+  const name = document.getElementById('pName').value.trim();
+  if (!name) return;
+  people.push({ id: String(Date.now()), name, rel: document.getElementById('pRel').value, last: null });
+  store.set('reachout_people', people);
+  document.getElementById('pName').value = '';
+  draw();
+};
+
+document.getElementById('gen').onclick = async () => {
+  if (!current) return;
+  const energy = document.getElementById('energy').value;
+  const note = document.getElementById('noteIn').value.trim();
+  const btn = document.getElementById('gen');
+  const out = document.getElementById('msg');
+  btn.disabled = true;
+  try {
+    let text;
+    if (AI.enabled()) {
+      const r = await AI.json({
+        system: `You write one short, warm text message in Norwegian Bokmål from the user to a real person in their life.
+It must be low-pressure: easy to answer, no guilt about the silence, no over-explaining. Sound like a person, not a card.
+Energy "low" = one line. "mid" = 1-2 sentences with one easy question. "high" = suggest a simple, specific way to meet.
+Never mention mental health, therapy or this app.`,
+        content: `Name: ${current.name}\nRelationship: ${current.rel}\nDays since last contact: ${daysSince(current.last) ?? 'unknown, probably long'}\nEnergy: ${energy}\nUser's note: ${note || '(none)'}`,
+        schema: obj({ message: str })
+      });
+      text = r.message;
+    } else {
+      const options = TEMPLATES[energy];
+      const day = ['på lørdag', 'på søndag', 'en kveld neste uke'][Math.floor(Math.random() * 3)];
+      text = options[Math.floor(Math.random() * options.length)]
+        .replace('{name}', current.name)
+        .replace('{day}', day)
+        .replace('{note}', '') + (note ? '\n\n[Add a line about: ' + note + ']' : '');
+    }
+    out.textContent = text;
+    out.classList.remove('hidden');
+    document.getElementById('actions').classList.remove('hidden');
+  } catch (e) {
+    out.textContent = e.message;
+    out.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+document.getElementById('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText(document.getElementById('msg').textContent); document.getElementById('copy').textContent = 'Copied'; }
+  catch (e) { document.getElementById('copy').textContent = 'Select and copy manually'; }
+};
+
+document.getElementById('sent').onclick = () => {
+  current.last = new Date().toISOString();
+  log.push(current.last);
+  store.set('reachout_people', people);
+  store.set('reachout_log', log);
+  document.getElementById('compose').classList.add('hidden');
+  draw();
+};
+
+draw();
+</script>
+</body>
+</html>

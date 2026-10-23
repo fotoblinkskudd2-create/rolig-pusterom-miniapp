@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareLoop</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main>
+  <header class="app">
+    <a class="back" href="index.html">← All apps</a>
+    <h1>CareLoop</h1>
+    <p class="sub">Turn hospital paperwork into a family care plan: medicines, follow-ups, warning signs and who does what.</p>
+  </header>
+
+  <div class="card"><div class="ai-bar" id="aiBar"></div></div>
+
+  <div class="tabs">
+    <button class="on" data-tab="import">1. Import</button>
+    <button data-tab="plan">2. Plan</button>
+    <button data-tab="tasks">3. Tasks</button>
+  </div>
+
+  <section id="tab-import">
+    <div class="card">
+      <h2>Discharge papers or med list</h2>
+      <label for="doc">Paste text</label>
+      <textarea id="doc" placeholder="Paste the discharge summary, medication list or after-visit notes"></textarea>
+      <label for="file">…or a photo / PDF (Claude mode only)</label>
+      <input type="file" id="file" accept="image/*,application/pdf">
+      <label for="family">Family members (comma separated)</label>
+      <input id="family" placeholder="e.g. Anna, Jonas, Mari">
+      <button id="run">Build care plan</button>
+      <button class="ghost" id="sample" type="button">Load a sample discharge summary</button>
+      <p class="note">Not medical advice. CareLoop organises what the clinicians wrote. Check every medicine with a pharmacist.</p>
+      <p class="note" id="status"></p>
+    </div>
+  </section>
+
+  <section id="tab-plan" class="hidden">
+    <div id="plan"><div class="card muted">No plan yet. Import papers first.</div></div>
+  </section>
+
+  <section id="tab-tasks" class="hidden">
+    <div class="card">
+      <h2>Shared task list</h2>
+      <ul class="clean" id="tasks"></ul>
+      <div class="row" style="margin-top:10px">
+        <input id="newTask" placeholder="Add a task">
+        <button class="small" id="addTask" type="button">Add</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="ai.js"></script>
+<script>
+const SAMPLE = `DISCHARGE SUMMARY — Patient: Ingrid H., 81
+Admitted 14.10 with heart failure exacerbation. Discharged 19.10.
+Medications at discharge:
+- Furosemide 40 mg once daily in the morning (NEW)
+- Metoprolol 25 mg twice daily
+- Apixaban 5 mg twice daily
+- Paracetamol 1 g up to three times daily as needed
+STOPPED: Ibuprofen (do not take — kidney function and bleeding risk)
+Follow-up: GP within 7 days for blood test (creatinine, potassium). Cardiology outpatient clinic in 6 weeks.
+Weigh daily each morning. Contact GP if weight increases more than 2 kg in 3 days.
+Seek emergency care if: chest pain, severe shortness of breath at rest, fainting.`;
+
+const SCHEMA = obj({
+  summary: str,
+  medications: arr(obj({ name: str, dose: str, schedule: str, status: { type: 'string', enum: ['new', 'continued', 'changed', 'stopped'] }, note: str })),
+  appointments: arr(obj({ what: str, when: str })),
+  red_flags: arr(str),
+  daily_checks: arr(str),
+  tasks: arr(obj({ task: str, owner: str, due: str })),
+  questions_for_clinician: arr(str)
+});
+
+const SYSTEM = `You turn hospital discharge paperwork into a care plan for a family caregiver.
+Only use information that is in the document. Never invent doses or change instructions.
+If something is ambiguous, add it to questions_for_clinician instead of guessing.
+Assign tasks to the listed family members in rotation; use "Unassigned" if none are listed.
+Write in plain language at a 6th-grade reading level, in the same language as the document.`;
+
+// Demo mode: rule-based extraction so the prototype works without a key.
+function demoParse(text, family) {
+  const lines = text.split(/\n/).map((l) => l.trim()).filter(Boolean);
+  const meds = [];
+  const appts = [];
+  const flags = [];
+  const checks = [];
+  lines.forEach((l) => {
+    const m = l.match(/^-?\s*([A-Za-zæøå]+)\s+(\d+[.,]?\d*\s*(mg|g|mcg|ml))\s*(.*)$/i);
+    if (m) meds.push({ name: m[1], dose: m[2], schedule: m[4].replace(/\((NEW|CHANGED)\)/i, '').trim(), status: /NEW/i.test(l) ? 'new' : 'continued', note: '' });
+    const stop = l.match(/STOPPED:\s*([A-Za-zæøå]+)\s*(.*)/i);
+    if (stop) meds.push({ name: stop[1], dose: '', schedule: '', status: 'stopped', note: stop[2].replace(/[()]/g, '').trim() });
+    if (/follow-up|clinic|appointment|kontroll/i.test(l)) l.split(/\.\s+/).forEach((s) => s && appts.push({ what: s.replace(/^Follow-up:\s*/i, ''), when: (s.match(/within \d+ \w+|in \d+ \w+/i) || [''])[0] }));
+    if (/emergency|seek|call 113|ring 113/i.test(l)) flags.push(...l.replace(/.*if:\s*/i, '').split(/,\s*/));
+    if (/daily|each morning|contact gp if/i.test(l) && !m) checks.push(l);
+  });
+  const people = family.length ? family : ['Unassigned'];
+  const tasks = [
+    ...appts.map((a) => ({ task: 'Book: ' + a.what, due: a.when || 'This week' })),
+    { task: 'Pick up new prescriptions from pharmacy', due: 'Today' },
+    { task: 'Remove stopped medicines from the pill box', due: 'Today' },
+    { task: 'Set up a daily weight log', due: 'Tomorrow' }
+  ].map((t, i) => ({ ...t, owner: people[i % people.length] }));
+  return {
+    summary: 'Demo mode extraction. Turn on Claude for a full reading of the document.',
+    medications: meds,
+    appointments: appts,
+    red_flags: flags.map((f) => f.replace(/\.$/, '')),
+    daily_checks: checks,
+    tasks,
+    questions_for_clinician: ['Which medicines should be taken with food?', 'Who should we call after hours?']
+  };
+}
+
+const statusEl = document.getElementById('status');
+let plan = store.get('careloop_plan', null);
+let tasks = store.get('careloop_tasks', []);
+
+AI.mountKeyBar(document.getElementById('aiBar'));
+
+document.querySelectorAll('.tabs button').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b));
+  ['import', 'plan', 'tasks'].forEach((t) => document.getElementById('tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
+});
+const goTab = (t) => document.querySelector(`.tabs button[data-tab="${t}"]`).click();
+
+document.getElementById('sample').onclick = () => {
+  document.getElementById('doc').value = SAMPLE;
+  document.getElementById('family').value = 'Anna, Jonas';
+};
+
+document.getElementById('run').onclick = async () => {
+  const text = document.getElementById('doc').value.trim();
+  const file = document.getElementById('file').files[0];
+  const family = document.getElementById('family').value.split(',').map((s) => s.trim()).filter(Boolean);
+  if (!text && !file) { statusEl.textContent = 'Paste some text or choose a file first.'; return; }
+  const btn = document.getElementById('run');
+  btn.disabled = true;
+  try {
+    if (AI.enabled()) {
+      statusEl.textContent = 'Reading the papers with Claude…';
+      const content = [];
+      const block = await AI.fileBlock(file);
+      if (block) content.push(block);
+      content.push({ type: 'text', text: `Family members: ${family.join(', ') || 'none listed'}\n\nDocument text:\n${text || '(see attached file)'}` });
+      plan = await AI.json({ system: SYSTEM, content, schema: SCHEMA, effort: 'medium' });
+    } else {
+      if (!text) throw new Error('Demo mode reads pasted text only. Turn on Claude to read photos and PDFs.');
+      plan = demoParse(text, family);
+    }
+    tasks = plan.tasks.map((t) => ({ ...t, done: false }));
+    store.set('careloop_plan', plan);
+    store.set('careloop_tasks', tasks);
+    statusEl.textContent = '';
+    render();
+    goTab('plan');
+  } catch (e) {
+    statusEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function render() {
+  if (plan) {
+    const statusPill = (s) => s === 'stopped' ? 'danger' : s === 'new' || s === 'changed' ? 'warn' : '';
+    document.getElementById('plan').innerHTML = `
+      <div class="card"><h2>Summary</h2><p>${esc(plan.summary)}</p></div>
+      <div class="card"><h2>Medicines</h2><ul class="clean">${plan.medications.map((m) => `
+        <li><strong>${esc(m.name)}</strong> ${esc(m.dose)} <span class="pill ${statusPill(m.status)}">${esc(m.status)}</span>
+        <div class="muted">${esc(m.schedule)} ${esc(m.note)}</div></li>`).join('') || '<li class="muted">None found</li>'}</ul></div>
+      <div class="card"><h2>Get help now if</h2><ul class="clean">${plan.red_flags.map((f) => `<li><span class="pill danger">!</span> ${esc(f)}</li>`).join('') || '<li class="muted">None listed</li>'}</ul></div>
+      <div class="card"><h2>Every day</h2><ul class="clean">${plan.daily_checks.map((c) => `<li>${esc(c)}</li>`).join('') || '<li class="muted">None listed</li>'}</ul></div>
+      <div class="card"><h2>Appointments</h2><ul class="clean">${plan.appointments.map((a) => `<li>${esc(a.what)} <span class="muted">${esc(a.when)}</span></li>`).join('') || '<li class="muted">None listed</li>'}</ul></div>
+      <div class="card"><h2>Ask the clinician</h2><ul class="clean">${plan.questions_for_clinician.map((q) => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
+  }
+  document.getElementById('tasks').innerHTML = tasks.map((t, i) => `
+    <li class="row"><input type="checkbox" data-i="${i}" ${t.done ? 'checked' : ''} style="flex:0;width:auto">
+    <span style="flex:1;${t.done ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(t.task)}<br><span class="muted">${esc(t.owner)} · ${esc(t.due)}</span></span></li>`).join('') || '<li class="muted">No tasks yet</li>';
+  document.querySelectorAll('#tasks input').forEach((c) => c.onchange = () => {
+    tasks[c.dataset.i].done = c.checked;
+    store.set('careloop_tasks', tasks);
+    render();
+  });
+}
+
+document.getElementById('addTask').onclick = () => {
+  const v = document.getElementById('newTask').value.trim();
+  if (!v) return;
+  tasks.push({ task: v, owner: 'Unassigned', due: '', done: false });
+  store.set('careloop_tasks', tasks);
+  document.getElementById('newTask').value = '';
+  render();
+};
+
+render();
+</script>
+</body>
+</html>

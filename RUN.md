@@ -24,3 +24,9 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## AI-prototyper (`apps/`)
+
+1. Åpne `apps/index.html`. Behold mappa samlet (`app.css` og `ai.js` deles).
+2. Uten nøkkel: demo-modus. Regelbasert. Ingenting går på nett.
+3. Med Claude: lim inn egen Anthropic API-nøkkel øverst i en app. Nøkkelen lagres i denne nettleseren og sendes kun til api.anthropic.com. Kun for prototyping. I produksjon skal nøkkelen ligge på en server.

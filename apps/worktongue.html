@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkTongue</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main>
+  <header class="app">
+    <a class="back" href="index.html">← All apps</a>
+    <h1>WorkTongue</h1>
+    <p class="sub">Practise the Norwegian your job actually needs, in real situations, before your next shift.</p>
+  </header>
+
+  <div class="card"><div class="ai-bar" id="aiBar"></div></div>
+
+  <div class="card">
+    <div class="row">
+      <div><label for="role">Your job</label>
+        <select id="role">
+          <option value="care">Care assistant (helsefagarbeider)</option>
+          <option value="build">Construction</option>
+          <option value="shop">Shop / warehouse</option>
+        </select></div>
+      <div><label for="level">Level</label>
+        <select id="level"><option>A2</option><option selected>B1</option><option>B2</option></select></div>
+    </div>
+    <button id="start">Start a situation</button>
+  </div>
+
+  <div id="scene" class="hidden">
+    <div class="card">
+      <span class="pill" id="who"></span>
+      <h2 style="margin-top:8px" id="line"></h2>
+      <p class="muted" id="hint"></p>
+      <button class="small ghost" id="listen" type="button">🔊 Hear it</button>
+    </div>
+    <div class="card">
+      <label for="answer">Your answer (in Norwegian)</label>
+      <textarea id="answer" style="min-height:80px"></textarea>
+      <div class="row">
+        <button class="ghost" id="mic" type="button">🎤 Speak</button>
+        <button id="send">Check</button>
+      </div>
+    </div>
+    <div id="feedback"></div>
+  </div>
+
+  <div class="card">
+    <h2>Words you are learning</h2>
+    <ul class="clean" id="vocab"></ul>
+  </div>
+</main>
+
+<script src="ai.js"></script>
+<script>
+// Offline scenarios: the counterpart's line, a hint, words a good answer uses, and a model answer.
+const SCENES = {
+  care: [
+    { who: 'Beboer (resident)', line: 'Jeg har så vondt i magen i dag.', hint: 'Show care, ask where and how long, say you will tell the nurse.', keys: ['hvor', 'lenge', 'sykepleier', 'si fra'], model: 'Så leit. Hvor gjør det vondt, og hvor lenge har du hatt det? Jeg sier fra til sykepleieren med en gang.' },
+    { who: 'Sykepleier (nurse)', line: 'Har Olsen spist og drukket noe i dag?', hint: 'Report what and how much, mention anything unusual.', keys: ['spiste', 'drakk', 'glass', 'frokost'], model: 'Han spiste halve frokosten og drakk to glass vann. Han var litt trøtt.' },
+    { who: 'Pårørende (relative)', line: 'Hvordan har mamma hatt det denne uka?', hint: 'Be friendly, give a short update, refer medical questions to the nurse.', keys: ['fint', 'sykepleier', 'spørre', 'uka'], model: 'Hun har hatt en fin uke og vært med på trim. Om medisinene kan du spørre sykepleieren.' }
+  ],
+  build: [
+    { who: 'Formann (foreman)', line: 'Har du sikret stillaset før du gikk opp?', hint: 'Confirm safety checks: anchoring, railings, harness.', keys: ['ja', 'rekkverk', 'sele', 'sjekket'], model: 'Ja, jeg sjekket forankringen og rekkverket, og jeg bruker sele.' },
+    { who: 'Kollega (colleague)', line: 'Kan du hente mer gips fra containeren?', hint: 'Accept, ask how many sheets, say when.', keys: ['hvor mange', 'plater', 'henter', 'nå'], model: 'Ja, hvor mange plater trenger du? Jeg henter dem nå.' }
+  ],
+  shop: [
+    { who: 'Kunde (customer)', line: 'Unnskyld, hvor finner jeg glutenfritt brød?', hint: 'Point the way politely, or offer to show them.', keys: ['hylle', 'bak', 'vise', 'følg'], model: 'Det står i hylla ved bakeriet, helt bak i butikken. Jeg kan vise deg.' },
+    { who: 'Leder (manager)', line: 'Varemottaket er sent i dag. Kan du bli en time ekstra?', hint: 'Answer yes or no politely, explain if needed.', keys: ['ja', 'kan', 'dessverre', 'time'], model: 'Ja, jeg kan bli en time ekstra i dag.' }
+  ]
+};
+
+const FEEDBACK_SCHEMA = obj({
+  score: { type: 'integer', minimum: 1, maximum: 5 },
+  understood: { type: 'boolean' },
+  what_went_well: str,
+  correction: str,
+  better_answer: str,
+  new_words: arr(obj({ word: str, meaning_en: str })),
+  next_line: str,
+  next_hint: str
+});
+
+let scene = null;
+let history = [];
+let vocab = store.get('worktongue_vocab', []);
+
+AI.mountKeyBar(document.getElementById('aiBar'));
+
+const say = (text) => {
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'nb-NO';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+};
+
+function showLine(who, line, hint) {
+  document.getElementById('scene').classList.remove('hidden');
+  document.getElementById('who').textContent = who;
+  document.getElementById('line').textContent = line;
+  document.getElementById('hint').textContent = hint;
+  document.getElementById('answer').value = '';
+}
+
+document.getElementById('start').onclick = () => {
+  const list = SCENES[document.getElementById('role').value];
+  scene = list[Math.floor(Math.random() * list.length)];
+  history = [{ who: scene.who, text: scene.line }];
+  document.getElementById('feedback').innerHTML = '';
+  showLine(scene.who, scene.line, scene.hint);
+};
+
+document.getElementById('listen').onclick = () => say(document.getElementById('line').textContent);
+
+const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBtn = document.getElementById('mic');
+if (!Rec) micBtn.classList.add('hidden');
+else micBtn.onclick = () => {
+  const r = new Rec();
+  r.lang = 'nb-NO';
+  r.interimResults = false;
+  micBtn.textContent = '…listening';
+  r.onresult = (e) => { document.getElementById('answer').value = e.results[0][0].transcript; };
+  r.onend = () => { micBtn.textContent = '🎤 Speak'; };
+  r.start();
+};
+
+function demoCheck(answer) {
+  const a = answer.toLowerCase();
+  const hits = scene.keys.filter((k) => a.includes(k));
+  const score = Math.max(1, Math.min(5, 1 + hits.length + (a.split(/\s+/).length > 5 ? 1 : 0)));
+  return {
+    score,
+    understood: hits.length > 0,
+    what_went_well: hits.length ? 'You used: ' + hits.join(', ') : 'You answered — that is the hardest part.',
+    correction: 'Demo mode checks key words only. Turn on Claude for grammar and pronunciation-friendly corrections.',
+    better_answer: scene.model,
+    new_words: scene.keys.filter((k) => !hits.includes(k)).map((k) => ({ word: k, meaning_en: '' })),
+    next_line: '',
+    next_hint: ''
+  };
+}
+
+document.getElementById('send').onclick = async () => {
+  const answer = document.getElementById('answer').value.trim();
+  if (!answer || !scene) return;
+  const btn = document.getElementById('send');
+  btn.disabled = true;
+  const fb = document.getElementById('feedback');
+  let pushed = false;
+  try {
+    let f;
+    if (AI.enabled()) {
+      fb.innerHTML = '<div class="card muted">Checking with Claude…</div>';
+      history.push({ who: 'Learner', text: answer });
+      pushed = true;
+      f = await AI.json({
+        system: `You are a Norwegian workplace-language coach. Role: ${document.getElementById('role').selectedOptions[0].text}. Learner level: ${document.getElementById('level').value} (CEFR).
+Play the counterpart realistically and keep the conversation going for 3-4 turns, then set next_line to an empty string.
+Judge whether a real colleague would understand the answer; that matters more than perfect grammar.
+Correct at most two things, explained in simple English. better_answer is natural spoken Bokmål at the learner's level.
+new_words: up to 3 job-relevant words from better_answer.`,
+        content: 'Conversation so far:\n' + history.map((h) => `${h.who}: ${h.text}`).join('\n'),
+        schema: FEEDBACK_SCHEMA
+      });
+    } else {
+      f = demoCheck(answer);
+    }
+    vocab = [...f.new_words.filter((w) => !vocab.some((v) => v.word === w.word)), ...vocab].slice(0, 40);
+    store.set('worktongue_vocab', vocab);
+    drawVocab();
+    fb.innerHTML = `<div class="card">
+      <span class="pill ${f.understood ? '' : 'warn'}">${f.understood ? 'A colleague would understand you' : 'Might be misunderstood'}</span>
+      <span class="pill">${'★'.repeat(f.score)}${'☆'.repeat(5 - f.score)}</span>
+      <h3>Good</h3><p>${esc(f.what_went_well)}</p>
+      <h3>Fix</h3><p>${esc(f.correction)}</p>
+      <h3>Say it like this</h3><pre class="out">${esc(f.better_answer)}</pre>
+      <button class="small ghost" type="button" id="hearBetter">🔊 Hear it</button>
+      ${f.next_line ? '<button id="next" type="button">Continue the conversation</button>' : '<button id="again" type="button">New situation</button>'}
+    </div>`;
+    document.getElementById('hearBetter').onclick = () => say(f.better_answer);
+    if (f.next_line) document.getElementById('next').onclick = () => {
+      history.push({ who: scene.who, text: f.next_line });
+      showLine(scene.who, f.next_line, f.next_hint);
+      fb.innerHTML = '';
+    };
+    else document.getElementById('again').onclick = () => document.getElementById('start').click();
+  } catch (e) {
+    if (pushed) history.pop();
+    fb.innerHTML = `<div class="card muted">${esc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function drawVocab() {
+  document.getElementById('vocab').innerHTML = vocab.map((v) => `<li><strong>${esc(v.word)}</strong> <span class="muted">${esc(v.meaning_en)}</span></li>`).join('') || '<li class="muted">Words from your practice appear here</li>';
+}
+drawVocab();
+</script>
+</body>
+</html>
