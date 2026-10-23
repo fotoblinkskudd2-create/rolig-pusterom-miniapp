@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tend Prototype</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #ffffff; --text: #23302a; --muted: #6b766f;
+    --accent: #2f6f5e; --accent-soft: #dcebe5; --amber: #b7791f; --amber-soft: #fbf0dc;
+    --line: #e4e1d9; --red: #b4443c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151a17; --card: #1f2622; --text: #e8ece9; --muted: #9aa59e;
+      --accent: #6cc2a6; --accent-soft: #23392f; --amber: #e0a84a; --amber-soft: #3a2f1c;
+      --line: #2e3631; --red: #e07a72; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text);
+    line-height: 1.45; padding-bottom: 84px; }
+  .wrap { max-width: 460px; margin: 0 auto; padding: 20px 16px; }
+  header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent-soft);
+    display: grid; place-items: center; font-weight: 700; color: var(--accent); }
+  .circle-avatars { margin-left: auto; display: flex; }
+  .circle-avatars span { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg);
+    margin-left: -8px; display: grid; place-items: center; font-size: .7rem; font-weight: 700;
+    background: var(--amber-soft); color: var(--amber); }
+  h1 { font-size: 1.25rem; } h2 { font-size: 1rem; margin-bottom: 8px; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: .85rem;
+    background: transparent; color: var(--text); cursor: pointer; }
+  .chip.done { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .task { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); font-size: .92rem; }
+  .task:first-of-type { border-top: none; }
+  .overdue { color: var(--amber); font-weight: 600; }
+  .flag { background: var(--amber-soft); border-color: var(--amber); }
+  .flag small { display: block; color: var(--muted); margin-top: 6px; }
+  .btn { width: 100%; border: none; border-radius: 14px; padding: 14px; font-size: 1rem; font-weight: 600;
+    background: var(--accent); color: #fff; cursor: pointer; margin-top: 8px; }
+  .btn.secondary { background: var(--accent-soft); color: var(--accent); }
+  .tiles { display: grid; gap: 10px; }
+  .tile { display: flex; gap: 12px; align-items: center; padding: 18px; border-radius: 16px; border: 1px solid var(--line);
+    background: var(--card); font-size: 1rem; cursor: pointer; color: var(--text); text-align: left; }
+  .tile span { font-size: 1.6rem; }
+  .item { display: grid; grid-template-columns: 1fr auto; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .item q { display: block; font-size: .8rem; color: var(--muted); margin-top: 4px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .dot.g { background: var(--accent); } .dot.a { background: var(--amber); }
+  .actions button { border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 10px;
+    width: 36px; height: 36px; margin-left: 4px; cursor: pointer; font-size: 1rem; }
+  .actions button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .actions button.off { background: var(--red); color: #fff; border-color: var(--red); }
+  .doc { height: 120px; border-radius: 12px; background: repeating-linear-gradient(var(--line) 0 2px, transparent 2px 14px);
+    border: 1px solid var(--line); margin-bottom: 8px; position: relative; }
+  .doc::after { content: "Discharge summary · 3 pages"; position: absolute; bottom: 8px; left: 10px;
+    font-size: .75rem; color: var(--muted); background: var(--card); padding: 2px 6px; border-radius: 6px; }
+  .bubble { padding: 12px 14px; border-radius: 14px; margin: 8px 0; font-size: .92rem; }
+  .bubble.me { background: var(--accent-soft); margin-left: 40px; }
+  .bubble.ai { background: var(--card); border: 1px solid var(--line); margin-right: 20px; }
+  .bubble sup { color: var(--accent); font-weight: 700; }
+  .sources { font-size: .78rem; color: var(--muted); margin-top: 8px; }
+  input[type=text] { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); font-size: 1rem; }
+  .stat { display: flex; justify-content: space-between; padding: 6px 0; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .bar > div { height: 100%; background: var(--accent); }
+  nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line);
+    display: flex; justify-content: space-around; padding: 8px 0 14px; }
+  nav button { background: none; border: none; color: var(--muted); font-size: .72rem; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; }
+  nav button b { font-size: 1.2rem; font-weight: 400; }
+  nav button.active { color: var(--accent); font-weight: 600; }
+  nav button.capture b { background: var(--accent); color: #fff; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; margin-top: -18px; font-size: 1.5rem; }
+  .page { display: none; } .page.active { display: block; }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--text); color: var(--bg);
+    padding: 10px 16px; border-radius: 12px; font-size: .9rem; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .proto { font-size: .72rem; text-align: center; color: var(--muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="avatar">R</div>
+    <div><h1>Mom · Ruth</h1><div class="muted">Care circle of 3</div></div>
+    <div class="circle-avatars"><span>D</span><span>M</span><span>J</span></div>
+  </header>
+
+  <!-- TODAY -->
+  <section class="page active" id="today">
+    <div class="card">
+      <h2>Next up</h2>
+      <div>Cardiology follow-up · Dr. Patel</div>
+      <div class="muted">Thu 10:30 · Marcus is driving</div>
+    </div>
+    <div class="card">
+      <h2>Meds today</h2>
+      <div class="chips" id="meds"></div>
+    </div>
+    <div class="card" id="tasks">
+      <h2>Open tasks</h2>
+    </div>
+    <div class="card flag" id="flag" hidden>
+      <b>Worth asking Dr. Patel</b>
+      <div>Lisinopril (new) and Losartan (existing) are both blood-pressure medicines that act on the same system. Confirm whether both should continue.</div>
+      <small>Source: interaction database · not medical advice</small>
+      <button class="btn secondary" onclick="addTask('Ask Dr. Patel: Lisinopril + Losartan?','Diana','Thu'); this.parentElement.hidden=true">Add as question for Thursday</button>
+    </div>
+    <p class="proto">Prototype: all data is sample data, nothing leaves this page.</p>
+  </section>
+
+  <!-- CAPTURE -->
+  <section class="page" id="capture">
+    <h2>Capture</h2>
+    <p class="muted" style="margin-bottom:12px">Tend reads it, you confirm it. Nothing is saved until you approve.</p>
+    <div class="tiles">
+      <button class="tile" onclick="startScan()"><span>📷</span><div><b>Scan a document</b><div class="muted">Discharge papers, pill bottles, letters</div></div></button>
+      <button class="tile" onclick="toast('Visit recording asks for consent first. Not in this prototype.')"><span>🎙</span><div><b>Record a visit</b><div class="muted">Summary + follow-up tasks</div></div></button>
+      <button class="tile" onclick="toast('Quick note saved to care log')"><span>✍️</span><div><b>Quick note</b><div class="muted">"Mom seemed dizzy this morning"</div></div></button>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="page" id="review">
+    <h2>Review what Tend found</h2>
+    <div class="doc"></div>
+    <p class="muted" id="reviewStatus">Reading 3 pages…</p>
+    <div class="card" id="items" hidden></div>
+    <button class="btn" id="acceptBtn" hidden onclick="acceptAll()">Add to Ruth's care plan</button>
+  </section>
+
+  <!-- ASK -->
+  <section class="page" id="ask">
+    <h2>Ask Tend</h2>
+    <div class="chips" style="margin-bottom:8px">
+      <button class="chip" onclick="ask('Are we eligible for respite care?')">Are we eligible for respite care?</button>
+      <button class="chip" onclick="ask('Draft a message to my brother about this week')">Draft a message to my brother</button>
+    </div>
+    <div id="chat"></div>
+    <input type="text" id="q" placeholder="Ask about a letter, benefit or plan…" onkeydown="if(event.key==='Enter'&&this.value){ask(this.value);this.value=''}">
+  </section>
+
+  <!-- DIGEST -->
+  <section class="page" id="digest">
+    <h2>This week for Ruth</h2>
+    <div class="card">
+      <div class="stat"><span>Meds taken</span><b id="adh">—</b></div>
+      <div class="bar"><div id="adhBar" style="width:0"></div></div>
+      <div class="stat" style="margin-top:10px"><span>Appointments</span><b>2 done · 1 upcoming</b></div>
+      <div class="stat"><span>Open decisions</span><b>1</b></div>
+    </div>
+    <div class="card">
+      <h2>Thank-yous</h2>
+      <div class="muted">Marcus drove to 2 appointments. Jen picked up the refill. Diana sorted the discharge papers.</div>
+    </div>
+    <div class="card">
+      <h2>Next week's priorities</h2>
+      <ol style="padding-left:18px" class="muted">
+        <li>Ask Dr. Patel about the two blood-pressure meds</li>
+        <li>Lisinopril refill due Wed: Jen?</li>
+        <li>Medicare open enrollment closes Dec 7</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<nav>
+  <button class="active" data-p="today"><b>⌂</b>Today</button>
+  <button data-p="ask"><b>?</b>Ask</button>
+  <button class="capture" data-p="capture"><b>＋</b>Capture</button>
+  <button data-p="digest"><b>☰</b>Digest</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+  const meds = [
+    { name: 'Losartan 50mg', time: '08:00', done: true },
+    { name: 'Metformin 500mg', time: '13:00', done: false },
+    { name: 'Atorvastatin 20mg', time: '20:00', done: false }
+  ];
+  const tasks = [
+    { title: 'Pick up pharmacy refill', who: 'Jen', due: 'Today', overdue: false },
+    { title: 'Call home-care agency', who: 'Diana', due: 'Yesterday', overdue: true }
+  ];
+  // Canned "extraction" result standing in for the LLM + RxNorm pipeline (Part 3 §4.1)
+  const extracted = [
+    { type: '💊', value: 'Lisinopril 10mg, once daily', quote: 'START lisinopril 10 mg PO daily', conf: 'a', med: true },
+    { type: '💊', value: 'Furosemide 20mg: STOP', quote: 'DISCONTINUE furosemide', conf: 'a', med: true },
+    { type: '📅', value: 'Cardiology follow-up, within 7 days', quote: 'f/u cardiology 1 week', conf: 'g' },
+    { type: '📋', value: 'Weigh daily; call if +2 lb in a day', quote: 'Daily weights. Call if gain >2 lb/day', conf: 'g' },
+    { type: '✅', value: 'Task: buy a bathroom scale', quote: '(derived from instruction above)', conf: 'g' }
+  ];
+
+  function renderMeds() {
+    document.getElementById('meds').innerHTML = meds.map((m, i) =>
+      `<button class="chip ${m.done ? 'done' : ''}" onclick="toggleMed(${i})">${m.done ? '✓' : '○'} ${m.time} · ${m.name}</button>`).join('');
+    const pct = Math.round(100 * (17 + meds.filter(m => m.done).length) / 21);
+    document.getElementById('adh').textContent = pct + '%';
+    document.getElementById('adhBar').style.width = pct + '%';
+  }
+  function toggleMed(i) { meds[i].done = !meds[i].done; renderMeds(); }
+
+  function renderTasks() {
+    document.getElementById('tasks').innerHTML = '<h2>Open tasks</h2>' + tasks.map(t =>
+      `<div class="task"><span>${t.title}</span><span class="${t.overdue ? 'overdue' : 'muted'}">${t.who} · ${t.due}</span></div>`).join('');
+  }
+  function addTask(title, who, due) { tasks.push({ title, who, due, overdue: false }); renderTasks(); toast('Task added'); }
+
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id));
+    document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.p === id));
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.p));
+
+  function startScan() {
+    show('review');
+    const status = document.getElementById('reviewStatus');
+    const box = document.getElementById('items');
+    status.textContent = 'Reading 3 pages…';
+    box.hidden = true; document.getElementById('acceptBtn').hidden = true;
+    setTimeout(() => {
+      status.innerHTML = '<span class="dot a"></span>Medicines need your check one by one. <span class="dot g"></span>Others can be accepted together.';
+      box.innerHTML = extracted.map((it, i) => `
+        <div class="item" id="it${i}">
+          <div><span class="dot ${it.conf}"></span>${it.type} ${it.value}<q>“${it.quote}”</q></div>
+          <div class="actions">
+            <button title="Accept" onclick="review(${i}, true)">✓</button>
+            <button title="Reject" onclick="review(${i}, false)">✕</button>
+          </div>
+        </div>`).join('');
+      extracted.forEach((it, i) => { it.status = it.med ? null : true; mark(i); });
+      box.hidden = false; updateAccept();
+    }, 1400);
+  }
+  function mark(i) {
+    const [ok, no] = document.querySelectorAll(`#it${i} .actions button`);
+    ok.classList.toggle('on', extracted[i].status === true);
+    no.classList.toggle('off', extracted[i].status === false);
+  }
+  function review(i, ok) { extracted[i].status = ok; mark(i); updateAccept(); }
+  function updateAccept() {
+    const btn = document.getElementById('acceptBtn');
+    const pending = extracted.filter(it => it.status == null).length;
+    btn.hidden = false;
+    btn.disabled = pending > 0;
+    btn.style.opacity = pending ? .5 : 1;
+    btn.textContent = pending ? `Check ${pending} medicine${pending > 1 ? 's' : ''} first` : "Add to Ruth's care plan";
+  }
+  function acceptAll() {
+    const accepted = extracted.filter(it => it.status);
+    if (accepted.some(it => it.value.startsWith('Lisinopril'))) {
+      meds.push({ name: 'Lisinopril 10mg', time: '08:00', done: false });
+      document.getElementById('flag').hidden = false;
+    }
+    if (accepted.some(it => it.value.startsWith('Task'))) addTask('Buy a bathroom scale', 'Marcus', 'Fri');
+    renderMeds(); show('today'); toast(`${accepted.length} items added to the care plan`);
+  }
+
+  const answers = {
+    'Are we eligible for respite care?': `Possibly. If Ruth has a dementia diagnosis and traditional Medicare, a GUIDE-model program near you can cover up to $2,500/year of respite<sup>1</sup>. Your state's Medicaid HCBS waiver may also cover respite if she meets income and care-need criteria<sup>2</sup>. I can't confirm eligibility. A program coordinator can.
+      <div class="sources">Sources: [1] CMS GUIDE Model overview · [2] State HCBS waiver page · Talk to a human →</div>`,
+    'Draft a message to my brother about this week': `“Hi Marcus, thanks for driving Mom on Tuesday. Two things this week: Dr. Patel on Thursday at 10:30 (can you still take her?), and we need to ask about her two blood-pressure meds. I've put the question in Tend. Jen has the refill. Love, D”
+      <div class="sources">Drafted from this week's care log. Edit before sending.</div>`
+  };
+  function ask(q) {
+    const chat = document.getElementById('chat');
+    chat.insertAdjacentHTML('beforeend', `<div class="bubble me">${q.replace(/</g, '&lt;')}</div>`);
+    const a = answers[q] || `I don't have a reliable source for that yet, so I won't guess.
+      <div class="sources">Try rephrasing, or talk to a human care guide →</div>`;
+    setTimeout(() => chat.insertAdjacentHTML('beforeend', `<div class="bubble ai">${a}</div>`), 600);
+  }
+
+  let tt;
+  function toast(msg) {
+    const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  renderMeds(); renderTasks();
+</script>
+</body>
+</html>
