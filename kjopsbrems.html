@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kjøpsbrems</title>
+<style>
+  :root { --bg:#f5f7f4; --card:#ffffff; --text:#3a4a3f; --muted:#7a8a7f; --accent:#a8c5b0; --soft-green:#e0ebe3; --soft-beige:#f0e9df; --warn:#c98a6b; }
+  body { font-family:system-ui; background:var(--bg); color:var(--text); margin:0 auto; padding:20px; max-width:480px; }
+  h1 { font-size:1.4rem; margin-bottom:8px; }
+  p { color:var(--muted); font-size:0.9rem; }
+  label { display:block; font-size:0.85rem; margin-top:12px; }
+  input { width:100%; background:var(--card); border:1px solid var(--soft-green); border-radius:12px; padding:12px; color:var(--text); margin-top:4px; box-sizing:border-box; font-size:1rem; }
+  button { width:100%; background:var(--accent); color:var(--text); border:none; border-radius:12px; padding:14px; font-weight:600; cursor:pointer; margin-top:12px; font-size:1rem; }
+  button.ghost { background:transparent; border:1px solid var(--accent); }
+  button:disabled { opacity:0.4; cursor:default; }
+  .card { background:var(--card); border-radius:16px; padding:16px; margin-top:16px; }
+  .big { font-size:2.4rem; font-weight:700; text-align:center; margin:8px 0; }
+  .row { display:flex; gap:8px; }
+  .row button { flex:1; }
+  .summary { background:var(--soft-beige); border-radius:16px; padding:16px; text-align:center; margin-top:16px; }
+  .log div { border-top:1px solid var(--soft-green); padding:8px 0; font-size:0.85rem; }
+  .hidden { display:none; }
+  a.back { color:var(--muted); font-size:0.82rem; display:inline-block; margin-bottom:16px; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Kjøpsbrems</h1>
+  <p>Før du trykker «Del opp» eller «Kjøp nå»: ti minutter. Ingen forbud. Bare et mellomrom. Alt blir på denne enheten.</p>
+
+  <div id="form">
+    <label>Hva vil du kjøpe?<input id="item" placeholder="f.eks. Lego-sett"></label>
+    <label>Pris (kr)<input id="price" type="number" inputmode="decimal" min="0"></label>
+    <label>Antall avdrag (1 hvis du betaler alt nå)<input id="parts" type="number" inputmode="numeric" min="1" value="1"></label>
+    <label>Gebyr per avdrag (kr, se vilkårene)<input id="fee" type="number" inputmode="decimal" min="0" value="0"></label>
+    <button onclick="start()">Start brems</button>
+  </div>
+
+  <div id="wait" class="card hidden">
+    <p id="what"></p>
+    <div class="big" id="clock">10:00</div>
+    <p id="total"></p>
+    <p>Pust ut lenger enn du puster inn. Hvem i deg vil ha dette, og hva trenger den egentlig nå?</p>
+    <div class="row">
+      <button class="ghost" id="buyBtn" disabled onclick="decide('kjøpt')">Kjøp likevel</button>
+      <button onclick="decide('sluppet')">Slipp det</button>
+    </div>
+  </div>
+
+  <div class="summary" id="saved">Sluppet så langt: 0 kr</div>
+  <div class="card log" id="log"></div>
+  <button class="ghost" onclick="exportLog()">Ta loggen med deg</button>
+
+<script>
+const WAIT_SECONDS = 600;
+let current = null;
+let timer = null;
+
+function load() {
+  try { return JSON.parse(localStorage.getItem('brakes') || '[]'); } catch (e) { return []; }
+}
+
+function save(list) {
+  try { localStorage.setItem('brakes', JSON.stringify(list)); } catch (e) {}
+}
+
+function kr(n) {
+  return Math.round(n).toLocaleString('no-NO') + ' kr';
+}
+
+function start() {
+  const price = parseFloat(document.getElementById('price').value);
+  if (!(price > 0)) {
+    document.getElementById('price').focus();
+    return;
+  }
+  const parts = Math.max(1, parseInt(document.getElementById('parts').value, 10) || 1);
+  const fee = Math.max(0, parseFloat(document.getElementById('fee').value) || 0);
+  const item = document.getElementById('item').value.trim() || 'ukjent ting';
+  current = { item, price, total: price + parts * fee, startedAt: Date.now() };
+  document.getElementById('what').textContent = item;
+  document.getElementById('total').textContent = parts > 1
+    ? `Totalt ${kr(current.total)} over ${parts} avdrag (${kr(parts * fee)} i gebyr).`
+    : `Totalt ${kr(current.total)}.`;
+  document.getElementById('form').classList.add('hidden');
+  document.getElementById('wait').classList.remove('hidden');
+  document.getElementById('buyBtn').disabled = true;
+  tick();
+  timer = setInterval(tick, 1000);
+}
+
+function tick() {
+  const left = Math.max(0, WAIT_SECONDS - Math.floor((Date.now() - current.startedAt) / 1000));
+  const m = Math.floor(left / 60), s = left % 60;
+  document.getElementById('clock').textContent = m + ':' + String(s).padStart(2, '0');
+  if (left === 0) {
+    clearInterval(timer);
+    document.getElementById('buyBtn').disabled = false;
+  }
+}
+
+function decide(outcome) {
+  clearInterval(timer);
+  const list = load();
+  list.unshift({ date: new Date().toISOString(), item: current.item, total: current.total, outcome });
+  save(list);
+  current = null;
+  document.getElementById('wait').classList.add('hidden');
+  document.getElementById('form').classList.remove('hidden');
+  ['item', 'price'].forEach(id => document.getElementById(id).value = '');
+  render();
+}
+
+function render() {
+  const list = load();
+  const released = list.filter(e => e.outcome === 'sluppet').reduce((sum, e) => sum + e.total, 0);
+  document.getElementById('saved').textContent = `Sluppet så langt: ${kr(released)}`;
+  const log = document.getElementById('log');
+  log.innerHTML = '';
+  if (list.length === 0) {
+    log.innerHTML = '<p>Ingen bremser ennå. Det er greit.</p>';
+    return;
+  }
+  list.slice(0, 20).forEach(e => {
+    const row = document.createElement('div');
+    const d = new Date(e.date).toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+    row.textContent = `${d} · ${e.item} · ${kr(e.total)} · ${e.outcome}`;
+    log.appendChild(row);
+  });
+}
+
+function exportLog() {
+  const lines = load().map(e => `${e.date}\t${e.item}\t${Math.round(e.total)}\t${e.outcome}`);
+  const blob = new Blob(['dato\tting\tkr\tutfall\n' + lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kjopsbrems-logg.txt';
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>
