@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIMI 100</title>
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --card: #161a18;
+    --line: #262c29;
+    --text: #e6ece8;
+    --muted: #8a978f;
+    --accent: #a8c5b0;
+    --done: #3c5a46;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  header {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 16px 10px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.3rem; font-weight: 650; letter-spacing: 0.02em; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin: 2px 0 10px; }
+  input[type=search] {
+    width: 100%; font-size: 16px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; font: inherit; font-size: 0.8rem;
+    background: var(--card); color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 11px; cursor: pointer;
+  }
+  .chip.on { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  main { padding: 12px 16px; }
+  .count { color: var(--muted); font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between; gap: 8px; }
+  .count button { font: inherit; background: none; border: none; color: var(--accent); cursor: pointer; }
+  .box {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; margin-bottom: 12px; overflow: hidden;
+  }
+  .box.copied { border-color: var(--done); }
+  .head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 0 14px; }
+  .num { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+  .title { flex: 1; font-weight: 600; font-size: 0.98rem; }
+  .grp { color: var(--muted); font-size: 0.72rem; padding: 0 14px; margin-top: 2px; }
+  pre {
+    white-space: pre-wrap; word-wrap: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.82rem; color: #cbd5ce;
+    padding: 10px 14px 14px;
+  }
+  .copy {
+    flex: none; font: inherit; font-size: 0.85rem; font-weight: 600;
+    min-width: 92px; min-height: 40px;
+    background: var(--accent); color: var(--bg);
+    border: none; border-radius: 10px; padding: 8px 12px; cursor: pointer;
+  }
+  .box.copied .copy { background: var(--done); color: var(--text); }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  footer { color: var(--muted); font-size: 0.78rem; text-align: center; padding: 10px 16px; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>KIMI 100</h1>
+  <div class="sub">100 byggeoppdrag for Kimi K3.1 Pro. Én knapp per boks. Alt blir på denne enheten.</div>
+  <input type="search" id="q" placeholder="Søk: CAD, timer, bevis, 42 …" autocomplete="off">
+  <div class="chips" id="chips"></div>
+</div></header>
+<main class="wrap">
+  <div class="count"><span id="count"></span><button id="reset" type="button">Nullstill kopiert-merker</button></div>
+  <div id="list"></div>
+</main>
+<footer>Kilde: KIMI-100.md · regenerer med <code>python3 build.py</code></footer>
+<script>
+const ITEMS = /*__DATA__*/[];
+const KEY = 'kimi100-copied';
+let copied = {};
+try { copied = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { copied = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(copied)); } catch (e) {} }
+
+let group = 'Alle';
+const groups = ['Alle', ...new Set(ITEMS.map(i => i.group))];
+const chips = document.getElementById('chips');
+groups.forEach(g => {
+  const b = document.createElement('button');
+  b.className = 'chip' + (g === group ? ' on' : '');
+  b.type = 'button';
+  b.textContent = g;
+  b.onclick = () => { group = g; [...chips.children].forEach(c => c.classList.toggle('on', c === b)); render(); };
+  chips.appendChild(b);
+});
+
+function fold(s) { return s.toLowerCase(); }
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove();
+  return ok;
+}
+
+function render() {
+  const q = fold(document.getElementById('q').value.trim());
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  const shown = ITEMS.filter(i =>
+    (group === 'Alle' || i.group === group) &&
+    (!q || i.id === q.padStart(2, '0') || fold(i.title + ' ' + i.body).includes(q)));
+  shown.forEach(i => {
+    const box = document.createElement('article');
+    box.className = 'box' + (copied[i.id] ? ' copied' : '');
+    const head = document.createElement('div'); head.className = 'head';
+    const num = document.createElement('span'); num.className = 'num'; num.textContent = i.id;
+    const title = document.createElement('span'); title.className = 'title'; title.textContent = i.title;
+    const btn = document.createElement('button'); btn.className = 'copy'; btn.type = 'button';
+    btn.textContent = copied[i.id] ? 'Kopiert ✓' : 'Kopier';
+    btn.onclick = async () => {
+      const ok = await copyText(i.body);
+      if (ok) { copied[i.id] = 1; save(); box.classList.add('copied'); btn.textContent = 'Kopiert ✓'; updateCount(shown); }
+      else { btn.textContent = 'Marker selv'; }
+    };
+    head.append(num, title, btn);
+    const grp = document.createElement('div'); grp.className = 'grp'; grp.textContent = i.group;
+    const pre = document.createElement('pre'); pre.textContent = i.body;
+    box.append(head, grp, pre);
+    list.appendChild(box);
+  });
+  if (!shown.length) list.innerHTML = '<div class="empty">Ingen oppdrag matcher.</div>';
+  updateCount(shown);
+}
+
+function updateCount(shown) {
+  const done = ITEMS.filter(i => copied[i.id]).length;
+  document.getElementById('count').textContent = `${shown.length} vist · ${done}/100 kopiert`;
+}
+
+document.getElementById('q').addEventListener('input', render);
+document.getElementById('reset').onclick = () => { copied = {}; save(); render(); };
+render();
+</script>
+</body>
+</html>
