@@ -1,0 +1,32 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bestilling</title><link rel="stylesheet" href="/felles/stil.css"><style>.tider button{margin:3px}</style></head><body>
+<header><h1>Bestilling med kapasitetssperre</h1><span class="demo">Lokal demo · ingen betaling · ingen kalenderinvitasjoner</span></header>
+<main><div class="kort rad"><label>Tjeneste<select id="tj"></select></label><label>Dag<input id="dag" type="date" value="2026-10-27"></label><label>Kunde<input id="kunde" value="Fiktiv kunde"></label></div>
+<div class="kort"><h3>Ledige starttider</h3><div id="tider" class="tider"></div></div><div class="kort" id="hold"></div>
+<div class="kort wrap"><div class="rad"><h3 style="margin:0">Bestillinger valgt dag</h3><a href="/api/eksport.csv">Eksporter CSV</a></div><table id="liste"></table></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const meta = await api("GET", "/api/tjenester");
+Object.entries(meta.tjenester).forEach(([id, t]) => $("#tj").append(h("option", { value: id }, `${t.navn} (${t.blokker * 30} min, ${t.ressurser.map(r => meta.ressurser[r]).join(" + ")})`)));
+let aktiv = null;
+async function tider() {
+  const t = await api("GET", `/api/ledige?tjeneste=${$("#tj").value}&dag=${$("#dag").value}`);
+  tom($("#tider"), t.length ? t.map(s => h("button", { class: "sekundaer", "data-tid": s.slice(11), onclick: () => reserver(s) }, s.slice(11))) : h("p", { class: "adv", id: "ingen" }, "Ingen ledige tider (fullbooket eller stengt)."));
+}
+async function reserver(s) {
+  try { aktiv = await api("POST", "/api/reservasjoner", { tjeneste: $("#tj").value, start: s, kunde: $("#kunde").value }); } catch (e) { alert(e.message); }
+  hold(); tider(); liste();
+}
+function hold() {
+  tom($("#hold"), aktiv ? [h("p", {}, `Midlertidig reservert ${aktiv.start}–${aktiv.slutt.slice(11)}. Holdes til ${aktiv.utloper}.`),
+    h("button", { id: "bekreft", onclick: async () => { try { await api("POST", `/api/reservasjoner/${aktiv.id}/bekreft`); aktiv = null; } catch (e) { alert(e.message); } hold(); liste(); } }, "Bekreft lokalt")] : h("p", { class: "svak" }, "Velg en tid for å reservere."));
+}
+async function liste() {
+  const b = await api("GET", "/api/bestillinger");
+  tom($("#liste"), h("tr", {}, ["Start", "Slutt", "Tjeneste", "Kunde", "Status", ""].map(x => h("th", {}, x))), b.filter(x => x.start.startsWith($("#dag").value)).map(x => h("tr", { "data-b": x.id }, h("td", {}, x.start), h("td", {}, x.slutt.slice(11)), h("td", {}, meta.tjenester[x.tjeneste].navn), h("td", {}, x.kunde),
+    h("td", { class: { bekreftet: "ok", reservert: "adv", avbestilt: "svak", "utløpt": "svak" }[x.status] }, x.status),
+    h("td", {}, ["reservert", "bekreftet"].includes(x.status) && h("button", { class: "sekundaer", onclick: async () => { try { await api("POST", `/api/reservasjoner/${x.id}/avbestill`); } catch (e) { alert(e.message); } tider(); liste(); } }, "Avbestill")))));
+}
+$("#tj").onchange = tider; $("#dag").onchange = () => { tider(); liste(); };
+tider(); hold(); liste();
+</script></body></html>

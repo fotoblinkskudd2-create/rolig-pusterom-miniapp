@@ -1,0 +1,26 @@
+# Kontroll: 018 Bestilling med kapasitetssperre
+Kjørt: 2026-10-24 01:43:58
+Resultat: 22 bestått, 0 feilet
+
+[BESTÅTT] tre tjenester og to ressurser  — faktisk=(3, 2) forventet=(3, 2)
+[BESTÅTT] fullbooket uke: ingen ledig befaring 3.11  — faktisk=[] forventet=[]
+[BESTÅTT] fullbooket uke: service krever montør → heller ikke ledig  — faktisk=[] forventet=[]
+[BESTÅTT] stengt verksted fredag 30.10: ingen service  — faktisk=[] forventet=[]
+[BESTÅTT] stengt verksted hindrer ikke rådgivning samme dag
+[BESTÅTT] reservasjon i stengt periode avvises  — Avvist: Verksted 1 er stengt i perioden (vedlikehold av løfteplattform)
+[BESTÅTT] utenfor åpningstid avvises  — Avvist: utenfor åpningstid (man–fre 08–16)
+[BESTÅTT] samme tid kan ikke reserveres mens holdet varer  — Avvist: tidspunktet er ikke ledig
+[BESTÅTT] utløpt reservasjon frigjøres (ny kunde får 09:30 etter 10 min)
+[BESTÅTT] utløpt reservasjon har status utløpt  — faktisk='utløpt' forventet='utløpt'
+[BESTÅTT] utløpt reservasjon kan ikke bekreftes  — Avvist: kan ikke bekrefte (status utløpt)
+[BESTÅTT] avbestilling frigjør to blokker  — faktisk=2 forventet=2
+[BESTÅTT] …og gir to nye ledige rådgivningstider  — faktisk=2 forventet=2
+[BESTÅTT] ny avbestilling av samme bestilling avvises  — Avvist: kan ikke avbestille (status avbestilt)
+[BESTÅTT] kapasiteten er ikke returnert to ganger  — faktisk=2 forventet=2
+[BESTÅTT] ingen låser uten aktiv bestilling  — faktisk=0 forventet=0
+[BESTÅTT] 20 samtidige forsøk på siste ledige blokk: nøyaktig ett lykkes  — faktisk=(1, 19) forventet=(1, 19)
+[BESTÅTT] databasen har én aktiv bestilling på 15:00  — faktisk=1 forventet=1
+[BESTÅTT] ingen dobbel lås på montørens 15:00-blokk  — faktisk=1 forventet=1
+[BESTÅTT] 10 samtidige avbestillinger: én frigjør 2 blokker, ni avvises  — faktisk=[200, 409, 409, 409, 409, 409, 409, 409, 409, 409] forventet=[200, 409, 409, 409, 409, 409, 409, 409, 409, 409]
+[BESTÅTT] frigjorte blokker totalt = 2  — faktisk=2 forventet=2
+[BESTÅTT] eksport inneholder avbestilt bestilling

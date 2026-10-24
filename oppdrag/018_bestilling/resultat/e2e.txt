@@ -1,0 +1,9 @@
+# Nettleserkontroll: 018 Bestilling
+Kjørt: 2026-10-24T01:44:44.949Z
+Resultat: 5 bestått, 0 feilet
+
+[BESTÅTT] reservasjon fjerner overlappende starttider (08:30, 09:00, 09:30)
+[BESTÅTT] lokal bekreftelse vises
+[BESTÅTT] fullbooket uke viser ingen ledige tider
+[BESTÅTT] avbestilling gir tidene tilbake
+[BESTÅTT] ingen JavaScript-feil i siden

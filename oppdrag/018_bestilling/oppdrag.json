@@ -1,0 +1,1 @@
+{"nr": 18, "tittel": "Bestilling med kapasitetssperre", "kontroll": ["python3 kontroll.py", "node e2e.mjs"]}
