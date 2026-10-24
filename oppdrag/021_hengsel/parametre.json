@@ -1,0 +1,14 @@
+{
+  "_merknad": "Forsøksmål (ikke verifisert): bladlengde 40 mm og akseldiameter 4 mm. Styrke og levetid er uverifisert.",
+  "bladlengde": 40.0,
+  "bladbredde": 25.0,
+  "bladtykkelse": 2.5,
+  "akseldiameter": 4.0,
+  "klaring": 0.3,
+  "veggtykkelse_knoke": 1.6,
+  "antall_knoker": 5,
+  "knokegap": 0.4,
+  "stoppvinkel": 120.0,
+  "akselhode_diameter": 7.0,
+  "akselhode_lengde": 2.0
+}

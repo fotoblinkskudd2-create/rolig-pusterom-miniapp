@@ -1,0 +1,41 @@
+# Kontroll: 021 Parametrisk hengsel
+Kjørt: 2026-10-24 01:56:09
+Resultat: 37 bestått, 0 feilet
+
+[BESTÅTT] 3 mm blad_a: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 3090.548163957298, 'ok': True}
+[BESTÅTT] 3 mm blad_a: STL vanntett, STEP åpnes igjen med samme volum  — STL 3090.3 / STEP 3090.5 mm³
+[BESTÅTT] 3 mm blad_b_flat: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 2636.9589956038585, 'ok': True}
+[BESTÅTT] 3 mm blad_b_flat: STL vanntett, STEP åpnes igjen med samme volum  — STL 2636.9 / STEP 2637.0 mm³
+[BESTÅTT] 3 mm aksling: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 360.6548366321082, 'ok': True}
+[BESTÅTT] 3 mm aksling: STL vanntett, STEP åpnes igjen med samme volum  — STL 360.5 / STEP 360.7 mm³
+[BESTÅTT] 3 mm: ingen kollisjon A–B og aksling–B for θ = 0…120° (5°-steg)  — 25
+[BESTÅTT] 3 mm: stoppet griper når θ passerer stoppvinkelen  — [(121.0, 3.6553), (125.0, 18.2765)]
+[BESTÅTT] 3 mm: akslingen kolliderer ikke med blad A  — faktisk=0.0 forventet=0.0
+[BESTÅTT] 3 mm: knokeradius følger akseldiameter (d/2 + klaring + vegg)  — faktisk=3.4000000000000004 forventet=3.4000000000000004
+[BESTÅTT] 3 mm: utskiftbar aksling er egen fil
+[BESTÅTT] 4 mm blad_a: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 3206.8883533326593, 'ok': True}
+[BESTÅTT] 4 mm blad_a: STL vanntett, STEP åpnes igjen med samme volum  — STL 3206.6 / STEP 3206.9 mm³
+[BESTÅTT] 4 mm blad_b_flat: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 2691.045945240383, 'ok': True}
+[BESTÅTT] 4 mm blad_b_flat: STL vanntett, STEP åpnes igjen med samme volum  — STL 2691.0 / STEP 2691.0 mm³
+[BESTÅTT] 4 mm aksling: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 585.7892201699867, 'ok': True}
+[BESTÅTT] 4 mm aksling: STL vanntett, STEP åpnes igjen med samme volum  — STL 585.5 / STEP 585.8 mm³
+[BESTÅTT] 4 mm: ingen kollisjon A–B og aksling–B for θ = 0…120° (5°-steg)  — 25
+[BESTÅTT] 4 mm: stoppet griper når θ passerer stoppvinkelen  — [(121.0, 4.0172), (125.0, 20.0861)]
+[BESTÅTT] 4 mm: akslingen kolliderer ikke med blad A  — faktisk=0.0 forventet=0.0
+[BESTÅTT] 4 mm: knokeradius følger akseldiameter (d/2 + klaring + vegg)  — faktisk=3.9 forventet=3.9
+[BESTÅTT] 4 mm: utskiftbar aksling er egen fil
+[BESTÅTT] 5 mm blad_a: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 3324.39097661805, 'ok': True}
+[BESTÅTT] 5 mm blad_a: STL vanntett, STEP åpnes igjen med samme volum  — STL 3324.1 / STEP 3324.4 mm³
+[BESTÅTT] 5 mm blad_b_flat: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 2746.877992297824, 'ok': True}
+[BESTÅTT] 5 mm blad_b_flat: STL vanntett, STEP åpnes igjen med samme volum  — STL 2746.8 / STEP 2746.9 mm³
+[BESTÅTT] 5 mm aksling: ett gyldig, lukket legeme  — {'gyldig': True, 'legemer': 1, 'lukket': True, 'volum': 875.2477132901163, 'ok': True}
+[BESTÅTT] 5 mm aksling: STL vanntett, STEP åpnes igjen med samme volum  — STL 874.9 / STEP 875.2 mm³
+[BESTÅTT] 5 mm: ingen kollisjon A–B og aksling–B for θ = 0…120° (5°-steg)  — 25
+[BESTÅTT] 5 mm: stoppet griper når θ passerer stoppvinkelen  — [(121.0, 4.3791), (125.0, 21.8956)]
+[BESTÅTT] 5 mm: akslingen kolliderer ikke med blad A  — faktisk=0.0 forventet=0.0
+[BESTÅTT] 5 mm: knokeradius følger akseldiameter (d/2 + klaring + vegg)  — faktisk=4.4 forventet=4.4
+[BESTÅTT] 5 mm: utskiftbar aksling er egen fil
+[BESTÅTT] parameterfil: bladlengde 40 mm og aksling 4 mm (forsøksmål)  — faktisk=(40.0, 4.0) forventet=(40.0, 4.0)
+[BESTÅTT] 4 mm: eksplodert.png generert
+[BESTÅTT] 4 mm: bevegelse.gif generert
+[BESTÅTT] 4 mm: sammenstilling_90grader.step generert

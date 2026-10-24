@@ -1,0 +1,248 @@
+{
+ "akseldiameter": 5,
+ "knokeradius": 4.4,
+ "deler": {
+  "blad_a": {
+   "legeme": {
+    "gyldig": true,
+    "legemer": 1,
+    "lukket": true,
+    "volum": 3324.39097661805,
+    "ok": true
+   },
+   "stl": {
+    "vanntett": true,
+    "volum": 3324.062033884053,
+    "trekanter": 3060
+   },
+   "step": {
+    "apnet": true,
+    "volum": 3324.39097661785,
+    "avvik_rel": 6.018811740176163e-14,
+    "ok": true
+   },
+   "mal": {
+    "x": 40.0046,
+    "y": 32.4018,
+    "z": 8.8035,
+    "min": [
+     -0.0023,
+     -25.0,
+     -4.4023
+    ]
+   }
+  },
+  "blad_b_flat": {
+   "legeme": {
+    "gyldig": true,
+    "legemer": 1,
+    "lukket": true,
+    "volum": 2746.877992297824,
+    "ok": true
+   },
+   "stl": {
+    "vanntett": true,
+    "volum": 2746.8051886246612,
+    "trekanter": 2096
+   },
+   "step": {
+    "apnet": true,
+    "volum": 2746.8779922976596,
+    "avvik_rel": 5.992932393884483e-14,
+    "ok": true
+   },
+   "mal": {
+    "x": 40.0029,
+    "y": 29.4008,
+    "z": 8.8022,
+    "min": [
+     -0.0015,
+     -4.4008,
+     -4.4015
+    ]
+   }
+  },
+  "aksling": {
+   "legeme": {
+    "gyldig": true,
+    "legemer": 1,
+    "lukket": true,
+    "volum": 875.2477132901163,
+    "ok": true
+   },
+   "stl": {
+    "vanntett": true,
+    "volum": 874.884998149252,
+    "trekanter": 1004
+   },
+   "step": {
+    "apnet": true,
+    "volum": 875.2477132901097,
+    "avvik_rel": 7.53368045152274e-15,
+    "ok": true
+   },
+   "mal": {
+    "x": 42.8019,
+    "y": 7.0022,
+    "z": 7.0,
+    "min": [
+     -2.0011,
+     -3.5011,
+     -3.5
+    ]
+   }
+  }
+ },
+ "bevegelse": [
+  {
+   "theta": 0,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 5,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 10,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 15,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 20,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 25,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 30,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 35,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 40,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 45,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 50,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 55,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 60,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 65,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 70,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 75,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 80,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 85,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 90,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 95,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 100,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 105,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 110,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 115,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 120,
+   "a_b": 0.0,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 121.0,
+   "a_b": 4.3791,
+   "aksling_b": 0.0
+  },
+  {
+   "theta": 125.0,
+   "a_b": 21.8956,
+   "aksling_b": 0.0
+  }
+ ],
+ "aksling_a": 0.0,
+ "parametre": {
+  "bladlengde": 40.0,
+  "bladbredde": 25.0,
+  "bladtykkelse": 2.5,
+  "akseldiameter": 5,
+  "klaring": 0.3,
+  "veggtykkelse_knoke": 1.6,
+  "antall_knoker": 5,
+  "knokegap": 0.4,
+  "stoppvinkel": 120.0,
+  "akselhode_diameter": 7.0,
+  "akselhode_lengde": 2.0,
+  "R": 4.4
+ }
+}

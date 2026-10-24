@@ -1,0 +1,1 @@
+{"nr": 21, "tittel": "Parametrisk hengsel", "kontroll": ["python3 generer.py && python3 kontroll.py"]}
