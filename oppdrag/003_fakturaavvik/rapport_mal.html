@@ -1,0 +1,14 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Avviksrapport</title>
+<style>body{font-family:system-ui,sans-serif;margin:16px;background:#f6f5f2;color:#1d1d1f}table{border-collapse:collapse;width:100%;font-size:14px;background:#fff}th,td{border-bottom:1px solid #ddd;padding:5px;text-align:left;vertical-align:top}
+.bekreftet_avvik{color:#b3261e;font-weight:600}.mulig_avvik{color:#b26a00;font-weight:600}.uavklart{color:#6a4c93;font-weight:600}.ok,.ok_tilnaermet{color:#2e7d32}button{margin:0 4px 8px 0}</style></head><body>
+<h1>Avviksrapport – fakturalinjer mot ordregrunnlag</h1>
+<p>Kontrollvisning. Ingen endringer er gjort i regnskap eller kildefiler. Klikk status for å filtrere.</p>
+<div id="knapper"></div><table><thead><tr><th>Status</th><th>Kilde</th><th>Faktura</th><th>Leverandør</th><th>Beløp</th><th>Match</th><th>Ordre</th><th>Grunnlag</th></tr></thead><tbody id="t"></tbody></table>
+<script>
+const D = /*DATA*/null; let filter = null;
+function tegn(){ document.getElementById("t").innerHTML = D.filter(r => !filter || r.status === filter).map(r =>
+ `<tr><td class="${r.status}">${r.status}</td><td>${r.kilde_fil} rad ${r.kilde_rad}</td><td>${r.fakturanr}</td><td>${r.leverandor}</td><td>${r.belop}</td><td>${r.matchtype}</td><td>${r.ordrenr ? r.ordrenr + " (ordre.csv rad " + r.ordre_rad + ")" : "–"}</td><td>${r.grunner.join("<br>")}</td></tr>`).join(""); }
+const tell = {}; D.forEach(r => tell[r.status] = (tell[r.status] || 0) + 1);
+document.getElementById("knapper").innerHTML = `<button onclick="filter=null;tegn()">alle (${D.length})</button>` + Object.entries(tell).map(([s, n]) => `<button onclick="filter='${s}';tegn()">${s} (${n})</button>`).join("");
+tegn();
+</script></body></html>

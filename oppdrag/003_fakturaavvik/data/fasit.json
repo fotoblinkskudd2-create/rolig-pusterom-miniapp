@@ -1,0 +1,162 @@
+{
+ "2": {
+  "fakturanr": "F5000",
+  "forventet": "ok"
+ },
+ "3": {
+  "fakturanr": "F5001",
+  "forventet": "ok"
+ },
+ "4": {
+  "fakturanr": "F5002",
+  "forventet": "ok"
+ },
+ "5": {
+  "fakturanr": "F5003",
+  "forventet": "ok"
+ },
+ "6": {
+  "fakturanr": "F5004",
+  "forventet": "ok"
+ },
+ "7": {
+  "fakturanr": "F5005",
+  "forventet": "ok"
+ },
+ "8": {
+  "fakturanr": "F5006",
+  "forventet": "ok_tilnaermet"
+ },
+ "9": {
+  "fakturanr": "F5007",
+  "forventet": "ok"
+ },
+ "10": {
+  "fakturanr": "F5008",
+  "forventet": "ok"
+ },
+ "11": {
+  "fakturanr": "F5009",
+  "forventet": "ok"
+ },
+ "12": {
+  "fakturanr": "F5010",
+  "forventet": "ok"
+ },
+ "13": {
+  "fakturanr": "F5011",
+  "forventet": "ok"
+ },
+ "14": {
+  "fakturanr": "F5012",
+  "forventet": "ok"
+ },
+ "15": {
+  "fakturanr": "F5013",
+  "forventet": "ok"
+ },
+ "16": {
+  "fakturanr": "F5014",
+  "forventet": "ok"
+ },
+ "17": {
+  "fakturanr": "F5015",
+  "forventet": "ok"
+ },
+ "18": {
+  "fakturanr": "F5016",
+  "forventet": "ok"
+ },
+ "19": {
+  "fakturanr": "F5017",
+  "forventet": "ok"
+ },
+ "20": {
+  "fakturanr": "F5018",
+  "forventet": "ok"
+ },
+ "21": {
+  "fakturanr": "F5019",
+  "forventet": "ok"
+ },
+ "22": {
+  "fakturanr": "F5020",
+  "forventet": "ok"
+ },
+ "23": {
+  "fakturanr": "F5021",
+  "forventet": "ok"
+ },
+ "24": {
+  "fakturanr": "F5022",
+  "forventet": "ok"
+ },
+ "25": {
+  "fakturanr": "F5023",
+  "forventet": "ok"
+ },
+ "26": {
+  "fakturanr": "F5024",
+  "forventet": "ok"
+ },
+ "27": {
+  "fakturanr": "F5025",
+  "forventet": "ok"
+ },
+ "28": {
+  "fakturanr": "F5026",
+  "forventet": "ok"
+ },
+ "29": {
+  "fakturanr": "F5027",
+  "forventet": "ok"
+ },
+ "30": {
+  "fakturanr": "F5028",
+  "forventet": "ok"
+ },
+ "31": {
+  "fakturanr": "F5029",
+  "forventet": "ok"
+ },
+ "32": {
+  "fakturanr": "F5030",
+  "forventet": "ok"
+ },
+ "33": {
+  "fakturanr": "F5031",
+  "forventet": "ok"
+ },
+ "34": {
+  "fakturanr": "F5032",
+  "forventet": "ok"
+ },
+ "35": {
+  "fakturanr": "F6001",
+  "forventet": "bekreftet_avvik"
+ },
+ "36": {
+  "fakturanr": "F6002",
+  "forventet": "bekreftet_avvik"
+ },
+ "37": {
+  "fakturanr": "F5010",
+  "forventet": "bekreftet_avvik"
+ },
+ "38": {
+  "fakturanr": "F6004",
+  "forventet": "mulig_avvik"
+ },
+ "39": {
+  "fakturanr": "F6005",
+  "forventet": "bekreftet_avvik"
+ },
+ "40": {
+  "fakturanr": "F7001",
+  "forventet": "uavklart"
+ },
+ "41": {
+  "fakturanr": "F7002",
+  "forventet": "uavklart"
+ }
+}

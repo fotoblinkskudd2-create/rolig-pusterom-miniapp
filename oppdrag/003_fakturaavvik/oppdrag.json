@@ -1,0 +1,1 @@
+{"nr": 3, "tittel": "Fakturaavvik med sporbar avstemming", "kontroll": ["python3 generer_data.py && python3 kontroll.py"]}

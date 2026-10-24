@@ -1,0 +1,22 @@
+# Kontroll: 003 Fakturaavvik
+Kjørt: 2026-10-24 01:04:31
+Resultat: 17 bestått, 0 feilet
+
+[BESTÅTT] 40 fakturalinjer lest  — faktisk=40 forventet=40
+[BESTÅTT] alle 40 linjer samsvarer med fasit  — []
+[BESTÅTT] fem kjente avvik funnet (4 bekreftet + 1 mulig)  — faktisk=(4, 1) forventet=(4, 1)
+[BESTÅTT] to tvetydige tilfeller er uavklart  — faktisk=2 forventet=2
+[BESTÅTT] uavklart med to kandidater navngir begge  — ['flere like kandidater: PO-3001 (rad 38), PO-3002 (rad 39)']
+[BESTÅTT] like beløp (1000,00) hos ulike leverandører er ikke duplikater  — [('F5003', 'Fiktiv Byggvare AS', 'ok'), ('F5004', 'Testrør Engros AS', 'ok'), ('F5017', 'Demo Elektrogross AS', 'ok')]
+[BESTÅTT] duplikat viser hvilken rad det dupliserer  — ['samme leverandør, fakturanr og linje som rad 12 (eksakt duplikat)']
+[BESTÅTT] alle funn har kildefil og radnummer
+[BESTÅTT] sikker match viser ordrefilens radnummer
+[BESTÅTT] tilnærmet match finner riktig ordre  — faktisk='PO-1007' forventet='PO-1007'
+[BESTÅTT] beløp «2 495,00»  — faktisk=2495.0 forventet=2495.0
+[BESTÅTT] beløp «1.234,50»  — faktisk=1234.5 forventet=1234.5
+[BESTÅTT] beløp «1,234.50»  — faktisk=1234.5 forventet=1234.5
+[BESTÅTT] ordreref po1002 / PO-1002 / 1002 normaliseres likt  — faktisk={'1002'} forventet={'1002'}
+[BESTÅTT] dato dd.mm.åååå  — faktisk='2026-09-04' forventet='2026-09-04'
+[BESTÅTT] prisavvik på tilnærmet match blir mulig avvik, ikke bekreftet  — faktisk='mulig_avvik' forventet='mulig_avvik'
+[BESTÅTT] kildefilene er uendret (verktøyet skriver bare til resultat/)
+  · Rapport: resultat/avviksrapport.html og resultat/avviksrapport.csv

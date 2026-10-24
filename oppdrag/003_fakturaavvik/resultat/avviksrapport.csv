@@ -1,0 +1,41 @@
+kilde_fil,kilde_rad,fakturanr,leverandor,leverandor_orgnr,belop,matchtype,ordre_rad,ordrenr,status,grunner
+faktura.csv,2,F5000,Fiktiv Byggvare AS,910000001,4750.0,sikker,2.0,PO-1001,ok,
+faktura.csv,3,F5001,Testrør Engros AS,910000002,2495.0,sikker,3.0,PO-1002,ok,
+faktura.csv,4,F5002,Demo Elektrogross AS,910000003,24690.0,sikker,4.0,PO-1003,ok,
+faktura.csv,5,F5003,Fiktiv Byggvare AS,910000001,1000.0,sikker,5.0,PO-1004,ok,
+faktura.csv,6,F5004,Testrør Engros AS,910000002,1000.0,sikker,6.0,PO-1005,ok,
+faktura.csv,7,F5005,Demo Elektrogross AS,910000003,1600.0,sikker,7.0,PO-1006,ok,
+faktura.csv,8,F5006,Fiktiv Byggvare AS,910000001,22221.0,tilnærmet,8.0,PO-1007,ok_tilnaermet,"ingen ordreref; eneste kandidat med samme leverandør, beløp ±1% og dato innen 30 dager"
+faktura.csv,9,F5007,Testrør Engros AS,910000002,1750.0,sikker,9.0,PO-1008,ok,
+faktura.csv,10,F5008,Demo Elektrogross AS,910000003,31984.0,sikker,10.0,PO-1009,ok,
+faktura.csv,11,F5009,Fiktiv Byggvare AS,910000001,8982.0,sikker,11.0,PO-1010,ok,
+faktura.csv,12,F5010,Testrør Engros AS,910000002,1168.7,sikker,12.0,PO-1011,ok,
+faktura.csv,13,F5011,Demo Elektrogross AS,910000003,9995.0,sikker,13.0,PO-1012,ok,
+faktura.csv,14,F5012,Fiktiv Byggvare AS,910000001,1250.0,sikker,14.0,PO-1013,ok,
+faktura.csv,15,F5013,Testrør Engros AS,910000002,6487.0,sikker,15.0,PO-1014,ok,
+faktura.csv,16,F5014,Demo Elektrogross AS,910000003,1999.0,sikker,16.0,PO-1015,ok,
+faktura.csv,17,F5015,Fiktiv Byggvare AS,910000001,5997.0,sikker,17.0,PO-1016,ok,
+faktura.csv,18,F5016,Testrør Engros AS,910000002,4750.0,sikker,18.0,PO-1017,ok,
+faktura.csv,19,F5017,Demo Elektrogross AS,910000003,1000.0,sikker,19.0,PO-1018,ok,
+faktura.csv,20,F5018,Fiktiv Byggvare AS,910000001,900.0,sikker,20.0,PO-1019,ok,
+faktura.csv,21,F5019,Testrør Engros AS,910000002,1798.0,sikker,21.0,PO-1020,ok,
+faktura.csv,22,F5020,Demo Elektrogross AS,910000003,25987.0,sikker,22.0,PO-1021,ok,
+faktura.csv,23,F5021,Fiktiv Byggvare AS,910000001,27986.0,sikker,23.0,PO-1022,ok,
+faktura.csv,24,F5022,Testrør Engros AS,910000002,1708.1,sikker,24.0,PO-1023,ok,
+faktura.csv,25,F5023,Demo Elektrogross AS,910000003,449.5,sikker,25.0,PO-1024,ok,
+faktura.csv,26,F5024,Fiktiv Byggvare AS,910000001,4938.0,sikker,26.0,PO-1025,ok,
+faktura.csv,27,F5025,Testrør Engros AS,910000002,500.0,sikker,27.0,PO-1026,ok,
+faktura.csv,28,F5026,Demo Elektrogross AS,910000003,629.3,sikker,28.0,PO-1027,ok,
+faktura.csv,29,F5027,Fiktiv Byggvare AS,910000001,17283.0,sikker,29.0,PO-1028,ok,
+faktura.csv,30,F5028,Testrør Engros AS,910000002,19990.0,sikker,30.0,PO-1029,ok,
+faktura.csv,31,F5029,Demo Elektrogross AS,910000003,1528.3,sikker,31.0,PO-1030,ok,
+faktura.csv,32,F5030,Fiktiv Byggvare AS,910000001,1708.1,sikker,32.0,PO-1031,ok,
+faktura.csv,33,F5031,Testrør Engros AS,910000002,22221.0,sikker,33.0,PO-1032,ok,
+faktura.csv,34,F5032,Demo Elektrogross AS,910000003,6986.0,sikker,34.0,PO-1033,ok,
+faktura.csv,35,F6001,Fiktiv Byggvare AS,910000001,1050.0,sikker,35.0,PO-2001,bekreftet_avvik,enhetspris 105.00 ≠ ordre 100.00
+faktura.csv,36,F6002,Testrør Engros AS,910000002,600.0,sikker,36.0,PO-2002,bekreftet_avvik,antall 12 ≠ ordre 10
+faktura.csv,37,F5010,Testrør Engros AS,910000002,1168.7,duplikat,,,bekreftet_avvik,"samme leverandør, fakturanr og linje som rad 12 (eksakt duplikat)"
+faktura.csv,38,F6004,Demo Elektrogross AS,910000003,9995.0,sikker,13.0,PO-1012,mulig_avvik,ordrelinjen er allerede fakturert på rad 13 (mulig dobbel fakturering)
+faktura.csv,39,F6005,Demo Elektrogross AS,910000003,600.0,sikker,37.0,PO-2005,bekreftet_avvik,valuta EUR ≠ ordre NOK
+faktura.csv,40,F7001,Fiktiv Byggvare AS,910000001,1500.0,ingen,,,uavklart,"flere like kandidater: PO-3001 (rad 38), PO-3002 (rad 39)"
+faktura.csv,41,F7002,Testrør Engros AS,910000002,1554.0,ingen,,,uavklart,"ingen kandidat innen leverandør, beløpstoleranse og datovindu"
