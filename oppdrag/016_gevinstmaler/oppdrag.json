@@ -1,0 +1,1 @@
+{"nr": 16, "tittel": "Gevinstmåler før og etter", "kontroll": ["python3 generer_data.py && python3 kontroll.py", "node e2e.mjs"]}

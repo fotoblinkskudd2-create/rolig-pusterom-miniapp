@@ -1,0 +1,42 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gevinstmåler</title><link rel="stylesheet" href="/felles/stil.css"><style>svg text{font-size:10px;fill:var(--svak)}input[type=number]{width:90px}</style></head><body>
+<header><h1>Gevinstmåler før og etter</h1><span class="demo">Syntetiske målinger · viser endring, ikke årsak</span></header>
+<main><div class="kort" id="topp"></div><div id="grupper"></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const t = (x, d = 1) => x === null || x === undefined ? "–" : Number(x).toLocaleString("nb-NO", { maximumFractionDigits: d });
+async function last() {
+  const d = await api("GET", "/api/grupper");
+  tom($("#topp"), h("p", {}, h("b", {}, "Endring: "), d.perioder.endring, ` · før ${d.perioder["før"].fra}–${d.perioder["før"].til} · etter ${d.perioder.etter.fra}–${d.perioder.etter.til}`),
+    h("p", { class: "adv" }, d.forbehold), d.rader_utenfor_perioder > 0 && h("p", { class: "adv" }, `${d.rader_utenfor_perioder} rader utenfor periodene er ikke brukt.`),
+    h("div", { class: "rad" }, h("label", {}, "Importer CSV", h("input", { type: "file", accept: ".csv", onchange: async e => { const r = await fetch("/api/import", { method: "POST", body: await e.target.files[0].text() }); if (!r.ok) alert((await r.json()).feil); last(); } })),
+      h("a", { href: "/api/eksport.csv" }, "Eksporter statistikk (CSV)"),
+      h("label", { style: "flex-direction:row;gap:6px" }, h("input", { type: "checkbox", id: "slaa", checked: !!d.slaa_sammen, onchange: async e => { await api("POST", "/api/slaa_sammen", e.target.checked ? Object.fromEntries([...new Set(d.grupper.flatMap(g => g.typer))].map(x => [x, "Alle oppgavetyper"])) : null); last(); } }),
+        "Slå sammen oppgavetyper (eksplisitt valg; ulike målekilder holdes fortsatt adskilt)")));
+  tom($("#grupper"), d.grupper.map(g => kort(g, d.min_n)));
+}
+function boks(f, e) {
+  const alle = [f, e].filter(s => s.n).flatMap(s => [s.min, s.maks]); const mx = Math.max(...alle), mn = 0; const X = v => 70 + (v - mn) / (mx - mn || 1) * 420;
+  const rad = (s, y, navn) => !s.n ? `<text x="0" y="${y + 4}">${navn}: ingen data</text>` : `<text x="0" y="${y + 4}">${navn} (n=${s.n})</text><line x1="${X(s.min)}" x2="${X(s.maks)}" y1="${y}" y2="${y}" stroke="gray"/>` +
+    (s.q1 !== null ? `<rect x="${X(s.q1)}" y="${y - 7}" width="${X(s.q3) - X(s.q1)}" height="14" fill="rgba(31,95,139,.25)" stroke="#1f5f8b"/>` : "") + `<line x1="${X(s.median)}" x2="${X(s.median)}" y1="${y - 9}" y2="${y + 9}" stroke="#1f5f8b" stroke-width="3"/>` +
+    `<circle cx="${X(s.snitt)}" cy="${y}" r="3" fill="#b26a00"/>`;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("viewBox", "0 0 500 70"); svg.style.width = "100%";
+  svg.innerHTML = rad(f, 18, "før") + rad(e, 48, "etter") + `<text x="70" y="68">0</text><text x="470" y="68">${t(mx, 0)} min</text>`;
+  return svg;
+}
+function kort(g, minN) {
+  const rader = [["n (med varighet)", "n"], ["manglende varighet", "manglende_varighet"], ["median min", "median"], ["kvartiler", null], ["min–maks", null], ["gjennomsnitt", "snitt"], ["feil per 100", "feil_per_100"], ["volum per uke", "volum_per_uke"]];
+  const celle = (s, [n, k]) => k ? t(s[k]) : n === "kvartiler" ? `${t(s.q1)}–${t(s.q3)}` : `${t(s.min)}–${t(s.maks)}`;
+  const dk = g.dekomponering;
+  return h("div", { class: "kort", "data-gruppe": g.gruppe }, h("h3", {}, g.gruppe, h("span", { class: "svak" }, ` · ${g.malekilde} · typer: ${g.typer.join(", ")}`)),
+    boks(g.for, g.etter), h("div", { class: "svak", style: "font-size:12px" }, "boks: kvartiler · tykk strek: median · prikk: gjennomsnitt · linje: min–maks"),
+    h("table", {}, h("tr", {}, h("th"), h("th", { class: "tall" }, "Før"), h("th", { class: "tall" }, "Etter")), rader.map(r => h("tr", {}, h("td", {}, r[0]), h("td", { class: "tall" }, celle(g.for, r)), h("td", { class: "tall" }, celle(g.etter, r))))),
+    g.advarsler.map(a => h("p", { class: "adv" }, "⚠ " + a)),
+    dk && h("p", {}, h("b", {}, "Timer per uke: "), `${t(dk.timer_uke_for, 2)} → ${t(dk.timer_uke_etter, 2)} (${t(dk.total_timer_uke, 2)}) = tidseffekt ${t(dk.tidseffekt_timer_uke, 2)} + volumeffekt ${t(dk.volumeffekt_timer_uke, 2)}`),
+    h("div", { class: "rad" }, h("b", {}, "Økonomisk scenario:"), h("label", {}, "Timesats (kr)", h("input", { type: "number", class: "sats" })), h("label", {}, "Volum per uke", h("input", { type: "number", class: "volum", value: t(g.etter.volum_per_uke, 2).replace(",", ".") })),
+      h("button", { onclick: async e => { const k = e.target.closest(".kort"); try { const o = await api("POST", "/api/okonomi", { gruppe: g.gruppe, malekilde: g.malekilde, timesats: k.querySelector(".sats").value, volum_per_uke: k.querySelector(".volum").value });
+        tom(k.querySelector(".okonomi"), `${t(o.endring_min_per_oppgave)} min per oppgave × ${o.volum_per_uke}/uke × ${o.timesats} kr × ${o.uker_per_aar} uker = ${t(o.kr_per_aar, 0)} kr/år (scenario). ${o.forbehold}`); } catch (x) { alert(x.message); } } }, "Beregn")),
+    h("p", { class: "okonomi" }));
+}
+last();
+</script></body></html>

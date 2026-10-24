@@ -1,0 +1,91 @@
+{
+ "Fakturakontroll": {
+  "for": {
+   "n": 30,
+   "registrert": 32,
+   "manglende_varighet": 2,
+   "median": 12.0,
+   "q1": 10.0,
+   "q3": 12.75,
+   "iqr": 2.75,
+   "min": 5.0,
+   "maks": 17.0,
+   "snitt": 11.5,
+   "feil_per_100": 25.0,
+   "uker": 4.0,
+   "volum_per_uke": 8.0,
+   "lite_utvalg": false
+  },
+  "etter": {
+   "n": 40,
+   "registrert": 41,
+   "manglende_varighet": 1,
+   "median": 9.0,
+   "q1": 8.0,
+   "q3": 10.0,
+   "iqr": 2.0,
+   "min": 5.0,
+   "maks": 240.0,
+   "snitt": 14.6,
+   "feil_per_100": 2.4390243902439024,
+   "uker": 4.0,
+   "volum_per_uke": 10.25,
+   "lite_utvalg": false
+  },
+  "dekomponering": {
+   "tidseffekt_timer_uke": -0.5125,
+   "volumeffekt_timer_uke": 0.45,
+   "total_timer_uke": -0.062499999999999944,
+   "timer_uke_for": 1.6,
+   "timer_uke_etter": 1.5375
+  },
+  "advarsler": [
+   "manglende varighet: 2 før, 1 etter (utelatt fra statistikken)",
+   "ekstremverdi etter: 240 min (median er robust, gjennomsnitt påvirkes)"
+  ]
+ },
+ "Tilbudsskriving": {
+  "for": {
+   "n": 8,
+   "registrert": 8,
+   "manglende_varighet": 0,
+   "median": 59.0,
+   "q1": 53.0,
+   "q3": 66.5,
+   "iqr": 13.5,
+   "min": 32.0,
+   "maks": 69.0,
+   "snitt": 57.375,
+   "feil_per_100": 0.0,
+   "uker": 4.0,
+   "volum_per_uke": 2.0,
+   "lite_utvalg": true
+  },
+  "etter": {
+   "n": 4,
+   "registrert": 4,
+   "manglende_varighet": 0,
+   "median": 43.5,
+   "q1": 37.25,
+   "q3": 48.0,
+   "iqr": 10.75,
+   "min": 26.0,
+   "maks": 54.0,
+   "snitt": 41.75,
+   "feil_per_100": 0.0,
+   "uker": 4.0,
+   "volum_per_uke": 1.0,
+   "lite_utvalg": true
+  },
+  "dekomponering": {
+   "tidseffekt_timer_uke": -0.25833333333333336,
+   "volumeffekt_timer_uke": -0.9833333333333333,
+   "total_timer_uke": -1.2416666666666667,
+   "timer_uke_for": 1.9666666666666666,
+   "timer_uke_etter": 0.725
+  },
+  "advarsler": [
+   "lite utvalg (n før 8, n etter 4; anbefalt minst 10 per periode)"
+  ]
+ }
+}

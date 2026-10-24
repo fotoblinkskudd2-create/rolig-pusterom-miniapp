@@ -1,0 +1,20 @@
+# Kontroll: 016 Gevinstmåler
+Kjørt: 2026-10-24 01:38:56
+Resultat: 16 bestått, 0 feilet
+
+[BESTÅTT] to grupper – typene slås ikke sammen automatisk  — faktisk=['Fakturakontroll', 'Tilbudsskriving'] forventet=['Fakturakontroll', 'Tilbudsskriving']
+[BESTÅTT] median etter = uavhengig median  — faktisk=9.0 forventet=9.0
+[BESTÅTT] ekstremavviket (240 min) flagges
+[BESTÅTT] median er robust mot avviket, gjennomsnittet ikke  — median 12.0→9.0, snitt 11.50→14.60
+[BESTÅTT] manglende varigheter telles separat (2 før, 1 etter)  — faktisk=(2, 1) forventet=(2, 1)
+[BESTÅTT] lite utvalg flagges for Tilbudsskriving  — ['lite utvalg (n før 8, n etter 4; anbefalt minst 10 per periode)']
+[BESTÅTT] dekomponering: tid + volum = total  — faktisk=-1.2416666666666667 forventet=-1.2416666666666667
+[BESTÅTT] dekomponering: total = timer etter − timer før  — faktisk=-1.2416666666666667 forventet=-1.2416666666666667
+[BESTÅTT] Tilbudsskriving: volumeffekt (1 − 2) × 59 / 60  — faktisk=-0.9833333333333333 forventet=-0.9833333333333333
+[BESTÅTT] volumendring skilles fra tidsendring (volum dominerer for Tilbudsskriving)
+[BESTÅTT] volum per uke regnes mot periodens 4 uker  — faktisk=(8.0, 10.25) forventet=(8.0, 10.25)
+[BESTÅTT] økonomi: (9 − 12) min × 10/uke × 600 kr × 46 uker  — faktisk=13800.0 forventet=13800.0
+[BESTÅTT] økonomi har forbehold om årsak
+[BESTÅTT] sammenslåing bare ved eksplisitt valg, og bare innen samme målekilde  — faktisk=[('Kontor', ('Fakturakontroll',)), ('Kontor', ('Tilbudsskriving',))] forventet=[('Kontor', ('Fakturakontroll',)), ('Kontor', ('Tilbudsskriving',))]
+[BESTÅTT] API krever eksplisitt timesats og volum  — faktisk=400 forventet=400
+[BESTÅTT] eksport: 2 grupper × 2 perioder  — faktisk=5 forventet=5
