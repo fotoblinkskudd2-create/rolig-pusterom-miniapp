@@ -1,0 +1,33 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lisensoversikt</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Lisensoversikt for kundeleveranser</h1><span class="demo">Dokumentert metadata · ingen juridisk vurdering</span></header>
+<main><div class="kort rad"><label>Oversikt (leveranse @ revisjon)<select id="ov"></select></label><span id="laast"></span><a id="att" href="#">Last ned attribusjonsfil</a>
+<label>Sammenlign med<select id="mot"><option value="">–</option></select></label></div>
+<div class="kort" id="forbehold"></div><div class="kort"><h3>Arbeidskø</h3><table id="ko"></table></div>
+<div class="kort wrap"><h3>Komponenter</h3><table id="komp"></table><div class="rad" id="ny"></div></div><div class="kort" id="diff"></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+let O = [], valgt = null;
+async function start() {
+  const d = await api("GET", "/api/oversikter"); O = d.oversikter;
+  $("#forbehold").textContent = d.forbehold;
+  tom($("#ov"), O.map(o => h("option", { value: o.id }, `${o.leveranse} @ ${o.revisjon}`)));
+  tom($("#mot"), h("option", { value: "" }, "–"), O.map(o => h("option", { value: o.id }, `${o.revisjon}`)));
+  valgt = valgt || O.at(-1).id; $("#ov").value = valgt; vis();
+}
+async function vis() {
+  const o = O.find(x => x.id == valgt), d = await api("GET", `/api/oversikter/${valgt}`);
+  $("#att").href = `/api/oversikter/${valgt}/attribusjon.txt`;
+  tom($("#laast"), o.laast ? h("span", { class: "merke ok", id: "status" }, "låst " + o.laast) : [h("span", { class: "merke adv", id: "status" }, "åpen"), h("button", { class: "sekundaer", onclick: async () => { await api("POST", `/api/oversikter/${valgt}/las`); start(); } }, "Lås oversikt")]);
+  tom($("#ko"), d.ko.length ? d.ko.map(k => h("tr", { "data-ko": k.navn }, h("td", { class: k.problem === "ukjent lisens" ? "feil" : "adv" }, k.problem), h("td", {}, `${k.navn} ${k.versjon}`), h("td", { class: "svak" }, k.handling))) : h("tr", {}, h("td", { class: "ok" }, "Ingen åpne punkter")));
+  tom($("#komp"), h("tr", {}, ["Type", "Navn", "Versjon", "Oppgitt lisens", "Lisenskilde", "Kilde", "Attribusjon"].map(x => h("th", {}, x))),
+    d.komponenter.map(k => h("tr", {}, h("td", {}, k.type), h("td", {}, k.navn), h("td", {}, k.versjon), h("td", { class: k.lisens ? "" : "feil" }, k.lisens || "ukjent"), h("td", { class: "svak" }, k.lisens_kilde || "–"), h("td", { class: "svak" }, k.kilde), h("td", {}, k.attribusjon || "–"))));
+  tom($("#ny"), o.laast ? h("p", { class: "svak" }, "Låst oversikt kan ikke endres. Lag en ny oversikt for en ny revisjon.") :
+    [...["type", "navn", "versjon", "lisens", "lisens_kilde", "attribusjon"].map(f => f === "type" ? h("select", { "data-f": f }, h("option", {}, "tredjepart"), h("option", {}, "egen")) : h("input", { "data-f": f, placeholder: f })),
+     h("button", { onclick: async () => { const b = {}; document.querySelectorAll("[data-f]").forEach(i => b[i.dataset.f] = i.value); try { await api("POST", `/api/oversikter/${valgt}/komponent`, b); vis(); } catch (e) { alert(e.message); } } }, "Registrer/oppdater")]);
+}
+$("#ov").onchange = e => { valgt = e.target.value; vis(); };
+$("#mot").onchange = async e => { if (!e.target.value) return tom($("#diff")); const d = await api("GET", `/api/sammenlign?a=${e.target.value}&b=${valgt}`);
+  tom($("#diff"), h("h3", {}, "Endringer"), h("table", {}, d.map(x => h("tr", {}, h("td", {}, x.endring), h("td", {}, x.navn), h("td", {}, x.fra ?? "–"), h("td", {}, "→ " + (x.til ?? "–")))))); };
+start();
+</script></body></html>

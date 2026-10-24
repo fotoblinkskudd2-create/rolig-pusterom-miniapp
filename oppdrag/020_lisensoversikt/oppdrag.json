@@ -1,0 +1,1 @@
+{"nr": 20, "tittel": "Lisensoversikt for kundeleveranser", "kontroll": ["python3 kontroll.py", "rm -f resultat/e2e.db && node e2e.mjs"]}

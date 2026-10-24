@@ -1,0 +1,19 @@
+TREDJEPARTSKOMPONENTER – kundeportal @ v1.0.0 (commit a1b2c3d)
+
+Oversikten viser dokumentert metadata. Den er ingen juridisk vurdering eller garanti for lisenskompatibilitet.
+
+datoverktoy 2.1.0
+  Lisens (oppgitt): MIT  [kilde: package-lock.json]
+  Copyright (c) 2020 Fiktiv Dato-forfatter
+
+hjelpefunk 1.0.4
+  Lisens (oppgitt): UKJENT – må avklares
+  ATTRIBUSJON MANGLER
+
+rapportgen 3.2.1
+  Lisens (oppgitt): BSD-3-Clause  [kilde: PKG-INFO i pakken (lest manuelt)]
+  Copyright (c) 2019 Fiktiv Rapport-forfatter
+
+tabellmotor 0.9.3
+  Lisens (oppgitt): Apache-2.0  [kilde: package-lock.json]
+  ATTRIBUSJON MANGLER

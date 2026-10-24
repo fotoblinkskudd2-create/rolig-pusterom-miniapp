@@ -1,0 +1,17 @@
+# Kontroll: 020 Lisensoversikt
+Kjørt: 2026-10-24 01:47:44
+Resultat: 13 bestått, 0 feilet
+
+[BESTÅTT] revisjon 1: fire tredjepartsavhengigheter  — faktisk=[('datoverktoy', '2.1.0'), ('hjelpefunk', '1.0.4'), ('rapportgen', '3.2.1'), ('tabellmotor', '0.9.3')] forventet=[('datoverktoy', '2.1.0'), ('hjelpefunk', '1.0.4'), ('rapportgen', '3.2.1'), ('tabellmotor', '0.9.3')]
+[BESTÅTT] én ukjent lisens i arbeidskøen (hjelpefunk)  — faktisk=[('hjelpefunk', 'ukjent lisens')] forventet=[('hjelpefunk', 'ukjent lisens')]
+[BESTÅTT] manglende attribusjon for Apache-2.0-pakken  — faktisk=[('tabellmotor', 'manglende attribusjon')] forventet=[('tabellmotor', 'manglende attribusjon')]
+[BESTÅTT] manuell attribusjon beholder lisens fra låsefil  — faktisk=('MIT', 'package-lock.json', 'Copyright') forventet=('MIT', 'package-lock.json', 'Copyright')
+[BESTÅTT] lisens fra requirements.txt er ukjent til den registreres manuelt med kilde  — faktisk='PKG-INFO i pakken (lest manuelt)' forventet='PKG-INFO i pakken (lest manuelt)'
+[BESTÅTT] revisjon 2: datoverktoy finnes i to versjoner som separate rader  — faktisk=['2.1.0', '3.0.0'] forventet=['2.1.0', '3.0.0']
+[BESTÅTT] låst oversikt (rev 1) kan ikke endres  — PermissionError: oversikt 1 er låst 2026-09-01T12:00:00 og kan ikke endres; lag en ny oversikt for ny revisjon
+[BESTÅTT] historisk oversikt er uendret etter at rev 2 ble lagt inn  — faktisk=5 forventet=5
+[BESTÅTT] samme leveranse og revisjon kan ikke registreres to ganger  — IntegrityError: UNIQUE constraint failed: oversikt.leveranse, oversikt.revisjon
+[BESTÅTT] sammenligning viser versjonsendring og fjernet pakke  — [{'navn': 'kundeportal-ui', 'endring': 'endret', 'fra': '1.0.0 (Proprietær (kundeavtale))', 'til': '1.1.0 (Proprietær (kundeavtale))'}, {'navn': 'datoverktoy', 'endring': 'endret', 'fra': '2.1.0 (MIT)', 'til': '3.0.0 (MIT)'}, {'navn': 'rapportgen', 'endring': 'fjernet', 'fra': '3.2.1', 'til': None}]
+[BESTÅTT] attribusjonsfilen markerer ukjent lisens og manglende attribusjon
+[BESTÅTT] attribusjonsfilen er knyttet til revisjonen og har forbehold
+[BESTÅTT] egne moduler står ikke i tredjepartsfilen

@@ -1,0 +1,19 @@
+TREDJEPARTSKOMPONENTER – kundeportal @ v1.1.0 (commit d4e5f6a)
+
+Oversikten viser dokumentert metadata. Den er ingen juridisk vurdering eller garanti for lisenskompatibilitet.
+
+datoverktoy 2.1.0
+  Lisens (oppgitt): MIT  [kilde: package-lock.json]
+  ATTRIBUSJON MANGLER
+
+datoverktoy 3.0.0
+  Lisens (oppgitt): MIT  [kilde: package-lock.json]
+  ATTRIBUSJON MANGLER
+
+hjelpefunk 1.0.4
+  Lisens (oppgitt): UKJENT – må avklares
+  ATTRIBUSJON MANGLER
+
+tabellmotor 0.9.3
+  Lisens (oppgitt): Apache-2.0  [kilde: package-lock.json]
+  ATTRIBUSJON MANGLER

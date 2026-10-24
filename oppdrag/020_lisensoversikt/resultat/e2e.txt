@@ -1,0 +1,9 @@
+# Nettleserkontroll: 020 Lisensoversikt
+Kjørt: 2026-10-24T01:48:23.184Z
+Resultat: 5 bestått, 0 feilet
+
+[BESTÅTT] rev 2 er åpen og hjelpefunk står i arbeidskø
+[BESTÅTT] rev 1 er låst og kan ikke redigeres
+[BESTÅTT] registrert lisens og attribusjon fjerner punktet fra køen
+[BESTÅTT] sammenligning viser fjernet rapportgen
+[BESTÅTT] ingen JavaScript-feil i siden
