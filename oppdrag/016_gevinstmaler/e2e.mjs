@@ -10,7 +10,7 @@ await e2e("016 Gevinstmåler", HER, { server: ["python3", "app.py", "--port", "8
     await k.locator("button").click(); await page.waitForTimeout(200);
     sjekk("økonomi uten timesats avvises", v.some(m => m.includes("timesats og volum")));
     await k.locator(".sats").fill("600"); await k.locator(".volum").fill("10"); await k.locator("button").click();
-    await page.waitForFunction(() => document.querySelector('[data-gruppe="Fakturakontroll"] .okonomi').innerText.includes("13 800 kr/år"));
+    await page.waitForFunction(() => document.querySelector('[data-gruppe="Fakturakontroll"] .okonomi').innerText.replace(/\s/g, "").includes("13800kr/år"));
     sjekk("økonomisk scenario 13 800 kr/år med forbehold", (await k.locator(".okonomi").innerText()).includes("ikke dokumentert årsak"));
     await page.screenshot({ path: HER + "resultat/skjermbilde.png", fullPage: true });
   });

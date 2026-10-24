@@ -1,8 +1,9 @@
 # Nettleserkontroll: 016 Gevinstmåler
-Kjørt: 2026-10-24T01:40:05.138Z
-Resultat: 3 bestått, 1 feilet
+Kjørt: 2026-10-24T01:40:24.161Z
+Resultat: 5 bestått, 0 feilet
 
 [BESTÅTT] to separate grupper
 [BESTÅTT] ekstremverdi og lite utvalg vises
 [BESTÅTT] økonomi uten timesats avvises
-[FEILET] nettleserkontrollen kjørte uten krasj  — page.waitForFunction: Timeout 8000ms exceeded.     at /home/user/rolig-pusterom-miniapp/oppdrag/016_gevinstmaler/e2e.mjs:13:16     at async e2e (/home/user/rolig-pusterom-miniapp/oppdrag/felles/e2e.mjs:34:5)
+[BESTÅTT] økonomisk scenario 13 800 kr/år med forbehold
+[BESTÅTT] ingen JavaScript-feil i siden
