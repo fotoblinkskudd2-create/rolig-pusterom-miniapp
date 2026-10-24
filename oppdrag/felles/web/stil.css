@@ -1,0 +1,18 @@
+:root{--bg:#f6f5f2;--flate:#fff;--tekst:#1d1d1f;--svak:#6b6b70;--linje:#dcdad4;--aksent:#1f5f8b;--ok:#2e7d32;--adv:#b26a00;--feil:#b3261e;--ukjent:#6a4c93;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#141416;--flate:#1f1f23;--tekst:#ececef;--svak:#9a9aa2;--linje:#34343a;--aksent:#6fb3e0;--ok:#7bc47f;--adv:#e0a94a;--feil:#f2867d;--ukjent:#b79be0}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tekst);line-height:1.45}
+header{padding:14px 16px;border-bottom:1px solid var(--linje);background:var(--flate);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+header h1{font-size:18px;margin:0}header .demo{font-size:12px;color:var(--adv);border:1px solid var(--adv);border-radius:4px;padding:1px 6px}
+main{padding:16px;max-width:1200px;margin:0 auto}
+.kort{background:var(--flate);border:1px solid var(--linje);border-radius:8px;padding:12px 14px;margin:0 0 12px}
+.rad{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.rutenett{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid var(--linje);padding:5px 6px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--svak)}td.tall,th.tall{text-align:right;font-variant-numeric:tabular-nums}
+input,select,textarea,button{font:inherit;color:inherit;background:var(--flate);border:1px solid var(--linje);border-radius:6px;padding:5px 8px}
+button{cursor:pointer;background:var(--aksent);color:#fff;border-color:var(--aksent)}button.sekundaer{background:transparent;color:var(--aksent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.merke{display:inline-block;font-size:12px;border-radius:10px;padding:1px 8px;border:1px solid currentColor}
+.ok{color:var(--ok)}.adv{color:var(--adv)}.feil{color:var(--feil)}.ukjent{color:var(--ukjent)}.svak{color:var(--svak)}
+.wrap{overflow-x:auto}pre{white-space:pre-wrap;font-size:13px;background:var(--bg);padding:8px;border-radius:6px}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--svak);gap:2px}

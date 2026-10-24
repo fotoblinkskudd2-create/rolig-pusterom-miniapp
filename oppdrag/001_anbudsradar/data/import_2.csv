@@ -1,0 +1,6 @@
+kunngjoring_id,kilde,tittel,oppdragsgiver,fagområde,sted,region,cpv,frist,estimert_verdi_nok,publisert,url
+KG-2026-0101,syntetisk,Ladestasjoner ved rådhuset,Tromsø kommune,lading,Tromsø,Troms,45315000,2026-11-27,850000,2026-10-01,https://eksempel.invalid/KG-2026-0101
+KG-2026-0102,syntetisk,Utskifting av belysning i idrettshall,Narvik kommune,belysning,Narvik,Nordland,31520000,2026-11-05,400000,2026-10-02,https://eksempel.invalid/KG-2026-0102
+KG-2026-0104,syntetisk,Elbil-ladepunkter for hjemmetjenesten,Harstad kommune,lading,Harstad,Troms,45315000,2026-12-01,650000,2026-10-04,https://eksempel.invalid/KG-2026-0104
+KG-2026-0106,syntetisk,Ny hovedtavle sykehjem,Senja kommune,elektro,Finnsnes,Troms,45315000,2026-11-28,350000,2026-10-05,https://eksempel.invalid/KG-2026-0106
+KG-2026-0115,syntetisk,Ladepunkter ved helsesenter,Kvænangen kommune,lading,Burfjord,Troms,45315000,2026-12-10,300000,2026-10-20,https://eksempel.invalid/KG-2026-0115

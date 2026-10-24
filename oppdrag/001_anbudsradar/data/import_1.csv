@@ -1,0 +1,16 @@
+kunngjoring_id,kilde,tittel,oppdragsgiver,fagområde,sted,region,cpv,frist,estimert_verdi_nok,publisert,url
+KG-2026-0101,syntetisk,Ladestasjoner ved rådhuset,Tromsø kommune,lading,Tromsø,Troms,45315000,2026-11-20,850000,2026-10-01,https://eksempel.invalid/KG-2026-0101
+KG-2026-0102,syntetisk,Utskifting av belysning i idrettshall,Narvik kommune,belysning,Narvik,Nordland,31520000,2026-11-05,400000,2026-10-02,https://eksempel.invalid/KG-2026-0102
+KG-2026-0103,syntetisk,Rammeavtale renhold,Alta kommune,renhold,Alta,Finnmark,90910000,2026-11-15,2000000,2026-10-03,https://eksempel.invalid/KG-2026-0103
+KG-2026-0104,syntetisk,Elbil-ladepunkter for hjemmetjenesten,Harstad kommune,lading,Harstad,Troms,45315000,2026-12-01,600000,2026-10-04,https://eksempel.invalid/KG-2026-0104
+KG-2026-0105,syntetisk,Oppgradering av el-anlegg skole,Bodø kommune,elektro,Bodø,Nordland,45310000,2026-10-20,1200000,2026-09-10,https://eksempel.invalid/KG-2026-0105
+KG-2026-0106,syntetisk,Ny hovedtavle sykehjem,Senja kommune,elektro,Finnsnes,Troms,45315000,,350000,2026-10-05,https://eksempel.invalid/KG-2026-0106
+KG-2026-0107,syntetisk,Solcelleanlegg på brannstasjon,Hammerfest kommune,elektro,Hammerfest,Finnmark,45261215,2026-11-30,2500000,2026-10-06,https://eksempel.invalid/KG-2026-0107
+KG-2026-0108,syntetisk,Asfaltering kommunale veier,Tromsø kommune,vei,Tromsø,Troms,45233222,2026-11-10,9000000,2026-10-07,https://eksempel.invalid/KG-2026-0108
+KG-2026-0109,syntetisk,Ladeanlegg borettslag (anskaffelse på vegne av beboere),Lyngen kommune,lading,Lyngseidet,Troms,45315000,2026-11-25,5000000,2026-10-08,https://eksempel.invalid/KG-2026-0109
+KG-2026-0110,syntetisk,Service på nødlys,Vadsø kommune,belysning,Vadsø,Finnmark,50711000,2026-11-18,180000,2026-10-09,https://eksempel.invalid/KG-2026-0110
+KG-2026-0111,syntetisk,Gatelys LED-utskifting,Oslo kommune,belysning,Oslo,Oslo,31520000,2026-11-22,800000,2026-10-10,https://eksempel.invalid/KG-2026-0111
+KG-2026-0112,syntetisk,IT-konsulenttjenester,Troms fylkeskommune,it,Tromsø,Troms,72000000,2026-11-12,1500000,2026-10-11,https://eksempel.invalid/KG-2026-0112
+KG-2026-0101,syntetisk,Ladestasjoner ved rådhuset,Tromsø kommune,lading,Tromsø,Troms,45315000,2026-11-20,850000,2026-10-01,https://eksempel.invalid/KG-2026-0101
+KG-2026-0113,syntetisk,Termografering av el-tavler,Sortland kommune,elektro,Sortland,Nordland,50711000,ikke oppgitt,120000,2026-10-12,https://eksempel.invalid/KG-2026-0113
+KG-2026-0114,syntetisk,Utendørs belysning barnehage,Bodø kommune,belysning,Bodø,Nordland,31520000,2026-10-30,220000,2026-10-13,https://eksempel.invalid/KG-2026-0114

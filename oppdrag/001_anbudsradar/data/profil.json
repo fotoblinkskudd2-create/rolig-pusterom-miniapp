@@ -1,0 +1,9 @@
+{
+  "nisje": "Elektro: ladeinfrastruktur og små elanlegg (fiktiv bedrift: Fjordlys Elektro AS)",
+  "fagområder": ["elektro", "lading", "belysning"],
+  "nøkkelord": {"ladestasjon": 3, "ladepunkt": 3, "elbil": 2, "elektro": 2, "belysning": 2, "el-anlegg": 2, "tavle": 1, "solcelle": 1},
+  "cpv_prefiks": {"4531": 3, "3152": 2, "5071": 2},
+  "regioner": ["Troms", "Nordland", "Finnmark"],
+  "maks_verdi_nok": 3000000,
+  "min_dager_igjen": 7
+}

@@ -1,0 +1,31 @@
+# Kontroll: 001 Anbudsradar
+Kjørt: 2026-10-24 00:57:53
+Resultat: 26 bestått, 0 feilet
+
+[BESTÅTT] import 1 har 15 rader  — faktisk=15 forventet=15
+[BESTÅTT] duplikat i import 1 telles én gang (14 unike)  — faktisk=14 forventet=14
+[BESTÅTT] duplikatet logges med radnummer  — faktisk=[{'kunngjoring_id': 'KG-2026-0101', 'radnr': 14}] forventet=[{'kunngjoring_id': 'KG-2026-0101', 'radnr': 14}]
+[BESTÅTT] antall kunngjøringer i databasen etter import 1  — faktisk=14 forventet=14
+[BESTÅTT] tom frist gir status ukjent  — faktisk='ukjent' forventet='ukjent'
+[BESTÅTT] «ikke oppgitt» gir status ukjent, ikke utløpt  — faktisk='ukjent' forventet='ukjent'
+[BESTÅTT] passert frist gir utløpt  — faktisk='utløpt' forventet='utløpt'
+[BESTÅTT] ukjent frist oppgir kildeverdien i advarselen
+[BESTÅTT] utløpt skjules som standard, ukjent frist vises
+[BESTÅTT] import 2: én ny kunngjøring  — faktisk=1 forventet=1
+[BESTÅTT] import 2: tre endrede (frist 0101, verdi 0104, frist 0106)  — faktisk=3 forventet=3
+[BESTÅTT] totalt antall etter to importer (ingen dobbelttelling)  — faktisk=15 forventet=15
+[BESTÅTT] endret frist registreres med gammel og ny verdi  — faktisk=[('frist', '2026-11-20', '2026-11-27')] forventet=[('frist', '2026-11-20', '2026-11-27')]
+[BESTÅTT] frist som kom på plass endrer status til åpen  — faktisk='åpen' forventet='åpen'
+[BESTÅTT] uendret kunngjøring har ingen endringer
+[BESTÅTT] kunngjøring som ikke var med i import 2 beholdes og merkes
+[BESTÅTT] oppdateringsdato følger siste endring  — faktisk='2026-10-21T08:00:00' forventet='2026-10-21T08:00:00'
+[BESTÅTT] oppdateringsdato for uendret kunngjøring er første import  — faktisk='2026-10-14T08:00:00' forventet='2026-10-14T08:00:00'
+[BESTÅTT] filter fagområde=lading
+[BESTÅTT] filter sted=Nordland
+[BESTÅTT] frist innen 10 dager utelater ukjent frist  — ['KG-2026-0114']
+[BESTÅTT] prioritering er sortert på score
+[BESTÅTT] hver prioritert rad har grunner eller tom liste og kilde-URL
+[BESTÅTT] for stor verdi gir advarsel
+[BESTÅTT] CSV-eksport har én rad per prioritert kunngjøring  — 14 rader
+[BESTÅTT] ekstern adapter er deaktivert  — RuntimeError: Ekstern adapter er deaktivert: kontroller dokumentasjon og tilgangsvilkår først (se adaptere/README.md).
+  · Topp 3: KG-2026-0104 Elbil-ladepunkter for hjemmetjenesten (12) | KG-2026-0101 Ladestasjoner ved rådhuset (10) | KG-2026-0106 Ny hovedtavle sykehjem (10)

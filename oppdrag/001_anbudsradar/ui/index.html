@@ -1,0 +1,40 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anbudsradar</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Anbudsradar</h1><span class="demo">Lokal demo · syntetiske data · ingen innsending</span><span id="profil" class="svak"></span></header>
+<main>
+<div class="kort rad">
+ <label>Fagområde<select id="fag"><option value="">alle</option></select></label>
+ <label>Sted/region<input id="sted" placeholder="f.eks. Troms"></label>
+ <label>Frist innen (dager)<input id="frist" type="number" min="0" style="width:90px"></label>
+ <label><span>Vis utløpte</span><input id="utl" type="checkbox"></label>
+ <button id="eks">Eksporter prioritering (CSV)</button>
+</div>
+<div class="kort" id="imp"></div>
+<div id="liste"></div>
+</main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const q = () => new URLSearchParams({ fagomrade: $("#fag").value, sted: $("#sted").value, frist_innen: $("#frist").value, vis_utlopte: $("#utl").checked ? "1" : "" });
+async function last() {
+  const d = await api("GET", "/api/oversikt?" + q());
+  $("#profil").textContent = d.profil.nisje + " · referansedato " + d.idag;
+  if ($("#fag").options.length === 1) d.fagområder.forEach(f => $("#fag").append(h("option", { value: f }, f)));
+  const s = d.importer.at(-1);
+  tom($("#imp"), h("b", {}, "Importer: "), d.importer.map(i => `#${i.id} ${i.fil} (${i.rader} rader, ${i.nye} nye, ${i.endrede} endret, ${i.duplikater_i_fil} duplikat i fil)`).join(" · "));
+  tom($("#liste"), d.rader.length ? d.rader.map((r, i) => h("div", { class: "kort", "data-id": r.kunngjoring_id },
+    h("div", { class: "rad" }, h("b", {}, `${i + 1}. ${r.tittel}`), h("span", { class: "merke" }, "score " + r.score),
+      h("span", { class: "merke " + ({ "åpen": "ok", "utløpt": "feil", "ukjent": "ukjent" })[r.frist_status] },
+        r.frist_status === "ukjent" ? "frist ukjent" : r.frist_status === "utløpt" ? "utløpt " + r.frist : `frist ${r.frist} (${r.dager_igjen} d)`),
+      r.ny_i_siste_import && h("span", { class: "merke adv" }, "ny i siste import"),
+      r.endringer_siste_import.length > 0 && h("span", { class: "merke adv" }, "endret i siste import")),
+    h("div", { class: "svak" }, `${r.oppdragsgiver} · ${r.sted} (${r.region}) · CPV ${r.cpv} · ${r.estimert_verdi_nok != null ? r.estimert_verdi_nok.toLocaleString("nb-NO") + " kr" : "verdi ukjent"}`),
+    h("div", {}, "Hvorfor: ", r.grunner.join(", ") || "ingen treff i profil"),
+    r.advarsler.length > 0 && h("div", { class: "adv" }, "Merk: ", r.advarsler.join(", ")),
+    r.endringer_siste_import.map(e => h("div", { class: "adv" }, `Endret ${e.felt}: ${e.gammel ?? "tom"} → ${e.ny ?? "tom"}`)),
+    h("div", { class: "svak" }, `Kilde: ${r.kilde} · ${r.kunngjoring_id} · `, h("a", { href: r.url }, "original"), ` · oppdatert ${r.oppdatert}`)
+  )) : h("p", {}, "Ingen treff med disse filtrene."));
+}
+["#fag", "#sted", "#frist", "#utl"].forEach(s => $(s).addEventListener("input", last));
+$("#eks").onclick = () => location.href = "/api/eksport.csv?" + q();
+last();
+</script></body></html>

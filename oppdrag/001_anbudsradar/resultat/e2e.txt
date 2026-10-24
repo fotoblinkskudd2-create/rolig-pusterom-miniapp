@@ -1,0 +1,11 @@
+# Nettleserkontroll: 001 Anbudsradar
+Kjørt: 2026-10-24T00:57:54.426Z
+Resultat: 7 bestått, 0 feilet
+
+[BESTÅTT] listen viser 14 ikke-utløpte kunngjøringer  — 14
+[BESTÅTT] endret frist vises i kortet
+[BESTÅTT] ukjent frist vises som eget merke
+[BESTÅTT] filter fagområde lading gir 4 treff
+[BESTÅTT] vis utløpte gir alle 15
+[BESTÅTT] eksport lastes ned fra grensesnittet
+[BESTÅTT] ingen JavaScript-feil i siden

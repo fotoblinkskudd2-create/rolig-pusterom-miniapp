@@ -1,0 +1,1 @@
+{"nr": 1, "tittel": "Anbudsradar for én SMB-nisje", "kontroll": ["python3 kontroll.py", "node e2e.mjs"]}
