@@ -1,0 +1,32 @@
+{
+  "bedrift": "Fiktiv Rør & Varme AS (oppdiktet, 8 ansatte)", "dato": "2026-10-24", "malt": false,
+  "datatilgangsfaktor": {"god": 1, "delvis": 0.5, "ingen": 0},
+  "scenarier": [
+    {"navn": "lav", "tidsreduksjon": 0.10, "feilreduksjon": 0.10},
+    {"navn": "middels", "tidsreduksjon": 0.25, "feilreduksjon": 0.30},
+    {"navn": "høy", "tidsreduksjon": 0.40, "feilreduksjon": 0.50}
+  ],
+  "aktiviteter": [
+    {"id": "A1", "navn": "Registrere kundedata", "volumPerMnd": 60, "minutterPerStk": 6, "feilrate": 0.10, "minutterPerFeil": 15, "datatilgang": "god"},
+    {"id": "A2", "navn": "Skrive tilbud", "volumPerMnd": 30, "minutterPerStk": 45, "feilrate": 0.05, "minutterPerFeil": 30, "datatilgang": "delvis"},
+    {"id": "A3", "navn": "Lage faktura fra timeliste", "volumPerMnd": 80, "minutterPerStk": 8, "feilrate": 0.08, "minutterPerFeil": 20, "datatilgang": "god"},
+    {"id": "A4", "navn": "Føre timer fra papir", "volumPerMnd": 160, "minutterPerStk": 3, "feilrate": 0.04, "minutterPerFeil": 10, "datatilgang": "ingen"},
+    {"id": "A5", "navn": "Svare på e-posthenvendelser", "volumPerMnd": 120, "minutterPerStk": 5, "feilrate": 0.02, "minutterPerFeil": 10, "datatilgang": "god"},
+    {"id": "A6", "navn": "Bestille materiell", "volumPerMnd": 40, "minutterPerStk": 12, "feilrate": 0.06, "minutterPerFeil": 25, "datatilgang": "delvis"}
+  ],
+  "prosesser": [
+    {"id": "P1", "navn": "Tilbud", "aktiviteter": ["A1", "A2"], "timesats": 600},
+    {"id": "P2", "navn": "Fakturering", "aktiviteter": ["A3"], "timesats": 600},
+    {"id": "P3", "navn": "Timeføring", "aktiviteter": ["A4"], "timesats": 600},
+    {"id": "P4", "navn": "Kundehenvendelser", "aktiviteter": ["A1", "A5"], "timesats": 600},
+    {"id": "P5", "navn": "Innkjøp", "aktiviteter": ["A6"], "timesats": 600}
+  ],
+  "antakelser": [
+    {"id": "K1", "tekst": "Volum per måned er representativt for et normalt år", "verdi": "se aktivitetstabell", "bekreftet": false},
+    {"id": "K2", "tekst": "Minutter per utførelse er anslått av daglig leder, ikke målt", "verdi": "se aktivitetstabell", "bekreftet": false},
+    {"id": "K3", "tekst": "Timesats (internkost) brukt i kronetall", "verdi": "600 kr/t", "bekreftet": false},
+    {"id": "K4", "tekst": "Datatilgang: «delvis» gir halv effekt, «ingen» gir null effekt", "verdi": "1 / 0,5 / 0", "bekreftet": false},
+    {"id": "K5", "tekst": "Scenariofaktorer for tids- og feilreduksjon er forsøksverdier", "verdi": "10/25/40 % og 10/30/50 %", "bekreftet": false},
+    {"id": "K6", "tekst": "«Registrere kundedata» er samme arbeid i Tilbud og Kundehenvendelser", "verdi": "A1 i P1 og P4", "bekreftet": false}
+  ]
+}

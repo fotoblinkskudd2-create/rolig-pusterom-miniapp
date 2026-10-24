@@ -1,0 +1,11 @@
+# Nettleserkontroll: 005 KI-kartlegging
+Kjørt: 2026-10-24T01:10:25.997Z
+Resultat: 7 bestått, 0 feilet
+
+[BESTÅTT] middels scenario viser 11,95 t  — 11,95
+[BESTÅTT] scenarioene er merket HYPOTESE
+[BESTÅTT] A1 volum 0 trekker 1,95 t fra middels  — 10,00
+[BESTÅTT] null volum overalt gir 0,00 t
+[BESTÅTT] pilot for Tilbud viser stoppkriterium
+[BESTÅTT] CSV lastes ned
+[BESTÅTT] ingen JavaScript-feil i siden

@@ -1,0 +1,22 @@
+scenario;status;aktivitet;prosesser;timer_i_dag_per_mnd;spart_timer_per_mnd;spart_kr_per_mnd
+lav;hypotese;Registrere kundedata;P1+P4;7.50;0.75;450
+lav;hypotese;Skrive tilbud;P1;23.25;1.16;698
+lav;hypotese;Lage faktura fra timeliste;P2;12.80;1.28;768
+lav;hypotese;Føre timer fra papir;P3;9.07;0.00;0
+lav;hypotese;Svare på e-posthenvendelser;P4;10.40;1.04;624
+lav;hypotese;Bestille materiell;P5;9.00;0.45;270
+middels;hypotese;Registrere kundedata;P1+P4;7.50;1.95;1170
+middels;hypotese;Skrive tilbud;P1;23.25;2.92;1755
+middels;hypotese;Lage faktura fra timeliste;P2;12.80;3.31;1984
+middels;hypotese;Føre timer fra papir;P3;9.07;0.00;0
+middels;hypotese;Svare på e-posthenvendelser;P4;10.40;2.62;1572
+middels;hypotese;Bestille materiell;P5;9.00;1.15;690
+høy;hypotese;Registrere kundedata;P1+P4;7.50;3.15;1890
+høy;hypotese;Skrive tilbud;P1;23.25;4.69;2813
+høy;hypotese;Lage faktura fra timeliste;P2;12.80;5.33;3200
+høy;hypotese;Føre timer fra papir;P3;9.07;0.00;0
+høy;hypotese;Svare på e-posthenvendelser;P4;10.40;4.20;2520
+høy;hypotese;Bestille materiell;P5;9.00;1.85;1110
+lav;hypotese;TOTAL (unike aktiviteter);;72.02;4.68;2810
+middels;hypotese;TOTAL (unike aktiviteter);;72.02;11.95;7171
+høy;hypotese;TOTAL (unike aktiviteter);;72.02;19.22;11533

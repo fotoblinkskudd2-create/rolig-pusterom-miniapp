@@ -1,0 +1,17 @@
+{
+  "prosessId": "P2",
+  "varighetUker": 4,
+  "baselineTimerPerMnd": 12.799999999999999,
+  "maling": [
+    "Uke 1–2 før endring: registrer start/slutt per utførelse for Lage faktura fra timeliste (minutter, antall, feil).",
+    "Uke 3–6 med endring: samme registrering med samme skjema og samme personer.",
+    "Rapporter median minutter per utførelse, antall feil per 100 og volum separat; volumendring holdes adskilt fra tidsendring."
+  ],
+  "forventetOutput": "Målt tidsbruk per utførelse før/etter for prosessen «Fakturering», og en oppdatert gevinstberegning der hypotesen erstattes av målte verdier.",
+  "stoppkriterium": "Stopp piloten hvis feilraten øker med mer enn 2 prosentpoeng, hvis median tid per utførelse ikke er redusert etter 4 uker, eller hvis datatilgangen viser seg å kreve manuell overføring.",
+  "hypoteseSpartTimer": {
+    "lav": 1.28,
+    "middels": 3.3066666666666666,
+    "høy": 5.333333333333333
+  }
+}

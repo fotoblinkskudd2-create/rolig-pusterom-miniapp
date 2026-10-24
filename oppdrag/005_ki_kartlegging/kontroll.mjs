@@ -1,0 +1,34 @@
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { kjor } from "../felles/kontroll.mjs";
+import { beregn, naivProsessum, lagPilot, scenarioCsv, valider } from "./dist/modell.js";
+const HER = new URL(".", import.meta.url).pathname;
+const K = JSON.parse(readFileSync(HER + "data/fiktiv_bedrift.json", "utf8"));
+await kjor("005 KI-kartlegging", HER, async (k) => {
+  k.lik("ingen valideringsfeil i demo", valider(K), []);
+  const [lav, mid, hoy] = beregn(K);
+  k.lik("middels: håndregnet total 11,9517 t/mnd", mid.totalSpartTimer, 1.95 + 2.925 + 3.30667 + 0 + 2.62 + 1.15, 1e-4);
+  k.lik("middels: kroner = timer × 600", mid.totalSpartKr, mid.totalSpartTimer * 600, 1e-6);
+  k.sjekk("lav < middels < høy", lav.totalSpartTimer < mid.totalSpartTimer && mid.totalSpartTimer < hoy.totalSpartTimer,
+    [lav, mid, hoy].map(s => s.totalSpartTimer.toFixed(2)).join(" < "));
+  const a1 = mid.aktiviteter.find(a => a.id === "A1");
+  k.lik("A1 inngår i to prosesser", a1.prosesser, ["P1", "P4"]);
+  k.lik("prosessummen er lik aktivitetssummen (ingen dobbelttelling)", mid.prosesser.reduce((x, p) => x + p.spartTimer, 0), mid.totalSpartTimer, 1e-9);
+  k.lik("naiv prosessvis summering ville dobbelttelt A1 (1,95 t)", naivProsessum(K, 1) - mid.totalSpartTimer, a1.spartTimer, 1e-9);
+  k.lik("datatilgang «ingen» gir null gevinst (A4)", mid.aktiviteter.find(a => a.id === "A4").spartTimer, 0);
+  const null_ = structuredClone(K); null_.aktiviteter.forEach(a => a.volumPerMnd = 0);
+  k.sjekk("null volum gir null tidsgevinst i alle scenarier", beregn(null_).every(s => s.totalSpartTimer === 0 && s.totalSpartKr === 0));
+  const enNull = structuredClone(K); enNull.aktiviteter[2].volumPerMnd = 0;
+  k.lik("null volum på én aktivitet gir null for den", beregn(enNull)[1].aktiviteter[2].spartTimer, 0);
+  k.sjekk("alle resultater er merket hypotese når ikke målt", [lav, mid, hoy].every(s => s.status === "hypotese"));
+  k.lik("målt-flagg endrer status", beregn({ ...K, malt: true })[0].status, "målt");
+  const p = lagPilot(K, "P2");
+  k.sjekk("pilot har konkret måling, output og stoppkriterium", p.maling.length === 3 && p.forventetOutput.includes("Fakturering") && p.stoppkriterium.includes("Stopp"));
+  k.lik("pilot baseline for Fakturering (10,67 + 2,13 t)", p.baselineTimerPerMnd, 12.8, 1e-9);
+  const feil = structuredClone(K); feil.aktiviteter[0].feilrate = 1.5; feil.prosesser[0].aktiviteter.push("A99");
+  k.lik("ugyldige data avvises med forklaring", valider(feil).length, 2);
+  k.lik("ubekreftede antakelser", K.antakelser.filter(a => !a.bekreftet).length, 6);
+  mkdirSync(HER + "resultat", { recursive: true });
+  writeFileSync(HER + "resultat/scenarioer.csv", scenarioCsv(K));
+  writeFileSync(HER + "resultat/pilot_P2.json", JSON.stringify(p, null, 2));
+  k.notat(`Middels: ${mid.totalSpartTimer.toFixed(2)} t/mnd ≈ ${Math.round(mid.totalSpartKr)} kr/mnd (hypotese)`);
+});

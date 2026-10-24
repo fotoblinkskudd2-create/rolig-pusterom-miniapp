@@ -1,0 +1,1 @@
+{"nr": 5, "tittel": "Betalbar KI-kartlegging", "kontroll": ["tsc -p . && node kontroll.mjs", "node e2e.mjs"]}

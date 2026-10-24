@@ -1,0 +1,21 @@
+# Kontroll: 005 KI-kartlegging
+Kjørt: 2026-10-24T01:09:51.403Z
+Resultat: 16 bestått, 0 feilet
+
+[BESTÅTT] ingen valideringsfeil i demo  — faktisk=[] forventet=[]
+[BESTÅTT] middels: håndregnet total 11,9517 t/mnd  — faktisk=11.951666666666666 forventet=11.951670000000002
+[BESTÅTT] middels: kroner = timer × 600  — faktisk=7171 forventet=7171
+[BESTÅTT] lav < middels < høy  — 4.68 < 11.95 < 19.22
+[BESTÅTT] A1 inngår i to prosesser  — faktisk=[ 'P1', 'P4' ] forventet=[ 'P1', 'P4' ]
+[BESTÅTT] prosessummen er lik aktivitetssummen (ingen dobbelttelling)  — faktisk=11.951666666666668 forventet=11.951666666666666
+[BESTÅTT] naiv prosessvis summering ville dobbelttelt A1 (1,95 t)  — faktisk=1.950000000000001 forventet=1.95
+[BESTÅTT] datatilgang «ingen» gir null gevinst (A4)  — faktisk=0 forventet=0
+[BESTÅTT] null volum gir null tidsgevinst i alle scenarier
+[BESTÅTT] null volum på én aktivitet gir null for den  — faktisk=0 forventet=0
+[BESTÅTT] alle resultater er merket hypotese når ikke målt
+[BESTÅTT] målt-flagg endrer status  — faktisk='målt' forventet='målt'
+[BESTÅTT] pilot har konkret måling, output og stoppkriterium
+[BESTÅTT] pilot baseline for Fakturering (10,67 + 2,13 t)  — faktisk=12.799999999999999 forventet=12.8
+[BESTÅTT] ugyldige data avvises med forklaring  — faktisk=2 forventet=2
+[BESTÅTT] ubekreftede antakelser  — faktisk=6 forventet=6
+  · Middels: 11.95 t/mnd ≈ 7171 kr/mnd (hypotese)
