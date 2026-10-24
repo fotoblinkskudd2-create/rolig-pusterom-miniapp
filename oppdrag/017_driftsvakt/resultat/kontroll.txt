@@ -1,0 +1,20 @@
+# Kontroll: 017 Driftsvakt
+Kjørt: 2026-10-24 01:42:00
+Resultat: 16 bestått, 0 feilet
+
+[BESTÅTT] frisk → ok  — faktisk='ok' forventet='ok'
+[BESTÅTT] feilende → http_feil 503  — faktisk=('http_feil', 503) forventet=('http_feil', 503)
+[BESTÅTT] én feil åpner ikke hendelse (terskel 2)  — faktisk=0 forventet=0
+[BESTÅTT] to påfølgende feil åpner én hendelse  — faktisk=1 forventet=1
+[BESTÅTT] treg server over tidsgrensen gir timeout, ikke HTTP-feil  — faktisk=('timeout', None) forventet=('timeout', None)
+[BESTÅTT] fortsatt bare én hendelse etter gjentatte feil  — faktisk=1 forventet=1
+[BESTÅTT] hendelsen teller fire feil  — faktisk=4 forventet=4
+[BESTÅTT] alle fire feilmålinger er knyttet til hendelsen og beholdt  — faktisk=4 forventet=4
+[BESTÅTT] råmålinger beholdes (5 så langt)  — faktisk=5 forventet=5
+[BESTÅTT] gjenoppretting lukker hendelsen  — faktisk='2026-10-24T10:00:50' forventet='2026-10-24T10:00:50'
+[BESTÅTT] svar innen timeout men over 500 ms gir «treg»  — faktisk='treg' forventet='treg'
+[BESTÅTT] feil i vedlikeholdsvindu merkes og åpner ikke hendelse  — faktisk=(2, 1) forventet=(2, 1)
+[BESTÅTT] vedlikeholdsfeil teller ikke mot terskelen etter vinduet  — faktisk=1 forventet=1
+[BESTÅTT] tilgjengelighet regnes uten vedlikeholdsmålinger (4 ok/treg av 9)  — faktisk=(44.44, 9) forventet=(44.44, 9)
+[BESTÅTT] URL som ikke er i konfigurasjonen kontrolleres ikke  — PermissionError: http://127.0.0.1:8917/annet er ikke uttrykkelig angitt i konfigurasjonen og kontrolleres ikke
+[BESTÅTT] ugyldig URL i konfigurasjonen avvises  — ValueError: ugyldig URL for x: ftp://x

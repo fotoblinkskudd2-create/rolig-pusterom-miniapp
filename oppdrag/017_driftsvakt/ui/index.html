@@ -1,0 +1,21 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driftsvakt</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Driftsvakt</h1><span class="demo">Bare endepunkter i konfig.json · ingen ekstern varsling</span><button id="runde">Mål nå</button></header>
+<main><div class="rutenett" id="ende"></div><div class="kort"><h3>Hendelser</h3><table id="hend"></table></div>
+<div class="kort"><h3>Vedlikeholdsvinduer</h3><ul id="vedl"></ul></div><div class="kort wrap"><h3>Siste råmålinger</h3><table id="mal"></table></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const farge = { ok: "ok", treg: "adv", http_feil: "feil", timeout: "feil", tilkoblingsfeil: "feil" };
+async function last() {
+  const d = await api("GET", "/api/status");
+  tom($("#ende"), d.endepunkter.map(e => h("div", { class: "kort", "data-ende": e.id }, h("h3", {}, e.navn), h("div", { class: "svak" }, e.url),
+    e.siste ? h("p", {}, h("span", { class: "merke " + farge[e.siste.utfall], id: "utfall" }, e.siste.utfall), ` ${e.siste.status ?? ""} · ${Math.round(e.siste.ms)} ms · ${e.siste.tid}`, e.siste.vedlikehold ? h("span", { class: "merke" }, "vedlikehold") : "") : h("p", {}, "ingen målinger ennå"),
+    h("p", {}, `Tilgjengelighet utenfor vedlikehold: ${e.tilgjengelighet_prosent ?? "–"} % (${e.malinger_utenfor_vedlikehold} målinger)`),
+    e.aapen_hendelse ? h("p", { class: "feil" }, `Åpen hendelse #${e.aapen_hendelse.id} siden ${e.aapen_hendelse.aapnet}: ${e.aapen_hendelse.forste_aarsak} (${e.aapen_hendelse.antall_feil} feil)`) : h("p", { class: "ok" }, "Ingen åpen hendelse"))));
+  tom($("#hend"), h("tr", {}, ["#", "Endepunkt", "Åpnet", "Lukket", "Første årsak", "Feil"].map(x => h("th", {}, x))), d.hendelser.map(x => h("tr", {}, h("td", {}, x.id), h("td", {}, x.endepunkt), h("td", {}, x.aapnet), h("td", { class: x.lukket ? "ok" : "feil" }, x.lukket || "åpen"), h("td", {}, x.forste_aarsak), h("td", { class: "tall" }, x.antall_feil))));
+  tom($("#vedl"), d.vedlikehold.map(v => h("li", {}, `${v.endepunkt}: ${v.fra} – ${v.til} (${v.merknad})`)));
+  tom($("#mal"), h("tr", {}, ["Tid", "Endepunkt", "Utfall", "Status", "ms", "Årsak", "Hendelse"].map(x => h("th", {}, x))), d.malinger.map(m => h("tr", {}, h("td", {}, m.tid), h("td", {}, m.endepunkt), h("td", { class: farge[m.utfall] }, m.utfall + (m.vedlikehold ? " (vedlikehold)" : "")), h("td", {}, m.status ?? "–"), h("td", { class: "tall" }, Math.round(m.ms)), h("td", {}, m.aarsak || ""), h("td", {}, m.hendelse_id ? "#" + m.hendelse_id : ""))));
+}
+$("#runde").onclick = async () => { await api("POST", "/api/runde"); last(); };
+last(); setInterval(last, 5000);
+</script></body></html>

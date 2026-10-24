@@ -1,0 +1,10 @@
+{
+  "intervall_sek": 10,
+  "terskel_feil_for_hendelse": 2,
+  "endepunkter": [
+    {"id": "demo-api", "navn": "Lokal testserver /helse", "url": "http://127.0.0.1:8917/helse", "timeout_sek": 1.0, "forventet_status": 200, "treg_ms": 500}
+  ],
+  "vedlikehold": [
+    {"endepunkt": "demo-api", "fra": "2026-10-24T22:00:00", "til": "2026-10-24T23:00:00", "merknad": "planlagt oppdatering (syntetisk)"}
+  ]
+}

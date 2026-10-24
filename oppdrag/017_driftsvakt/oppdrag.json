@@ -1,0 +1,1 @@
+{"nr": 17, "tittel": "Driftsvakt for småapper", "kontroll": ["python3 kontroll.py", "rm -f resultat/e2e.db && node e2e.mjs"]}
