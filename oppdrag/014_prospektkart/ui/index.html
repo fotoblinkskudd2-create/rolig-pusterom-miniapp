@@ -21,7 +21,7 @@ function detalj(b) {
   const k = b.kvalifisering || {};
   tom($("#detalj"), h("h3", {}, `${b.navn} (${b.orgnr})`),
     h("table", {}, h("tr", {}, ["Kilde", "Oppdatert", "Navn", "NACE", "Kommune", "Ansatte"].map(x => h("th", {}, x))),
-      b.kilder.map(s => h("tr", {}, h("td", {}, s.kilde), h("td", {}, s.oppdatert), h("td", {}, s.navn), h("td", {}, s.nace), h("td", {}, s.kommune), h("td", {}, s.ansatte ?? "ukjent"))))),
+      b.kilder.map(s => h("tr", {}, h("td", {}, s.kilde), h("td", {}, s.oppdatert), h("td", {}, s.navn), h("td", {}, s.nace), h("td", {}, s.kommune), h("td", {}, s.ansatte ?? "ukjent")))),
     h("p", { class: "svak" }, "Visningsverdi per felt: ", Object.entries(b.felt_kilde).map(([f, s]) => `${f} ← ${s}`).join(" · ")),
     h("div", { class: "rad" }, h("label", {}, "Status", h("select", { id: "status" }, ["vurderes", "aktuell", "ikke aktuell"].map(s => h("option", { selected: k.status === s }, s)))),
       h("label", { style: "flex:1" }, "Kvalifiseringsgrunn", h("input", { id: "grunn", value: k.grunn || "" })), h("label", { style: "flex:1" }, "Neste interne handling", h("input", { id: "neste", value: k.neste_handling || "" })),

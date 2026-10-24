@@ -1,5 +1,10 @@
 # Nettleserkontroll: 014 Prospektkart
-Kjørt: 2026-10-24T01:34:54.152Z
-Resultat: 0 bestått, 1 feilet
+Kjørt: 2026-10-24T01:35:46.525Z
+Resultat: 6 bestått, 0 feilet
 
-[FEILET] nettleserkontrollen kjørte uten krasj  — page.waitForSelector: Timeout 8000ms exceeded. Call log: [2m  - waiting for locator('[data-org]') to be visible[22m
+[BESTÅTT] 20 bedrifter og én avvist rad
+[BESTÅTT] størrelsesfilter 10–50 gir 6 og utelater ukjent
+[BESTÅTT] ukjent størrelse kan tas med eksplisitt
+[BESTÅTT] aktuell uten grunn avvises
+[BESTÅTT] kvalifisering lagres
+[BESTÅTT] ingen JavaScript-feil i siden

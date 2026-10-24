@@ -6,8 +6,8 @@ await e2e("014 Prospektkart", HER, { server: ["python3", "app.py", "--demo", "--
     await page.goto(url); await page.waitForSelector("[data-org]");
     sjekk("20 bedrifter og én avvist rad", (await page.locator("[data-org]").count()) === 20 && (await page.innerText("#info")).includes("1 importrad"));
     await page.fill("#min", "10"); await page.fill("#maks", "50");
-    await page.waitForFunction(() => document.querySelectorAll("[data-org]").length === 8);
-    sjekk("størrelsesfilter utelater ukjent", (await page.locator("td.ukjent").count()) === 0);
+    await page.waitForFunction(() => document.querySelectorAll("[data-org]").length === 6);
+    sjekk("størrelsesfilter 10–50 gir 6 og utelater ukjent", (await page.locator("td.ukjent").count()) === 0);
     await page.check("#ukjent"); await page.waitForFunction(() => document.querySelectorAll("td.ukjent").length > 0);
     sjekk("ukjent størrelse kan tas med eksplisitt", true);
     await page.locator("[data-org] button").first().click();
