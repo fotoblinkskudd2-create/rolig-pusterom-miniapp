@@ -1,0 +1,47 @@
+# Kontroll: 007 Likviditetslab 13 uker
+Kjørt: 2026-10-24T01:14:58.291Z
+Resultat: 17 bestått, 0 feilet
+
+[BESTÅTT] uke-for-uke-saldo stemmer med uavhengig beregning  — faktisk=[
+  121300, 156800,  85000,
+  103500,  79000, 128300,
+  191800,  90300, 135800,
+  125100, 161800, 155300,
+  123800
+] forventet=[
+  121300, 156800,  85000,
+  103500,  79000, 128300,
+  191800,  90300, 135800,
+  125100, 161800, 155300,
+  123800
+]
+[BESTÅTT] intern avstemming: inngående = forrige utgående og sluttsaldo = start + sum
+[BESTÅTT] sluttsaldo  — faktisk=123800 forventet=123800
+[BESTÅTT] post utenfor horisonten listes separat  — faktisk=[ 'UTENFOR' ] forventet=[ 'UTENFOR' ]
+[BESTÅTT] registrert og antatt holdes adskilt (uke 7 har bare antatt inn)  — {
+  nr: 7,
+  fra: '2026-12-07',
+  til: '2026-12-13',
+  inngaaende: 128300,
+  innRegistrert: 0,
+  innAntatt: 70000,
+  utRegistrert: 0,
+  utAntatt: 6500,
+  netto: 63500,
+  utgaaende: 191800,
+  negativ: false,
+  poster: [ 'A1', 'D7' ]
+}
+[BESTÅTT] flytting bevarer totalbeløpet i modellen  — faktisk=108800 forventet=108800
+[BESTÅTT] K2 flyttet fra uke 2 til uke 5  — faktisk=[ 2, 5 ] forventet=[ 2, 5 ]
+[BESTÅTT] flytting innen horisonten endrer ikke sluttsaldo  — faktisk=123800 forventet=123800
+[BESTÅTT] original modell er uendret etter flytting
+[BESTÅTT] forsinkelser senker laveste saldo  — 65000 → -58500 (uke 4)
+[BESTÅTT] negative saldoer flagges per uke  — negative uker: 4,5
+[BESTÅTT] negativ saldo videreføres korrekt til neste uke
+[BESTÅTT] forsinket scenario: samme sluttsaldo (alle flytt innen horisont)  — faktisk=123800 forventet=123800
+[BESTÅTT] ansettelse: siste ukes differanse = lønn + AGA + utstyr  — faktisk=-73700 forventet=-73700
+[BESTÅTT] ansettelse: differansen starter i uka utstyret betales (uke 6)  — faktisk=6 forventet=6
+[BESTÅTT] startdato som ikke er mandag avvises  — startdato må være en mandag
+[BESTÅTT] desimalbeløp avvises  — K1: beløp må være hele kroner
+  · Laveste saldo basis: 65000 (uke 0); forsinket: -58500 (uke 4)

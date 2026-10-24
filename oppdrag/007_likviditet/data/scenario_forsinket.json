@@ -1,0 +1,20 @@
+{
+ "navn": "Forsinkede kundeinnbetalinger",
+ "flytt": [
+  {
+   "id": "K1",
+   "uker": 2
+  },
+  {
+   "id": "K2",
+   "uker": 3
+  },
+  {
+   "id": "K3",
+   "uker": 4
+  }
+ ],
+ "forutsetninger": [
+  "Kunde A betaler 2 uker sent, B 3 uker, C 4 uker"
+ ]
+}

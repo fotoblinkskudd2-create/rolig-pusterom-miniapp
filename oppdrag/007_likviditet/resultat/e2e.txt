@@ -1,0 +1,11 @@
+# Nettleserkontroll: 007 Likviditetslab
+Kjørt: 2026-10-24T01:15:39.175Z
+Resultat: 7 bestått, 0 feilet
+
+[BESTÅTT] basis er avstemt
+[BESTÅTT] flytting av K3 to uker endrer ikke sluttsaldo  — 123 800 kr
+[BESTÅTT] K3 står nå i uke 6
+[BESTÅTT] forsinket scenario viser negative uker
+[BESTÅTT] flytting huskes etter omlasting
+[BESTÅTT] nullstilling gir K3 tilbake i uke 4
+[BESTÅTT] ingen JavaScript-feil i siden

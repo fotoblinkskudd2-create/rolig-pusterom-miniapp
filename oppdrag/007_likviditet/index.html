@@ -1,0 +1,12 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Likviditetslab</title><link rel="stylesheet" href="../felles/web/stil.css">
+<style>.antatt{font-style:italic;color:var(--adv)}tr.neg td{background:rgba(179,38,30,.08)}svg text{font-size:11px;fill:var(--svak)}</style></head><body>
+<header><h1>Likviditetslab · 13 uker</h1><span class="demo">Syntetiske tall · renter, avgifter og lønn er inndata</span></header>
+<main><div class="kort rad"><label>Scenario A (redigeres)<select id="sa"></select></label><label>Scenario B (sammenligning)<select id="sb"></select></label>
+<button id="csv">CSV for A</button><button id="nullstill" class="sekundaer">Nullstill endringer</button></div>
+<div class="kort" id="nokkel"></div><div class="kort"><svg id="graf" viewBox="0 0 800 220" style="width:100%;height:auto"></svg>
+<div class="svak">Heltrukket: A · stiplet: B · rødt felt: under null</div></div>
+<div class="kort wrap"><table id="uker"></table><p class="svak">Registrert = fakturert/forpliktet. <span class="antatt">Kursiv = antatt</span> (ikke fakturert eller anslått).</p></div>
+<div class="kort wrap"><h3>Poster i A – flytt mellom uker</h3><table id="poster"></table></div>
+<div class="kort"><h3>Forutsetninger</h3><ul id="forut"></ul></div></main>
+<script type="module" src="ui.js"></script></body></html>

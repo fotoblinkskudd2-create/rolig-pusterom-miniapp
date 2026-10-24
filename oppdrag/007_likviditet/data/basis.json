@@ -1,0 +1,286 @@
+{
+ "navn": "Basis",
+ "startdato": "2026-10-26",
+ "inngaaendeSaldo": 65000,
+ "uker": 13,
+ "poster": [
+  {
+   "id": "K1",
+   "dato": "2026-10-29",
+   "belop": 85000,
+   "kategori": "kundeinnbetaling",
+   "beskrivelse": "Faktura 1001 Kunde A",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "K2",
+   "dato": "2026-11-05",
+   "belop": 42000,
+   "kategori": "kundeinnbetaling",
+   "beskrivelse": "Faktura 1002 Kunde B",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "K3",
+   "dato": "2026-11-19",
+   "belop": 120000,
+   "kategori": "kundeinnbetaling",
+   "beskrivelse": "Faktura 1003 Kunde C",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "K4",
+   "dato": "2026-12-03",
+   "belop": 60000,
+   "kategori": "kundeinnbetaling",
+   "beskrivelse": "Faktura 1004 Kunde D",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "A1",
+   "dato": "2026-12-10",
+   "belop": 70000,
+   "kategori": "antatt salg",
+   "beskrivelse": "Forventet salg uke 7",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "A2",
+   "dato": "2026-12-24",
+   "belop": 70000,
+   "kategori": "antatt salg",
+   "beskrivelse": "Forventet salg uke 9",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "A3",
+   "dato": "2027-01-07",
+   "belop": 70000,
+   "kategori": "antatt salg",
+   "beskrivelse": "Forventet salg uke 11",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "A4",
+   "dato": "2027-01-21",
+   "belop": 70000,
+   "kategori": "antatt salg",
+   "beskrivelse": "Forventet salg uke 13",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "L1",
+   "dato": "2026-11-19",
+   "belop": -95000,
+   "kategori": "lønn",
+   "beskrivelse": "Netto lønn og skattetrekk (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "L2",
+   "dato": "2026-12-19",
+   "belop": -95000,
+   "kategori": "lønn",
+   "beskrivelse": "Netto lønn og skattetrekk (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "L3",
+   "dato": "2027-01-19",
+   "belop": -95000,
+   "kategori": "lønn",
+   "beskrivelse": "Netto lønn og skattetrekk (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "AGA1",
+   "dato": "2026-11-09",
+   "belop": -26800,
+   "kategori": "avgift",
+   "beskrivelse": "Arbeidsgiveravgift termin (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "AGA2",
+   "dato": "2027-01-10",
+   "belop": -26800,
+   "kategori": "avgift",
+   "beskrivelse": "Arbeidsgiveravgift termin (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "H1",
+   "dato": "2026-10-26",
+   "belop": -18000,
+   "kategori": "husleie",
+   "beskrivelse": "Husleie",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "H2",
+   "dato": "2026-11-26",
+   "belop": -18000,
+   "kategori": "husleie",
+   "beskrivelse": "Husleie",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "H3",
+   "dato": "2026-12-26",
+   "belop": -18000,
+   "kategori": "husleie",
+   "beskrivelse": "Husleie",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "MVA1",
+   "dato": "2026-11-09",
+   "belop": -38500,
+   "kategori": "avgift",
+   "beskrivelse": "MVA-termin (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "R1",
+   "dato": "2026-10-30",
+   "belop": -4200,
+   "kategori": "renter og avdrag",
+   "beskrivelse": "Lån: renter 1 700 + avdrag 2 500 (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "R2",
+   "dato": "2026-11-30",
+   "belop": -4200,
+   "kategori": "renter og avdrag",
+   "beskrivelse": "Lån: renter 1 700 + avdrag 2 500 (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "R3",
+   "dato": "2026-12-30",
+   "belop": -4200,
+   "kategori": "renter og avdrag",
+   "beskrivelse": "Lån: renter 1 700 + avdrag 2 500 (inndata)",
+   "sikkerhet": "registrert"
+  },
+  {
+   "id": "D1",
+   "dato": "2026-10-28",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D2",
+   "dato": "2026-11-04",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D3",
+   "dato": "2026-11-11",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D4",
+   "dato": "2026-11-18",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D5",
+   "dato": "2026-11-25",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D6",
+   "dato": "2026-12-02",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D7",
+   "dato": "2026-12-09",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D8",
+   "dato": "2026-12-16",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D9",
+   "dato": "2026-12-23",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D10",
+   "dato": "2026-12-30",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D11",
+   "dato": "2027-01-06",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D12",
+   "dato": "2027-01-13",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "D13",
+   "dato": "2027-01-20",
+   "belop": -6500,
+   "kategori": "drift",
+   "beskrivelse": "Løpende driftskostnader (antatt)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "UTENFOR",
+   "dato": "2027-02-23",
+   "belop": 50000,
+   "kategori": "kundeinnbetaling",
+   "beskrivelse": "Faktura utenfor horisonten",
+   "sikkerhet": "registrert"
+  }
+ ],
+ "forutsetninger": [
+  "Inngående saldo per 26.10.2026: 65 000 kr (syntetisk)",
+  "Kundeinnbetalinger på forfallsdato",
+  "Antatt salg 70 000 kr hver 14. dag fra uke 7 (antakelse)",
+  "Lønn, arbeidsgiveravgift, MVA og renter er eksplisitte inndata, ikke beregnet"
+ ]
+}

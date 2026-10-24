@@ -1,0 +1,32 @@
+{
+ "navn": "Ansettelse fra desember",
+ "leggTil": [
+  {
+   "id": "NY-L1",
+   "dato": "2026-12-20",
+   "belop": -38000,
+   "kategori": "lønn",
+   "beskrivelse": "Ny ansatt, lønn (inndata)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "NY-AGA1",
+   "dato": "2027-01-15",
+   "belop": -10700,
+   "kategori": "avgift",
+   "beskrivelse": "AGA ny ansatt (inndata)",
+   "sikkerhet": "antatt"
+  },
+  {
+   "id": "NY-UTST",
+   "dato": "2026-12-01",
+   "belop": -25000,
+   "kategori": "utstyr",
+   "beskrivelse": "PC og verktøy (inndata)",
+   "sikkerhet": "antatt"
+  }
+ ],
+ "forutsetninger": [
+  "Ny ansatt fra 1.12. med lønn 38 000 netto/mnd + AGA (inndata)"
+ ]
+}
