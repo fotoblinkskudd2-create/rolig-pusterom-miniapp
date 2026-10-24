@@ -1,0 +1,5 @@
+# Nettleserkontroll: 014 Prospektkart
+Kjørt: 2026-10-24T01:34:54.152Z
+Resultat: 0 bestått, 1 feilet
+
+[FEILET] nettleserkontrollen kjørte uten krasj  — page.waitForSelector: Timeout 8000ms exceeded. Call log: [2m  - waiting for locator('[data-org]') to be visible[22m

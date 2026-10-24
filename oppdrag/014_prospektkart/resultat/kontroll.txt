@@ -1,0 +1,25 @@
+# Kontroll: 014 Prospektkart
+Kjørt: 2026-10-24 01:34:14
+Resultat: 21 bestått, 0 feilet
+
+[BESTÅTT] mod11: gyldig og formatert orgnr godtas
+[BESTÅTT] mod11: feil kontrollsiffer avvises  — faktisk=None forventet=None
+[BESTÅTT] 20 unike bedrifter etter import av 14 CSV-rader + 10 registerrader  — faktisk=20 forventet=20
+[BESTÅTT] ugyldig orgnr avvist og logget  — faktisk=['Feil Orgnr AS'] forventet=['Feil Orgnr AS']
+[BESTÅTT] fire duplikater slått sammen med begge kilder bevart  — faktisk=4 forventet=4
+[BESTÅTT] formatert orgnr i CSV slått sammen med samme enhet
+[BESTÅTT] nyeste kilde vinner for navn (registeret 20.10.)  — faktisk=('Syntetisk Bedrift 13 Nytt Navn AS', 'enhetsregisteret (2026-10-20)') forventet=('Syntetisk Bedrift 13 Nytt Navn AS', 'enhetsregisteret (2026-10-20)')
+[BESTÅTT] gammelt navn fra CSV er bevart i kilden
+[BESTÅTT] navnebytte vises som konflikt  — faktisk=['navn'] forventet=['navn']
+[BESTÅTT] ulik skrivemåte (TROMSØ/Tromsø) er ikke konflikt  — faktisk=[] forventet=[]
+[BESTÅTT] manglende størrelse i CSV fylles fra registeret med kilde  — faktisk=(3, 'enhetsregisteret (2026-10-20)') forventet=(3, 'enhetsregisteret (2026-10-20)')
+[BESTÅTT] manglende størrelse blir None (ukjent), ikke 0  — faktisk=['100000210', '100000636', '100001055'] forventet=['100000210', '100000636', '100001055']
+[BESTÅTT] ingen bedrift har ansatte = 0
+[BESTÅTT] filter størrelse 10–50 utelater ukjent  — faktisk=6 forventet=6
+[BESTÅTT] …og tar dem med når brukeren ber om det  — faktisk=9 forventet=9
+[BESTÅTT] filter NACE 43 (bygg/installasjon)  — faktisk=8 forventet=8
+[BESTÅTT] filter sted Tromsø  — faktisk=5 forventet=5
+[BESTÅTT] aktuell uten grunn/neste handling avvises  — ValueError: aktuell krever kvalifiseringsgrunn og neste interne handling
+[BESTÅTT] eksport har kvalifisering og «ukjent» størrelse
+[BESTÅTT] ingen e-postadresser i registeret eller eksporten
+[BESTÅTT] nettverkshenting er deaktivert  — RuntimeError: Nettverkshenting er deaktivert i demoen. Les dokumentasjonen øverst i filen før aktivering.

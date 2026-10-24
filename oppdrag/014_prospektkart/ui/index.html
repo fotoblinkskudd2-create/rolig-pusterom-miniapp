@@ -1,0 +1,34 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prospektkart</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Prospektkart</h1><span class="demo">Syntetiske bedrifter · manuelt salg · ingen automatisk kontakt</span></header>
+<main><div class="kort rad"><label>NACE starter med<input id="nace" placeholder="43"></label><label>Sted<input id="sted"></label>
+<label>Ansatte min<input id="min" type="number" style="width:80px"></label><label>maks<input id="maks" type="number" style="width:80px"></label>
+<label><span>Ta med ukjent størrelse</span><input id="ukjent" type="checkbox"></label><button id="eks">Eksporter CSV</button></div>
+<div class="kort" id="info"></div><div class="kort wrap"><table id="liste"></table></div><div class="kort" id="detalj"></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const q = () => new URLSearchParams({ nace: $("#nace").value, sted: $("#sted").value, min: $("#min").value, maks: $("#maks").value, ukjent: $("#ukjent").checked ? "1" : "" });
+async function last() {
+  const d = await api("GET", "/api/bedrifter?" + q());
+  tom($("#info"), `${d.bedrifter.length} av ${d.totalt} bedrifter vises.`, d.avvist.length > 0 && h("span", { class: "adv" }, ` ${d.avvist.length} importrad(er) avvist: ${d.avvist.map(a => a.grunn).join("; ")}`));
+  tom($("#liste"), h("tr", {}, ["Org.nr", "Navn", "NACE", "Sted", "Ansatte", "Kilder", "Oppdatert", "Status", ""].map(x => h("th", {}, x))),
+    d.bedrifter.map(b => h("tr", { "data-org": b.orgnr }, h("td", {}, b.orgnr), h("td", {}, b.navn, b.konflikter.length > 0 && h("span", { class: "merke adv" }, "konflikt: " + b.konflikter.join(", "))),
+      h("td", {}, `${b.nace} ${b.nace_tekst || ""}`), h("td", {}, `${b.kommune} ${b.postnr}`), h("td", { class: b.ansatte === null ? "ukjent" : "tall" }, b.ansatte ?? "ukjent"),
+      h("td", {}, b.kilder.map(k => k.kilde).join(" + ")), h("td", {}, b.oppdatert), h("td", {}, b.kvalifisering ? b.kvalifisering.status : "–"),
+      h("td", {}, h("button", { class: "sekundaer", onclick: () => detalj(b) }, "Kvalifiser")))));
+}
+function detalj(b) {
+  const k = b.kvalifisering || {};
+  tom($("#detalj"), h("h3", {}, `${b.navn} (${b.orgnr})`),
+    h("table", {}, h("tr", {}, ["Kilde", "Oppdatert", "Navn", "NACE", "Kommune", "Ansatte"].map(x => h("th", {}, x))),
+      b.kilder.map(s => h("tr", {}, h("td", {}, s.kilde), h("td", {}, s.oppdatert), h("td", {}, s.navn), h("td", {}, s.nace), h("td", {}, s.kommune), h("td", {}, s.ansatte ?? "ukjent"))))),
+    h("p", { class: "svak" }, "Visningsverdi per felt: ", Object.entries(b.felt_kilde).map(([f, s]) => `${f} ← ${s}`).join(" · ")),
+    h("div", { class: "rad" }, h("label", {}, "Status", h("select", { id: "status" }, ["vurderes", "aktuell", "ikke aktuell"].map(s => h("option", { selected: k.status === s }, s)))),
+      h("label", { style: "flex:1" }, "Kvalifiseringsgrunn", h("input", { id: "grunn", value: k.grunn || "" })), h("label", { style: "flex:1" }, "Neste interne handling", h("input", { id: "neste", value: k.neste_handling || "" })),
+      h("label", {}, "Frist", h("input", { id: "frist", type: "date", value: k.frist || "" })),
+      h("button", { id: "lagre", onclick: async () => { try { await api("POST", "/api/kvalifiser/" + b.orgnr, { status: $("#status").value, grunn: $("#grunn").value, neste_handling: $("#neste").value, frist: $("#frist").value }); last(); } catch (e) { alert(e.message); } } }, "Lagre")));
+}
+["#nace", "#sted", "#min", "#maks", "#ukjent"].forEach(s => $(s).addEventListener("input", last));
+$("#eks").onclick = () => location.href = "/api/eksport.csv?" + q();
+last();
+</script></body></html>

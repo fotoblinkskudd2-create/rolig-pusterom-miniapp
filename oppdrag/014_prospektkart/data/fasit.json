@@ -1,0 +1,202 @@
+[
+ {
+  "orgnr": "100000075",
+  "navn": "Syntetisk Bedrift 01 AS",
+  "nace": "43.210",
+  "nace_tekst": "Elektrisk installasjonsarbeid",
+  "kommune": "Tromsø",
+  "postnr": "9008",
+  "ansatte": 3,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000148",
+  "navn": "Syntetisk Bedrift 02 AS",
+  "nace": "43.220",
+  "nace_tekst": "VVS-arbeid",
+  "kommune": "Bodø",
+  "postnr": "8006",
+  "ansatte": 8,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000210",
+  "navn": "Syntetisk Bedrift 03 AS",
+  "nace": "62.010",
+  "nace_tekst": "Programmeringstjenester",
+  "kommune": "Alta",
+  "postnr": "9510",
+  "ansatte": null,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000288",
+  "navn": "Syntetisk Bedrift 04 AS",
+  "nace": "69.201",
+  "nace_tekst": "Regnskap og bokføring",
+  "kommune": "Harstad",
+  "postnr": "9405",
+  "ansatte": 40,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000350",
+  "navn": "Syntetisk Bedrift 05 AS",
+  "nace": "56.101",
+  "nace_tekst": "Drift av restauranter og kafeer",
+  "kommune": "Tromsø",
+  "postnr": "9008",
+  "ansatte": 120,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000423",
+  "navn": "Syntetisk Bedrift 06 AS",
+  "nace": "43.210",
+  "nace_tekst": "Elektrisk installasjonsarbeid",
+  "kommune": "Bodø",
+  "postnr": "8006",
+  "ansatte": 3,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000490",
+  "navn": "Syntetisk Bedrift 07 AS",
+  "nace": "43.220",
+  "nace_tekst": "VVS-arbeid",
+  "kommune": "Alta",
+  "postnr": "9510",
+  "ansatte": 8,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000563",
+  "navn": "Syntetisk Bedrift 08 AS",
+  "nace": "62.010",
+  "nace_tekst": "Programmeringstjenester",
+  "kommune": "Harstad",
+  "postnr": "9405",
+  "ansatte": 15,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000636",
+  "navn": "Syntetisk Bedrift 09 AS",
+  "nace": "69.201",
+  "nace_tekst": "Regnskap og bokføring",
+  "kommune": "Tromsø",
+  "postnr": "9008",
+  "ansatte": null,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000709",
+  "navn": "Syntetisk Bedrift 10 AS",
+  "nace": "56.101",
+  "nace_tekst": "Drift av restauranter og kafeer",
+  "kommune": "Bodø",
+  "postnr": "8006",
+  "ansatte": 120,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000776",
+  "navn": "Syntetisk Bedrift 11 AS",
+  "nace": "43.210",
+  "nace_tekst": "Elektrisk installasjonsarbeid",
+  "kommune": "Alta",
+  "postnr": "9510",
+  "ansatte": 3,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000849",
+  "navn": "Syntetisk Bedrift 12 AS",
+  "nace": "43.220",
+  "nace_tekst": "VVS-arbeid",
+  "kommune": "Harstad",
+  "postnr": "9405",
+  "ansatte": 8,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000911",
+  "navn": "Syntetisk Bedrift 13 AS",
+  "nace": "62.010",
+  "nace_tekst": "Programmeringstjenester",
+  "kommune": "Tromsø",
+  "postnr": "9008",
+  "ansatte": 15,
+  "nettside": null
+ },
+ {
+  "orgnr": "100000989",
+  "navn": "Syntetisk Bedrift 14 AS",
+  "nace": "69.201",
+  "nace_tekst": "Regnskap og bokføring",
+  "kommune": "Bodø",
+  "postnr": "8006",
+  "ansatte": 40,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001055",
+  "navn": "Syntetisk Bedrift 15 AS",
+  "nace": "56.101",
+  "nace_tekst": "Drift av restauranter og kafeer",
+  "kommune": "Alta",
+  "postnr": "9510",
+  "ansatte": null,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001128",
+  "navn": "Syntetisk Bedrift 16 AS",
+  "nace": "43.210",
+  "nace_tekst": "Elektrisk installasjonsarbeid",
+  "kommune": "Harstad",
+  "postnr": "9405",
+  "ansatte": 3,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001195",
+  "navn": "Syntetisk Bedrift 17 AS",
+  "nace": "43.220",
+  "nace_tekst": "VVS-arbeid",
+  "kommune": "Tromsø",
+  "postnr": "9008",
+  "ansatte": 8,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001268",
+  "navn": "Syntetisk Bedrift 18 AS",
+  "nace": "62.010",
+  "nace_tekst": "Programmeringstjenester",
+  "kommune": "Bodø",
+  "postnr": "8006",
+  "ansatte": 15,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001330",
+  "navn": "Syntetisk Bedrift 19 AS",
+  "nace": "69.201",
+  "nace_tekst": "Regnskap og bokføring",
+  "kommune": "Alta",
+  "postnr": "9510",
+  "ansatte": 40,
+  "nettside": null
+ },
+ {
+  "orgnr": "100001403",
+  "navn": "Syntetisk Bedrift 20 AS",
+  "nace": "56.101",
+  "nace_tekst": "Drift av restauranter og kafeer",
+  "kommune": "Harstad",
+  "postnr": "9405",
+  "ansatte": 120,
+  "nettside": null
+ }
+]

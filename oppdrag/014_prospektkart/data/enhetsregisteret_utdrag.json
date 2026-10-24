@@ -1,0 +1,149 @@
+{
+ "_embedded": {
+  "enheter": [
+   {
+    "organisasjonsnummer": "100000776",
+    "navn": "SYNTETISK BEDRIFT 11 AS",
+    "naeringskode1": {
+     "kode": "43.210",
+     "beskrivelse": "Elektrisk installasjonsarbeid"
+    },
+    "forretningsadresse": {
+     "kommune": "ALTA",
+     "postnummer": "9510"
+    },
+    "antallAnsatte": 3,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100000849",
+    "navn": "SYNTETISK BEDRIFT 12 AS",
+    "naeringskode1": {
+     "kode": "43.220",
+     "beskrivelse": "VVS-arbeid"
+    },
+    "forretningsadresse": {
+     "kommune": "HARSTAD",
+     "postnummer": "9405"
+    },
+    "antallAnsatte": 8,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100000911",
+    "navn": "Syntetisk Bedrift 13 Nytt Navn AS",
+    "naeringskode1": {
+     "kode": "62.010",
+     "beskrivelse": "Programmeringstjenester"
+    },
+    "forretningsadresse": {
+     "kommune": "TROMSØ",
+     "postnummer": "9008"
+    },
+    "antallAnsatte": 15,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100000989",
+    "navn": "SYNTETISK BEDRIFT 14 AS",
+    "naeringskode1": {
+     "kode": "69.201",
+     "beskrivelse": "Regnskap og bokføring"
+    },
+    "forretningsadresse": {
+     "kommune": "BODØ",
+     "postnummer": "8006"
+    },
+    "antallAnsatte": 40,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100001055",
+    "navn": "SYNTETISK BEDRIFT 15 AS",
+    "naeringskode1": {
+     "kode": "56.101",
+     "beskrivelse": "Drift av restauranter og kafeer"
+    },
+    "forretningsadresse": {
+     "kommune": "ALTA",
+     "postnummer": "9510"
+    },
+    "harRegistrertAntallAnsatte": false
+   },
+   {
+    "organisasjonsnummer": "100001128",
+    "navn": "SYNTETISK BEDRIFT 16 AS",
+    "naeringskode1": {
+     "kode": "43.210",
+     "beskrivelse": "Elektrisk installasjonsarbeid"
+    },
+    "forretningsadresse": {
+     "kommune": "HARSTAD",
+     "postnummer": "9405"
+    },
+    "antallAnsatte": 3,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100001195",
+    "navn": "SYNTETISK BEDRIFT 17 AS",
+    "naeringskode1": {
+     "kode": "43.220",
+     "beskrivelse": "VVS-arbeid"
+    },
+    "forretningsadresse": {
+     "kommune": "TROMSØ",
+     "postnummer": "9008"
+    },
+    "antallAnsatte": 8,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100001268",
+    "navn": "SYNTETISK BEDRIFT 18 AS",
+    "naeringskode1": {
+     "kode": "62.010",
+     "beskrivelse": "Programmeringstjenester"
+    },
+    "forretningsadresse": {
+     "kommune": "BODØ",
+     "postnummer": "8006"
+    },
+    "antallAnsatte": 15,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100001330",
+    "navn": "SYNTETISK BEDRIFT 19 AS",
+    "naeringskode1": {
+     "kode": "69.201",
+     "beskrivelse": "Regnskap og bokføring"
+    },
+    "forretningsadresse": {
+     "kommune": "ALTA",
+     "postnummer": "9510"
+    },
+    "antallAnsatte": 40,
+    "harRegistrertAntallAnsatte": true
+   },
+   {
+    "organisasjonsnummer": "100001403",
+    "navn": "SYNTETISK BEDRIFT 20 AS",
+    "naeringskode1": {
+     "kode": "56.101",
+     "beskrivelse": "Drift av restauranter og kafeer"
+    },
+    "forretningsadresse": {
+     "kommune": "HARSTAD",
+     "postnummer": "9405"
+    },
+    "antallAnsatte": 120,
+    "harRegistrertAntallAnsatte": true
+   }
+  ]
+ },
+ "page": {
+  "size": 20,
+  "totalElements": 10
+ }
+}

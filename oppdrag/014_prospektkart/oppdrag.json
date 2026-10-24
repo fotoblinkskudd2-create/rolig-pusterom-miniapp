@@ -1,0 +1,1 @@
+{"nr": 14, "tittel": "Prospektkart med kildekontroll", "kontroll": ["python3 generer_data.py && python3 kontroll.py", "node e2e.mjs"]}
