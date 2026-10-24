@@ -1,0 +1,19 @@
+# Kontroll: 019 Overleveringspakke
+Kjørt: 2026-10-24 01:46:39
+Resultat: 15 bestått, 0 feilet
+
+[BESTÅTT] komplett prosjekt med kjørte kontroller: GODKJENT (exit 0)  — faktisk=0 forventet=0
+[BESTÅTT] godkjent pakke er generert
+[BESTÅTT] manifest har sha256 som stemmer med filene i pakken  — 5
+[BESTÅTT] manifest har kjente mangler og neste vedlikeholdshandling
+[BESTÅTT] kontrollen ble kjørt og bestått  — faktisk=['bestått'] forventet=['bestått']
+[BESTÅTT] uten kjørte kontroller blir pakken ikke godkjent  — faktisk=2 forventet=2
+[BESTÅTT] endret fil får endret hash, andre filer uendret  — faktisk=['src/importer.py'] forventet=['src/importer.py']
+[BESTÅTT] mangelfullt prosjekt: IKKE GODKJENT (exit 2)  — faktisk=2 forventet=2
+[BESTÅTT] ingen pakke for mangelfullt prosjekt
+[BESTÅTT] manglende obligatoriske filer blokkerer  — faktisk=['LISENS*', 'tests/test_*.py'] forventet=['LISENS*', 'tests/test_*.py']
+[BESTÅTT] to mulige hemmeligheter flagges med fil og linje  — faktisk=[('src/rute.py', 2), ('src/rute.py', 3)] forventet=[('src/rute.py', 2), ('src/rute.py', 3)]
+[BESTÅTT] hemmelige verdier skrives ikke i utskrift, HTML eller JSON
+[BESTÅTT] kontroll som feiler (testmappe mangler) blokkerer  — 1
+[BESTÅTT] rapporten beskriver grensene for kontrollen
+[BESTÅTT] kontrakt uten påkrevde felt avvises  — JSONDecodeError: Expecting value: line 1 column 1 (char 0)

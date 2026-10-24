@@ -1,0 +1,15 @@
+{
+  "navn": "fakturaimport", "versjon": "1.2.0",
+  "pakrevde_filer": [
+    {"monster": "README.md", "beskrivelse": "beskrivelse og oppstart"},
+    {"monster": "src/*.py", "beskrivelse": "kildekode"},
+    {"monster": "tests/test_*.py", "beskrivelse": "automatiske tester"},
+    {"monster": "LISENS*", "beskrivelse": "lisensfil"},
+    {"monster": "CHANGELOG.md", "beskrivelse": "endringslogg", "obligatorisk": false}
+  ],
+  "oppstart": ["python3 -m venv .venv && . .venv/bin/activate", "python3 src/importer.py eksempel.csv"],
+  "kontroller": [{"navn": "enhetstester", "kommando": "python3 -m unittest discover -s tests -q", "forventet_exit": 0, "timeout_sek": 60}],
+  "kjente_mangler": ["Importerer bare semikolonseparert CSV", "Ingen håndtering av valuta annet enn NOK"],
+  "neste_vedlikehold": "Gå gjennom avhengigheter og rerun tester ved neste kvartalsskifte (2027-01-04)",
+  "utelat": ["ut/*"]
+}

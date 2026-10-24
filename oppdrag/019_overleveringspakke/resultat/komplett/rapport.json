@@ -1,0 +1,66 @@
+{
+ "navn": "fakturaimport",
+ "versjon": "1.2.0",
+ "tid": "2026-10-24T01:46:38",
+ "godkjent": true,
+ "blokkerer": [],
+ "manglende_filer": [
+  {
+   "monster": "CHANGELOG.md",
+   "beskrivelse": "endringslogg",
+   "obligatorisk": false
+  }
+ ],
+ "mulige_hemmeligheter": [],
+ "kontroller": [
+  {
+   "navn": "enhetstester",
+   "kommando": "python3 -m unittest discover -s tests -q",
+   "forventet_exit": 0,
+   "exit": 0,
+   "status": "bestått",
+   "utdata": "----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+  }
+ ],
+ "oppstart": [
+  "python3 -m venv .venv && . .venv/bin/activate",
+  "python3 src/importer.py eksempel.csv"
+ ],
+ "kjente_mangler": [
+  "Importerer bare semikolonseparert CSV",
+  "Ingen håndtering av valuta annet enn NOK"
+ ],
+ "neste_vedlikehold": "Gå gjennom avhengigheter og rerun tester ved neste kvartalsskifte (2027-01-04)",
+ "manifest": [
+  {
+   "fil": "LISENS.txt",
+   "sha256": "451afe54440b0416fcb4dfc65e6a826ebd988091dedd4da4d62fced8f5cde4b7",
+   "bytes": 77
+  },
+  {
+   "fil": "README.md",
+   "sha256": "3e1272ce58d00c09b88e39543b2d4c0d39731c1a3dc48666aed6998a56544a58",
+   "bytes": 133
+  },
+  {
+   "fil": "leveranse.json",
+   "sha256": "d9d74c2688216d62ad397eacd40b44eb1535bcff0c29e5210d7376ea3ac8e85b",
+   "bytes": 902
+  },
+  {
+   "fil": "src/importer.py",
+   "sha256": "64e7ea04b6826478403f209dce6cc129a9f6346ceccc7ecda1ab9bef3f695007",
+   "bytes": 237
+  },
+  {
+   "fil": "tests/test_importer.py",
+   "sha256": "4480a659bd6ba32e48dda2c9ba7a7f08ffc8b51f7820d42502d7d9ce6c47d32b",
+   "bytes": 275
+  }
+ ],
+ "grenser": [
+  "Kontrollen sjekker bare filmønstre, sjekksummer, mønstre for hemmeligheter og eksitkoder for kommandoene i kontrakten.",
+  "Den vurderer ikke kodekvalitet, sikkerhet eller om dokumentasjonen er korrekt.",
+  "Hemmelighetsskanningen er mønsterbasert og kan både gå glipp av hemmeligheter og gi falske treff."
+ ]
+}

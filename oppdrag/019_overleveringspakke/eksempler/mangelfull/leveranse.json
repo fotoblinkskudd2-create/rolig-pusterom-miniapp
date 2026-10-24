@@ -1,0 +1,13 @@
+{
+  "navn": "ruteplan", "versjon": "0.9.0",
+  "pakrevde_filer": [
+    {"monster": "README.md", "beskrivelse": "beskrivelse og oppstart"},
+    {"monster": "src/*.py", "beskrivelse": "kildekode"},
+    {"monster": "tests/test_*.py", "beskrivelse": "automatiske tester"},
+    {"monster": "LISENS*", "beskrivelse": "lisensfil"}
+  ],
+  "oppstart": ["python3 src/rute.py"],
+  "kontroller": [{"navn": "enhetstester", "kommando": "python3 -m unittest discover -s tests -q", "forventet_exit": 0}],
+  "kjente_mangler": [],
+  "neste_vedlikehold": "Legg til tester før produksjon"
+}

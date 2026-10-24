@@ -1,0 +1,11 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Overlevering fakturaimport 1.2.0</title>
+<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:20px auto;padding:0 16px}.ok{color:#2e7d32}.feil{color:#b3261e}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #ddd;padding:4px;text-align:left}code{font-size:12px}</style></head><body>
+<h1>Overlevering: fakturaimport 1.2.0</h1><p>Kontrollert 2026-10-24T01:46:38</p>
+<h2 class="ok">GODKJENT – pakke generert</h2>
+<h3>Blokkerer</h3><ul><li>ingen</li></ul>
+<h3>Oppstart</h3><ul><li><code>python3 -m venv .venv &amp;&amp; . .venv/bin/activate</code></li><li><code>python3 src/importer.py eksempel.csv</code></li></ul>
+<h3>Kontroller</h3><table><tr><th>Navn</th><th>Kommando</th><th>Status</th></tr><tr><td>enhetstester</td><td><code>python3 -m unittest discover -s tests -q</code></td><td>bestått</td></tr></table>
+<h3>Mulige hemmeligheter (verdier vises ikke)</h3><ul><li>ingen</li></ul>
+<h3>Kjente mangler</h3><ul><li>Importerer bare semikolonseparert CSV</li><li>Ingen håndtering av valuta annet enn NOK</li></ul><h3>Neste vedlikeholdshandling</h3><p>Gå gjennom avhengigheter og rerun tester ved neste kvartalsskifte (2027-01-04)</p>
+<h3>Manifest (5 filer)</h3><table><tr><th>Fil</th><th>Bytes</th><th>sha256</th></tr><tr><td>LISENS.txt</td><td>77</td><td><code>451afe54440b0416fcb4dfc65e6a826ebd988091dedd4da4d62fced8f5cde4b7</code></td></tr><tr><td>README.md</td><td>133</td><td><code>3e1272ce58d00c09b88e39543b2d4c0d39731c1a3dc48666aed6998a56544a58</code></td></tr><tr><td>leveranse.json</td><td>902</td><td><code>d9d74c2688216d62ad397eacd40b44eb1535bcff0c29e5210d7376ea3ac8e85b</code></td></tr><tr><td>src/importer.py</td><td>237</td><td><code>64e7ea04b6826478403f209dce6cc129a9f6346ceccc7ecda1ab9bef3f695007</code></td></tr><tr><td>tests/test_importer.py</td><td>275</td><td><code>4480a659bd6ba32e48dda2c9ba7a7f08ffc8b51f7820d42502d7d9ce6c47d32b</code></td></tr></table>
+<h3>Grenser for kontrollen</h3><ul><li>Kontrollen sjekker bare filmønstre, sjekksummer, mønstre for hemmeligheter og eksitkoder for kommandoene i kontrakten.</li><li>Den vurderer ikke kodekvalitet, sikkerhet eller om dokumentasjonen er korrekt.</li><li>Hemmelighetsskanningen er mønsterbasert og kan både gå glipp av hemmeligheter og gi falske treff.</li></ul></body></html>

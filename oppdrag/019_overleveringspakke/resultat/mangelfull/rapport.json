@@ -1,0 +1,74 @@
+{
+ "navn": "ruteplan",
+ "versjon": "0.9.0",
+ "tid": "2026-10-24T01:46:39",
+ "godkjent": false,
+ "blokkerer": [
+  "mangler obligatorisk fil: tests/test_*.py (automatiske tester)",
+  "mangler obligatorisk fil: LISENS* (lisensfil)",
+  "mulig hemmelighet: src/rute.py:2 (passord/nøkkel i tilordning)",
+  "mulig hemmelighet: src/rute.py:3 (passord/nøkkel i tilordning)",
+  "kontroll feilet: enhetstester"
+ ],
+ "manglende_filer": [
+  {
+   "monster": "tests/test_*.py",
+   "beskrivelse": "automatiske tester",
+   "obligatorisk": true
+  },
+  {
+   "monster": "LISENS*",
+   "beskrivelse": "lisensfil",
+   "obligatorisk": true
+  }
+ ],
+ "mulige_hemmeligheter": [
+  {
+   "fil": "src/rute.py",
+   "linje": 2,
+   "type": "passord/nøkkel i tilordning"
+  },
+  {
+   "fil": "src/rute.py",
+   "linje": 3,
+   "type": "passord/nøkkel i tilordning"
+  }
+ ],
+ "kontroller": [
+  {
+   "navn": "enhetstester",
+   "kommando": "python3 -m unittest discover -s tests -q",
+   "forventet_exit": 0,
+   "exit": 1,
+   "status": "feilet",
+   "utdata": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 203, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/lib/python3.13/unittest/__main__.py\", line 18, in <module>\n    main(module=None)\n    ~~~~^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/unittest/main.py\", line 103, in __init__\n    self.parseArgs(argv)\n    ~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/lib/python3.13/unittest/main.py\", line 119, in parseArgs\n    self._do_discovery(argv[2:])\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/usr/lib/python3.13/unittest/main.py\", line 242, in _do_discovery\n    self.createTests(from_discovery=True, Loader=Loader)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/unittest/main.py\", line 149, in createTests\n    self.test = loader.discover(self.start, self.pattern, self.top)\n                ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/unittest/loader.py\", line 299, in discover\n    os.path.dirname((the_module.__file__)))\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen posixpath>\", line 178, in dirname\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n"
+  }
+ ],
+ "oppstart": [
+  "python3 src/rute.py"
+ ],
+ "kjente_mangler": [],
+ "neste_vedlikehold": "Legg til tester før produksjon",
+ "manifest": [
+  {
+   "fil": "README.md",
+   "sha256": "de5c1160abab5f7e5100a7185f21ae0462784490d92450a8fdfbae67fbdf9346",
+   "bytes": 45
+  },
+  {
+   "fil": "leveranse.json",
+   "sha256": "809ec220ebca05fb121b426eb7e3874a02a453a8aeb1401c8cb92f783898d321",
+   "bytes": 571
+  },
+  {
+   "fil": "src/rute.py",
+   "sha256": "52edc157e9cc4aa4bb707bf3dfacd79dde0d91b601fabacb114b28544152e0c8",
+   "bytes": 191
+  }
+ ],
+ "grenser": [
+  "Kontrollen sjekker bare filmønstre, sjekksummer, mønstre for hemmeligheter og eksitkoder for kommandoene i kontrakten.",
+  "Den vurderer ikke kodekvalitet, sikkerhet eller om dokumentasjonen er korrekt.",
+  "Hemmelighetsskanningen er mønsterbasert og kan både gå glipp av hemmeligheter og gi falske treff."
+ ]
+}

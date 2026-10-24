@@ -1,0 +1,11 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Overlevering ruteplan 0.9.0</title>
+<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:20px auto;padding:0 16px}.ok{color:#2e7d32}.feil{color:#b3261e}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #ddd;padding:4px;text-align:left}code{font-size:12px}</style></head><body>
+<h1>Overlevering: ruteplan 0.9.0</h1><p>Kontrollert 2026-10-24T01:46:39</p>
+<h2 class="feil">IKKE GODKJENT – ingen pakke generert</h2>
+<h3>Blokkerer</h3><ul><li>mangler obligatorisk fil: tests/test_*.py (automatiske tester)</li><li>mangler obligatorisk fil: LISENS* (lisensfil)</li><li>mulig hemmelighet: src/rute.py:2 (passord/nøkkel i tilordning)</li><li>mulig hemmelighet: src/rute.py:3 (passord/nøkkel i tilordning)</li><li>kontroll feilet: enhetstester</li></ul>
+<h3>Oppstart</h3><ul><li><code>python3 src/rute.py</code></li></ul>
+<h3>Kontroller</h3><table><tr><th>Navn</th><th>Kommando</th><th>Status</th></tr><tr><td>enhetstester</td><td><code>python3 -m unittest discover -s tests -q</code></td><td>feilet</td></tr></table>
+<h3>Mulige hemmeligheter (verdier vises ikke)</h3><ul><li>src/rute.py:2 – passord/nøkkel i tilordning</li><li>src/rute.py:3 – passord/nøkkel i tilordning</li></ul>
+<h3>Kjente mangler</h3><ul><li>ingen</li></ul><h3>Neste vedlikeholdshandling</h3><p>Legg til tester før produksjon</p>
+<h3>Manifest (3 filer)</h3><table><tr><th>Fil</th><th>Bytes</th><th>sha256</th></tr><tr><td>README.md</td><td>45</td><td><code>de5c1160abab5f7e5100a7185f21ae0462784490d92450a8fdfbae67fbdf9346</code></td></tr><tr><td>leveranse.json</td><td>571</td><td><code>809ec220ebca05fb121b426eb7e3874a02a453a8aeb1401c8cb92f783898d321</code></td></tr><tr><td>src/rute.py</td><td>191</td><td><code>52edc157e9cc4aa4bb707bf3dfacd79dde0d91b601fabacb114b28544152e0c8</code></td></tr></table>
+<h3>Grenser for kontrollen</h3><ul><li>Kontrollen sjekker bare filmønstre, sjekksummer, mønstre for hemmeligheter og eksitkoder for kommandoene i kontrakten.</li><li>Den vurderer ikke kodekvalitet, sikkerhet eller om dokumentasjonen er korrekt.</li><li>Hemmelighetsskanningen er mønsterbasert og kan både gå glipp av hemmeligheter og gi falske treff.</li></ul></body></html>
