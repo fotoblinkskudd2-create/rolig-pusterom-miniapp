@@ -1,0 +1,19 @@
+# Kontroll: 015 Demoverksted
+Kjørt: 2026-10-24T01:36:44.799Z
+Resultat: 15 bestått, 0 feilet
+
+[BESTÅTT] alle scenarioer har versjon og id som stemmer med filnavn
+[BESTÅTT] hvert scenario merker hver funksjon som implementert eller simulert
+[BESTÅTT] ingen kundenavn eller filnavn gjenbrukes mellom scenarioer  — faktisk=[] forventet=[]
+[BESTÅTT] arbeidskort: andre scenarioers kundenavn finnes ikke i input
+[BESTÅTT] dokumentkontroll: andre scenarioers kundenavn finnes ikke i input
+[BESTÅTT] margin: andre scenarioers kundenavn finnes ikke i input
+[BESTÅTT] arbeidskort: sted og frist fra henvendelse 1  — faktisk=[ 'Havnegata 4, 9750 Honningsvåg', '2026-11-13' ] forventet=[ 'Havnegata 4, 9750 Honningsvåg', '2026-11-13' ]
+[BESTÅTT] arbeidskort: sitert gammel adresse brukes ikke i henvendelse 2
+[BESTÅTT] arbeidskort: «innen fredag» fra onsdag 21.10 = 23.10 (tvetydig)  — faktisk=[ '2026-10-23', 'tvetydig' ] forventet=[ '2026-10-23', 'tvetydig' ]
+[BESTÅTT] dokumentkontroll: blokkerer D2 (filtype) og D3 (størrelse)  — faktisk=[ 'D2 Plantegning: avvist', 'D3 Effektmåling: avvist' ] forventet=[ 'D2 Plantegning: avvist', 'D3 Effektmåling: avvist' ]
+[BESTÅTT] dokumentkontroll: valgfritt D4 blokkerer ikke
+[BESTÅTT] margin: SW-1 effektiv timeinntekt (60 000 − 2 400)/72 = 800  — faktisk=800 forventet=800
+[BESTÅTT] margin: refusjon 1 800 holdt utenfor DB  — faktisk=[ 1800, 57600 ] forventet=[ 1800, 57600 ]
+[BESTÅTT] margin: SW-1 20 % over estimat varsles  — faktisk=[ '20 % over timeestimat' ] forventet=[ '20 % over timeestimat' ]
+[BESTÅTT] margin: SW-2 1 500 kr/t uten varsler  — faktisk=[ 1500, [] ] forventet=[ 1500, [] ]

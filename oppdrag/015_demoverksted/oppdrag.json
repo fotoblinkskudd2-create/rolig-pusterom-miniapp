@@ -1,0 +1,1 @@
+{"nr": 15, "tittel": "Demoverksted for tre kundetyper", "kontroll": ["node kontroll.mjs", "node e2e.mjs"]}

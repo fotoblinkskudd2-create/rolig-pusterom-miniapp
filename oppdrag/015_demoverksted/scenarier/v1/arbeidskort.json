@@ -1,0 +1,13 @@
+{
+  "id": "arbeidskort", "versjon": "1.0.0", "tittel": "Henvendelse → arbeidskort",
+  "kunde": {"navn": "Nordkapp Rør & Varme (fiktiv)", "bransje": "rørlegger"},
+  "funksjoner": [
+    {"navn": "Uttrekk av kontakt, jobb, sted og frist", "type": "implementert", "kilde": "../004_arbeidskort/dist/uttrekk.js"},
+    {"navn": "Skille ut sitert e-posthistorikk", "type": "implementert", "kilde": "../004_arbeidskort/dist/uttrekk.js"},
+    {"navn": "E-postmottak fra innboks", "type": "simulert", "merknad": "meldingene ligger i scenariofilen; ingen innboks er koblet til"}
+  ],
+  "input": {"meldinger": [
+    {"navn": "henvendelse_1.txt", "dato": "Tue, 20 Oct 2026 08:15:00 +0200", "tekst": "Hei! Vi trenger ny varmtvannsbereder i kjelleren. Adresse Havnegata 4, 9750 Honningsvåg. Gjerne innen 13.11.2026.\n\nHilsen\nRita Rørsdatter\n915 55 123\n"},
+    {"navn": "henvendelse_2.txt", "dato": "Wed, 21 Oct 2026 10:00:00 +0200", "tekst": "Lekker kran på badet, kan dere komme innen fredag?\nMvh\nKnut Kran\n\nDen 1. okt. 2026 skrev Nordkapp Rør & Varme:\n> Adresse Gamleveien 1, 9750 Honningsvåg\n"}
+  ]}
+}

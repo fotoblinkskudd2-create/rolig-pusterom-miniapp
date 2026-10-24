@@ -1,0 +1,22 @@
+{
+  "id": "dokumentkontroll", "versjon": "1.0.0", "tittel": "Kundeoppstart med dokumentkontroll",
+  "kunde": {"navn": "Lofoten Ladepark (fiktiv)", "bransje": "elektro"},
+  "funksjoner": [
+    {"navn": "Kontroll av filtype, størrelse og obligatoriske krav", "type": "implementert", "kilde": "src/dokumentkontroll.js"},
+    {"navn": "Blokkering av ferdigstilling", "type": "implementert", "kilde": "src/dokumentkontroll.js"},
+    {"navn": "Filopplasting fra kunde", "type": "simulert", "merknad": "filene er metadata i scenariofilen, ikke ekte dokumenter"}
+  ],
+  "input": {
+    "krav": [
+      {"id": "D1", "navn": "Signert avtale", "obligatorisk": true, "filtyper": ["pdf"], "maksKB": 200},
+      {"id": "D2", "navn": "Plantegning", "obligatorisk": true, "filtyper": ["pdf", "png"], "maksKB": 500},
+      {"id": "D3", "navn": "Effektmåling", "obligatorisk": true, "filtyper": ["csv"], "maksKB": 100},
+      {"id": "D4", "navn": "Bilder av inntak", "obligatorisk": false, "filtyper": ["jpg"], "maksKB": 2000}
+    ],
+    "filer": [
+      {"krav": "D1", "filnavn": "lofoten_avtale.pdf", "kb": 120, "godkjent": true},
+      {"krav": "D2", "filnavn": "lofoten_plan.docx", "kb": 80, "godkjent": false},
+      {"krav": "D3", "filnavn": "lofoten_effekt.csv", "kb": 450, "godkjent": false}
+    ]
+  }
+}

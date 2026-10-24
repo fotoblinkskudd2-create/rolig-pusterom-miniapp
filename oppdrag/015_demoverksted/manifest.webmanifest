@@ -1,0 +1,2 @@
+{"name": "Demoverksted", "short_name": "Demo", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#f6f5f2", "theme_color": "#1f5f8b",
+ "icons": [{"src": "ikon-192.png", "sizes": "192x192", "type": "image/png"}]}

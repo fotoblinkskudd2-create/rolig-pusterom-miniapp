@@ -1,0 +1,13 @@
+# Nettleserkontroll: 015 Demoverksted
+Kjørt: 2026-10-24T01:37:19.042Z
+Resultat: 9 bestått, 0 feilet
+
+[BESTÅTT] arbeidskort: viser bare egne navn og filer
+[BESTÅTT] dokumentkontroll: viser bare egne navn og filer
+[BESTÅTT] margin: viser bare egne navn og filer
+[BESTÅTT] endring kjører behandlingen på nytt (SW-2 500 kr/t)
+[BESTÅTT] endring i margin påvirker ikke arbeidskort-scenarioet
+[BESTÅTT] margin husker endringen
+[BESTÅTT] nullstilling gir originaldemonstrasjonen
+[BESTÅTT] demonstrasjonen fungerer uten nett etter installasjon
+[BESTÅTT] ingen JavaScript-feil i siden

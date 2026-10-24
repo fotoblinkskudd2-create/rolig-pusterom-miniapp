@@ -1,0 +1,13 @@
+{
+  "id": "margin", "versjon": "1.0.0", "tittel": "Prosjektmargin",
+  "kunde": {"navn": "Senja Webstudio (fiktiv)", "bransje": "webutvikling"},
+  "funksjoner": [
+    {"navn": "Dekningsbidrag og effektiv timeinntekt", "type": "implementert", "kilde": "src/margin.js"},
+    {"navn": "Refusjon holdt utenfor", "type": "implementert", "kilde": "src/margin.js"},
+    {"navn": "Import fra timeføringssystem", "type": "simulert", "merknad": "timene ligger i scenariofilen"}
+  ],
+  "input": {"prosjekter": [
+    {"id": "SW-1", "navn": "Nettbutikk", "pris": 60000, "estimertTimer": 60, "timer": 72, "kostnader": [{"type": "annen", "belop": 2400}, {"type": "refusjon", "belop": 1800}]},
+    {"id": "SW-2", "navn": "Bookingside", "pris": 30000, "estimertTimer": 25, "timer": 20, "kostnader": []}
+  ], "minTimeinntekt": 750}
+}
