@@ -1,0 +1,10 @@
+# Nettleserkontroll: 012 Lagersimulator
+Kjørt: 2026-10-24T01:30:34.646Z
+Resultat: 6 bestått, 0 feilet
+
+[BESTÅTT] V07 viser utsolgtperiode i A under forsinket levering  — V07 Testvare 07	1,33	30	32	2026-08-08–2026-08-10, 2026-09-25	0	4 577	3 978	Detaljer
+[BESTÅTT] ny avspilling gir identisk resultat og hash
+[BESTÅTT] høyere sikkerhetsfaktor fjerner V07-utsolgt i A
+[BESTÅTT] negativ historisk beholdning vises for V11
+[BESTÅTT] bestillingsforslag eksporteres
+[BESTÅTT] ingen JavaScript-feil i siden

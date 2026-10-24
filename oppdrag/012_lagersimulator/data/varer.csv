@@ -1,0 +1,13 @@
+varenr,navn,kostpris,ledetid_dager,sikkerhetslager,startbeholdning
+V01,Testvare 01,12.5,5,20,120
+V02,Testvare 02,49,7,10,60
+V03,Testvare 03,89,10,8,40
+V04,Testvare 04,230,14,3,12
+V05,Testvare 05,15,5,30,150
+V06,Testvare 06,7.9,3,50,300
+V07,Testvare 07,350,21,2,30
+V08,Testvare 08,64,7,10,50
+V09,Testvare 09,120,10,5,25
+V10,Testvare 10,19.9,5,25,140
+V11,Testvare 11,540,28,1,3
+V12,Testvare 12,33,7,12,70

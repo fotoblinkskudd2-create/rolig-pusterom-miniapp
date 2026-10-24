@@ -1,0 +1,15 @@
+{
+ "A": {
+  "utsolgt_dager": 8,
+  "tapt_antall": 11,
+  "snitt_lagerverdi": 22858.54,
+  "antall_ordre": 70
+ },
+ "B": {
+  "utsolgt_dager": 4,
+  "tapt_antall": 7,
+  "snitt_lagerverdi": 22960.41,
+  "antall_ordre": 130
+ },
+ "hash_A": "5da9748e5d2a112be501b4be3ee61a5839f59d9e239624be31c506da82ffc0a4"
+}

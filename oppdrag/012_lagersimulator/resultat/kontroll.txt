@@ -1,0 +1,23 @@
+# Kontroll: 012 Lagersimulator
+Kjørt: 2026-10-24 01:30:10
+Resultat: 18 bestått, 0 feilet
+
+[BESTÅTT] 12 varer  — faktisk=12 forventet=12
+[BESTÅTT] 90 dager historikk  — faktisk=90 forventet=90
+[BESTÅTT] intern flytting telles ikke som etterspørsel  — faktisk=1 forventet=1
+[BESTÅTT] interne flyttinger har netto null  — faktisk=0 forventet=0
+[BESTÅTT] flytting endrer lokasjon, ikke total  — {'dato': '2026-07-04', 'total': 10, 'lok_LAGER': 6, 'lok_BIL1': 4}
+[BESTÅTT] negativ beholdning flagges med dato og referanse  — [{'dato': '2026-07-06', 'lokasjon': 'LAGER', 'beholdning': -4, 'ref': 'FEIL-REG'}]
+[BESTÅTT] andre varer har ingen negative dager  — faktisk=0 forventet=0
+[BESTÅTT] ROP = ceil(snitt × ledetid + sikkerhetslager)  — faktisk=29 forventet=29
+[BESTÅTT] forsinket levering påvirker replay (V07-ordre merket forsinket)
+[BESTÅTT] regelsett A gir utsolgtperiode for V07 under forsinkelsen  — [['2026-08-08', '2026-08-10'], ['2026-09-25', '2026-09-25']]
+[BESTÅTT] regelsett B har færre utsolgtdager  — A 8 / B 4
+[BESTÅTT] B har høyere gjennomsnittlig lagerverdi (kostnad for robusthet)
+[BESTÅTT] samme historikk gir samme replay (hash)  — faktisk='5da9748e5d2a112be501b4be3ee61a5839f59d9e239624be31c506da82ffc0a4' forventet='5da9748e5d2a112be501b4be3ee61a5839f59d9e239624be31c506da82ffc0a4'
+[BESTÅTT] samme replay to ganger i samme database  — faktisk='5da9748e5d2a112be501b4be3ee61a5839f59d9e239624be31c506da82ffc0a4' forventet='5da9748e5d2a112be501b4be3ee61a5839f59d9e239624be31c506da82ffc0a4'
+[BESTÅTT] håndregnet minireplay: snitt lagerverdi (8+5+5)/3 × 10  — faktisk=60.0 forventet=60.0
+[BESTÅTT] håndregnet minireplay: to ordre  — faktisk=2 forventet=2
+[BESTÅTT] forslag inneholder bare varer med beholdning ≤ ROP  — 0
+[BESTÅTT] forslag for V11 merkes med negativ historikk
+  · A: {'utsolgt_dager': 8, 'tapt_antall': 11, 'snitt_lagerverdi': 22858.54, 'antall_ordre': 70} · B: {'utsolgt_dager': 4, 'tapt_antall': 7, 'snitt_lagerverdi': 22960.41, 'antall_ordre': 130}
