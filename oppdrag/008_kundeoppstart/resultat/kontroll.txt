@@ -1,0 +1,27 @@
+# Kontroll: 008 Kundeoppstart
+Kjørt: 2026-10-24 01:17:20
+Resultat: 23 bestått, 0 feilet
+
+[BESTÅTT] seks dokumentkrav  — faktisk=6 forventet=6
+[BESTÅTT] to obligatoriske mangler blokkerer  — faktisk=['D4 Kontaktliste driftsansvarlig: mangler', 'D6 Samsvarserklæring eksisterende anlegg: mangler'] forventet=['D4 Kontaktliste driftsansvarlig: mangler', 'D6 Samsvarserklæring eksisterende anlegg: mangler']
+[BESTÅTT] valgfritt krav D5 blokkerer ikke
+[BESTÅTT] ferdigstilling blokkeres ved manglende krav  — faktisk=400 forventet=400
+[BESTÅTT] pakke kan ikke lages før ferdigstilling  — faktisk=400 forventet=400
+[BESTÅTT] feil filtype avvises  — {'detail': 'filtype .docx er ikke tillatt for Kontaktliste driftsansvarlig (tillatt: pdf,txt)'}
+[BESTÅTT] for stor fil avvises  — {'detail': 'filen er 60000 B, maks 50000 B'}
+[BESTÅTT] tom fil avvises  — faktisk=400 forventet=400
+[BESTÅTT] gyldig fil mottas som v1  — faktisk={'versjon': 1} forventet={'versjon': 1}
+[BESTÅTT] mottatt er ikke godkjent  — faktisk='til kontroll' forventet='til kontroll'
+[BESTÅTT] mottatt krav blokkerer fortsatt
+[BESTÅTT] avvisning uten grunn avvises  — faktisk=400 forventet=400
+[BESTÅTT] avvisningsgrunn lagres  — faktisk=('avvist', 'mangler telefonnummer til vakt') forventet=('avvist', 'mangler telefonnummer til vakt')
+[BESTÅTT] erstatning: v1 blir erstattet, v2 til kontroll  — faktisk=(['erstattet', 'mottatt'], 'til kontroll') forventet=(['erstattet', 'mottatt'], 'til kontroll')
+[BESTÅTT] gammel versjon kan ikke behandles  — faktisk=400 forventet=400
+[BESTÅTT] fortsatt blokkert av D6  — faktisk=400 forventet=400
+[BESTÅTT] ferdigstilling lykkes når alle obligatoriske er oppfylt  — faktisk=200 forventet=200
+[BESTÅTT] ferdigstilt sak tar ikke imot nye filer  — faktisk=400 forventet=400
+[BESTÅTT] pakken inneholder fem godkjente dokumenter + manifest + logg  — faktisk=7 forventet=7
+[BESTÅTT] pakken bruker siste godkjente versjon (D2 v2)  — faktisk=2 forventet=2
+[BESTÅTT] sjekksum i manifest stemmer med filen i pakken  — faktisk='cb6f85a0be841bfda6c04e1756b84c4ca819b817482e1cc4b0faf3742414fdbc' forventet='cb6f85a0be841bfda6c04e1756b84c4ca819b817482e1cc4b0faf3742414fdbc'
+[BESTÅTT] manifest merker lokal demo uten flerbrukersikkerhet
+[BESTÅTT] versjonsloggen viser avvisninger, blokkering og ferdigstilling  — 20

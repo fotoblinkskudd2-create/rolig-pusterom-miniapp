@@ -20,7 +20,7 @@ export async function api(metode, url, kropp) {
   const r = await fetch(url, { method: metode, headers: { "Content-Type": "application/json" }, body: kropp === undefined ? undefined : JSON.stringify(kropp) });
   const t = await r.text();
   const d = t ? JSON.parse(t) : null;
-  if (!r.ok) throw new Error((d && d.feil) || r.statusText);
+  if (!r.ok) throw new Error((d && (d.feil || (typeof d.detail === "string" ? d.detail : JSON.stringify(d.detail)))) || r.statusText);
   return d;
 }
 export function lastNed(filnavn, innhold, type = "text/plain") {

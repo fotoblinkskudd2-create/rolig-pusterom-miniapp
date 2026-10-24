@@ -1,0 +1,10 @@
+# Nettleserkontroll: 008 Kundeoppstart
+Kjørt: 2026-10-24T01:17:54.334Z
+Resultat: 6 bestått, 0 feilet
+
+[BESTÅTT] to mangler blokkerer
+[BESTÅTT] ferdigstilling avvises med melding
+[BESTÅTT] feil filtype gir avvisning i UI
+[BESTÅTT] sak ferdigstilt
+[BESTÅTT] overleveringspakke lastes ned
+[BESTÅTT] ingen JavaScript-feil i siden

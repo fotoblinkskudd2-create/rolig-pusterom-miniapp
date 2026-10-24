@@ -1,0 +1,1 @@
+{"nr": 8, "tittel": "Kundeoppstart med dokumentkontroll", "kontroll": ["python3 kontroll.py", "node e2e.mjs"]}

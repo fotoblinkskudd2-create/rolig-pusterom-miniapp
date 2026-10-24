@@ -1,0 +1,9 @@
+{"id": "KS-2026-014", "kunde": "Fiktiv Eiendom AS", "tittel": "Oppstart: lading i parkeringskjeller (syntetisk)",
+ "krav": [
+  {"id": "D1", "navn": "Signert avtale", "obligatorisk": true, "filtyper": ["pdf"], "maks_bytes": 200000, "ansvarlig": "Kunde", "frist": "2026-11-01"},
+  {"id": "D2", "navn": "Plantegning parkeringskjeller", "obligatorisk": true, "filtyper": ["pdf", "png", "jpg"], "maks_bytes": 500000, "ansvarlig": "Kunde", "frist": "2026-11-01"},
+  {"id": "D3", "navn": "Effektmåling hovedtavle", "obligatorisk": true, "filtyper": ["csv", "xlsx"], "maks_bytes": 100000, "ansvarlig": "Leverandør", "frist": "2026-11-05"},
+  {"id": "D4", "navn": "Kontaktliste driftsansvarlig", "obligatorisk": true, "filtyper": ["pdf", "txt"], "maks_bytes": 50000, "ansvarlig": "Kunde", "frist": "2026-11-01"},
+  {"id": "D5", "navn": "Brannkonsept (hvis finnes)", "obligatorisk": false, "filtyper": ["pdf"], "maks_bytes": 500000, "ansvarlig": "Kunde", "frist": "2026-11-10"},
+  {"id": "D6", "navn": "Samsvarserklæring eksisterende anlegg", "obligatorisk": true, "filtyper": ["pdf"], "maks_bytes": 200000, "ansvarlig": "Kunde", "frist": "2026-11-05"}
+ ]}

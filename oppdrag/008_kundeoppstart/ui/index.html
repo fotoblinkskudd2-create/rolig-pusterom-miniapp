@@ -1,0 +1,34 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kundeoppstart</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Kundeoppstart · dokumentkontroll</h1><span class="demo">LOKAL DEMO · ingen innlogging · ingen flerbrukersikkerhet</span></header>
+<main><div class="kort" id="sak"></div><div id="krav"></div><div class="kort"><h3>Versjonslogg</h3><table id="logg"></table></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const SAK = "KS-2026-014";
+const farge = { oppfylt: "ok", "til kontroll": "adv", avvist: "feil", mangler: "feil" };
+async function last() {
+  const o = await api("GET", "/api/saker/" + SAK);
+  const ferdig = o.sak.status === "ferdigstilt";
+  tom($("#sak"), h("h3", {}, `${o.sak.id} · ${o.sak.kunde} · ${o.sak.tittel}`), h("div", { class: "rad" },
+    h("span", { class: "merke " + (ferdig ? "ok" : "adv"), id: "sakstatus" }, o.sak.status),
+    h("button", { id: "ferdigstill", disabled: ferdig, onclick: async () => { try { await api("POST", `/api/saker/${SAK}/ferdigstill`); } catch (e) { alert(e.message); } last(); } }, "Ferdigstill"),
+    ferdig && h("a", { href: `/api/saker/${SAK}/overlevering.zip`, id: "pakke" }, "Last ned overleveringspakke (ZIP)")),
+    o.blokkerer.length > 0 && h("div", { class: "feil", id: "blokkerer" }, "Blokkerer ferdigstilling: ", h("ul", {}, o.blokkerer.map(b => h("li", {}, b)))));
+  tom($("#krav"), o.krav.map(k => h("div", { class: "kort", "data-krav": k.id },
+    h("div", { class: "rad" }, h("b", {}, `${k.id} ${k.navn}`), h("span", { class: "merke " + farge[k.kontrollstatus], "data-status": k.id }, k.kontrollstatus),
+      h("span", { class: "svak" }, `${k.obligatorisk ? "obligatorisk" : "valgfri"} · ansvarlig ${k.ansvarlig} · frist ${k.frist} · ${k.filtyper} · maks ${Math.round(k.maks_bytes / 1000)} kB`)),
+    h("table", {}, k.filer.map(f => h("tr", {}, h("td", {}, `v${f.versjon}`), h("td", {}, f.filnavn), h("td", {}, `${f.bytes} B`), h("td", { class: "svak" }, f.sha256.slice(0, 12) + "…"),
+      h("td", { class: farge[{ godkjent: "oppfylt", mottatt: "til kontroll", avvist: "avvist" }[f.status]] || "svak" }, f.status + (f.avvisningsgrunn ? `: ${f.avvisningsgrunn}` : "")),
+      h("td", {}, f.status === "mottatt" && [h("button", { "data-godkjenn": k.id, onclick: () => beh(k.id, f.versjon, true) }, "Godkjenn"),
+        h("button", { class: "sekundaer", onclick: () => { const g = prompt("Avvisningsgrunn"); if (g) beh(k.id, f.versjon, false, g); } }, "Avvis")])))),
+    !ferdig && h("label", {}, "Last opp fil", h("input", { type: "file", "data-fil": k.id, onchange: e => opp(k.id, e.target.files[0]) })))));
+  tom($("#logg"), o.logg.map(l => h("tr", {}, h("td", { class: "svak" }, l.tid), h("td", {}, l.hendelse), h("td", {}, l.detalj))));
+}
+async function opp(kid, fil) {
+  const b = new Uint8Array(await fil.arrayBuffer()); let s = ""; for (const x of b) s += String.fromCharCode(x);
+  try { await api("POST", `/api/krav/${kid}/filer`, { filnavn: fil.name, innhold_base64: btoa(s) }); } catch (e) { alert("Avvist: " + e.message); }
+  last();
+}
+async function beh(kid, v, godkjenn, grunn = "") { try { await api("POST", `/api/krav/${kid}/filer/${v}/behandling`, { godkjenn, grunn }); } catch (e) { alert(e.message); } last(); }
+last();
+</script></body></html>

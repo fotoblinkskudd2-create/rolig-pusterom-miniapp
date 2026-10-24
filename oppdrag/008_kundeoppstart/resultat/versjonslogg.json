@@ -1,0 +1,102 @@
+[
+ {
+  "tid": "2026-10-24T10:00:00",
+  "hendelse": "sak opprettet",
+  "detalj": "6 krav"
+ },
+ {
+  "tid": "2026-10-24T10:02:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D1 v1 avtale_signert.pdf sha256=056570e724b8…"
+ },
+ {
+  "tid": "2026-10-24T10:04:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D1 v1"
+ },
+ {
+  "tid": "2026-10-24T10:06:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D2 v1 plantegning.png sha256=eb5c440aeb7f…"
+ },
+ {
+  "tid": "2026-10-24T10:08:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D2 v1"
+ },
+ {
+  "tid": "2026-10-24T10:10:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D3 v1 effekt_uke42.csv sha256=56d03b8cb180…"
+ },
+ {
+  "tid": "2026-10-24T10:12:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D3 v1"
+ },
+ {
+  "tid": "2026-10-24T10:13:00",
+  "hendelse": "ferdigstilling blokkert",
+  "detalj": "D4 Kontaktliste driftsansvarlig: mangler; D6 Samsvarserklæring eksisterende anlegg: mangler"
+ },
+ {
+  "tid": "2026-10-24T10:14:00",
+  "hendelse": "opplasting avvist",
+  "detalj": "D4: filtype .docx ikke tillatt (pdf,txt)"
+ },
+ {
+  "tid": "2026-10-24T10:15:00",
+  "hendelse": "opplasting avvist",
+  "detalj": "D4: 60000 B > 50000 B"
+ },
+ {
+  "tid": "2026-10-24T10:17:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D4 v1 kontakter.pdf sha256=4d182edc4ea4…"
+ },
+ {
+  "tid": "2026-10-24T10:19:00",
+  "hendelse": "fil avvist",
+  "detalj": "D4 v1: mangler telefonnummer til vakt"
+ },
+ {
+  "tid": "2026-10-24T10:21:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D4 v2 kontakter_v2.pdf sha256=a26b8d1a341d… (erstatter v1)"
+ },
+ {
+  "tid": "2026-10-24T10:23:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D4 v2"
+ },
+ {
+  "tid": "2026-10-24T10:25:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D2 v2 plantegning_rev2.pdf sha256=b46b733b0ad8… (erstatter v1)"
+ },
+ {
+  "tid": "2026-10-24T10:27:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D2 v2"
+ },
+ {
+  "tid": "2026-10-24T10:28:00",
+  "hendelse": "ferdigstilling blokkert",
+  "detalj": "D6 Samsvarserklæring eksisterende anlegg: mangler"
+ },
+ {
+  "tid": "2026-10-24T10:30:00",
+  "hendelse": "fil mottatt",
+  "detalj": "D6 v1 samsvar.pdf sha256=cb6f85a0be84…"
+ },
+ {
+  "tid": "2026-10-24T10:32:00",
+  "hendelse": "fil godkjent",
+  "detalj": "D6 v1"
+ },
+ {
+  "tid": "2026-10-24T10:34:00",
+  "hendelse": "sak ferdigstilt",
+  "detalj": ""
+ }
+]
