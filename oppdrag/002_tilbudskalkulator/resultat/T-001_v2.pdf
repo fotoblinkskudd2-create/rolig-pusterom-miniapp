@@ -51,7 +51,7 @@ BT /F1 8 Tf 56.69 498.90 Td (Demonstrasjonstilbud med oppdiktede satser. Ikke se
 endstream
 endobj
 7 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> /XObject <<  >> >> >>
 endobj
 8 0 obj
 << /Title (Tilbud T-001 v2) /Producer (oppdrag/felles/pdf.js) >>
@@ -66,9 +66,9 @@ xref
 0000000320 00000 n 
 0000000415 00000 n 
 0000002185 00000 n 
-0000002337 00000 n 
+0000002353 00000 n 
 trailer
 << /Size 9 /Root 1 0 R /Info 8 0 R >>
 startxref
-2417
+2433
 %%EOF

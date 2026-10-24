@@ -1,0 +1,31 @@
+{
+  "id": "BEF-2026-031", "adresse": "Testveien 5, 9000 Eksempelby (syntetisk)", "dato": "2026-10-24", "utfortAv": "Demo Montør",
+  "endret": "2026-10-24T09:00:00Z",
+  "rom": [
+    {"id": "R1", "navn": "Bad", "maal": [
+      {"id": "M1", "navn": "Lengde", "raa": "2,45", "verdi": 2.45, "enhet": "m", "kontrollert": true},
+      {"id": "M2", "navn": "Bredde", "raa": "1,8", "verdi": 1.8, "enhet": "m", "kontrollert": false},
+      {"id": "M3", "navn": "Takhøyde", "raa": "2.40", "verdi": 2.4, "enhet": "m", "kontrollert": false}]},
+    {"id": "R2", "navn": "Kjøkken", "maal": [
+      {"id": "M4", "navn": "Benkelengde", "raa": "3,125", "verdi": 3.125, "enhet": "m", "kontrollert": false},
+      {"id": "M5", "navn": "Avstand stikk–vask", "raa": "2.450,5", "verdi": null, "enhet": "mm", "kontrollert": false}]},
+    {"id": "R3", "navn": "Gang", "maal": [
+      {"id": "M6", "navn": "Lengde", "raa": "4,6", "verdi": 4.6, "enhet": "m", "kontrollert": false}]}
+  ],
+  "bilder": [
+    {"id": "B1", "filnavn": "bad_fukt.jpg", "orientering": 1, "bredde": 640, "hoyde": 480, "romId": "R1"},
+    {"id": "B2", "filnavn": "kjokken_stikk.jpg", "orientering": 6, "bredde": 480, "hoyde": 640, "romId": "R2"},
+    {"id": "B3", "filnavn": "gang_sprekk.jpg", "orientering": 1, "bredde": 480, "hoyde": 640, "romId": "R3"}
+  ],
+  "funn": [
+    {"id": "F1", "romId": "R1", "tekst": "Fuktmerke ved sluk", "bildeId": "B1", "markering": {"x": 0.35, "y": 0.4, "b": 0.3, "h": 0.25}, "oppgaveId": "O1"},
+    {"id": "F2", "romId": "R1", "tekst": "Manglende silikon rundt dusjvegg", "oppgaveId": "O1"},
+    {"id": "F3", "romId": "R2", "tekst": "Løs stikkontakt over benk", "bildeId": "B2", "markering": {"x": 0.1, "y": 0.05, "b": 0.4, "h": 0.2}, "oppgaveId": "O2"},
+    {"id": "F4", "romId": "R3", "tekst": "Sprekk i vegg ved dør", "bildeId": "B3", "markering": {"x": 0.2, "y": 0.5, "b": 0.5, "h": 0.15}, "oppgaveId": "O3"},
+    {"id": "F5", "romId": "R3", "tekst": "Slitt dørterskel (observasjon, ingen oppgave)"}
+  ],
+  "arbeidsordre": {"id": "AO-2026-031", "status": "utkast", "oppgaver": [
+    {"id": "O1", "tekst": "Utbedre fuktsikring rundt sluk og dusjvegg"},
+    {"id": "O2", "tekst": "Feste og kontrollere stikkontakt kjøkken"},
+    {"id": "O3", "tekst": "Sparkle og male sprekk i gang"}]}
+}

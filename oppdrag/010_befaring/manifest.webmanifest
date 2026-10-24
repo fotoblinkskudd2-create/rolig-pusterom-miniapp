@@ -1,0 +1,3 @@
+{"name": "Befaring", "short_name": "Befaring", "start_url": "./index.html", "scope": "./", "display": "standalone",
+ "background_color": "#f6f5f2", "theme_color": "#1f5f8b",
+ "icons": [{"src": "ikon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "ikon-512.png", "sizes": "512x512", "type": "image/png"}]}

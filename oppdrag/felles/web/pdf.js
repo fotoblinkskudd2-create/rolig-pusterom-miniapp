@@ -21,10 +21,23 @@ function esc(bytes) {
     : (b < 32 || b > 126) ? "\\" + b.toString(8).padStart(3, "0") : String.fromCharCode(b)).join("");
 }
 
+function binTekst(b) { let t = ""; for (let i = 0; i < b.length; i += 8192) t += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return t; }
+export function jpegStorrelse(b) {
+  if (b[0] !== 0xff || b[1] !== 0xd8) throw new Error("ikke JPEG");
+  let i = 2;
+  while (i < b.length) {
+    if (b[i] !== 0xff) { i++; continue; }
+    const m = b[i + 1], len = (b[i + 2] << 8) | b[i + 3];
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { hoyde: (b[i + 5] << 8) | b[i + 6], bredde: (b[i + 7] << 8) | b[i + 8] };
+    i += 2 + len;
+  }
+  throw new Error("fant ikke SOF i JPEG");
+}
+
 export class Pdf {
   constructor({ bredde = 210, hoyde = 297, tittel = "" } = {}) { this.b = bredde; this.hy = hoyde; this.sider = []; this.tittel = tittel; }
   side() {
-    const ops = []; const hy = this.hy;
+    const ops = []; const bilder = []; const hy = this.hy;
     const s = {
       tekst(x, y, t, { str = 10, font = "normal", hoyre = false } = {}) {
         const by = winAnsi(t);
@@ -35,7 +48,19 @@ export class Pdf {
       },
       linje(x1, y1, x2, y2, tykk = 0.3) { ops.push(`${(tykk * MM).toFixed(2)} w ${(x1 * MM).toFixed(2)} ${((hy - y1) * MM).toFixed(2)} m ${(x2 * MM).toFixed(2)} ${((hy - y2) * MM).toFixed(2)} l S`); return s; },
       rekt(x, y, b, h, tykk = 0.3) { ops.push(`${(tykk * MM).toFixed(2)} w ${(x * MM).toFixed(2)} ${((hy - y - h) * MM).toFixed(2)} ${(b * MM).toFixed(2)} ${(h * MM).toFixed(2)} re S`); return s; },
-      ops,
+      // JPEG-bilde (DCTDecode). Rotasjon i grader (0/90/180/270) brukes for EXIF-orientering:
+      // bildet tegnes rotert slik at det vises riktig i boksen x,y,b,h (mål i mm etter rotasjon).
+      bilde(jpeg, x, y, b, h, rotasjon = 0) {
+        const { bredde, hoyde } = jpegStorrelse(jpeg);
+        const navn = "Im" + (bilder.length + 1);
+        bilder.push({ navn, jpeg, bredde, hoyde });
+        const X = x * MM, Y = (hy - y - h) * MM, B = b * MM, H = h * MM;
+        const m = { 0: [B, 0, 0, H, X, Y], 90: [0, -H, B, 0, X, Y + H], 180: [-B, 0, 0, -H, X + B, Y + H], 270: [0, H, -B, 0, X + B, Y] }[rotasjon];
+        if (!m) throw new Error("rotasjon må være 0, 90, 180 eller 270");
+        ops.push(`q ${m.map(v => v.toFixed(3)).join(" ")} cm /${navn} Do Q`);
+        return s;
+      },
+      ops, bilder,
     };
     this.sider.push(s);
     return s;
@@ -51,7 +76,8 @@ export class Pdf {
     for (const s of this.sider) {
       const innhold = s.ops.join("\n");
       const c = legg(`<< /Length ${innhold.length} >>\nstream\n${innhold}\nendstream`);
-      kids.push(legg(`<< /Type /Page /Parent ${sider} 0 R /MediaBox [0 0 ${(this.b * MM).toFixed(2)} ${(this.hy * MM).toFixed(2)}] /Contents ${c} 0 R /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R >> >> >>`));
+      const xo = s.bilder.map(b => `/${b.navn} ${legg(`<< /Type /XObject /Subtype /Image /Width ${b.bredde} /Height ${b.hoyde} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${b.jpeg.length} >>\nstream\n${binTekst(b.jpeg)}\nendstream`)} 0 R`).join(" ");
+      kids.push(legg(`<< /Type /Page /Parent ${sider} 0 R /MediaBox [0 0 ${(this.b * MM).toFixed(2)} ${(this.hy * MM).toFixed(2)}] /Contents ${c} 0 R /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R >> /XObject << ${xo} >> >> >>`));
     }
     obj[katalog - 1] = `<< /Type /Catalog /Pages ${sider} 0 R >>`;
     obj[sider - 1] = `<< /Type /Pages /Kids [${kids.map(k => k + " 0 R").join(" ")}] /Count ${kids.length} >>`;

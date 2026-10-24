@@ -1,0 +1,1 @@
+{"nr": 10, "tittel": "Befaring til arbeidsordre uten nett", "kontroll": ["tsc -p . && node kontroll.mjs", "node e2e.mjs"]}

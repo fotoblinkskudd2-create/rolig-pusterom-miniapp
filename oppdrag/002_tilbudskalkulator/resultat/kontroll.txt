@@ -1,5 +1,5 @@
 # Kontroll: 002 Tilbudskalkulator
-Kjørt: 2026-10-24T01:01:31.778Z
+Kjørt: 2026-10-24T01:21:16.915Z
 Resultat: 31 bestått, 0 feilet
 
 [BESTÅTT] A: materialer (øre)  — faktisk=1598160 forventet=1598160

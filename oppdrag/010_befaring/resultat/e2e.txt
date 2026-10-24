@@ -1,0 +1,12 @@
+# Nettleserkontroll: 010 Befaring PWA
+Kjørt: 2026-10-24T01:24:16.716Z
+Resultat: 8 bestått, 0 feilet
+
+[BESTÅTT] EXIF-rotert bilde vises stående i nettleseren  — 480×640
+[BESTÅTT] mål rettes uten nett og lagres lokalt
+[BESTÅTT] ferdigstilling er sperret før alle mål er kontrollert
+[BESTÅTT] appen åpnes uten nett (service worker) og utkastet er bevart
+[BESTÅTT] bildekobling bevart etter gjenåpning
+[BESTÅTT] arbeidsordre ferdigstilles etter kontroll av alle mål
+[BESTÅTT] eksportpakke laget uten nett er gyldig ZIP med 6 filer  — 6
+[BESTÅTT] ingen JavaScript-feil i siden

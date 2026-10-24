@@ -1,0 +1,24 @@
+# Kontroll: 010 Befaring til arbeidsordre
+Kjørt: 2026-10-24T01:22:53.131Z
+Resultat: 19 bestått, 0 feilet
+
+[BESTÅTT] «2,45» → 2.45  — faktisk=2.45 forventet=2.45
+[BESTÅTT] «2.40» → 2.4  — faktisk=2.4 forventet=2.4
+[BESTÅTT] «3,125» beholder tre desimaler  — faktisk=3.125 forventet=3.125
+[BESTÅTT] «2.450,5» avvises som tvetydig
+[BESTÅTT] «abc» og tomt avvises
+[BESTÅTT] EXIF-orientering leses (1, 6, 1)  — faktisk=[ 1, 6, 1 ] forventet=[ 1, 6, 1 ]
+[BESTÅTT] rotert bilde (EXIF 6) får byttet bredde/høyde i visning  — faktisk=[ 480, 640 ] forventet=[ 480, 640 ]
+[BESTÅTT] ferdigstilling blokkeres av ukontrollerte mål og ugyldig mål  — 5 hindringer
+[BESTÅTT] ferdigstill kaster med hindringer  — kan ikke ferdigstille: Bad: «Bredde» er ikke kontrollert; Bad: «Takhøyde» er ikke kontrollert; Kjøkken: «Benkelengde» er ikke kontrollert; Kjøkken: «Avstand stikk–vask» mangler gyldig verdi; Gang: «Lengde» er ikke kontrollert
+[BESTÅTT] rettet mål leses og må kontrolleres på nytt  — faktisk=[ 2450.5, false ] forventet=[ 2450.5, false ]
+[BESTÅTT] ferdigstilling lykkes når alle mål er kontrollert  — faktisk='ferdigstilt' forventet='ferdigstilt'
+[BESTÅTT] brutt bildekobling oppdages
+[BESTÅTT] bildekoblinger og markeringer bevares etter lagring/gjenåpning  — faktisk=[ [ 'F1', 'B1', 'O1', 0.35 ], [ 'F2', null, 'O1', null ], [ 'F3', 'B2', 'O2', 0.1 ], [ 'F4', 'B3', 'O3', 0.2 ], [ 'F5', null, null, null ] ] forventet=[ [ 'F1', 'B1', 'O1', 0.35 ], [ 'F2', null, 'O1', null ], [ 'F3', 'B2', 'O2', 0.1 ], [ 'F4', 'B3', 'O3', 0.2 ], [ 'F5', null, null, null ] ]
+[BESTÅTT] ZIP er gyldig (Python zipfile.testzip)  — faktisk=null forventet=null
+[BESTÅTT] pakken inneholder JSON, PDF, 3 originalbilder og manifest  — faktisk=6 forventet=6
+[BESTÅTT] originalbilde bad_fukt.jpg er byte-identisk  — faktisk='f182bed98a48992a4f243b435ee1ec4240b3612b8f8fe3bd11c648be8134d362' forventet='f182bed98a48992a4f243b435ee1ec4240b3612b8f8fe3bd11c648be8134d362'
+[BESTÅTT] originalbilde kjokken_stikk.jpg er byte-identisk  — faktisk='7e041bfc77a6ab9465b328b346ffea21ac962d0a07819cc7639bc35e5f682d85' forventet='7e041bfc77a6ab9465b328b346ffea21ac962d0a07819cc7639bc35e5f682d85'
+[BESTÅTT] originalbilde gang_sprekk.jpg er byte-identisk  — faktisk='58baa9dfd5dac010811a766929ffc85be902f83ae75e65cd371af52fdf17754c' forventet='58baa9dfd5dac010811a766929ffc85be902f83ae75e65cd371af52fdf17754c'
+[BESTÅTT] PDF viser desimaler med komma og alle 5 funn
+  · PDF rendret med pdftoppm til resultat/arbeidsordre_side-*.png for visuell kontroll av rotasjon
