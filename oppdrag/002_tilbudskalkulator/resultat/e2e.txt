@@ -1,0 +1,12 @@
+# Nettleserkontroll: 002 Tilbudskalkulator
+Kjørt: 2026-10-24T01:02:00.665Z
+Resultat: 8 bestått, 0 feilet
+
+[BESTÅTT] demo A v1 total i UI  — 62 143,13
+[BESTÅTT] gammelt tilbud beholder opprinnelig total etter ny prisliste  — 62 143,13
+[BESTÅTT] ny versjon med ny flispris gir 63 999,38  — 63 999,38
+[BESTÅTT] endret mengde oppdaterer summen  — 66 517,58
+[BESTÅTT] PDF fra UI viser samme total som skjermen  — 66 517,58
+[BESTÅTT] sammenligning viser begge totaler
+[BESTÅTT] lokal lagring bevarer tre versjoner etter omlasting
+[BESTÅTT] ingen JavaScript-feil i siden

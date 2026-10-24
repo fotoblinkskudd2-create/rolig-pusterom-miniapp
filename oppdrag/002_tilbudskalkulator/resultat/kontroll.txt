@@ -1,0 +1,35 @@
+# Kontroll: 002 Tilbudskalkulator
+Kjørt: 2026-10-24T01:01:31.778Z
+Resultat: 31 bestått, 0 feilet
+
+[BESTÅTT] A: materialer (øre)  — faktisk=1598160 forventet=1598160
+[BESTÅTT] A: arbeid 36,6 t × 650 kr  — faktisk=2379000 forventet=2379000
+[BESTÅTT] A: timer  — faktisk=36.6 forventet=36.6
+[BESTÅTT] A: salg eks. mva = kost × 1,25  — faktisk=4971450 forventet=4971450
+[BESTÅTT] A: påslag 25 % gir margin 20 %  — faktisk=20 forventet=20
+[BESTÅTT] A: mva 25 % avrundet til øre  — faktisk=1242863 forventet=1242863
+[BESTÅTT] A: total  — faktisk='62 143,13' forventet='62 143,13'
+[BESTÅTT] B: kost  — faktisk=2037350 forventet=2037350
+[BESTÅTT] B: salg = kost / (1 − 0,30)  — faktisk=2910500 forventet=2910500
+[BESTÅTT] B: margin 30 % tilsvarer påslag 42,857 %  — faktisk=42.857142857142854 forventet=42.857142857
+[BESTÅTT] B: total  — faktisk='36 381,25' forventet='36 381,25'
+[BESTÅTT] margin og påslag gir ulik salgspris ved samme prosent
+[BESTÅTT] linjepriser summerer eksakt til salg eks. avgift (A)  — faktisk=4971450 forventet=4971450
+[BESTÅTT] linjepriser summerer eksakt (B)  — faktisk=2910500 forventet=2910500
+[BESTÅTT] ny prisversjon endrer ikke gammel prisliste  — faktisk=45000 forventet=45000
+[BESTÅTT] A v2: materialer øker med 26,4 m² × 45 kr  — faktisk=118800 forventet=118800
+[BESTÅTT] A v2: total med ny flispris  — faktisk='63 999,38' forventet='63 999,38'
+[BESTÅTT] A v1 beholder opprinnelig prisversjon  — faktisk='P2026-01' forventet='P2026-01'
+[BESTÅTT] A v1 beholder opprinnelig total etter prisendring  — faktisk='62 143,13' forventet='62 143,13'
+[BESTÅTT] A v2 bruker ny prisversjon  — faktisk='P2026-02' forventet='P2026-02'
+[BESTÅTT] ny versjon uten nytt prisgrunnlag beholder gammel pris  — faktisk=6214313 forventet=6214313
+[BESTÅTT] sammenligning: totaldifferanse  — faktisk=185625 forventet=185625
+[BESTÅTT] sammenligning: viser endret materialpris  — faktisk=[ { kode: 'FLIS', a: 45000, b: 49500 } ] forventet=[ { kode: 'FLIS', a: 45000, b: 49500 } ]
+[BESTÅTT] PDF v1 (lest med pypdf) viser total 62 143,13
+[BESTÅTT] PDF v2 viser ny total 63 999,38 og prisgrunnlag P2026-02
+[BESTÅTT] PDF v2 viser ikke gammel total
+[BESTÅTT] PDF B viser total 36 381,25 og norske tegn
+[BESTÅTT] manglende avgiftssats avvises  — avgiftssats må oppgis eksplisitt (0 eller mer)
+[BESTÅTT] margin 100 % avvises  — margin må være fra 0 til under 100 %
+[BESTÅTT] ukjent materialkode avvises  — P1: ukjent materialkode XX
+[BESTÅTT] avgift 0 % er gyldig og eksplisitt  — faktisk=0 forventet=0

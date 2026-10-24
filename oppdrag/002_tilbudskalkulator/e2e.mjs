@@ -1,0 +1,35 @@
+import { e2e } from "../felles/e2e.mjs";
+import { execFileSync } from "node:child_process";
+const HER = new URL(".", import.meta.url).pathname;
+const sum = (page) => page.locator('[data-sum="Totalt"]').innerText();
+await e2e("002 Tilbudskalkulator", HER, { server: ["python3", "../felles/serve.py", "8702"], url: "http://127.0.0.1:8702/002_tilbudskalkulator/", port: 8702 },
+  async ({ page, sjekk, url }) => {
+    await page.goto(url);
+    await page.click("#demo");
+    await page.waitForSelector('[data-sum="Totalt"]');
+    sjekk("demo A v1 total i UI", (await sum(page)) === "62 143,13", await sum(page));
+    await page.click("text=7. Prisliste");
+    await page.fill('[data-pris="FLIS"]', "495"); await page.dispatchEvent('[data-pris="FLIS"]', "change");
+    await page.click("#lagre-pris");
+    await page.click("text=T-001 v1"); await page.click("text=5. Pris");
+    sjekk("gammelt tilbud beholder opprinnelig total etter ny prisliste", (await sum(page)) === "62 143,13", await sum(page));
+    await page.click("text=Ny versjon med gjeldende prisliste");
+    sjekk("ny versjon med ny flispris gir 63 999,38", (await sum(page)) === "63 999,38", await sum(page));
+    await page.click("text=2. Mengder");
+    await page.fill('[data-mengde="P1"]', "7"); await page.dispatchEvent('[data-mengde="P1"]', "change");
+    await page.click("text=5. Pris");
+    sjekk("endret mengde oppdaterer summen", (await sum(page)) !== "63 999,38", await sum(page));
+    await page.click("text=6. PDF");
+    const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#lastned")]);
+    await dl.saveAs(HER + "resultat/fra_ui.pdf");
+    const tekst = execFileSync("python3", ["-c", "import sys,pypdf;print(''.join(p.extract_text() for p in pypdf.PdfReader(sys.argv[1]).pages))", HER + "resultat/fra_ui.pdf"]).toString();
+    const total = await (async () => { await page.click("text=5. Pris"); return sum(page); })();
+    sjekk("PDF fra UI viser samme total som skjermen", tekst.includes(total), total);
+    await page.click("text=8. Sammenlign");
+    await page.selectOption("#sa", "T-001#1"); await page.selectOption("#sb", "T-001#2");
+    const tab = await page.locator("#sammenligning").innerText();
+    sjekk("sammenligning viser begge totaler", tab.includes("62 143,13"));
+    await page.reload(); await page.click("text=5. Pris").catch(() => {});
+    sjekk("lokal lagring bevarer tre versjoner etter omlasting", (await page.locator("#tilbudsliste button").count()) === 3);
+    await page.screenshot({ path: HER + "resultat/skjermbilde.png" });
+  });

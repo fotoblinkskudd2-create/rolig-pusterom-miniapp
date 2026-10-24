@@ -1,0 +1,12 @@
+{
+  "id": "P2026-01", "dato": "2026-09-01", "timesatsOre": 65000,
+  "materialer": {
+    "FLIS": {"kode": "FLIS", "navn": "Flis 30x60 (oppdiktet)", "enhet": "m²", "prisOre": 45000},
+    "LIM":  {"kode": "LIM",  "navn": "Flislim 20 kg",          "enhet": "sekk", "prisOre": 28900},
+    "MEMB": {"kode": "MEMB", "navn": "Membransett",            "enhet": "sett", "prisOre": 189000},
+    "FUG":  {"kode": "FUG",  "navn": "Fugemasse 5 kg",         "enhet": "pk", "prisOre": 19900},
+    "TRE":  {"kode": "TRE",  "navn": "Terrassebord 28x120",    "enhet": "lm", "prisOre": 3250},
+    "BJ":   {"kode": "BJ",   "navn": "Bjelke 48x198",          "enhet": "lm", "prisOre": 8900},
+    "SKR":  {"kode": "SKR",  "navn": "Terrasseskruer",         "enhet": "pk", "prisOre": 34900}
+  }
+}

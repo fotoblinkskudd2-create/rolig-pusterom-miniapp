@@ -1,0 +1,13 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tilbudskalkulator</title><link rel="stylesheet" href="../felles/web/stil.css">
+<style>.steg button{background:transparent;color:var(--aksent)}.steg button.aktiv{background:var(--aksent);color:#fff}
+.oppsett{display:grid;grid-template-columns:240px 1fr;gap:12px}@media(max-width:760px){.oppsett{grid-template-columns:1fr}}
+.liste button{display:block;width:100%;text-align:left;margin:0 0 4px;background:transparent;color:var(--tekst)}.liste button.aktiv{border-color:var(--aksent);font-weight:600}
+input.kort-tall{width:90px}</style></head><body>
+<header><h1>Tilbudskalkulator</h1><span class="demo">Demo · oppdiktede satser · sender ingenting</span></header>
+<main class="oppsett">
+ <aside class="kort liste"><div class="rad"><button id="nytt">Nytt tilbud</button><button id="demo" class="sekundaer">Last demo</button></div><h3>Tilbud</h3><div id="tilbudsliste"></div>
+  <h3>Prislister</h3><div id="prisliste-liste" class="svak"></div></aside>
+ <section><div class="kort rad steg" id="steg"></div><div id="innhold"></div></section>
+</main>
+<script type="module" src="ui.js"></script></body></html>

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "T-001", "versjon": 1, "opprettet": "2026-10-01", "tittel": "Flislegging av bad (syntetisk oppdrag)",
+    "kunde": {"navn": "Fiktiv Kunde A", "adresse": "Testveien 1, 9000 Eksempelby", "kontakt": "kunde.a@eksempel.invalid"},
+    "poster": [
+      {"id": "P1", "beskrivelse": "Flislegging gulv", "mengde": 6, "enhet": "m²", "timerPerEnhet": 1.5,
+       "materialer": [{"kode": "FLIS", "perEnhet": 1.1}, {"kode": "LIM", "perEnhet": 0.25}, {"kode": "FUG", "perEnhet": 0.1}]},
+      {"id": "P2", "beskrivelse": "Flislegging vegg", "mengde": 18, "enhet": "m²", "timerPerEnhet": 1.2,
+       "materialer": [{"kode": "FLIS", "perEnhet": 1.1}, {"kode": "LIM", "perEnhet": 0.25}, {"kode": "FUG", "perEnhet": 0.1}]},
+      {"id": "P3", "beskrivelse": "Membran våtsone", "mengde": 1, "enhet": "stk", "timerPerEnhet": 6,
+       "materialer": [{"kode": "MEMB", "perEnhet": 1}]}
+    ],
+    "prismodell": {"type": "påslag", "prosent": 25}, "avgift": {"navn": "MVA", "prosent": 25}, "gyldigDager": 30
+  },
+  {
+    "id": "T-002", "versjon": 1, "opprettet": "2026-10-02", "tittel": "Terrasse 15 m² (syntetisk oppdrag)",
+    "kunde": {"navn": "Fiktiv Kunde B", "adresse": "Prøvegata 2, 9000 Eksempelby", "kontakt": "kunde.b@eksempel.invalid"},
+    "poster": [
+      {"id": "P1", "beskrivelse": "Bjelkelag", "mengde": 20, "enhet": "lm", "timerPerEnhet": 0.4,
+       "materialer": [{"kode": "BJ", "perEnhet": 1}]},
+      {"id": "P2", "beskrivelse": "Terrassebord inkl. skruer", "mengde": 15, "enhet": "m²", "timerPerEnhet": 0.9,
+       "materialer": [{"kode": "TRE", "perEnhet": 8.4}, {"kode": "SKR", "perEnhet": 0.1}]}
+    ],
+    "prismodell": {"type": "margin", "prosent": 30}, "avgift": {"navn": "MVA", "prosent": 25}, "gyldigDager": 30
+  }
+]
