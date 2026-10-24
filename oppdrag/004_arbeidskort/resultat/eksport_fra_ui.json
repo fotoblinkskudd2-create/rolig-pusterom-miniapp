@@ -1,0 +1,76 @@
+{
+  "format": "arbeidskort/v1",
+  "id": "m1_sitert_gammel_adresse.eml",
+  "kilde": {
+    "type": "eml",
+    "navn": "m1_sitert_gammel_adresse.eml"
+  },
+  "mottatt": "2026-10-20T06:15:00.000Z",
+  "status": "godkjent",
+  "felt": {
+    "epost": {
+      "verdi": "kari@eksempel.invalid",
+      "kilde": "hode",
+      "sikkerhet": "sikker",
+      "kildetekst": null,
+      "merknad": "fra e-posthodet (From)"
+    },
+    "telefon": {
+      "verdi": "41234567",
+      "kilde": "tekst",
+      "sikkerhet": "sikker",
+      "kildetekst": "412 34 567",
+      "merknad": null
+    },
+    "navn": {
+      "verdi": "Kari Testesen",
+      "kilde": "tekst",
+      "sikkerhet": "sikker",
+      "kildetekst": "Kari Testesen",
+      "merknad": null
+    },
+    "jobb": {
+      "verdi": "Vi trenger nye stikkontakter på kjøkkenet.",
+      "kilde": "tekst",
+      "sikkerhet": "usikker",
+      "kildetekst": "Vi trenger nye stikkontakter på kjøkkenet.",
+      "merknad": "første setning som beskriver et ønske – kontroller"
+    },
+    "sted": {
+      "verdi": "Nyveien 12, 9010 Tromsø",
+      "kilde": "tekst",
+      "sikkerhet": "sikker",
+      "kildetekst": "Nyveien 12, 9010 Tromsø",
+      "merknad": null
+    },
+    "frist": {
+      "verdi": "2026-11-14",
+      "kilde": "bruker",
+      "sikkerhet": "sikker",
+      "kildetekst": null,
+      "merknad": "rettet av bruker"
+    }
+  },
+  "vedlegg": [
+    "kjokken.jpg (image/jpeg, 2004 B)"
+  ],
+  "mangler": [],
+  "advarsler": [
+    "sitert historikk fra tegn 183 er vist, men ikke brukt i uttrekket",
+    "første setning som beskriver et ønske – kontroller"
+  ],
+  "rettelser": [
+    {
+      "felt": "frist",
+      "fra": "2026-11-15",
+      "til": "2026-11-14",
+      "tid": "2026-10-24T01:08:34.490Z"
+    },
+    {
+      "felt": "frist",
+      "fra": "2026-11-14",
+      "til": "2026-11-14",
+      "tid": "2026-10-24T01:08:34.491Z"
+    }
+  ]
+}

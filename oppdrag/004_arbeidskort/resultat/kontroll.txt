@@ -1,0 +1,34 @@
+# Kontroll: 004 Henvendelse til arbeidskort
+Kjørt: 2026-10-24T01:07:35.413Z
+Resultat: 30 bestått, 0 feilet
+
+[BESTÅTT] åtte syntetiske meldinger  — faktisk=8 forventet=8
+[BESTÅTT] m1: ny adresse brukes, ikke den siterte  — faktisk='Nyveien 12, 9010 Tromsø' forventet='Nyveien 12, 9010 Tromsø'
+[BESTÅTT] m1: ny frist brukes, ikke sitert 01.09.2026  — faktisk='2026-11-15' forventet='2026-11-15'
+[BESTÅTT] m1: sitert historikk er skilt ut  — 183
+[BESTÅTT] m1: telefon  — faktisk='41234567' forventet='41234567'
+[BESTÅTT] m1: navn fra signatur  — faktisk='Kari Testesen' forventet='Kari Testesen'
+[BESTÅTT] m1: vedlegg kjokken.jpg fra MIME-del  — [ { filnavn: 'kjokken.jpg (image/jpeg, 2004 B)', kilde: 'vedlegg' } ]
+[BESTÅTT] m1: hvert tekstfelt peker til riktig kildetekst
+[BESTÅTT] m2: quoted-printable dekodet (æøå)  — faktisk=true forventet=true
+[BESTÅTT] m2: 03/04 er tvetydig  — faktisk='tvetydig' forventet='tvetydig'
+[BESTÅTT] m2: sitert Outlook-adresse ignoreres  — faktisk='Fjellgata 7, 9008 Tromsø' forventet='Fjellgata 7, 9008 Tromsø'
+[BESTÅTT] m3: instruksjonstekst gir advarsel
+[BESTÅTT] m3: ingen verktøy- eller nettverkskall under behandling av alle meldinger  — faktisk=[] forventet=[]
+[BESTÅTT] m3: jobben trekkes likevel ut som data  — faktisk='Kan dere montere en taklampe i gangen?' forventet='Kan dere montere en taklampe i gangen?'
+[BESTÅTT] m3: kortet har ingen handlingsfelt
+[BESTÅTT] m4: «innen fredag» fra onsdag 21.10 → 2026-10-23  — faktisk='2026-10-23' forventet='2026-10-23'
+[BESTÅTT] m4: relativ dato merkes tvetydig  — faktisk='tvetydig' forventet='tvetydig'
+[BESTÅTT] m5: navn i kodet From-felt (fra hode, usikker)  — faktisk=[ 'Børge Østerl', 'hode' ] forventet=[ 'Børge Østerl', 'hode' ]
+[BESTÅTT] m5: PDF-vedlegg med RFC 2231-navn  — [ { filnavn: 'planløsning.pdf (application/pdf, 519 B)', kilde: 'vedlegg' } ]
+[BESTÅTT] m5: mangler sted og frist  — [ 'sted/adresse', 'frist/ønsket tidspunkt' ]
+[BESTÅTT] t6: videresendt gammel melding brukes ikke (adresse mangler)  — faktisk=undefined forventet=undefined
+[BESTÅTT] t6: «15. november» uten år og uten dato i tekst er usikker  — faktisk=[ '', 'usikker' ] forventet=[ '', 'usikker' ]
+[BESTÅTT] t7: minimal melding har fire mangler  — faktisk=4 forventet=4
+[BESTÅTT] t8: 31.11.2026 er ugyldig og gir ingen dato  — faktisk=[ '', 'usikker' ] forventet=[ '', 'usikker' ]
+[BESTÅTT] t8: filnavn nevnt i tekst blir vedleggsreferanse
+[BESTÅTT] t7 kan ikke godkjennes uten kontaktvei  — kan ikke godkjenne uten jobbeskrivelse og minst én kontaktvei
+[BESTÅTT] rettelse logges med fra/til  — faktisk={ felt: 'telefon', fra: null, til: '99999999', tid: '2026-10-24T10:00:00Z' } forventet={ felt: 'telefon', fra: null, til: '99999999', tid: '2026-10-24T10:00:00Z' }
+[BESTÅTT] utkast kan ikke eksporteres  — bare godkjente kort eksporteres
+[BESTÅTT] eksport har brukerens rettede frist og kilde=bruker  — faktisk=[ '2026-11-14', 'bruker' ] forventet=[ '2026-11-14', 'bruker' ]
+[BESTÅTT] eksport viser kildetekst for uttrukket felt  — faktisk='Nyveien 12, 9010 Tromsø' forventet='Nyveien 12, 9010 Tromsø'

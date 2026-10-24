@@ -1,0 +1,14 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arbeidskort</title><link rel="stylesheet" href="../felles/web/stil.css">
+<style>.to{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:800px){.to{grid-template-columns:1fr}}
+.kilde{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:13px;line-height:1.5}.sitert{color:var(--svak);background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(127,127,127,.08) 6px 12px)}
+mark{background:#ffe08a;color:#000;border-radius:2px}mark.aktiv{outline:2px solid var(--aksent)}.feltrad{display:grid;grid-template-columns:110px 1fr;gap:6px;align-items:center;margin-bottom:6px}
+.feltrad input{width:100%}</style></head><body>
+<header><h1>Henvendelse → arbeidskort</h1><span class="demo">Lokal demo · ingen utsending · teksten i e-posten utløser aldri handlinger</span></header>
+<main>
+<div class="kort rad"><label>Eksempelmelding<select id="eksempel"><option value="">velg</option></select></label>
+ <label>Åpne EML/TXT<input type="file" id="fil" accept=".eml,.txt"></label>
+ <label style="flex:1">…eller lim inn tekst<textarea id="innlim" rows="2"></textarea></label><button id="behandle">Behandle innlimt tekst</button></div>
+<div id="kortvisning"></div>
+</main>
+<script type="module" src="ui.js"></script></body></html>

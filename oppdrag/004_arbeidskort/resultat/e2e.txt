@@ -1,0 +1,16 @@
+# Nettleserkontroll: 004 Arbeidskort
+Kjørt: 2026-10-24T01:08:34.948Z
+Resultat: 12 bestått, 0 feilet
+
+[BESTÅTT] sted vist fra ny tekst
+[BESTÅTT] sitert historikk vises skravert
+[BESTÅTT] kildetekst har markering for sted
+[BESTÅTT] eksport er sperret før godkjenning
+[BESTÅTT] status godkjent
+[BESTÅTT] eksportert JSON har rettet frist fra bruker
+[BESTÅTT] instruksjonstekst vises som advarsel
+[BESTÅTT] ingen nettverkskall utenfor lokal server
+[BESTÅTT] bare GET-kall i hele flyten  — GET
+[BESTÅTT] lokal EML-fil åpnes via filvelger
+[BESTÅTT] innlimt tekst viser mangelliste
+[BESTÅTT] ingen JavaScript-feil i siden

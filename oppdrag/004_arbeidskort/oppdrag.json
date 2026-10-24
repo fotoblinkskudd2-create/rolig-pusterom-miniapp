@@ -1,0 +1,1 @@
+{"nr": 4, "tittel": "Henvendelse til kvalifisert arbeidskort", "kontroll": ["python3 generer_meldinger.py && tsc -p . && node kontroll.mjs", "node e2e.mjs"]}

@@ -1,0 +1,131 @@
+[
+  {
+    "id": "m1_sitert_gammel_adresse.eml",
+    "felt": {
+      "epost": "kari@eksempel.invalid",
+      "telefon": "41234567",
+      "navn": "Kari Testesen",
+      "jobb": "Vi trenger nye stikkontakter på kjøkkenet.",
+      "sted": "Nyveien 12, 9010 Tromsø",
+      "frist": "2026-11-15"
+    },
+    "mangler": [],
+    "advarsler": [
+      "sitert historikk fra tegn 183 er vist, men ikke brukt i uttrekket",
+      "første setning som beskriver et ønske – kontroller"
+    ]
+  },
+  {
+    "id": "m2_outlook_tvetydig_dato.eml",
+    "felt": {
+      "epost": "ola.provesen@eksempel.invalid",
+      "telefon": "90123456",
+      "navn": "Ola Prøvesen",
+      "jobb": "vi ønsker å bytte sikringsskapet i kjelleren.",
+      "sted": "Fjellgata 7, 9008 Tromsø",
+      "frist": "2026-04-03"
+    },
+    "mangler": [],
+    "advarsler": [
+      "sitert historikk fra tegn 162 er vist, men ikke brukt i uttrekket",
+      "første setning som beskriver et ønske – kontroller",
+      "«03/04» kan være 3. april eller 4. mars; norsk dag/måned antatt, år fra e-postens dato"
+    ]
+  },
+  {
+    "id": "m3_instruksjonstekst.eml",
+    "felt": {
+      "epost": "test@eksempel.invalid",
+      "navn": "Test Avsender",
+      "jobb": "Kan dere montere en taklampe i gangen?",
+      "sted": "9020 Tromsdalen",
+      "frist": "2026-11-30"
+    },
+    "mangler": [],
+    "advarsler": [
+      "teksten inneholder instruksjonslignende formuleringer; de er behandlet som vanlig tekst og har ikke utløst noe",
+      "første setning som beskriver et ønske – kontroller"
+    ]
+  },
+  {
+    "id": "m4_relativ_dato.eml",
+    "felt": {
+      "epost": "lise@eksempel.invalid",
+      "navn": "Lise Lattermild",
+      "jobb": "Vi trenger utelys over inngangsdøren, gjerne innen fredag.",
+      "sted": "Bakkeveien 2, 9100 Kvaløysletta",
+      "frist": "2026-10-23"
+    },
+    "mangler": [],
+    "advarsler": [
+      "første setning som beskriver et ønske – kontroller",
+      "relativ («innen fredag») regnet fra e-postens dato 2026-10-21; kan bety denne eller neste uke"
+    ]
+  },
+  {
+    "id": "m5_kodet_emne_pdf.eml",
+    "felt": {
+      "epost": "borge@eksempel.invalid",
+      "navn": "Børge Østerl",
+      "jobb": "Hei, vi ønsker pris på varmekabel i badet, se tegning i planløsning."
+    },
+    "mangler": [
+      "sted/adresse",
+      "frist/ønsket tidspunkt"
+    ],
+    "advarsler": [
+      "visningsnavn i From-feltet",
+      "første setning som beskriver et ønske – kontroller"
+    ]
+  },
+  {
+    "id": "t6_videresendt.txt",
+    "felt": {
+      "telefon": "98765432",
+      "jobb": "Hei, vi trenger ny stikkontakt på badet før 15.",
+      "frist": ""
+    },
+    "mangler": [
+      "navn",
+      "sted/adresse",
+      "frist/ønsket tidspunkt"
+    ],
+    "advarsler": [
+      "sitert historikk fra tegn 85 er vist, men ikke brukt i uttrekket",
+      "første setning som beskriver et ønske – kontroller",
+      "år hentet fra e-postens dato"
+    ]
+  },
+  {
+    "id": "t7_minimal.txt",
+    "felt": {
+      "jobb": "Hei, kan dere se på taket?"
+    },
+    "mangler": [
+      "navn",
+      "kontaktinformasjon (e-post eller telefon)",
+      "sted/adresse",
+      "frist/ønsket tidspunkt"
+    ],
+    "advarsler": [
+      "første setning som beskriver et ønske – kontroller"
+    ]
+  },
+  {
+    "id": "t8_ugyldig_dato.txt",
+    "felt": {
+      "epost": ".invalid",
+      "navn": "Anne Annesen",
+      "jobb": "Hei, vi ønsker å skifte varmtvannsbereder innen 31.",
+      "sted": "Elvestien 5, 9011 Tromsø",
+      "frist": ""
+    },
+    "mangler": [
+      "frist/ønsket tidspunkt"
+    ],
+    "advarsler": [
+      "første setning som beskriver et ønske – kontroller",
+      "«31.11.2026» er ikke en gyldig dato"
+    ]
+  }
+]

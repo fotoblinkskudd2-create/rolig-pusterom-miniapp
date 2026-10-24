@@ -1,0 +1,35 @@
+import { e2e } from "../felles/e2e.mjs";
+import { readFileSync } from "node:fs";
+const HER = new URL(".", import.meta.url).pathname;
+await e2e("004 Arbeidskort", HER, { server: ["python3", "../felles/serve.py", "8704"], url: "http://127.0.0.1:8704/004_arbeidskort/", port: 8704 },
+  async ({ page, sjekk, url }) => {
+    const nett = [], metoder = []; page.on("request", r => { nett.push(r.url()); metoder.push(r.method()); });
+    await page.goto(url);
+    await page.waitForFunction(() => document.querySelectorAll("#eksempel option").length === 9);
+    await page.selectOption("#eksempel", "m1_sitert_gammel_adresse.eml");
+    await page.waitForSelector("#status");
+    sjekk("sted vist fra ny tekst", (await page.inputValue('input[data-felt="sted"]')) === "Nyveien 12, 9010 Tromsø");
+    sjekk("sitert historikk vises skravert", (await page.locator(".sitert").innerText()).includes("Gamleveien 3"));
+    sjekk("kildetekst har markering for sted", (await page.locator('mark[data-felt="sted"]').innerText()) === "Nyveien 12, 9010 Tromsø");
+    await page.fill('input[data-felt="frist"]', "2026-11-14"); await page.dispatchEvent('input[data-felt="frist"]', "change");
+    sjekk("eksport er sperret før godkjenning", await page.isDisabled("#eksporter"));
+    await page.click("#godkjenn");
+    sjekk("status godkjent", (await page.innerText("#status")) === "godkjent");
+    const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#eksporter")]);
+    await dl.saveAs(HER + "resultat/eksport_fra_ui.json");
+    const j = JSON.parse(readFileSync(HER + "resultat/eksport_fra_ui.json", "utf8"));
+    sjekk("eksportert JSON har rettet frist fra bruker", j.felt.frist.verdi === "2026-11-14" && j.felt.frist.kilde === "bruker");
+    await page.selectOption("#eksempel", "m3_instruksjonstekst.eml");
+    await page.waitForFunction(() => document.body.innerText.includes("instruksjonslignende"));
+    sjekk("instruksjonstekst vises som advarsel", true);
+    const fremmede = nett.filter(u => !u.startsWith("http://127.0.0.1:8704/"));
+    sjekk("ingen nettverkskall utenfor lokal server", fremmede.length === 0, fremmede.join(", "));
+    sjekk("bare GET-kall i hele flyten", metoder.every(m => m === "GET"), [...new Set(metoder)].join(","));
+    await page.setInputFiles("#fil", HER + "data/m5_kodet_emne_pdf.eml");
+    await page.waitForFunction(() => document.body.innerText.includes("planløsning.pdf"));
+    sjekk("lokal EML-fil åpnes via filvelger", true);
+    await page.fill("#innlim", "Hei, kan dere se på taket?"); await page.click("#behandle");
+    sjekk("innlimt tekst viser mangelliste", (await page.innerText("#mangler")).includes("sted/adresse"));
+    await page.selectOption("#eksempel", "m1_sitert_gammel_adresse.eml");
+    await page.screenshot({ path: HER + "resultat/skjermbilde.png", fullPage: true });
+  });
