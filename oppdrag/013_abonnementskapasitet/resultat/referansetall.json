@@ -1,0 +1,71 @@
+[
+ {
+  "scenario": "Forsiktig",
+  "pakker": [
+   {
+    "pakke": "Basis",
+    "arr_mnd12": 351510,
+    "oppstart_sum": 120000,
+    "forste_overskridelse": null
+   },
+   {
+    "pakke": "Standard",
+    "arr_mnd12": 703020,
+    "oppstart_sum": 240000,
+    "forste_overskridelse": null
+   },
+   {
+    "pakke": "Premium",
+    "arr_mnd12": 1158222,
+    "oppstart_sum": 383413,
+    "forste_overskridelse": 7
+   }
+  ]
+ },
+ {
+  "scenario": "Vekst",
+  "pakker": [
+   {
+    "pakke": "Basis",
+    "arr_mnd12": 965266,
+    "oppstart_sum": 330000,
+    "forste_overskridelse": null
+   },
+   {
+    "pakke": "Standard",
+    "arr_mnd12": 1339246,
+    "oppstart_sum": 439666,
+    "forste_overskridelse": 4
+   },
+   {
+    "pakke": "Premium",
+    "arr_mnd12": 1473538,
+    "oppstart_sum": 458355,
+    "forste_overskridelse": 2
+   }
+  ]
+ },
+ {
+  "scenario": "Ingen salg",
+  "pakker": [
+   {
+    "pakke": "Basis",
+    "arr_mnd12": 0,
+    "oppstart_sum": 0,
+    "forste_overskridelse": null
+   },
+   {
+    "pakke": "Standard",
+    "arr_mnd12": 0,
+    "oppstart_sum": 0,
+    "forste_overskridelse": null
+   },
+   {
+    "pakke": "Premium",
+    "arr_mnd12": 0,
+    "oppstart_sum": 0,
+    "forste_overskridelse": null
+   }
+  ]
+ }
+]

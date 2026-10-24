@@ -1,0 +1,9 @@
+# Nettleserkontroll: 013 Abonnementskapasitet
+Kjørt: 2026-10-24T01:32:33.288Z
+Resultat: 5 bestått, 0 feilet
+
+[BESTÅTT] Forsiktig: Premium overskrider fra måned 7
+[BESTÅTT] Ingen salg: ARR 0 kr for Basis
+[BESTÅTT] mer kapasitet fjerner overskridelse for Premium
+[BESTÅTT] lagret scenario finnes etter omlasting
+[BESTÅTT] ingen JavaScript-feil i siden

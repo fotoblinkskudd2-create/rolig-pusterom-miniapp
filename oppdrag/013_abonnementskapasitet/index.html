@@ -1,0 +1,47 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Abonnementskapasitet</title><link rel="stylesheet" href="../felles/web/stil.css"><style>input[type=number]{width:80px}svg text{font-size:10px;fill:var(--svak)}.over{color:var(--feil);font-weight:600}</style></head><body>
+<header><h1>Kapasitet → abonnementsinntekt</h1><span class="demo">Betalingsvilje og fremtidig salg er antakelser</span></header>
+<main><div class="kort rad"><label>Scenario<select id="scenario"></select></label><button id="lagre" class="sekundaer">Lagre som nytt scenario</button>
+<button id="eksport" class="sekundaer">Eksporter scenarioer (JSON)</button><label>Importer<input type="file" id="import" accept=".json"></label></div>
+<div class="kort" id="inndata"></div><div class="rutenett" id="pakker"></div><div class="kort" id="sens"></div><div class="kort"><h3>Antakelser</h3><ul id="antakelser"></ul></div></main>
+<script type="module">
+import { h, $, tom, lastNed } from "../felles/web/dom.js";
+import { beregn, sensitivitet, valider } from "./dist/modell.js";
+const NOKKEL = "abonnement.scenarioer.v1";
+let S; try { S = JSON.parse(localStorage.getItem(NOKKEL)); } catch {}
+if (!S) S = await fetch("data/scenarioer.json").then(r => r.json());
+let i = 0;
+const kr = x => Math.round(x).toLocaleString("nb-NO") + " kr", t1 = x => x.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
+const lagre = () => { try { localStorage.setItem(NOKKEL, JSON.stringify(S)); } catch {} tegn(); };
+const liste = (s, f) => h("input", { value: s[f].join(", "), "data-felt": f, style: "width:160px", onchange: e => { s[f] = e.target.value.split(/[,; ]+/).filter(Boolean).map(Number); lagre(); } });
+const tall = (o, f, attr = {}) => h("input", { type: "number", step: "any", value: o[f], "data-felt": f, ...attr, onchange: e => { o[f] = Number(e.target.value); lagre(); } });
+function tegn() {
+  tom($("#scenario"), S.map((s, j) => h("option", { value: j, selected: j === i }, s.navn)));
+  const s = S[i]; const feil = valider(s);
+  tom($("#inndata"), h("div", { class: "rad" }, h("label", {}, "Måneder", tall(s, "maneder")), h("label", {}, "Kunder ved start", tall(s, "startKunder")),
+    h("label", {}, "Salgsmål nye/mnd (antakelse)", liste(s, "salgsmalNyePerMnd")), h("label", {}, "Frafall per mnd (0–1, antakelse)", tall(s, "frafallPerMnd", { step: "0.005" })),
+    h("label", {}, "Kapasitet timer/mnd", liste(s, "kapasitetTimerPerMnd"))),
+    h("table", {}, h("tr", {}, ["Pakke", "Abonnement/mnd", "Oppstartspris", "Oppstartstimer", "Support t/kunde/mnd"].map(x => h("th", {}, x))),
+      s.pakker.map(p => h("tr", {}, h("td", {}, p.navn), ...["abonnementPerMnd", "oppstartspris", "oppstartTimer", "supportTimerPerKundeMnd"].map(f => h("td", {}, tall(p, f)))))),
+    feil.length > 0 && h("p", { class: "feil" }, feil.join("; ")));
+  if (feil.length) return;
+  const R = beregn(s);
+  tom($("#pakker"), R.map(r => { const maks = Math.max(...r.maneder.map(m => Math.max(m.behovTimer, m.kapasitet))) || 1; const X = j => 30 + j * (300 / r.maneder.length), Y = v => 130 - v / maks * 120;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("viewBox", "0 0 340 145"); svg.style.width = "100%";
+    svg.innerHTML = r.maneder.map((m, j) => `<rect x="${X(j)}" y="${Y(m.supportTimer)}" width="${300 / r.maneder.length - 2}" height="${130 - Y(m.supportTimer)}" fill="#6fb3e0"/><rect x="${X(j)}" y="${Y(m.brukteTimer)}" width="${300 / r.maneder.length - 2}" height="${Y(m.supportTimer) - Y(m.brukteTimer)}" fill="#1f5f8b"/>${m.overKapasitet ? `<rect x="${X(j)}" y="${Y(m.behovTimer)}" width="${300 / r.maneder.length - 2}" height="${Y(m.brukteTimer) - Y(m.behovTimer)}" fill="none" stroke="#b3261e" stroke-dasharray="2 2"/>` : ""}<text x="${X(j) + 3}" y="142">${m.mnd}</text>`).join("")
+      + `<polyline fill="none" stroke="#b26a00" stroke-width="2" points="${r.maneder.map((m, j) => `${X(j)},${Y(m.kapasitet)} ${X(j + 1) - 2},${Y(m.kapasitet)}`).join(" ")}"/>`;
+    return h("div", { class: "kort", "data-pakke": r.pakke }, h("h3", {}, r.pakke), svg, h("div", { class: "svak", style: "font-size:12px" }, "lys: support · mørk: oppstart · stiplet rødt: behov over kapasitet · oransje: kapasitet"),
+      h("table", {}, [["ARR ved slutt (bare abonnement)", kr(r.arrSlutt)], ["Sum abonnementsinntekt", kr(r.sumAbonnement)], ["Oppstartsinntekt (utenfor ARR)", kr(r.sumOppstart)],
+        ["Aktive kunder ved slutt", t1(r.maneder.at(-1).aktive)], ["Kunder i kø ved slutt", t1(r.maneder.at(-1).ko)]].map(([a, b]) => h("tr", {}, h("td", {}, a), h("td", { class: "tall" }, b)))),
+      h("p", { class: r.forsteOverskridelse ? "over" : "ok", "data-overskridelse": r.pakke }, r.forsteOverskridelse ? `Salgsmålet overskrider leveransekapasiteten fra måned ${r.forsteOverskridelse}` : "Salgsmålet er innenfor kapasitet alle måneder")); }));
+  const fr = [s.frafallPerMnd / 2, s.frafallPerMnd, s.frafallPerMnd * 2].map(x => Math.round(x * 1e4) / 1e4), pf = [0.8, 1, 1.2];
+  tom($("#sens"), h("h3", {}, "Sensitivitet: ARR ved slutt"), h("div", { class: "rutenett" }, s.pakker.map(p => h("table", {}, h("tr", {}, h("th", {}, p.navn + ": frafall \\ pris"), pf.map(x => h("th", { class: "tall" }, `×${x}`))),
+    sensitivitet(s, p.navn, fr, pf).map(r => h("tr", {}, h("td", {}, (r.frafall * 100).toFixed(2) + " %"), r.arr.map(a => h("td", { class: "tall" }, kr(a)))))))));
+  tom($("#antakelser"), s.antakelser.map(a => h("li", {}, a)), h("li", { class: "svak" }, "Modellen bruker forventningsverdier (brøkdeler av kunder)."));
+}
+$("#scenario").onchange = e => { i = Number(e.target.value); tegn(); };
+$("#lagre").onclick = () => { const n = prompt("Navn på scenario"); if (n) { S.push({ ...structuredClone(S[i]), navn: n }); i = S.length - 1; lagre(); } };
+$("#eksport").onclick = () => lastNed("scenarioer.json", JSON.stringify(S, null, 2), "application/json");
+$("#import").onchange = async e => { try { S = JSON.parse(await e.target.files[0].text()); i = 0; lagre(); } catch (x) { alert("Ugyldig fil: " + x.message); } };
+tegn();
+</script></body></html>

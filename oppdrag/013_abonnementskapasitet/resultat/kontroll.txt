@@ -1,0 +1,21 @@
+# Kontroll: 013 Kapasitet til abonnementsinntekt
+Kjørt: 2026-10-24T01:31:54.131Z
+Resultat: 17 bestått, 0 feilet
+
+[BESTÅTT] Forsiktig/Basis: aktive kunder mnd 12 = lukket form  — faktisk=19.528327626519996 forventet=19.528327626520017
+[BESTÅTT] Forsiktig/Basis: ARR mnd 12 = aktive × 1 500 × 12  — faktisk=351509.89727735997 forventet=351509.8972773603
+[BESTÅTT] Forsiktig/Basis: oppstartsinntekt 12 × 2 × 5 000 (holdes utenfor ARR)  — faktisk=120000 forventet=120000
+[BESTÅTT] ARR inneholder ikke oppstartsinntekt (mnd 1: ARR 0, oppstart 10 000)
+[BESTÅTT] endret oppstartspris endrer ikke ARR  — faktisk=351509.89727735997 forventet=351509.89727735997
+[BESTÅTT] null kunder gir null abonnementsinntekt (Basis)
+[BESTÅTT] null kunder gir null abonnementsinntekt (Standard)
+[BESTÅTT] null kunder gir null abonnementsinntekt (Premium)
+[BESTÅTT] support + oppstart bruker samme timebudsjett (aldri over kapasitet)
+[BESTÅTT] Vekst/Premium: salgsmål overskrider kapasitet fra måned 2  — faktisk=2 forventet=2
+[BESTÅTT] ved overskridelse starter bare det som får plass, resten i kø  — ønsket 4, startet 3.67, kø 0.33
+[BESTÅTT] Vekst/Premium mnd 2: timer brukt = kapasitet  — faktisk=100 forventet=100
+[BESTÅTT] Vekst/Premium mnd 2: håndregnet startet = (100 − ((4×0,97 + 3)×0,97)×4)/20  — faktisk=3.66528 forventet=3.66528
+[BESTÅTT] tre pakker sammenlignes med samme kapasitetsgrunnlag
+[BESTÅTT] sensitivitet: midtcelle = basisresultat  — faktisk=351509.89727735997 forventet=351509.89727735997
+[BESTÅTT] sensitivitet: høyere frafall gir lavere ARR
+[BESTÅTT] frafall over 100 % avvises  — frafall må være 0–1

@@ -1,0 +1,17 @@
+[
+ {"navn": "Forsiktig", "maneder": 12, "startKunder": 0, "salgsmalNyePerMnd": [2], "frafallPerMnd": 0.02, "kapasitetTimerPerMnd": [80],
+  "antakelser": ["Salg 2 nye kunder/mnd (antakelse)", "Frafall 2 %/mnd (antakelse)", "80 leveransetimer/mnd tilgjengelig", "Betalingsvilje for pakkene er ikke testet"],
+  "pakker": [{"navn": "Basis", "abonnementPerMnd": 1500, "oppstartspris": 5000, "oppstartTimer": 6, "supportTimerPerKundeMnd": 1},
+             {"navn": "Standard", "abonnementPerMnd": 3000, "oppstartspris": 10000, "oppstartTimer": 12, "supportTimerPerKundeMnd": 2},
+             {"navn": "Premium", "abonnementPerMnd": 6000, "oppstartspris": 20000, "oppstartTimer": 20, "supportTimerPerKundeMnd": 4}]},
+ {"navn": "Vekst", "maneder": 12, "startKunder": 4, "salgsmalNyePerMnd": [3, 4, 5, 6], "frafallPerMnd": 0.03, "kapasitetTimerPerMnd": [100],
+  "antakelser": ["Salget øker fra 3 til 6 nye/mnd (antakelse)", "Frafall 3 %/mnd (antakelse)", "100 timer/mnd", "4 eksisterende kunder"],
+  "pakker": [{"navn": "Basis", "abonnementPerMnd": 1500, "oppstartspris": 5000, "oppstartTimer": 6, "supportTimerPerKundeMnd": 1},
+             {"navn": "Standard", "abonnementPerMnd": 3000, "oppstartspris": 10000, "oppstartTimer": 12, "supportTimerPerKundeMnd": 2},
+             {"navn": "Premium", "abonnementPerMnd": 6000, "oppstartspris": 20000, "oppstartTimer": 20, "supportTimerPerKundeMnd": 4}]},
+ {"navn": "Ingen salg", "maneder": 12, "startKunder": 0, "salgsmalNyePerMnd": [0], "frafallPerMnd": 0.02, "kapasitetTimerPerMnd": [80],
+  "antakelser": ["Kontrollscenario: null kunder"],
+  "pakker": [{"navn": "Basis", "abonnementPerMnd": 1500, "oppstartspris": 5000, "oppstartTimer": 6, "supportTimerPerKundeMnd": 1},
+             {"navn": "Standard", "abonnementPerMnd": 3000, "oppstartspris": 10000, "oppstartTimer": 12, "supportTimerPerKundeMnd": 2},
+             {"navn": "Premium", "abonnementPerMnd": 6000, "oppstartspris": 20000, "oppstartTimer": 20, "supportTimerPerKundeMnd": 4}]}
+]
