@@ -1,0 +1,11 @@
+# Nettleserkontroll: 009 Serviceavtaler
+Kjørt: 2026-10-24T01:20:13.345Z
+Resultat: 7 bestått, 0 feilet
+
+[BESTÅTT] arbeidskø har 6 elementer (avsluttet og ok utelatt)
+[BESTÅTT] ukjent frist øverst
+[BESTÅTT] bekreftelse vises
+[BESTÅTT] endring vises i historikk med gammel og ny dato
+[BESTÅTT] ny dato krever ny bekreftelse
+[BESTÅTT] kalenderfil fra UI har 17 hendelser (9 aktive, SA-04 bare sluttdato)
+[BESTÅTT] ingen JavaScript-feil i siden

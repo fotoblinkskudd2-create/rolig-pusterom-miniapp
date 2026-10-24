@@ -1,0 +1,27 @@
+# Kontroll: 009 Serviceavtaler
+Kjørt: 2026-10-24 01:19:28
+Resultat: 23 bestått, 0 feilet
+
+[BESTÅTT] månedsslutt: 31.03.2027 − 1 mnd = 28.02.2027  — faktisk='2027-02-28' forventet='2027-02-28'
+[BESTÅTT] skuddår: 31.03.2028 − 1 mnd = 29.02.2028  — faktisk='2028-02-29' forventet='2028-02-29'
+[BESTÅTT] 29.02.2028 − 12 mnd = 28.02.2027  — faktisk='2027-02-28' forventet='2027-02-28'
+[BESTÅTT] 31.05.2027 − 3 mnd = 28.02.2027  — faktisk='2027-02-28' forventet='2027-02-28'
+[BESTÅTT] over årsskifte: 31.01.2027 − 1 mnd = 31.12.2026  — faktisk='2026-12-31' forventet='2026-12-31'
+[BESTÅTT] dager: 15.11.2026 − 14 d = 01.11.2026  — faktisk='2026-11-01' forventet='2026-11-01'
+[BESTÅTT] over skuddag i dager: 01.03.2028 − 1 d = 29.02.2028  — faktisk='2028-02-29' forventet='2028-02-29'
+[BESTÅTT] manglende frist gir None  — faktisk=None forventet=None
+[BESTÅTT] ti avtaler  — faktisk=10 forventet=10
+[BESTÅTT] køstatus for alle ti  — faktisk={'SA-01': 'ok', 'SA-02': 'ok', 'SA-03': 'frist passert', 'SA-04': 'frist ukjent', 'SA-05': 'avsluttet', 'SA-06': 'ok', 'SA-07': 'handling nå', 'SA-08': 'frist passert', 'SA-09': 'utløpt', 'SA-10': 'planlegg'} forventet={'SA-01': 'ok', 'SA-02': 'ok', 'SA-03': 'frist passert', 'SA-04': 'frist ukjent', 'SA-05': 'avsluttet', 'SA-06': 'ok', 'SA-07': 'handling nå', 'SA-08': 'frist passert', 'SA-09': 'utløpt', 'SA-10': 'planlegg'}
+[BESTÅTT] avsluttet avtale er ikke i arbeidskøen  — ['SA-04', 'SA-07', 'SA-08', 'SA-03', 'SA-10', 'SA-09']
+[BESTÅTT] ukjent frist står øverst i køen  — faktisk='SA-04' forventet='SA-04'
+[BESTÅTT] bekreftelse lagres
+[BESTÅTT] historikk bevarer gammel og ny pris og dato  — faktisk=[('pris_per_aar', '30000.0', '33000'), ('slutt', '2027-01-31', '2027-02-28')] forventet=[('pris_per_aar', '30000.0', '33000'), ('slutt', '2027-01-31', '2027-02-28')]
+[BESTÅTT] endrede vilkår krever ny bekreftelse
+[BESTÅTT] ny frist beregnes fra ny sluttdato (28.02 − 1 mnd = 28.01)  — faktisk='2027-01-28' forventet='2027-01-28'
+[BESTÅTT] opprinnelig registrering finnes i historikk
+[BESTÅTT] ICS bruker CRLF og har VCALENDAR-ramme
+[BESTÅTT] valgte avtaler gir 5 hendelser (SA-04 mangler frist → bare sluttdato)  — faktisk=5 forventet=5
+[BESTÅTT] skuddårsdato i ICS
+[BESTÅTT] ubekreftede vilkår merkes i kalenderen
+[BESTÅTT] avsluttet avtale eksporteres ikke
+[BESTÅTT] hver VEVENT har UID, DTSTAMP, DTSTART og SUMMARY

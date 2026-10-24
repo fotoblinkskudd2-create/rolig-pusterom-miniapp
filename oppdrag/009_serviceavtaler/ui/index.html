@@ -1,0 +1,41 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Serviceavtaler</title><link rel="stylesheet" href="/felles/stil.css">
+<style>.tl{position:relative;height:30px;background:var(--bg);border-radius:4px}.tl i{position:absolute;top:0;bottom:0;background:var(--aksent);opacity:.35;border-radius:4px}.tl b{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--feil)}.tl s{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--tekst)}</style></head><body>
+<header><h1>Serviceavtaler</h1><span class="demo">Lokal demo · ingen automatisk oppsigelse, fornyelse eller utsending</span><span id="idag" class="svak"></span></header>
+<main><div class="kort"><h3>Intern arbeidskø</h3><table id="ko"></table></div>
+<div class="kort"><div class="rad"><h3 style="margin:0">Alle avtaler og tidslinje</h3><button id="ics">Eksporter valgte datoer (.ics)</button></div><div class="wrap"><table id="alle"></table></div>
+<p class="svak">Blå stolpe: avtaleperiode · rød strek: siste oppsigelsesdag · svart strek: i dag. Tidslinjen dekker 2023–2029.</p></div>
+<div class="kort" id="detalj"></div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const T0 = Date.parse("2023-01-01"), T1 = Date.parse("2029-12-31"), pst = d => ((Date.parse(d) - T0) / (T1 - T0) * 100).toFixed(2) + "%";
+const farge = { "handling nå": "feil", "frist passert": "feil", "frist ukjent": "ukjent", planlegg: "adv", ok: "ok", avsluttet: "svak", "utløpt": "adv" };
+async function last() {
+  const d = await api("GET", "/api/avtaler");
+  $("#idag").textContent = "referansedato " + d.idag;
+  tom($("#ko"), h("tr", {}, ["Status", "Avtale", "Siste oppsigelsesdag", "Dager", "Ansvarlig", "Vilkår"].map(x => h("th", {}, x))),
+    d.ko.map(a => h("tr", { "data-ko": a.id }, h("td", { class: farge[a.ko_status] }, a.ko_status), h("td", {}, `${a.id} ${a.navn}`), h("td", {}, a.siste_oppsigelsesdag || "ukjent – registrer varslingsfrist"),
+      h("td", { class: "tall" }, a.dager_til_frist ?? "–"), h("td", {}, a.ansvarlig), h("td", { class: a.vilkaar_bekreftet ? "ok" : "adv" }, a.vilkaar_bekreftet ? "bekreftet" : "ikke bekreftet"))));
+  tom($("#alle"), h("tr", {}, ["", "Avtale", "Periode", "Varsling", "Siste oppsigelsesdag", "Pris/år", "Status", "Tidslinje"].map(x => h("th", {}, x))),
+    d.avtaler.map(a => h("tr", {}, h("td", {}, h("input", { type: "checkbox", class: "velg", value: a.id, checked: a.status !== "avsluttet" })),
+      h("td", {}, h("a", { href: "#", onclick: e => { e.preventDefault(); detalj(a); } }, `${a.id} ${a.navn}`)), h("td", {}, `${a.start} – ${a.slutt}`),
+      h("td", {}, a.varsling_antall ? `${a.varsling_antall} ${a.varsling_enhet}` : "mangler"), h("td", {}, a.siste_oppsigelsesdag || "ukjent"),
+      h("td", { class: "tall" }, a.pris_per_aar?.toLocaleString("nb-NO")), h("td", { class: farge[a.ko_status] }, a.ko_status),
+      h("td", { style: "min-width:220px" }, h("div", { class: "tl" }, h("i", { style: `left:${pst(a.start)};width:calc(${pst(a.slutt)} - ${pst(a.start)})` }),
+        a.siste_oppsigelsesdag && h("b", { style: `left:${pst(a.siste_oppsigelsesdag)}` }), h("s", { style: `left:${pst(d.idag)}` }))))));
+}
+async function detalj(a) {
+  const hist = await api("GET", `/api/avtaler/${a.id}/historikk`);
+  tom($("#detalj"), h("h3", {}, `${a.id} ${a.navn} · ${a.leverandor}`),
+    h("p", {}, "Originaldokument: ", a.originaldokument || h("span", { class: "feil" }, "mangler"), " · Vilkår: ",
+      a.vilkaar_bekreftet ? h("span", { class: "ok" }, `bekreftet av ${a.bekreftet_av} ${a.bekreftet_tid}`) : h("span", { class: "adv" }, "ikke bekreftet mot kilden")),
+    h("div", { class: "rad" }, h("button", { id: "bekreft", onclick: async () => { await api("POST", `/api/avtaler/${a.id}/bekreft`, { av: prompt("Ditt navn") || "bruker" }); await last(); detalj((await api("GET", "/api/avtaler")).avtaler.find(x => x.id === a.id)); } }, "Jeg har kontrollert vilkårene mot originaldokumentet")),
+    h("div", { class: "rad", style: "margin-top:8px" }, ...[["slutt", "date"], ["varsling_antall", "number"], ["pris_per_aar", "number"]].map(([f, t]) => h("label", {}, f, h("input", { type: t, value: a[f] ?? "", "data-endre": f }))),
+      h("label", {}, "varsling_enhet", h("select", { "data-endre": "varsling_enhet" }, ["", "måneder", "dager"].map(x => h("option", { selected: a.varsling_enhet === x }, x)))),
+      h("button", { id: "lagre-endring", onclick: async () => { const e = {}; document.querySelectorAll("[data-endre]").forEach(i => { if (i.value !== "" && String(a[i.dataset.endre] ?? "") !== i.value) e[i.dataset.endre] = i.type === "number" ? Number(i.value) : i.value; });
+        await api("POST", `/api/avtaler/${a.id}/endre`, { endringer: e, av: "bruker" }); await last(); detalj((await api("GET", "/api/avtaler")).avtaler.find(x => x.id === a.id)); } }, "Lagre endring")),
+    h("h4", {}, "Historikk"), h("table", { id: "hist" }, hist.map(x => h("tr", {}, h("td", {}, x.tid), h("td", {}, x.felt), h("td", {}, x.felt === "opprettet" ? "" : `${x.gammel ?? ""} → ${x.ny ?? ""}`), h("td", {}, x.av)))));
+}
+$("#ics").onclick = () => location.href = "/api/kalender.ics?ider=" + [...document.querySelectorAll(".velg:checked")].map(i => i.value).join(",");
+last();
+</script></body></html>

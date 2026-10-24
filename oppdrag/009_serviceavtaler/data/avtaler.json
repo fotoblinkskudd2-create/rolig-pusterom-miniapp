@@ -1,0 +1,123 @@
+[
+ {
+  "id": "SA-01",
+  "navn": "Service ventilasjon",
+  "leverandor": "Luft AS (fiktiv)",
+  "start": "2025-04-01",
+  "slutt": "2027-03-31",
+  "varsling_antall": 1,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "Drift",
+  "pris_per_aar": 24000,
+  "originaldokument": "avtaler/SA-01.pdf"
+ },
+ {
+  "id": "SA-02",
+  "navn": "Heisservice",
+  "leverandor": "Opp AS",
+  "start": "2024-03-01",
+  "slutt": "2028-03-31",
+  "varsling_antall": 1,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "Drift",
+  "pris_per_aar": 36000,
+  "originaldokument": "avtaler/SA-02.pdf"
+ },
+ {
+  "id": "SA-03",
+  "navn": "Brannalarm ettersyn",
+  "leverandor": "Brann AS",
+  "start": "2025-11-30",
+  "slutt": "2026-11-30",
+  "varsling_antall": 3,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "HMS",
+  "pris_per_aar": 12000,
+  "originaldokument": "avtaler/SA-03.pdf"
+ },
+ {
+  "id": "SA-04",
+  "navn": "Kaffemaskin leie",
+  "leverandor": "Kaffe AS",
+  "start": "2025-01-01",
+  "slutt": "2026-12-31",
+  "varsling_antall": null,
+  "varsling_enhet": null,
+  "ansvarlig": "Kontor",
+  "pris_per_aar": 9600,
+  "originaldokument": null
+ },
+ {
+  "id": "SA-05",
+  "navn": "Renhold",
+  "leverandor": "Rent AS",
+  "start": "2024-01-01",
+  "slutt": "2026-06-30",
+  "varsling_antall": 2,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "Kontor",
+  "pris_per_aar": 180000,
+  "originaldokument": "avtaler/SA-05.pdf",
+  "status": "avsluttet"
+ },
+ {
+  "id": "SA-06",
+  "navn": "IT-drift",
+  "leverandor": "Data AS",
+  "start": "2025-05-31",
+  "slutt": "2027-05-31",
+  "varsling_antall": 3,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "IT",
+  "pris_per_aar": 96000,
+  "originaldokument": "avtaler/SA-06.pdf"
+ },
+ {
+  "id": "SA-07",
+  "navn": "Snørydding",
+  "leverandor": "Brøyt AS",
+  "start": "2025-10-15",
+  "slutt": "2026-11-15",
+  "varsling_antall": 14,
+  "varsling_enhet": "dager",
+  "ansvarlig": "Drift",
+  "pris_per_aar": 15000,
+  "originaldokument": "avtaler/SA-07.pdf"
+ },
+ {
+  "id": "SA-08",
+  "navn": "Vakttjeneste",
+  "leverandor": "Vakt AS",
+  "start": "2025-02-28",
+  "slutt": "2027-02-28",
+  "varsling_antall": 12,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "HMS",
+  "pris_per_aar": 48000,
+  "originaldokument": "avtaler/SA-08.pdf"
+ },
+ {
+  "id": "SA-09",
+  "navn": "Kopimaskin",
+  "leverandor": "Print AS",
+  "start": "2023-08-31",
+  "slutt": "2026-08-31",
+  "varsling_antall": 3,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "Kontor",
+  "pris_per_aar": 14400,
+  "originaldokument": "avtaler/SA-09.pdf"
+ },
+ {
+  "id": "SA-10",
+  "navn": "Lisens regnskap",
+  "leverandor": "Tall AS",
+  "start": "2026-01-31",
+  "slutt": "2027-01-31",
+  "varsling_antall": 1,
+  "varsling_enhet": "måneder",
+  "ansvarlig": "Økonomi",
+  "pris_per_aar": 30000,
+  "originaldokument": "avtaler/SA-10.pdf"
+ }
+]
