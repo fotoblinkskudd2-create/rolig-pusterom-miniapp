@@ -1,0 +1,9 @@
+# Nettleserkontroll: 011 PDF-bestilling
+Kjørt: 2026-10-24T01:27:32.512Z
+Resultat: 5 bestått, 0 feilet
+
+[BESTÅTT] B1 viser 4 linjer og sideoverlegg
+[BESTÅTT] eksport fra UI har to bekreftede linjer med rettet antall  — B1_enkel.pdf,L2,Koblingsboks IP55,14.0,stk,49.0,1,tekst,antall
+[BESTÅTT] skannet side viser «krever OCR»
+[BESTÅTT] OCR gir tre usikre linjer med kilde ocr
+[BESTÅTT] ingen JavaScript-feil i siden

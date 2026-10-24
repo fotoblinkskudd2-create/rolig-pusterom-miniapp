@@ -1,0 +1,37 @@
+{
+ "fil": "B1_enkel.pdf",
+ "linjer": [
+  {
+   "fil": "B1_enkel.pdf",
+   "linje": "L1",
+   "produkt": "Kabel PFSP 3G2,5",
+   "antall": 100.0,
+   "enhet": "m",
+   "pris": 18.9,
+   "side": 1,
+   "kilde": "tekst",
+   "rettet_av_bruker": ""
+  },
+  {
+   "fil": "B1_enkel.pdf",
+   "linje": "L2",
+   "produkt": "Koblingsboks IP55",
+   "antall": 14.0,
+   "enhet": "stk",
+   "pris": 49.0,
+   "side": 1,
+   "kilde": "tekst",
+   "rettet_av_bruker": "antall"
+  }
+ ],
+ "ikke_eksportert": [
+  "L3",
+  "L4"
+ ],
+ "kontroller": [
+  {
+   "type": "sum avviker",
+   "tekst": "oppgitt sum 4 004,00 ≠ beregnet 4102.00"
+  }
+ ]
+}

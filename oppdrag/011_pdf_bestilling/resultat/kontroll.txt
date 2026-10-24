@@ -1,0 +1,30 @@
+# Kontroll: 011 Bestillingsgrunnlag fra PDF
+Kjørt: 2026-10-24 01:27:30
+Resultat: 26 bestått, 0 feilet
+
+[BESTÅTT] B1_enkel.pdf: alle felt samsvarer med fasit  — faktisk=[{'produkt': 'Kabel PFSP 3G2,5', 'antall': 100.0, 'enhet': 'm', 'pris': 18.9}, {'produkt': 'Koblingsboks IP55', 'antall': 12.0, 'enhet': 'stk', 'pris': 49.0}, {'produkt': 'Stikkontakt dobbel jordet', 'antall': 8.0, 'enhet': 'stk', 'pris': 129.5}, {'produkt': 'Rørklammer 20 mm', 'antall': 200.0, 'enhet': 'stk', 'pris': 2.45}] forventet=[{'produkt': 'Kabel PFSP 3G2,5', 'antall': 100.0, 'enhet': 'm', 'pris': 18.9}, {'produkt': 'Koblingsboks IP55', 'antall': 12.0, 'enhet': 'stk', 'pris': 49.0}, {'produkt': 'Stikkontakt dobbel jordet', 'antall': 8.0, 'enhet': 'stk', 'pris': 129.5}, {'produkt': 'Rørklammer 20 mm', 'antall': 200.0, 'enhet': 'stk', 'pris': 2.45}]
+[BESTÅTT] B1_enkel.pdf: alle linjer starter som «uttrukket», ikke bekreftet
+[BESTÅTT] B2_kolonneblanding.pdf: alle felt samsvarer med fasit  — faktisk=[{'produkt': 'Takbelysning LED panel 60x60 hvit 4000K', 'antall': 6.0, 'enhet': 'stk', 'pris': 899.0}, {'produkt': 'Bevegelsessensor', 'antall': 6.0, 'enhet': 'stk', 'pris': 345.0}, {'produkt': 'Installasjonsrør 16 mm', 'antall': 150.0, 'enhet': 'm', 'pris': 6.9}, {'produkt': 'Skjøteboks', 'antall': 20.0, 'enhet': 'stk', 'pris': 15.5}, {'produkt': 'Kabel EKLK 3G1,5', 'antall': 250.0, 'enhet': 'm', 'pris': 11.2}, {'produkt': 'Strips 200 mm', 'antall': 3.0, 'enhet': 'pk', 'pris': 79.0}] forventet=[{'produkt': 'Takbelysning LED panel 60x60 hvit 4000K', 'antall': 6.0, 'enhet': 'stk', 'pris': 899.0}, {'produkt': 'Bevegelsessensor', 'antall': 6.0, 'enhet': 'stk', 'pris': 345.0}, {'produkt': 'Installasjonsrør 16 mm', 'antall': 150.0, 'enhet': 'm', 'pris': 6.9}, {'produkt': 'Skjøteboks', 'antall': 20.0, 'enhet': 'stk', 'pris': 15.5}, {'produkt': 'Kabel EKLK 3G1,5', 'antall': 250.0, 'enhet': 'm', 'pris': 11.2}, {'produkt': 'Strips 200 mm', 'antall': 3.0, 'enhet': 'pk', 'pris': 79.0}]
+[BESTÅTT] B2_kolonneblanding.pdf: alle linjer starter som «uttrukket», ikke bekreftet
+[BESTÅTT] B3_uten_sum.pdf: alle felt samsvarer med fasit  — faktisk=[{'produkt': 'Sikringsautomat C16', 'antall': 10.0, 'enhet': 'stk', 'pris': 89.0}, {'produkt': 'Jordfeilbryter 40A', 'antall': 2.0, 'enhet': 'stk', 'pris': 1249.0}, {'produkt': 'DIN-skinne 1 m', 'antall': 4.0, 'enhet': 'stk', 'pris': 39.5}] forventet=[{'produkt': 'Sikringsautomat C16', 'antall': 10.0, 'enhet': 'stk', 'pris': 89.0}, {'produkt': 'Jordfeilbryter 40A', 'antall': 2.0, 'enhet': 'stk', 'pris': 1249.0}, {'produkt': 'DIN-skinne 1 m', 'antall': 4.0, 'enhet': 'stk', 'pris': 39.5}]
+[BESTÅTT] B3_uten_sum.pdf: alle linjer starter som «uttrukket», ikke bekreftet
+[BESTÅTT] B2: naiv tekstrekkefølge er blandet (pris før produkt) – parseren bruker posisjon  — ['899,00', 'stk', '6', 'Takbelysning LED panel 60x60 hvit 4000K']
+[BESTÅTT] B2: linjer fra to sider  — faktisk=[1, 2] forventet=[1, 2]
+[BESTÅTT] B2: oppgitt sum som avviker flagges  — faktisk='sum avviker' forventet='sum avviker'
+[BESTÅTT] B3: manglende sum flagges, ikke oppdiktet  — faktisk='sum mangler' forventet='sum mangler'
+[BESTÅTT] B1: sum stemmer  — faktisk='sum stemmer' forventet='sum stemmer'
+[BESTÅTT] hvert felt har side og tekstområde  — [50.0, 103.95980000000009, 134.49, 113.95980000000009]
+[BESTÅTT] skannet side uten OCR: egen status og ingen linjer  — faktisk=('krever OCR (ikke kjørt)', 0) forventet=('krever OCR (ikke kjørt)', 0)
+[BESTÅTT] OCR-uttrekk av skannet side mot fasit  — faktisk=[{'produkt': 'Downlight LED', 'antall': 15.0, 'enhet': 'stk', 'pris': 249.0}, {'produkt': 'Dimmer 400W', 'antall': 4.0, 'enhet': 'stk', 'pris': 549.0}, {'produkt': 'Kabel PN 2x1,5', 'antall': 50.0, 'enhet': 'm', 'pris': 7.5}] forventet=[{'produkt': 'Downlight LED', 'antall': 15.0, 'enhet': 'stk', 'pris': 249.0}, {'produkt': 'Dimmer 400W', 'antall': 4.0, 'enhet': 'stk', 'pris': 549.0}, {'produkt': 'Kabel PN 2x1,5', 'antall': 50.0, 'enhet': 'm', 'pris': 7.5}]
+[BESTÅTT] OCR-felt er merket usikre
+[BESTÅTT] rettelse lagres med fra/til  — faktisk=[{'fra': 12.0, 'til': '14'}] forventet=[{'fra': 12.0, 'til': '14'}]
+[BESTÅTT] bare bekreftede linjer eksporteres  — faktisk=['L1', 'L2'] forventet=['L1', 'L2']
+[BESTÅTT] rettelsen følger eksporten  — faktisk=('14.0', 'antall') forventet=('14.0', 'antall')
+[BESTÅTT] ubekreftet og avvist listes som ikke eksportert  — faktisk=['L3', 'L4'] forventet=['L3', 'L4']
+[BESTÅTT] rettelse endrer sumkontroll til avvik  — faktisk='sum avviker' forventet='sum avviker'
+[BESTÅTT] rettelse etter bekreftelse krever ny bekreftelse  — faktisk='uttrukket' forventet='uttrukket'
+[BESTÅTT] ugyldig tall i rettelse avvises  — ValueError: «tolv» er ikke et tall
+[BESTÅTT] API: sidebilde rendres som PNG  — faktisk=b'\x89PNG' forventet=b'\x89PNG'
+[BESTÅTT] API: bekreftelse av linje med tomt felt avvises  — faktisk=200 forventet=200
+[BESTÅTT] …og bekreft gir 400  — faktisk=400 forventet=400
+[BESTÅTT] API: sti-traversering avvises  — faktisk=404 forventet=404

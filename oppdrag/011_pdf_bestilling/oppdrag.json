@@ -1,0 +1,1 @@
+{"nr": 11, "tittel": "Bestillingsgrunnlag fra PDF", "kontroll": ["python3 generer_testdokumenter.py && python3 kontroll.py", "node e2e.mjs"]}

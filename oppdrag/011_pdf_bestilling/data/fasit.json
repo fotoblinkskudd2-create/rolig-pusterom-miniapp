@@ -1,0 +1,106 @@
+{
+ "B1_enkel.pdf": [
+  {
+   "produkt": "Kabel PFSP 3G2,5",
+   "antall": 100,
+   "enhet": "m",
+   "pris": 18.9
+  },
+  {
+   "produkt": "Koblingsboks IP55",
+   "antall": 12,
+   "enhet": "stk",
+   "pris": 49.0
+  },
+  {
+   "produkt": "Stikkontakt dobbel jordet",
+   "antall": 8,
+   "enhet": "stk",
+   "pris": 129.5
+  },
+  {
+   "produkt": "Rørklammer 20 mm",
+   "antall": 200,
+   "enhet": "stk",
+   "pris": 2.45
+  }
+ ],
+ "B2_kolonneblanding.pdf": [
+  {
+   "produkt": "Takbelysning LED panel 60x60 hvit 4000K",
+   "antall": 6,
+   "enhet": "stk",
+   "pris": 899.0
+  },
+  {
+   "produkt": "Bevegelsessensor",
+   "antall": 6,
+   "enhet": "stk",
+   "pris": 345.0
+  },
+  {
+   "produkt": "Installasjonsrør 16 mm",
+   "antall": 150,
+   "enhet": "m",
+   "pris": 6.9
+  },
+  {
+   "produkt": "Skjøteboks",
+   "antall": 20,
+   "enhet": "stk",
+   "pris": 15.5
+  },
+  {
+   "produkt": "Kabel EKLK 3G1,5",
+   "antall": 250,
+   "enhet": "m",
+   "pris": 11.2
+  },
+  {
+   "produkt": "Strips 200 mm",
+   "antall": 3,
+   "enhet": "pk",
+   "pris": 79.0
+  }
+ ],
+ "B3_uten_sum.pdf": [
+  {
+   "produkt": "Sikringsautomat C16",
+   "antall": 10,
+   "enhet": "stk",
+   "pris": 89.0
+  },
+  {
+   "produkt": "Jordfeilbryter 40A",
+   "antall": 2,
+   "enhet": "stk",
+   "pris": 1249.0
+  },
+  {
+   "produkt": "DIN-skinne 1 m",
+   "antall": 4,
+   "enhet": "stk",
+   "pris": 39.5
+  }
+ ],
+ "S4_skannet.pdf": [
+  {
+   "produkt": "Downlight LED",
+   "antall": 15,
+   "enhet": "stk",
+   "pris": 249.0
+  },
+  {
+   "produkt": "Dimmer 400W",
+   "antall": 4,
+   "enhet": "stk",
+   "pris": 549.0
+  },
+  {
+   "produkt": "Kabel PN 2x1,5",
+   "antall": 50,
+   "enhet": "m",
+   "pris": 7.5
+  }
+ ]
+}
