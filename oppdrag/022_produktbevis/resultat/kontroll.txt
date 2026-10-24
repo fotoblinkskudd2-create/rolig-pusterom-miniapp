@@ -1,0 +1,14 @@
+# Kontroll: 022 Produktfeil med før–etter-bevis
+Kjørt: 2026-10-24T01:57:35.128Z
+Resultat: 10 bestått, 0 feilet
+
+[BESTÅTT] demosaken er gyldig  — faktisk=[] forventet=[]
+[BESTÅTT] H1 (bredere fot) støttet av prøving: median 12 → 21 grader  — faktisk=[ 'støttet av prøving', 12, 21 ] forventet=[ 'støttet av prøving', 12, 21 ]
+[BESTÅTT] H2 (gummiknotter) forblir hypotese uten grunnlinjetest  — faktisk=[ 'hypotese', 'mangler grunnlinjetest med filbevis' ] forventet=[ 'hypotese', 'mangler grunnlinjetest med filbevis' ]
+[BESTÅTT] test uten koblet fil teller ikke: H1 blir hypotese  — faktisk='hypotese' forventet='hypotese'
+[BESTÅTT] endring under terskel gir «ikke støttet av prøving»  — faktisk='ikke støttet av prøving' forventet='ikke støttet av prøving'
+[BESTÅTT] brutt filkobling oppdages
+[BESTÅTT] ingen status heter «bekreftet» eller «bevist»
+[BESTÅTT] patentnyhet og etterspørsel står som uavklart  — faktisk=true forventet=true
+[BESTÅTT] eksportert pakke: gyldig ZIP, sha256 stemmer, alle bevislenker peker på filer i pakken  — faktisk=[ null, true, true, 8 ] forventet=[ null, true, true, 8 ]
+[BESTÅTT] endret bevisfil etter registrering stopper eksport  — fil test_T1_revA.csv er endret siden registrering (sha256 avviker)

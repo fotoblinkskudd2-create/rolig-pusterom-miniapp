@@ -1,0 +1,1 @@
+{"nr": 22, "tittel": "Produktfeil med før–etter-bevis", "kontroll": ["tsc -p . && node kontroll.mjs", "node e2e.mjs"]}

@@ -1,0 +1,148 @@
+{
+ "id": "SAK-022-01",
+ "produkt": "Kjøkkenrullholder (fiktiv)",
+ "originalfoto": "F1",
+ "kilde": "Egen observasjon på testbenk, 2026-10-10 (syntetisk demo)",
+ "problem": "Holderen vipper når papiret trekkes skrått ut",
+ "brukssituasjon": "Benkeplate, én hånd, papir trekkes 30–45° til siden",
+ "revisjoner": [
+  {
+   "id": "A",
+   "beskrivelse": "Original: fot 80 mm",
+   "filIder": [
+    "F1"
+   ],
+   "grunnlinje": true
+  },
+  {
+   "id": "B",
+   "beskrivelse": "Prototype: fot 140 mm, gummiknotter",
+   "filIder": [
+    "F2"
+   ],
+   "grunnlinje": false
+  }
+ ],
+ "metoder": [
+  {
+   "id": "M1",
+   "navn": "Vippevinkel",
+   "enhet": "grader",
+   "bedre": "høyere",
+   "terskel": 5,
+   "beskrivelse": "Skråplan heves til holderen vipper, 3 forsøk"
+  },
+  {
+   "id": "M2",
+   "navn": "Trekkraft før glipp",
+   "enhet": "N",
+   "bedre": "høyere",
+   "terskel": 0.5,
+   "beskrivelse": "Kraftmåler på papirkant, 3 forsøk"
+  }
+ ],
+ "hypoteser": [
+  {
+   "id": "H1",
+   "antattAarsak": "For smal fot gir lavt veltemoment",
+   "foreslattEndring": "Bredere fot (140 mm)",
+   "revisjon": "B",
+   "metode": "M1"
+  },
+  {
+   "id": "H2",
+   "antattAarsak": "Glatt underside glir før den vipper",
+   "foreslattEndring": "Gummiknotter under fot",
+   "revisjon": "B",
+   "metode": "M2"
+  }
+ ],
+ "tester": [
+  {
+   "id": "T1",
+   "revisjon": "A",
+   "metode": "M1",
+   "verdier": [
+    12.0,
+    11.5,
+    12.5
+   ],
+   "filIder": [
+    "F3"
+   ],
+   "dato": "2026-10-12",
+   "merknad": "grunnlinje"
+  },
+  {
+   "id": "T2",
+   "revisjon": "B",
+   "metode": "M1",
+   "verdier": [
+    21.0,
+    20.5,
+    21.5
+   ],
+   "filIder": [
+    "F4"
+   ],
+   "dato": "2026-10-19",
+   "merknad": ""
+  },
+  {
+   "id": "T3",
+   "revisjon": "B",
+   "metode": "M2",
+   "verdier": [
+    3.1,
+    2.9,
+    3.0
+   ],
+   "filIder": [
+    "F5"
+   ],
+   "dato": "2026-10-19",
+   "merknad": "ingen grunnlinje for M2 på rev A"
+  }
+ ],
+ "filer": [
+  {
+   "id": "F1",
+   "navn": "original_vipper.jpg",
+   "type": "image/jpeg",
+   "sha256": "bb38fbca00714e7c4c80f281ec81452085bc66175ade24632f2b9990b21fa3c5",
+   "bytes": 11711
+  },
+  {
+   "id": "F2",
+   "navn": "prototype_revB.jpg",
+   "type": "image/jpeg",
+   "sha256": "87a6a0a49c4db8dd4c24258046d3a6d27d4485a0f1b2be7aec6011be7380e787",
+   "bytes": 9922
+  },
+  {
+   "id": "F3",
+   "navn": "test_T1_revA.csv",
+   "type": "text/csv",
+   "sha256": "d2100ff1dcc465976a401200dbfe29c3bb15acc61a0601167525bad3bb5a1781",
+   "bytes": 47
+  },
+  {
+   "id": "F4",
+   "navn": "test_T2_revB.csv",
+   "type": "text/csv",
+   "sha256": "3b830f87f7aaba1e060240244263228995bfdd3bfabeaebb054e1d8a0f691c95",
+   "bytes": 47
+  },
+  {
+   "id": "F5",
+   "navn": "test_T3_revB_trekkraft.csv",
+   "type": "text/csv",
+   "sha256": "3419acd93fe9661806318d5fc39158c423dd802bf1a3968663aec7120f2fc0c8",
+   "bytes": 47
+  }
+ ],
+ "uavklart": {
+  "patentnyhet": "uavklart – ingen egen undersøkelse gjort",
+  "markedsetterspoersel": "uavklart – ingen egen undersøkelse gjort"
+ }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "hypotese": "H1",
+    "status": "støttet av prøving",
+    "grunn": "median 12 → 21 grader; endring 9.00 ≥ terskel 5 (n = 3/3)",
+    "grunnlinje": 12,
+    "ny": 21,
+    "endring": 9,
+    "tester": [
+      "T1",
+      "T2"
+    ]
+  },
+  {
+    "hypotese": "H2",
+    "status": "hypotese",
+    "grunn": "mangler grunnlinjetest med filbevis",
+    "tester": [
+      "T3"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+# Nettleserkontroll: 022 Produktbevis
+Kjørt: 2026-10-24T01:58:49.877Z
+Resultat: 7 bestått, 0 feilet
+
+[BESTÅTT] H1 vises som støttet av prøving, H2 som hypotese
+[BESTÅTT] før/etter-bilder vises side om side
+[BESTÅTT] grunnlinjetest uten fil endrer ikke H2
+[BESTÅTT] med koblet fil blir H2 støttet av prøving (2,0 → 3,0 N)
+[BESTÅTT] sak og filer bevares lokalt etter omlasting
+[BESTÅTT] eksport fra UI inneholder seks bevisfiler  — 6
+[BESTÅTT] ingen JavaScript-feil i siden
