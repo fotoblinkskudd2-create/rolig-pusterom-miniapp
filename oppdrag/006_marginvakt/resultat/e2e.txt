@@ -1,0 +1,9 @@
+# Nettleserkontroll: 006 Marginvakt
+Kjørt: 2026-10-24T01:13:37.090Z
+Resultat: 5 bestått, 0 feilet
+
+[BESTÅTT] P1 viser 776 kr/t
+[BESTÅTT] 50 ekstra timer halverer til 388 kr/t
+[BESTÅTT] frossen rapport viser fortsatt 776
+[BESTÅTT] ny grense gir internt varsel
+[BESTÅTT] ingen JavaScript-feil i siden

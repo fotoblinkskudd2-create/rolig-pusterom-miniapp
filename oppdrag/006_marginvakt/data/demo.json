@@ -1,0 +1,202 @@
+{
+ "satser": [
+  {
+   "gyldig_fra": "2026-01-01",
+   "kr_per_time": 450
+  },
+  {
+   "gyldig_fra": "2026-10-01",
+   "kr_per_time": 520
+  }
+ ],
+ "prosjekter": [
+  {
+   "id": "P1",
+   "navn": "Nettside for frisør (syntetisk)",
+   "kunde": "Kunde 1",
+   "pris": 40000,
+   "startdato": "2026-09-01",
+   "estimat": {
+    "design": 10,
+    "utvikling": 30,
+    "test": 5
+   }
+  },
+  {
+   "id": "P2",
+   "navn": "Lagerautomasjon",
+   "kunde": "Kunde 2",
+   "pris": 60000,
+   "startdato": "2026-09-01",
+   "estimat": {
+    "kartlegging": 10,
+    "bygging": 50
+   }
+  },
+  {
+   "id": "P3",
+   "navn": "Salgsdashbord",
+   "kunde": "Kunde 3",
+   "pris": 25000,
+   "startdato": "2026-09-01",
+   "estimat": {
+    "bygging": 20
+   }
+  },
+  {
+   "id": "P4",
+   "navn": "Regnskapsintegrasjon",
+   "kunde": "Kunde 4",
+   "pris": 80000,
+   "startdato": "2026-09-10",
+   "estimat": {
+    "analyse": 20,
+    "bygging": 60
+   }
+  },
+  {
+   "id": "P5",
+   "navn": "Oppstart supportavtale",
+   "kunde": "Kunde 5",
+   "pris": 15000,
+   "startdato": "2026-10-01",
+   "estimat": {
+    "oppsett": 10
+   }
+  },
+  {
+   "id": "P6",
+   "navn": "Datamigrering",
+   "kunde": "Kunde 6",
+   "pris": 45000,
+   "startdato": "2026-11-01",
+   "estimat": {
+    "migrering": 40
+   }
+  }
+ ],
+ "timer": [
+  {
+   "prosjekt": "P1",
+   "aktivitet": "design",
+   "dato": "2026-09-02",
+   "timer": 6
+  },
+  {
+   "prosjekt": "P1",
+   "aktivitet": "design",
+   "dato": "2026-09-03",
+   "timer": 6
+  },
+  {
+   "prosjekt": "P1",
+   "aktivitet": "utvikling",
+   "dato": "2026-09-08",
+   "timer": 17
+  },
+  {
+   "prosjekt": "P1",
+   "aktivitet": "utvikling",
+   "dato": "2026-09-15",
+   "timer": 17
+  },
+  {
+   "prosjekt": "P1",
+   "aktivitet": "test",
+   "dato": "2026-09-20",
+   "timer": 4
+  },
+  {
+   "prosjekt": "P2",
+   "aktivitet": "kartlegging",
+   "dato": "2026-09-01",
+   "timer": 15
+  },
+  {
+   "prosjekt": "P2",
+   "aktivitet": "bygging",
+   "dato": "2026-09-10",
+   "timer": 40
+  },
+  {
+   "prosjekt": "P2",
+   "aktivitet": "bygging",
+   "dato": "2026-09-24",
+   "timer": 30
+  },
+  {
+   "prosjekt": "P3",
+   "aktivitet": "bygging",
+   "dato": "2026-09-05",
+   "timer": 18
+  },
+  {
+   "prosjekt": "P4",
+   "aktivitet": "analyse",
+   "dato": "2026-09-12",
+   "timer": 20
+  },
+  {
+   "prosjekt": "P4",
+   "aktivitet": "bygging",
+   "dato": "2026-09-28",
+   "timer": 25
+  },
+  {
+   "prosjekt": "P4",
+   "aktivitet": "bygging",
+   "dato": "2026-10-06",
+   "timer": 25
+  },
+  {
+   "prosjekt": "P5",
+   "aktivitet": "oppsett",
+   "dato": "2026-10-02",
+   "timer": 22
+  }
+ ],
+ "kostnader": [
+  {
+   "prosjekt": "P1",
+   "type": "annen",
+   "beskrivelse": "Temalisens",
+   "belop": 1200,
+   "dato": "2026-09-02"
+  },
+  {
+   "prosjekt": "P1",
+   "type": "refusjon",
+   "beskrivelse": "Domene (viderefakturert utlegg)",
+   "belop": 2500,
+   "dato": "2026-09-02"
+  },
+  {
+   "prosjekt": "P2",
+   "type": "underleverandør",
+   "beskrivelse": "Elektriker",
+   "belop": 8000,
+   "dato": "2026-09-20"
+  },
+  {
+   "prosjekt": "P4",
+   "type": "underleverandør",
+   "beskrivelse": "API-konsulent",
+   "belop": 15000,
+   "dato": "2026-09-30"
+  },
+  {
+   "prosjekt": "P4",
+   "type": "annen",
+   "beskrivelse": "Testmiljø",
+   "belop": 3000,
+   "dato": "2026-09-15"
+  },
+  {
+   "prosjekt": "P4",
+   "type": "refusjon",
+   "beskrivelse": "Reise (viderefakturert)",
+   "belop": 4200,
+   "dato": "2026-10-06"
+  }
+ ]
+}

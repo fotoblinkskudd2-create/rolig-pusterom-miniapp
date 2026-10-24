@@ -1,0 +1,24 @@
+# Kontroll: 006 Marginvakt
+Kjørt: 2026-10-24 01:13:35
+Resultat: 20 bestått, 0 feilet
+
+[BESTÅTT] seks prosjekter  — faktisk=6 forventet=6
+[BESTÅTT] P1 dekningsbidrag = 40 000 − 1 200  — faktisk=38800.0 forventet=38800
+[BESTÅTT] P1 effektiv timeinntekt = 38 800 / 50 t  — faktisk=776.0 forventet=776
+[BESTÅTT] P1 internkost 50 t × 450  — faktisk=22500.0 forventet=22500
+[BESTÅTT] P1 refusjon vises separat og påvirker ikke DB  — faktisk=(2500.0, 1200.0) forventet=(2500, 1200)
+[BESTÅTT] P1 avvik design +2 t (20 %)  — faktisk=('design', 2.0, 20.0) forventet=('design', 2, 20.0)
+[BESTÅTT] P4 internkost bruker sats på timens dato (45×450 + 25×520)  — faktisk=33250.0 forventet=33250
+[BESTÅTT] P4 effektiv timeinntekt 62 000 / 70  — faktisk=885.71 forventet=885.71
+[BESTÅTT] P5 varsler lav timeinntekt og overskredet estimat  — ['effektiv timeinntekt 682 kr/t under grensen 700', 'oppsett: 120 % over estimat']
+[BESTÅTT] P6 uten timer gir ukjent (None), ikke uendelig/null  — faktisk=None forventet=None
+[BESTÅTT] doble timer halverer effektiv timeinntekt  — faktisk=694.4444444444445 forventet=694.4444444444445
+[BESTÅTT] ny refusjon endrer verken inntekt, kostnad, DB eller timeinntekt
+[BESTÅTT] ny sats endrer løpende beregning  — 40000.0
+[BESTÅTT] lagret rapport beholder internkost 33 250 etter satsendring  — faktisk=(1, 33250.0) forventet=(1, 33250)
+[BESTÅTT] ny prosjektversjon brukes som standard  — faktisk=90000.0 forventet=90000
+[BESTÅTT] versjon 1 kan fortsatt hentes  — faktisk=80000.0 forventet=80000
+[BESTÅTT] rapporten viser fortsatt versjon 1  — faktisk=1 forventet=1
+[BESTÅTT] brukerdefinert grense utløser internt varsel for P1 (776 < 900)
+[BESTÅTT] ugyldig kostnadstype avvises  — faktisk=400 forventet=400
+[BESTÅTT] CSV-eksport har header + 6 prosjekter  — faktisk=7 forventet=7

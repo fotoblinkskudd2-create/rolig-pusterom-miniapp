@@ -1,0 +1,44 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marginvakt</title><link rel="stylesheet" href="/felles/stil.css"></head><body>
+<header><h1>Marginvakt</h1><span class="demo">Lokal demo · én bruker · ingen ekstern varsling</span></header>
+<main><div class="kort wrap"><table id="oversikt"></table></div><div id="detalj"></div>
+<div class="rutenett"><div class="kort" id="grenser"></div><div class="kort" id="satser"></div></div>
+<div class="kort"><a href="/api/eksport.csv">Eksporter nøkkeltall (CSV)</a></div>
+<div class="kort svak"><b>Definisjoner.</b> Inntekt = prosjektpris (eks. mva) i valgt versjon. Direkte kostnader = underleverandører + andre kostnader.
+Refusjoner (viderefakturerte utlegg) vises separat og inngår verken i inntekt eller kostnad. Dekningsbidrag = inntekt − direkte kostnader.
+Effektiv timeinntekt = dekningsbidrag / faktiske timer. Internkost = timer × timesats gyldig på timens dato. Rapporter er frosne øyeblikksbilder.</div></main>
+<script type="module">
+import { h, $, tom, api } from "/felles/dom.js";
+const n = (x, d = 0) => x === null || x === undefined ? "ukjent" : x.toLocaleString("nb-NO", { maximumFractionDigits: d, minimumFractionDigits: d });
+let valgt = null;
+async function last() {
+  const p = await api("GET", "/api/prosjekter");
+  tom($("#oversikt"), h("tr", {}, ["Prosjekt", "V", "Inntekt", "Direkte kost", "Refusjoner", "DB", "Timer (est/fakt)", "Eff. kr/t", "Etter egen tid", "Varsler"].map(x => h("th", {}, x))),
+    p.map(x => h("tr", { "data-p": x.prosjekt.id, style: "cursor:pointer", onclick: () => { valgt = x.prosjekt.id; detalj(); } },
+      h("td", {}, `${x.prosjekt.id} ${x.prosjekt.navn}`), h("td", {}, x.versjon), ...[x.inntekt, x.direkte_kostnader, x.refusjoner, x.dekningsbidrag].map(v => h("td", { class: "tall" }, n(v))),
+      h("td", { class: "tall" }, `${n(x.estimerte_timer, 1)} / ${n(x.faktiske_timer, 1)}`), h("td", { class: "tall eff" }, n(x.effektiv_timeinntekt)), h("td", { class: "tall" }, n(x.resultat_etter_egen_tid)),
+      h("td", { class: x.varsler.length ? "adv" : "ok" }, x.varsler.length ? x.varsler.join("; ") : "ingen"))));
+  const g = await api("GET", "/api/grenser");
+  tom($("#grenser"), h("h3", {}, "Grenser for intern varsling"), Object.entries(g).map(([k, v]) => h("label", {}, k, h("input", { type: "number", value: v, "data-grense": k, onchange: async e => { await api("PUT", "/api/grenser", { [k]: Number(e.target.value) }); last(); detalj(); } }))));
+  const s = await api("GET", "/api/satser");
+  tom($("#satser"), h("h3", {}, "Timesatser (historikk)"), h("ul", {}, s.map(x => h("li", {}, `fra ${x.gyldig_fra}: ${x.kr_per_time} kr/t`))),
+    h("div", { class: "rad" }, h("input", { id: "sats-dato", type: "date" }), h("input", { id: "sats-kr", type: "number", placeholder: "kr/t" }),
+      h("button", { onclick: async () => { await api("POST", "/api/satser", { gyldig_fra: $("#sats-dato").value, kr_per_time: Number($("#sats-kr").value) }); last(); detalj(); } }, "Legg til sats")));
+}
+async function detalj() {
+  if (!valgt) return;
+  const [x, rap, ver] = await Promise.all([api("GET", "/api/prosjekter/" + valgt), api("GET", `/api/prosjekter/${valgt}/rapporter`), api("GET", `/api/prosjekter/${valgt}/versjoner`)]);
+  tom($("#detalj"), h("div", { class: "kort" }, h("h3", {}, `${x.prosjekt.id} ${x.prosjekt.navn} (versjon ${x.versjon})`),
+    h("table", {}, h("tr", {}, ["Aktivitet", "Estimert", "Faktisk", "Avvik t", "Avvik %"].map(t => h("th", {}, t))),
+      x.aktiviteter.map(a => h("tr", {}, h("td", {}, a.aktivitet), h("td", { class: "tall" }, n(a.estimert, 1)), h("td", { class: "tall" }, n(a.faktisk, 1)), h("td", { class: "tall" }, n(a.avvik_timer, 1)), h("td", { class: "tall" }, n(a.avvik_prosent, 0))))),
+    h("div", { class: "rad", style: "margin-top:10px" }, h("b", {}, "Registrer timer:"), h("input", { id: "t-akt", placeholder: "aktivitet" }), h("input", { id: "t-dato", type: "date" }), h("input", { id: "t-timer", type: "number", step: "0.25", placeholder: "timer" }),
+      h("button", { id: "t-lagre", onclick: async () => { await api("POST", "/api/timer", { prosjekt: valgt, aktivitet: $("#t-akt").value, dato: $("#t-dato").value, timer: Number($("#t-timer").value) }); last(); detalj(); } }, "Lagre")),
+    h("div", { class: "rad", style: "margin-top:6px" }, h("b", {}, "Kostnad:"), h("select", { id: "k-type" }, ["underleverandør", "annen", "refusjon"].map(t => h("option", {}, t))), h("input", { id: "k-besk", placeholder: "beskrivelse" }), h("input", { id: "k-belop", type: "number", placeholder: "beløp" }),
+      h("button", { onclick: async () => { await api("POST", "/api/kostnader", { prosjekt: valgt, type: $("#k-type").value, beskrivelse: $("#k-besk").value, belop: Number($("#k-belop").value), dato: new Date().toISOString().slice(0, 10) }); last(); detalj(); } }, "Lagre")),
+    h("div", { class: "rad", style: "margin-top:6px" }, h("b", {}, "Versjoner: "), ver.map(v => `v${v.versjon} ${n(v.pris)} kr (${v.merknad || v.gyldig_fra})`).join(" · "),
+      h("input", { id: "v-pris", type: "number", placeholder: "ny pris" }), h("button", { onclick: async () => { await api("POST", `/api/prosjekter/${valgt}/versjoner`, { pris: Number($("#v-pris").value), gyldig_fra: new Date().toISOString().slice(0, 10), merknad: "endret i UI" }); last(); detalj(); } }, "Ny versjon")),
+    h("div", { style: "margin-top:10px" }, h("button", { id: "rapport", onclick: async () => { await api("POST", `/api/prosjekter/${valgt}/rapporter`); detalj(); } }, "Lag frossen rapport"),
+      h("ul", { id: "rapporter" }, rap.map(r => h("li", {}, `#${r.id} ${r.laget}: v${r.versjon}, DB ${n(r.dekningsbidrag)}, eff ${n(r.effektiv_timeinntekt)} kr/t, internkost ${n(r.internkost_timer)}`))))));
+}
+last();
+</script></body></html>
