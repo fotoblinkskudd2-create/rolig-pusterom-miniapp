@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asymmetri-verktøy</title>
+<style>
+  :root { --bg:#1a1f1c; --card:#2a332c; --line:#3a4a3f; --text:#e0ebe3; --muted:#8a9a8f; --accent:#a8c5b0; --warn:#e0b070; --bad:#e08a7a; }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); margin:0 auto; padding:20px 16px 60px; max-width:520px; line-height:1.45; }
+  h1 { font-size:1.4rem; margin:0 0 6px; }
+  h3 { margin:0 0 8px; font-size:1rem; }
+  p, .muted { color:var(--muted); font-size:0.9rem; }
+  a.back { color:var(--muted); font-size:0.82rem; display:inline-block; margin-bottom:16px; }
+  nav { display:flex; gap:6px; margin:16px 0; }
+  nav button { flex:1; background:transparent; border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 4px; font-size:0.85rem; cursor:pointer; }
+  nav button.active { background:var(--accent); color:var(--bg); font-weight:600; border-color:var(--accent); }
+  .tab { display:none; }
+  .tab.active { display:block; }
+  .card { background:var(--card); border-radius:16px; padding:16px; margin-bottom:16px; }
+  label { display:block; font-size:0.85rem; margin:12px 0 4px; }
+  label span { float:right; color:var(--accent); font-variant-numeric:tabular-nums; }
+  input[type=range] { width:100%; }
+  input[type=text], input[type=url], input[type=number], textarea, select {
+    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px; color:var(--text); font:inherit; font-size:0.9rem;
+  }
+  textarea { resize:vertical; }
+  button.main { width:100%; background:var(--accent); color:var(--bg); border:none; border-radius:12px; padding:13px; font-weight:600; cursor:pointer; margin-top:14px; font-size:0.95rem; }
+  button.ghost { width:100%; background:transparent; border:1px solid var(--line); color:var(--text); border-radius:12px; padding:11px; cursor:pointer; margin-top:8px; }
+  button.mini { background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:8px; padding:4px 8px; font-size:0.75rem; cursor:pointer; }
+  .big { font-size:1.8rem; font-weight:700; font-variant-numeric:tabular-nums; }
+  .row { display:flex; gap:12px; }
+  .row > div { flex:1; }
+  .bar { height:10px; border-radius:6px; background:var(--line); overflow:hidden; margin:6px 0 2px; }
+  .bar i { display:block; height:100%; background:var(--accent); }
+  .check { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--line); font-size:0.88rem; }
+  .check:last-child { border-bottom:none; }
+  .check select { width:auto; padding:4px; font-size:0.8rem; flex-shrink:0; }
+  pre { white-space:pre-wrap; font-size:0.8rem; margin:0; }
+  .ok { color:var(--accent); } .warn { color:var(--warn); } .bad { color:var(--bad); }
+  .claim { border-bottom:1px solid var(--line); padding:10px 0; font-size:0.88rem; }
+  .claim:last-child { border-bottom:none; }
+  .claim .meta { color:var(--muted); font-size:0.78rem; margin-top:4px; word-break:break-all; }
+  .diff-del { color:var(--bad); text-decoration:line-through; }
+  .diff-add { color:var(--accent); }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Asymmetri-verktøy</h1>
+  <p>Tre verktøy. Alt lokalt, ingenting går på nett. Verktøyene finner ikke fakta for deg – de tvinger frem spørsmålene og holder orden på svarene.</p>
+
+  <nav>
+    <button class="active" data-tab="sim">Regel vs. fri</button>
+    <button data-tab="hull">Hull-sjekk</button>
+    <button data-tab="logg">Evidens-logg</button>
+  </nav>
+
+  <!-- 1. Regel-vs-virkelighet-simulator -->
+  <section class="tab active" id="tab-sim">
+    <div class="card">
+      <h3>Side A følger regler. Side B gjør ikke.</h3>
+      <p>Samme startstyrke. Juster hva reglene koster A – og hva de gir tilbake. Uten gevinst-slideren er resultatet gitt på forhånd; med den ser du når regler lønner seg.</p>
+      <label>Ventetid per trekk (runder) <span id="v-cool"></span></label>
+      <input type="range" id="cool" min="0" max="5" step="1" value="1">
+      <label>Andel trekk forbudt for A <span id="v-forb"></span></label>
+      <input type="range" id="forb" min="0" max="80" step="5" value="30">
+      <label>Kontroll/godkjenning som feiler (%) <span id="v-veto"></span></label>
+      <input type="range" id="veto" min="0" max="50" step="5" value="10">
+      <label>Gevinst av regler for A: allierte, legitimitet, forsyning (%) <span id="v-gain"></span></label>
+      <input type="range" id="gain" min="0" max="200" step="10" value="0">
+      <label>Gjennomkjøringer</label>
+      <select id="runs"><option>200</option><option selected>1000</option><option>5000</option></select>
+      <button class="main" id="simRun">Simuler</button>
+    </div>
+    <div class="card" id="simOut" hidden>
+      <div class="row">
+        <div><div class="muted">B vinner</div><div class="big" id="sWinB"></div></div>
+        <div><div class="muted">Friksjonstap A</div><div class="big" id="sFric"></div></div>
+      </div>
+      <div class="bar"><i id="sBar"></i></div>
+      <p id="sText" style="margin-top:12px"></p>
+      <p class="muted" style="font-size:0.78rem">Leketøysmodell. Hver runde: begge prøver å ta 1 enhet terreng med 50 % treff. A må vente, kan få trekket forbudt eller stoppet i kontroll. Gevinst gir A mer terreng per treff (allierte bidrar). Først til 25 vinner, maks 400 runder.</p>
+    </div>
+  </section>
+
+  <!-- 2. Narrativ-hull-sjekk + versjonslogg -->
+  <section class="tab" id="tab-hull">
+    <div class="card">
+      <h3>Lim inn en offisiell forklaring</h3>
+      <input type="text" id="hCase" placeholder="Saksnavn, f.eks. «Nord Stream 2022»">
+      <textarea id="hText" rows="7" style="margin-top:8px" placeholder="Pressemelding, rapport-sammendrag, nyhetssak…"></textarea>
+      <button class="main" id="hScan">Skann teksten</button>
+    </div>
+    <div class="card" id="hAuto" hidden></div>
+    <div class="card" id="hChecks" hidden>
+      <h3>Hva mangler i narrativet?</h3>
+      <p>Svar ærlig. «Ukjent» er et gyldig svar og teller som hull.</p>
+      <div id="hList"></div>
+      <button class="main" id="hReport">Lag rapport</button>
+    </div>
+    <div class="card" id="hOut" hidden>
+      <h3>Rapport</h3>
+      <pre id="hReportText"></pre>
+      <button class="ghost" id="hCopy">Kopier rapport + LLM-prompt</button>
+      <button class="ghost" id="hSave">Lagre som versjon av saken</button>
+    </div>
+    <div class="card">
+      <h3>Versjonslogg – hvordan forklaringen endrer seg</h3>
+      <p>Lagre forklaringen hver gang den endres. Du ser hva som forsvant og hva som kom til.</p>
+      <div id="hVersions"><p class="muted">Ingen lagrede saker ennå.</p></div>
+    </div>
+  </section>
+
+  <!-- 3. Personlig evidens-logg -->
+  <section class="tab" id="tab-logg">
+    <div class="card">
+      <h3>Ny påstand</h3>
+      <textarea id="cText" rows="2" placeholder="Påstanden, så presis som mulig. Tall + år + hvor."></textarea>
+      <label>Kilde (lenke)</label>
+      <input type="url" id="cUrl" placeholder="https://www.ssb.no/…">
+      <label>Kildetype</label>
+      <select id="cType">
+        <option value="primær">Primærkilde (SSB, dom, rådata, offisiell rapport)</option>
+        <option value="sekundær">Sekundær (avis, analyse som siterer primær)</option>
+        <option value="ingen">Ingen kilde ennå</option>
+      </select>
+      <div class="row">
+        <div><label>Min sikkerhet (%)</label><input type="number" id="cConf" min="0" max="100" value="60"></div>
+        <div><label>Sjekk igjen om (dager)</label><input type="number" id="cDays" min="1" value="180"></div>
+      </div>
+      <button class="main" id="cAdd">Logg påstand</button>
+    </div>
+    <div class="card">
+      <h3>Dine påstander</h3>
+      <div id="cList"></div>
+      <button class="ghost" id="cExport">Eksporter (JSON)</button>
+    </div>
+  </section>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+function download(name, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function copy(text, btn) {
+  const done = () => { const t = btn.textContent; btn.textContent = 'Kopiert'; setTimeout(() => btn.textContent = t, 1500); };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => prompt('Kopier:', text));
+  else prompt('Kopier:', text);
+}
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + b.dataset.tab));
+});
+
+// ---------- 1. Simulator ----------
+const sliders = { cool: v => v + ' r', forb: v => v + ' %', veto: v => v + ' %', gain: v => '+' + v + ' %' };
+Object.keys(sliders).forEach(id => {
+  const show = () => $('v-' + id).textContent = sliders[id]($(id).value);
+  $(id).oninput = show; show();
+});
+
+function battle(p) {
+  const GOAL = 25, MAX = 400, base = 0.5;
+  let a = 0, b = 0, wait = 0, actsA = 0;
+  for (let r = 1; r <= MAX; r++) {
+    if (Math.random() < base) b++;
+    if (wait > 0) { wait--; }
+    else if (Math.random() >= p.forb && Math.random() >= p.veto) {
+      actsA++;
+      if (Math.random() < base) a += 1 + p.gain;
+      wait = p.cool;
+    }
+    if (b >= GOAL || a >= GOAL) return { winner: b >= GOAL ? 'B' : 'A', rounds: r, actsA };
+  }
+  return { winner: a > b ? 'A' : b > a ? 'B' : '-', rounds: MAX, actsA };
+}
+
+$('simRun').onclick = () => {
+  const p = { cool: +$('cool').value, forb: $('forb').value / 100, veto: $('veto').value / 100, gain: $('gain').value / 100 };
+  const n = +$('runs').value;
+  let winB = 0, roundsB = 0, acts = 0, rounds = 0;
+  for (let i = 0; i < n; i++) {
+    const r = battle(p);
+    if (r.winner === 'B') { winB++; roundsB += r.rounds; }
+    acts += r.actsA; rounds += r.rounds;
+  }
+  const pctB = Math.round(winB / n * 100);
+  const friction = Math.round((1 - acts / rounds) * 100);
+  $('sWinB').textContent = pctB + ' %';
+  $('sFric').textContent = friction + ' %';
+  $('sBar').style.width = pctB + '%';
+  const avg = winB ? Math.round(roundsB / winB) : null;
+  let text = `A fikk handlet i ${100 - friction} % av rundene. `;
+  if (pctB >= 90) text += `B vinner nesten alltid${avg ? `, i snitt etter ${avg} runder` : ''}. Reglene koster mer enn de gir.`;
+  else if (pctB >= 55) text += `B har overtaket. For å snu det må reglene gi A mer tilbake – eller koste mindre.`;
+  else if (pctB > 45) text += `Jevnt. Her kjøper reglene akkurat det de koster.`;
+  else text += `A vinner. Gevinsten av reglene veier tyngre enn friksjonen.`;
+  if (+$('gain').value === 0) text += ' Merk: gevinst er satt til 0, så modellen antar at regler bare koster.';
+  $('sText').textContent = text;
+  $('simOut').hidden = false;
+};
+
+// ---------- 2. Hull-sjekk ----------
+const QUESTIONS = [
+  'Hvem står bak – navngitt aktør eller bare «ukjente»?',
+  'Hvilke primærkilder er oppgitt (rapport, data, vitner med navn)?',
+  'Er funnene verifisert av en uavhengig part?',
+  'Finnes en tidslinje med klokkeslett og steder?',
+  'Hvilke fysiske bevis er nevnt, og hvem har tilgang til dem?',
+  'Er det materiale som er gradert, forseglet eller holdt tilbake?',
+  'Er etterforskningen avsluttet, henlagt eller pågående?',
+  'Nevnes flere aktører med motiv og evne – eller bare én?',
+  'Har forklaringen endret seg siden første versjon?',
+  'Hvem tjener økonomisk eller politisk på denne forklaringen?'
+];
+const ANSWERS = [['', 'Velg'], ['ja', 'Besvart'], ['delvis', 'Delvis'], ['nei', 'Ukjent']];
+
+const HEDGES = ['ifølge', 'kilder', 'anonym', 'trolig', 'antakelig', 'sannsynligvis', 'skal ha', 'mener', 'angivelig', 'ikke bekreftet', 'kan ikke utelukke', 'uklart', 'reportedly', 'allegedly', 'sources'];
+function scanText(t) {
+  const low = t.toLowerCase();
+  const words = (t.match(/\S+/g) || []).length;
+  const hedges = HEDGES.map(h => [h, low.split(h).length - 1]).filter(x => x[1] > 0);
+  return {
+    words,
+    hedgeCount: hedges.reduce((s, x) => s + x[1], 0),
+    hedges,
+    numbers: (t.match(/\d[\d.,]*/g) || []).length,
+    links: (t.match(/https?:\/\/\S+/g) || []).length,
+    dates: (t.match(/\b\d{1,2}\.\s?\d{1,2}\.\s?\d{2,4}\b|\b(19|20)\d{2}\b|\b\d{1,2}\.\s?(jan|feb|mar|apr|mai|jun|jul|aug|sep|okt|nov|des)/gi) || []).length,
+    names: (t.match(/(?<![.!?]\s)(?<!^)\b[A-ZÆØÅ][a-zæøå]+(?:\s[A-ZÆØÅ][a-zæøå]+)+/g) || []).length
+  };
+}
+
+let lastScan = null;
+$('hScan').onclick = () => {
+  const t = $('hText').value.trim();
+  if (!t) { $('hText').focus(); return; }
+  const s = lastScan = scanText(t);
+  const per100 = n => (n / Math.max(s.words, 1) * 100).toFixed(1);
+  $('hAuto').innerHTML = `<h3>Automatisk skann</h3>
+    <div class="check">Ord: ${s.words}</div>
+    <div class="check"><span class="${s.hedgeCount ? 'warn' : 'ok'}">Forbeholdsord: ${s.hedgeCount} (${per100(s.hedgeCount)} per 100 ord)</span></div>
+    ${s.hedges.length ? `<div class="check muted">${s.hedges.map(h => esc(h[0]) + ' ×' + h[1]).join(', ')}</div>` : ''}
+    <div class="check"><span class="${s.numbers ? 'ok' : 'bad'}">Tall: ${s.numbers}</span></div>
+    <div class="check"><span class="${s.dates ? 'ok' : 'bad'}">Datoer/år: ${s.dates}</span></div>
+    <div class="check"><span class="${s.links ? 'ok' : 'warn'}">Lenker: ${s.links}</span></div>
+    <div class="check"><span class="${s.names ? 'ok' : 'warn'}">Navn (grovt anslag): ${s.names}</span></div>`;
+  $('hAuto').hidden = false;
+  $('hList').innerHTML = QUESTIONS.map((q, i) => `<div class="check">
+    <select data-q="${i}">${ANSWERS.map(a => `<option value="${a[0]}">${a[1]}</option>`).join('')}</select>
+    <div>${esc(q)}</div></div>`).join('');
+  $('hChecks').hidden = false;
+  $('hOut').hidden = true;
+};
+
+function buildReport() {
+  const vals = [...document.querySelectorAll('#hList select')].map(s => s.value);
+  const pts = { ja: 0, delvis: 0.5, nei: 1, '': 1 };
+  const holes = vals.reduce((sum, v) => sum + pts[v], 0);
+  const score = Math.round(holes / QUESTIONS.length * 100);
+  const s = lastScan;
+  const lines = [];
+  lines.push(`SAK: ${$('hCase').value.trim() || '(uten navn)'}`);
+  lines.push(`DATO: ${new Date().toLocaleDateString('no-NO')}`);
+  lines.push(`HULL-SCORE: ${score}/100 (0 = alt besvart, 100 = ingenting besvart)`);
+  lines.push(`TEKST: ${s.words} ord, ${s.hedgeCount} forbeholdsord, ${s.numbers} tall, ${s.dates} datoer, ${s.links} lenker`);
+  lines.push('');
+  lines.push('UBESVART:');
+  QUESTIONS.forEach((q, i) => { if (vals[i] === 'nei' || vals[i] === '') lines.push('- ' + q); });
+  lines.push('DELVIS:');
+  QUESTIONS.forEach((q, i) => { if (vals[i] === 'delvis') lines.push('- ' + q); });
+  lines.push('');
+  lines.push(score >= 60
+    ? 'VURDERING: Forklaringen hviler på mer enn den viser. Behandle som uavklart, ikke som lukket.'
+    : score >= 30
+      ? 'VURDERING: Delvis dokumentert. Hullene over er der neste spørsmål skal rettes.'
+      : 'VURDERING: Godt dokumentert. Sjekk at kildene faktisk sier det som påstås.');
+  lines.push('Høy score betyr at narrativet mangler belegg – ikke at et annet narrativ er bevist.');
+  return { text: lines.join('\n'), score, vals };
+}
+
+$('hReport').onclick = () => {
+  $('hReportText').textContent = buildReport().text;
+  $('hOut').hidden = false;
+};
+
+$('hCopy').onclick = e => {
+  const llm = `Du er en nøktern etterforsker. Under er en offisiell forklaring og en liste over hull.
+1. For hvert hull: hvilke åpne kilder kunne besvart det, og finnes de?
+2. List alle aktører med motiv OG evne. Ranger etter tilgjengelig evidens, ikke etter hvem som er mest sannsynlig politisk.
+3. Skill tydelig mellom dokumentert, sannsynlig og spekulasjon.
+4. Si «ukjent» når det er ukjent. Ikke fyll hull med teori.
+
+FORKLARING:
+${$('hText').value.trim()}
+
+${$('hReportText').textContent}`;
+  copy(llm, e.target);
+};
+
+// Versjonslogg
+function lineDiff(oldT, newT) {
+  const o = oldT.split(/(?<=[.!?])\s+|\n+/).map(x => x.trim()).filter(Boolean);
+  const n = newT.split(/(?<=[.!?])\s+|\n+/).map(x => x.trim()).filter(Boolean);
+  const os = new Set(o), ns = new Set(n);
+  return [
+    ...o.filter(x => !ns.has(x)).map(x => `<div class="diff-del">− ${esc(x)}</div>`),
+    ...n.filter(x => !os.has(x)).map(x => `<div class="diff-add">+ ${esc(x)}</div>`)
+  ].join('') || '<div class="muted">Ingen endring i setningene.</div>';
+}
+
+function renderVersions() {
+  const cases = load('asymCases', {});
+  const names = Object.keys(cases);
+  if (!names.length) { $('hVersions').innerHTML = '<p class="muted">Ingen lagrede saker ennå.</p>'; return; }
+  $('hVersions').innerHTML = names.map(name => {
+    const v = cases[name];
+    const latest = v[v.length - 1];
+    const trend = v.length > 1 ? latest.score - v[v.length - 2].score : 0;
+    const days = Math.round((latest.t - v[0].t) / 864e5);
+    return `<div class="claim">
+      <strong>${esc(name)}</strong> – ${v.length} versjon${v.length > 1 ? 'er' : ''} over ${days} dager
+      <div class="meta">Hull-score nå: ${latest.score}${v.length > 1 ? ` (${trend > 0 ? '+' : ''}${trend} siden forrige)` : ''}</div>
+      ${v.length > 1 ? `<details style="margin-top:6px"><summary class="muted">Endring siste versjon</summary>${lineDiff(v[v.length - 2].text, latest.text)}</details>` : ''}
+      <button class="mini" data-del="${esc(name)}" style="margin-top:6px">Slett sak</button>
+    </div>`;
+  }).join('');
+  $('hVersions').querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    if (!confirm('Slette alle versjoner av «' + b.dataset.del + '»?')) return;
+    const c = load('asymCases', {}); delete c[b.dataset.del]; save('asymCases', c); renderVersions();
+  });
+}
+
+$('hSave').onclick = e => {
+  const name = $('hCase').value.trim();
+  if (!name) { $('hCase').focus(); return; }
+  const r = buildReport();
+  const cases = load('asymCases', {});
+  (cases[name] = cases[name] || []).push({ t: Date.now(), text: $('hText').value.trim(), score: r.score, answers: r.vals });
+  save('asymCases', cases);
+  renderVersions();
+  e.target.textContent = 'Lagret';
+  setTimeout(() => e.target.textContent = 'Lagre som versjon av saken', 1500);
+};
+
+// ---------- 3. Evidens-logg ----------
+function renderClaims() {
+  const list = load('asymClaims', []);
+  if (!list.length) { $('cList').innerHTML = '<p class="muted">Ingen påstander logget. Start med en du er sikker på.</p>'; return; }
+  const now = Date.now();
+  $('cList').innerHTML = list.map((c, i) => {
+    const due = c.checked + c.days * 864e5;
+    const flags = [];
+    if (c.type === 'ingen') flags.push('<span class="bad">Uten kilde</span>');
+    else if (c.type === 'sekundær') flags.push('<span class="warn">Sekundærkilde</span>');
+    if (now > due) flags.push('<span class="bad">Utløpt – sjekk på nytt</span>');
+    if (c.conf >= 90 && c.type !== 'primær') flags.push('<span class="warn">Høy sikkerhet, svak kilde</span>');
+    return `<div class="claim">
+      ${esc(c.text)}
+      <div class="meta">${c.conf} % sikker · sjekket ${new Date(c.checked).toLocaleDateString('no-NO')}${c.history.length ? ` · revidert ${c.history.length}×` : ''}</div>
+      ${c.url ? `<div class="meta"><a href="${esc(c.url)}" target="_blank" rel="noopener" style="color:var(--muted)">${esc(c.url)}</a></div>` : ''}
+      <div class="meta">${flags.join(' · ') || '<span class="ok">OK</span>'}</div>
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button class="mini" data-act="recheck" data-i="${i}">Sjekket – står</button>
+        <button class="mini" data-act="revise" data-i="${i}">Ny data – endre</button>
+        <button class="mini" data-act="del" data-i="${i}">Slett</button>
+      </div>
+    </div>`;
+  }).join('');
+  $('cList').querySelectorAll('button[data-act]').forEach(b => b.onclick = () => claimAction(b.dataset.act, +b.dataset.i));
+}
+
+function claimAction(act, i) {
+  const list = load('asymClaims', []);
+  const c = list[i];
+  if (act === 'del') {
+    if (!confirm('Slette påstanden?')) return;
+    list.splice(i, 1);
+  } else if (act === 'recheck') {
+    c.checked = Date.now();
+  } else if (act === 'revise') {
+    const text = prompt('Ny formulering (tom = behold):', c.text);
+    if (text === null) return;
+    const conf = prompt('Ny sikkerhet (0–100):', c.conf);
+    if (conf === null) return;
+    c.history.push({ t: Date.now(), text: c.text, conf: c.conf });
+    if (text.trim()) c.text = text.trim();
+    c.conf = Math.max(0, Math.min(100, +conf || 0));
+    c.checked = Date.now();
+  }
+  save('asymClaims', list);
+  renderClaims();
+}
+
+$('cAdd').onclick = () => {
+  const text = $('cText').value.trim();
+  if (!text) { $('cText').focus(); return; }
+  const list = load('asymClaims', []);
+  list.unshift({
+    text,
+    url: $('cUrl').value.trim(),
+    type: $('cUrl').value.trim() ? $('cType').value : 'ingen',
+    conf: Math.max(0, Math.min(100, +$('cConf').value || 0)),
+    days: Math.max(1, +$('cDays').value || 180),
+    checked: Date.now(),
+    history: []
+  });
+  save('asymClaims', list);
+  $('cText').value = ''; $('cUrl').value = '';
+  renderClaims();
+};
+
+$('cExport').onclick = () => download('evidens-logg.json', JSON.stringify(load('asymClaims', []), null, 2));
+
+renderVersions();
+renderClaims();
+</script>
+</body>
+</html>
