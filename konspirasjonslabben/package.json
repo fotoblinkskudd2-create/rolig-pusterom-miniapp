@@ -1,0 +1,13 @@
+{
+  "name": "konspirasjonslabben",
+  "version": "1.0.0",
+  "description": "Satirisk kursopplegg: bygg konspirasjonsteorier av dagens nyhet – og lær å kjenne dem igjen.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}

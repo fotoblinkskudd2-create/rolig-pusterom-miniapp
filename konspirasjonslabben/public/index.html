@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konspirasjonslabben</title>
+<meta name="description" content="Et satirisk kursopplegg der du lærer å bygge konspirasjonsteorier – så du kjenner dem igjen når noen prøver på deg.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧵</text></svg>">
+</head>
+<body>
+<header class="topp">
+  <div class="stempel">STRENGT HEMMELIG</div>
+  <h1>Konspirasjons&shy;labben</h1>
+  <p class="under">Seks oppgaver. Én stjålet time. Null sannhet.</p>
+  <div class="meter-global" aria-live="polite">
+    <span>Din rang:</span> <strong id="global-rang">Kritisk tenkende borger (kjedelig)</strong>
+    <span class="dot">·</span> <span>Paranoiapoeng:</span> <strong id="global-poeng">0</strong>
+  </div>
+</header>
+
+<main>
+  <section class="utklipp" id="sak" aria-label="Dagens sak">
+    <div class="utklipp-dato" id="sak-dato"></div>
+    <h2 id="sak-tittel">Laster saken … (hvis den ikke er blitt slettet)</h2>
+    <p id="sak-ingress"></p>
+    <details class="fakta">
+      <summary>Kjedelige fakta (åpne bare hvis du tåler det)</summary>
+      <ul id="sak-fakta"></ul>
+    </details>
+  </section>
+
+  <nav class="faner" id="faner" aria-label="Nivåer"></nav>
+
+  <section class="nivaa" id="nivaa" aria-live="polite"></section>
+
+  <section class="arkiv" id="arkiv">
+    <div class="arkiv-hode">
+      <h2>📂 Arkivet</h2>
+      <div class="sortering">
+        <button data-sort="topp" class="aktiv">Mest «øyeåpnende»</button>
+        <button data-sort="nye">Nyeste</button>
+      </div>
+    </div>
+    <p class="hint">Teorier publisert fra Viralovnen. Stem ærlig: «Åpnet øynene mine» eller «Jeg sjekket kilden». Bare én av dem er en dyd.</p>
+    <div id="arkiv-liste" class="arkiv-liste"></div>
+  </section>
+
+  <section class="debrief" id="debrief" hidden>
+    <h2>🔦 Lyset på. Alle sammen ut av kjelleren.</h2>
+    <p>Du har nå bygget en konspirasjonsteori fra bunnen av, ut av én helt vanlig nyhet: at klokka ble stilt tilbake en time. Det tok deg kanskje tjue minutter. Tenk på hva folk klarer med tjue år og en algoritme.</p>
+    <div id="debrief-liste" class="debrief-liste"></div>
+    <div class="sjekkliste">
+      <h3>Fem spørsmål før du deler noe</h3>
+      <ol>
+        <li><strong>Hvor kommer det fra?</strong> Finn originalkilden. Ikke skjermbildet av skjermbildet.</li>
+        <li><strong>Hva er motbeviset?</strong> Hvis teorien ikke kan motbevises av noe som helst, sier den ingenting.</li>
+        <li><strong>Hvor mange ledd?</strong> Gang sannsynlighetene. Lange kjeder er svake kjeder.</li>
+        <li><strong>Hvem er «de»?</strong> Krev navn, rolle og mekanisme. «De» er ikke en person.</li>
+        <li><strong>Hvorfor haster det?</strong> «Del før de sletter» er et salgstriks, ikke en kildehenvisning.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Satire. Alle mistenkte, motiver, rådgivere og stekeovner i oppgavene er oppdiktet. Klokkeskiftet er dessverre ekte.</p>
+  <button id="nullstill" class="liten">Nullstill min fremgang</button>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
