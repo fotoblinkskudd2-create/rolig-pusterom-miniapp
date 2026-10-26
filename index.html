@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1f1c" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
@@ -14,7 +23,27 @@
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+    --line: var(--line);
+    --on-accent: #2a3a2f;
+    --warn: #8a5a4a;
+    --circle-text: #3a4a3f;
   }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1f1c;
+      --card: #242b26;
+      --text: #e0ebe3;
+      --muted: #8a9a8f;
+      --accent: #8fb39a;
+      --soft-blue: #2c3a44;
+      --soft-beige: #33302a;
+      --soft-green: #2a3a2f;
+      --line: #344038;
+      --on-accent: #1a1f1c;
+      --warn: #e0a08a;
+    }
+  }
+  textarea { color: var(--text); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: system-ui, -apple-system, sans-serif;
@@ -56,7 +85,7 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
@@ -71,7 +100,7 @@
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
@@ -84,7 +113,7 @@
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: var(--on-accent);
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -96,6 +125,7 @@
   .btn:active { opacity: 0.85; }
   .btn-secondary {
     background: var(--soft-blue);
+    color: var(--text);
     margin-top: 12px;
   }
   .message {
@@ -142,7 +172,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .action-card.done {
     opacity: 0.6;
@@ -162,7 +192,7 @@
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .history-item .date {
     font-size: 0.85rem;
@@ -177,7 +207,7 @@
     display: flex;
     justify-content: space-around;
     padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    border-top: 1px solid var(--line);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
@@ -201,7 +231,7 @@
     text-align: center;
   }
   .hint {
-    color: #8a5a4a;
+    color: var(--warn);
     font-size: 0.9rem;
     margin: -8px 0 16px;
     display: none;
@@ -441,6 +471,10 @@ function exportHistory() {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 // init

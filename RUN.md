@@ -6,7 +6,7 @@
 2. Åpne `index.html` i Safari eller Chrome.
 3. På iPhone: Del → Legg til på Hjem-skjerm (valgfritt).
 
-Ingen server. Ingen konto.
+Ingen server. Ingen konto. Over https fungerer appen også offline etter første besøk.
 
 ## Hva som lagres lokalt
 

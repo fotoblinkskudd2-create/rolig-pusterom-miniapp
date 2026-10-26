@@ -19,4 +19,8 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 
-Mangler fortsatt (ikke denne patchen): PWA/ikon, iOS hjemskjerm, dark mode, test på ekte iPhone.
+## Etter 1.2
+
+PWA: manifest, ikon (SVG + PNG 180/192/512), service worker med offline-cache. Dark mode via systeminnstilling.
+
+Mangler fortsatt: test på ekte iPhone.
