@@ -378,7 +378,16 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      const date = document.createElement('div');
+      date.className = 'date';
+      date.textContent = `${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}`;
+      item.appendChild(date);
+      if (e.note) {
+        // textContent, ikke innerHTML: noten er brukerinput
+        const noteEl = document.createElement('div');
+        noteEl.textContent = e.note;
+        item.appendChild(noteEl);
+      }
       container.appendChild(item);
     });
   }
