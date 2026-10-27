@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520" font-family="Helvetica, Arial, sans-serif">
+<rect width="1000" height="520" fill="#fbfaf6"/>
+<text x="30" y="36" font-size="17" font-weight="bold">Propell P1 – bladform (ovenfra) og vridning</text>
+<polygon points="173.0,157.7 185.2,144.8 194.7,138.3 204.2,132.6 213.8,127.5 223.3,122.7 232.8,119.3 242.3,120.4 251.8,121.7 261.3,123.1 270.9,124.4 280.4,125.7 289.9,127.0 299.4,128.4 308.9,129.7 318.5,131.0 328.0,132.3 337.5,134.1 347.0,135.9 356.5,137.8 366.0,139.7 375.6,141.6 385.1,143.6 394.6,145.5 404.1,147.4 413.6,149.3 423.1,151.3 432.7,153.2 442.2,155.2 451.7,157.3 461.2,159.4 470.7,161.5 480.3,163.5 489.8,165.6 499.3,167.7 508.8,169.8 518.3,171.9 527.8,173.9 537.4,175.9 546.9,177.3 556.4,178.5 556.4,194.9 546.9,195.5 537.4,196.1 527.8,196.9 518.3,197.8 508.8,198.7 499.3,199.6 489.8,200.4 480.3,201.3 470.7,202.2 461.2,203.1 451.7,204.0 442.2,204.9 432.7,205.8 423.1,206.6 413.6,207.4 404.1,208.3 394.6,209.1 385.1,209.9 375.6,210.7 366.0,211.6 356.5,212.4 347.0,213.2 337.5,213.9 328.0,214.7 318.5,215.3 308.9,215.8 299.4,216.4 289.9,217.0 280.4,217.6 270.9,218.1 261.3,218.7 251.8,219.3 242.3,219.8 232.8,220.3 223.3,218.8 213.8,216.8 204.2,214.6 194.7,212.2 185.2,209.4 173.0,203.8" fill="#d9e4ee" stroke="#1f3b57" stroke-width="1.6"/>
+<circle cx="150" cy="190" r="28.8" fill="#ccc" stroke="#222"/>
+<circle cx="150" cy="190" r="8.0" fill="#fbfaf6" stroke="#222"/>
+<line x1="150" y1="190" x2="556.4000000000001" y2="190" stroke="#888" stroke-dasharray="5 4"/>
+<text x="556.4000000000001" y="250" text-anchor="end" font-size="12" fill="#c0392b">R = 127 mm (Ø 254 mm)</text>
+<text x="180" y="110" font-size="12" fill="#555">forkant ↑ (rotasjonsretning)</text>
+<text x="30" y="300" font-size="13" font-weight="bold">r (mm)</text>
+<text x="30" y="322" font-size="13" font-weight="bold">korde (mm)</text>
+<text x="30" y="344" font-size="13" font-weight="bold">vinkel (°)</text>
+<line x1="173.0" y1="235" x2="173.0" y2="286" stroke="#ddd"/>
+<text x="173.0" y="300" font-size="12" text-anchor="middle">7.2</text>
+<text x="173.0" y="322" font-size="12" text-anchor="middle">14.4</text>
+<text x="173.0" y="344" font-size="12" text-anchor="middle">28.1</text>
+<line x1="213.8" y1="235" x2="213.8" y2="286" stroke="#ddd"/>
+<text x="213.8" y="300" font-size="12" text-anchor="middle">19.9</text>
+<text x="213.8" y="322" font-size="12" text-anchor="middle">27.9</text>
+<text x="213.8" y="344" font-size="12" text-anchor="middle">27.3</text>
+<line x1="251.8" y1="235" x2="251.8" y2="286" stroke="#ddd"/>
+<text x="251.8" y="300" font-size="12" text-anchor="middle">31.8</text>
+<text x="251.8" y="322" font-size="12" text-anchor="middle">30.5</text>
+<text x="251.8" y="344" font-size="12" text-anchor="middle">18.0</text>
+<line x1="289.9" y1="235" x2="289.9" y2="286" stroke="#ddd"/>
+<text x="289.9" y="300" font-size="12" text-anchor="middle">43.7</text>
+<text x="289.9" y="322" font-size="12" text-anchor="middle">28.1</text>
+<text x="289.9" y="344" font-size="12" text-anchor="middle">14.4</text>
+<line x1="328.0" y1="235" x2="328.0" y2="286" stroke="#ddd"/>
+<text x="328.0" y="300" font-size="12" text-anchor="middle">55.6</text>
+<text x="328.0" y="322" font-size="12" text-anchor="middle">25.7</text>
+<text x="328.0" y="344" font-size="12" text-anchor="middle">12.2</text>
+<line x1="366.0" y1="235" x2="366.0" y2="286" stroke="#ddd"/>
+<text x="366.0" y="300" font-size="12" text-anchor="middle">67.5</text>
+<text x="366.0" y="322" font-size="12" text-anchor="middle">22.4</text>
+<text x="366.0" y="344" font-size="12" text-anchor="middle">10.9</text>
+<line x1="404.1" y1="235" x2="404.1" y2="286" stroke="#ddd"/>
+<text x="404.1" y="300" font-size="12" text-anchor="middle">79.4</text>
+<text x="404.1" y="322" font-size="12" text-anchor="middle">19.0</text>
+<text x="404.1" y="344" font-size="12" text-anchor="middle">9.8</text>
+<line x1="442.2" y1="235" x2="442.2" y2="286" stroke="#ddd"/>
+<text x="442.2" y="300" font-size="12" text-anchor="middle">91.3</text>
+<text x="442.2" y="322" font-size="12" text-anchor="middle">15.5</text>
+<text x="442.2" y="344" font-size="12" text-anchor="middle">8.6</text>
+<line x1="480.3" y1="235" x2="480.3" y2="286" stroke="#ddd"/>
+<text x="480.3" y="300" font-size="12" text-anchor="middle">103.2</text>
+<text x="480.3" y="322" font-size="12" text-anchor="middle">11.8</text>
+<text x="480.3" y="344" font-size="12" text-anchor="middle">7.6</text>
+<line x1="518.3" y1="235" x2="518.3" y2="286" stroke="#ddd"/>
+<text x="518.3" y="300" font-size="12" text-anchor="middle">115.1</text>
+<text x="518.3" y="322" font-size="12" text-anchor="middle">8.1</text>
+<text x="518.3" y="344" font-size="12" text-anchor="middle">6.9</text>
+<line x1="556.4" y1="235" x2="556.4" y2="286" stroke="#ddd"/>
+<text x="556.4" y="300" font-size="12" text-anchor="middle">127.0</text>
+<text x="556.4" y="322" font-size="12" text-anchor="middle">5.1</text>
+<text x="556.4" y="344" font-size="12" text-anchor="middle">6.3</text>
+<text x="30" y="480" font-size="13">2 blader · profil tynn_5pst (≈ NACA 4405) · karbonfiber · nav Ø18 × 8 mm, aksel Ø5 mm</text>
+</svg>

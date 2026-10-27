@@ -54,4 +54,6 @@ slik verdien bygges opp fra produkt til produkt.
 | Mappe | Status |
 |---|---|
 | `produkter/tannborste` | P1 «Ren»: tegning, OpenSCAD-modell, STL-filer, spesifikasjon. Ikke testet. |
+| `produkter/drone_propell` | P1 10″ og 10,5″: fysikkmodell (BEMT), 19–25 % mindre effekt i modellen, STL, tegninger. Krever numpy. |
+| `produkter/barnekniv` | K1 «Spikkevenn»: risikomodell, 81 % lavere kuttrisiko i modellen, OpenSCAD, STL, tegning. |
 | `produkter/_mal` | Mal (eksempel: drikkeflaske) |

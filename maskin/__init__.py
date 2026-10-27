@@ -120,7 +120,7 @@ class Maskin:
     def beskriv(self, d):
         dp = self.delpoeng(d)
         linjer = [f"POENG {self.poeng(d):.3f}"]
-        info = [f"{k[1:]} {v:.0f}" if isinstance(v, (int, float)) else f"{k[1:]} {v}"
+        info = [f"{k[1:]} {v:.3g}" if isinstance(v, (int, float)) else f"{k[1:]} {v}"
                 for k, v in dp.items() if k.startswith("_")]
         if info:
             linjer[0] += "   " + ", ".join(info)
