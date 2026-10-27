@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" font-family="Helvetica, Arial, sans-serif">
+<defs><marker id="pil" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#c0392b"/></marker><pattern id="bambus" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#e8d3a8"/><line x1="0" y1="0" x2="8" y2="0" stroke="#c9ad78"/></pattern></defs>
+<rect width="1100" height="820" fill="#fbfaf6"/>
+<rect x="10" y="10" width="1080" height="800" fill="none" stroke="#222" stroke-width="2"/>
+<text x="70.0" y="60.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222">A  SIDEVISNING  (skala 3,2 px/mm)</text>
+<path d="M70,156.4 Q70,148.4 82,148.4 Q202.0,148.4 262.0,153.2 Q332.0,150.4 466.0,151.4 L486.0,170.8 L486.0,209.2 L466.0,228.6 Q332.0,229.6 262.0,226.8 Q202.0,231.6 82,231.6 Q70,231.6 70,223.6 Z" fill="url(#bambus)" stroke="#222" stroke-width="1.6"/>
+<ellipse cx="342.0" cy="149.4" rx="20.8" ry="5" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+<ellipse cx="342.0" cy="149.4" rx="14.4" ry="4" fill="#555"/>
+<text x="342.0" y="126.4" font-size="11" text-anchor="middle" font-weight="normal" fill="#222">Av/på + LED-ring (trykk/timer)</text>
+<line x1="342.0" y1="130.4" x2="342.0" y2="144.4" stroke="#888" stroke-width="0.8"/>
+<line x1="89.2" y1="164.4" x2="89.2" y2="215.6" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="89.2" y="303.6" font-size="11" text-anchor="middle" font-weight="normal" fill="#222">Induktiv ladespole</text>
+<line x1="89.2" y1="291.6" x2="89.2" y2="215.6" stroke="#888" stroke-width="0.8"/>
+<rect x="114.80000000000001" y="164.4" width="160.0" height="51.2" fill="none" stroke="#888" stroke-dasharray="4 3"/>
+<text x="194.8" y="194.0" font-size="11" text-anchor="middle" font-weight="normal" fill="#666">Li-ion 18350, 1000 mAh</text>
+<rect x="294.0" y="167.6" width="144.0" height="44.800000000000004" fill="none" stroke="#888" stroke-dasharray="4 3"/>
+<text x="364.4" y="194.0" font-size="11" text-anchor="middle" font-weight="normal" fill="#666">Oscillerende motor + PCB</text>
+<path d="M498.8,175.6 L642.8,178.8 L689.7510848352226,169.78023884074753 L689.7510848352226,190.26023884074755 L642.8,201.2 L498.8,204.4 Z" fill="#f4f1e8" stroke="#222" stroke-width="1.6"/>
+<polygon points="688.0877913086806,172.1950580348771 750.6892377556442,158.8887098225405 754.0158248087282,174.5390714342814 691.4143783617646,187.84541964661798" fill="#f4f1e8" stroke="#222" stroke-width="1.6"/>
+<line x1="690.9" y1="171.6" x2="684.3" y2="140.3" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="696.6" y1="170.4" x2="690.0" y2="139.1" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="702.3" y1="169.2" x2="695.7" y2="137.9" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="708.0" y1="168.0" x2="701.4" y2="136.7" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="713.7" y1="166.8" x2="707.0" y2="135.5" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="719.4" y1="165.5" x2="712.7" y2="134.2" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="725.1" y1="164.3" x2="718.4" y2="133.0" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="730.8" y1="163.1" x2="724.1" y2="131.8" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="736.5" y1="161.9" x2="729.8" y2="130.6" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="742.2" y1="160.7" x2="735.5" y2="129.4" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="747.8" y1="159.5" x2="739.9" y2="121.9" stroke="#7fa7c9" stroke-width="2.2"/>
+<line x1="70.0" y1="231.6" x2="70.0" y2="336.6" stroke="#888" stroke-width="0.8"/>
+<line x1="752.4" y1="231.6" x2="752.4" y2="336.6" stroke="#888" stroke-width="0.8"/>
+<line x1="70.0" y1="336.6" x2="752.4" y2="336.6" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="411.2" y="331.6" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">≈ 214 mm totalt</text>
+<line x1="70.0" y1="231.6" x2="70.0" y2="276.6" stroke="#888" stroke-width="0.8"/>
+<line x1="486.0" y1="231.6" x2="486.0" y2="276.6" stroke="#888" stroke-width="0.8"/>
+<line x1="70.0" y1="276.6" x2="486.0" y2="276.6" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="278.0" y="271.6" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">130 mm skaft</text>
+<line x1="498.8" y1="205.0" x2="498.8" y2="235.0" stroke="#888" stroke-width="0.8"/>
+<line x1="689.8" y1="205.0" x2="689.8" y2="235.0" stroke="#888" stroke-width="0.8"/>
+<line x1="498.8" y1="235.0" x2="689.8" y2="235.0" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="594.3" y="230.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">60 mm nakke</text>
+<line x1="70.0" y1="148.4" x2="45.0" y2="148.4" stroke="#888" stroke-width="0.8"/>
+<line x1="70.0" y1="231.6" x2="45.0" y2="231.6" stroke="#888" stroke-width="0.8"/>
+<line x1="45.0" y1="148.4" x2="45.0" y2="231.6" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="51.0" y="194.0" font-size="12" fill="#c0392b"></text>
+<text x="48.0" y="140.4" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">Ø26</text>
+<line x1="262.0" y1="226.8" x2="262.0" y2="248.8" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="268.0" y="241.8" font-size="12" fill="#c0392b"></text>
+<text x="270.0" y="244.8" font-size="12" text-anchor="start" font-weight="normal" fill="#c0392b">midje Ø23</text>
+<text x="650.8" y="168.0" font-size="13" text-anchor="start" font-weight="bold" fill="#c0392b">12°</text>
+<line x1="642.8" y1="190.0" x2="692.8" y2="190.0" stroke="#888" stroke-width="0.8" stroke-dasharray="3 3"/>
+<text x="70.0" y="400.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222">B  HODE OVENFRA  (skala 11 px/mm)</text>
+<path d="M142.25,470 L257.75,470 A52.25,52.25 0 0 1 257.75,574.5 L142.25,574.5 A48.400000000000006,52.25 0 0 1 142.25,470 Z" fill="#f4f1e8" stroke="#222" stroke-width="1.6"/>
+<rect x="50" y="487.05" width="44" height="70.4" fill="#f4f1e8" stroke="#222" stroke-width="1.6"/>
+<rect x="90" y="471" width="6" height="102.5" fill="#f4f1e8"/>
+<circle cx="255" cy="522.25" r="49.5" fill="#dce9f5" stroke="#2c6e9f" stroke-width="1.4"/>
+<circle cx="255.0" cy="522.2" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="280.3" cy="522.2" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="272.9" cy="540.1" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="255.0" cy="547.5" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="237.1" cy="540.1" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="229.7" cy="522.2" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="237.1" cy="504.4" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="255.0" cy="496.9" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="272.9" cy="504.4" r="8.8" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="296.8" cy="522.2" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="293.2" cy="539.3" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="283.0" cy="553.3" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="267.9" cy="562.0" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="250.6" cy="563.8" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="234.1" cy="558.4" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="221.2" cy="546.8" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="214.1" cy="530.9" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="214.1" cy="513.6" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="221.2" cy="497.7" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="234.1" cy="486.1" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="250.6" cy="480.7" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="267.9" cy="482.5" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="283.0" cy="491.2" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="293.2" cy="505.2" r="6.6" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<path d="M233,460.65 A61.599999999999994,61.599999999999994 0 0 1 277,460.65" fill="none" stroke="#2c6e9f" stroke-width="1.5" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="255.0" y="451.9" font-size="11" text-anchor="middle" font-weight="normal" fill="#2c6e9f">± 20° oscillering</text>
+<circle cx="200.0" cy="502.4" r="6.1" fill="#e67e22" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="200.0" cy="515.6" r="6.1" fill="#e67e22" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="200.0" cy="528.9" r="6.1" fill="#e67e22" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="200.0" cy="542.0" r="6.1" fill="#e67e22" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="107.6" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="107.6" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="120.8" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="120.8" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="134.0" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="134.0" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="147.2" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="147.2" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="160.4" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="160.4" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="173.6" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="173.6" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="186.8" cy="498.1" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<circle cx="186.8" cy="546.5" r="6.1" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<line x1="90.0" y1="574.5" x2="90.0" y2="609.5" stroke="#888" stroke-width="0.8"/>
+<line x1="310.0" y1="574.5" x2="310.0" y2="609.5" stroke="#888" stroke-width="0.8"/>
+<line x1="90.0" y1="609.5" x2="310.0" y2="609.5" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="200.0" y="604.5" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">20 mm</text>
+<line x1="310.0" y1="470.0" x2="350.0" y2="470.0" stroke="#888" stroke-width="0.8"/>
+<line x1="310.0" y1="574.5" x2="350.0" y2="574.5" stroke="#888" stroke-width="0.8"/>
+<line x1="350.0" y1="470.0" x2="350.0" y2="574.5" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="356.0" y="526.2" font-size="12" fill="#c0392b">9,5 mm</text>
+<line x1="205.5" y1="571.8" x2="205.5" y2="649.5" stroke="#888" stroke-width="0.8"/>
+<line x1="304.5" y1="571.8" x2="304.5" y2="649.5" stroke="#888" stroke-width="0.8"/>
+<line x1="205.5" y1="649.5" x2="304.5" y2="649.5" stroke="#c0392b" stroke-width="1" marker-start="url(#pil)" marker-end="url(#pil)"/>
+<text x="255.0" y="644.5" font-size="12" text-anchor="middle" font-weight="normal" fill="#c0392b">Ø9 skive</text>
+<circle cx="90.0" cy="700.0" r="6.0" fill="#7fa7c9" stroke="#2c6e9f" stroke-width="0.6"/>
+<text x="104.0" y="704.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">24 tuster på roterende skive, bust Ø0,144 mm, 10 mm høye</text>
+<circle cx="90.0" cy="724.0" r="6.0" fill="#9bc29b" stroke="#2c6e9f" stroke-width="0.6"/>
+<text x="104.0" y="728.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">14 faste tuster, X-mønster, vinklet mot tannkjøttkanten</text>
+<circle cx="90.0" cy="748.0" r="6.0" fill="#e67e22" stroke="#2c6e9f" stroke-width="0.6"/>
+<text x="104.0" y="752.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">4 tanntråd-tuster, 12 mm, tverrgående rad, avrundede tupper</text>
+<text x="104.0" y="776.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Bakside: riflet TPE-tungerenser, 6 ribber</text>
+<rect x="640" y="430" width="430" height="360" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<text x="652.0" y="458.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Prosjekt</text>
+<text x="770.0" y="458.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Tannbørste P1 «Ren»</text>
+<text x="652.0" y="485.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Mål</text>
+<text x="770.0" y="485.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Maks plakkfjerning, skånsom mot tannkjøtt</text>
+<line x1="640.0" y1="467.0" x2="1070.0" y2="467.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="512.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Drift</text>
+<text x="770.0" y="512.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Roterende-oscillerende, 8 000 osc/min</text>
+<line x1="640.0" y1="494.0" x2="1070.0" y2="494.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="539.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Trykksensor</text>
+<text x="770.0" y="539.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">LED rød over 2,0 N</text>
+<line x1="640.0" y1="521.0" x2="1070.0" y2="521.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="566.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Timer</text>
+<text x="770.0" y="566.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">2:00, puls hvert 30. sek</text>
+<line x1="640.0" y1="548.0" x2="1070.0" y2="548.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="593.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Skaft</text>
+<text x="770.0" y="593.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Bambus-kompositt over IPX7-hus</text>
+<line x1="640.0" y1="575.0" x2="1070.0" y2="575.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="620.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Hode</text>
+<text x="770.0" y="620.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Utskiftbart, PBT-buster, PP-kropp</text>
+<line x1="640.0" y1="602.0" x2="1070.0" y2="602.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="647.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Vekt mål</text>
+<text x="770.0" y="647.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">≈ 115 g</text>
+<line x1="640.0" y1="629.0" x2="1070.0" y2="629.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="674.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Batteri</text>
+<text x="770.0" y="674.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">≈ 3 uker (2×2 min/dag)</text>
+<line x1="640.0" y1="656.0" x2="1070.0" y2="656.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="701.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Toleranser</text>
+<text x="770.0" y="701.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">±0,2 mm hode, ±0,5 mm skaft</text>
+<line x1="640.0" y1="683.0" x2="1070.0" y2="683.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="728.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Status</text>
+<text x="770.0" y="728.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Prototype for test, ikke godkjent</text>
+<line x1="640.0" y1="710.0" x2="1070.0" y2="710.0" stroke="#ddd" stroke-width="0.8"/>
+<text x="652.0" y="755.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222">Tegning</text>
+<text x="770.0" y="755.0" font-size="12" text-anchor="start" font-weight="normal" fill="#222">Generert av tegning.py, rev A</text>
+<line x1="640.0" y1="737.0" x2="1070.0" y2="737.0" stroke="#ddd" stroke-width="0.8"/>
+<line x1="760.0" y1="430.0" x2="760.0" y2="790.0" stroke="#ddd" stroke-width="0.8"/>
+</svg>
