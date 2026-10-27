@@ -1,0 +1,92 @@
+[
+  {
+    "poeng": 0.9202,
+    "design": {
+      "blad_lengde_mm": 67,
+      "blad_hoyde_mm": 17.996647186932385,
+      "rygg_mm": 2.6873888811831272,
+      "spiss": "rund_r8",
+      "eggvinkel_grader": 22.848841462074304,
+      "slip": "scandi",
+      "usleipet_mm": 11.997884560413095,
+      "fingervern_mm": 7.632022594053421,
+      "skaft_lengde_mm": 95,
+      "skaft_tykkelse_mm": 21.99170785302852,
+      "blad_fall_grader": 6.997684309996294,
+      "tommelrampe": true,
+      "skaft_materiale": "tpe_gummi",
+      "slire": "klikk_med_knapp",
+      "signalfarge": true
+    },
+    "delpoeng": {
+      "sikkerhet": 0.9313809937287275,
+      "spikkeevne": 0.927350636925721,
+      "mestring": 0.9999999851043895,
+      "pris": 0.5215123859191656,
+      "_risiko": 0.15615643305090887,
+      "_p_skli": 0.2555391181132157,
+      "_p_glid": 0.08002132634020839,
+      "_pris_kr": 183.5
+    }
+  },
+  {
+    "poeng": 0.919,
+    "design": {
+      "blad_lengde_mm": 67,
+      "blad_hoyde_mm": 17.996647186932385,
+      "rygg_mm": 2.6873888811831272,
+      "spiss": "but",
+      "eggvinkel_grader": 22.848841462074304,
+      "slip": "scandi",
+      "usleipet_mm": 11.997884560413095,
+      "fingervern_mm": 7.632022594053421,
+      "skaft_lengde_mm": 95,
+      "skaft_tykkelse_mm": 21.99170785302852,
+      "blad_fall_grader": 6.997684309996294,
+      "tommelrampe": true,
+      "skaft_materiale": "tpe_gummi",
+      "slire": "klikk_med_knapp",
+      "signalfarge": true
+    },
+    "delpoeng": {
+      "sikkerhet": 0.9497083281783378,
+      "spikkeevne": 0.882350636925721,
+      "mestring": 0.9999999851043895,
+      "pris": 0.5215123859191656,
+      "_risiko": 0.1430654798726158,
+      "_p_skli": 0.2555391181132157,
+      "_p_glid": 0.08002132634020839,
+      "_pris_kr": 183.5
+    }
+  },
+  {
+    "poeng": 0.9136,
+    "design": {
+      "blad_lengde_mm": 67,
+      "blad_hoyde_mm": 17.996647186932385,
+      "rygg_mm": 2.6166046702428805,
+      "spiss": "rund_r8",
+      "eggvinkel_grader": 22.848841462074304,
+      "slip": "scandi",
+      "usleipet_mm": 11.997884560413095,
+      "fingervern_mm": 8.0,
+      "skaft_lengde_mm": 95,
+      "skaft_tykkelse_mm": 21.99170785302852,
+      "blad_fall_grader": 6.997684309996294,
+      "tommelrampe": true,
+      "skaft_materiale": "tpe_gummi",
+      "slire": "klikk",
+      "signalfarge": true
+    },
+    "delpoeng": {
+      "sikkerhet": 0.9174102788227966,
+      "spikkeevne": 0.927350636925721,
+      "mestring": 0.9999999851043895,
+      "pris": 0.5427408412483039,
+      "_risiko": 0.15615643305090887,
+      "_p_skli": 0.2555391181132157,
+      "_p_glid": 0.08002132634020839,
+      "_pris_kr": 168.5
+    }
+  }
+]
