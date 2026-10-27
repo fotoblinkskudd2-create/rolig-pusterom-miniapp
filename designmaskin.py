@@ -48,10 +48,15 @@ def slug(ide):
     return "_".join(ut) or f"produkt_{int(time.time())}"
 
 
-def kommando(ide, mappe, modell=None):
-    prompt = (f"/design {ide}\n\n"
-              f"(Kjøres automatisk av designmaskin.py uten bruker. Bruk produktmappen produkter/{mappe}/. "
-              "Ikke still spørsmål – gjør og dokumenter antakelser. Fullfør alle steg i skillen.)")
+def kommando(ide, mappe, modell=None, oppdater=False):
+    if oppdater:
+        prompt = (f"/design oppdater produkter/{mappe}/ – {ide}\n\n"
+                  "(Kjøres automatisk av designmaskin.py uten bruker. Les filene som finnes, lag stegene som "
+                  "mangler i skillen, og oppdater RAPPORT.md. Ikke still spørsmål.)")
+    else:
+        prompt = (f"/design {ide}\n\n"
+                  f"(Kjøres automatisk av designmaskin.py uten bruker. Bruk produktmappen produkter/{mappe}/. "
+                  "Ikke still spørsmål – gjør og dokumenter antakelser. Fullfør alle steg i skillen.)")
     k = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose",
          "--permission-mode", "acceptEdits", "--allowedTools", ",".join(VERKTOY)]
     if modell:
@@ -100,8 +105,10 @@ def skriv_status(mappe, **felt):
         json.dump(gammel, f, ensure_ascii=False, indent=2)
 
 
-def kjor(ide, modell=None, skriv=print):
-    mappe = slug(ide)
+def kjor(ide, modell=None, skriv=print, mappe=None):
+    """Kjør hele løpet. Med mappe=<eksisterende produkt> fullføres bare stegene som mangler."""
+    oppdater = mappe is not None
+    mappe = mappe or slug(ide)
     os.makedirs(os.path.join(PRODUKTER, mappe), exist_ok=True)
     skriv_status(mappe, ide=ide, status="kjører", start=time.strftime("%Y-%m-%d %H:%M:%S"))
     fremdrift = open(os.path.join(PRODUKTER, mappe, "fremdrift.txt"), "a", buffering=1)
@@ -111,9 +118,9 @@ def kjor(ide, modell=None, skriv=print):
         fremdrift.write(linje + "\n")
         skriv(linje)
 
-    ut(f"▶ Designmaskinen starter: {ide}  ->  produkter/{mappe}/")
+    ut(f"▶ Designmaskinen {'oppdaterer' if oppdater else 'starter'}: {ide}  ->  produkter/{mappe}/")
     try:
-        p = subprocess.Popen(kommando(ide, mappe, modell), cwd=ROT, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+        p = subprocess.Popen(kommando(ide, mappe, modell, oppdater), cwd=ROT, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT, text=True, bufsize=1)
     except FileNotFoundError:
         ut("❌ Fant ikke `claude`. Installer Claude Code og logg inn: https://code.claude.com")
@@ -229,6 +236,9 @@ def produktside(mappe):
         hale = open(fremdrift).read().splitlines()[-60:]
         deler.append(f'<h2>Fremdrift</h2><pre>{html.escape(chr(10).join(hale))}</pre>')
     deler.append(f'<h2>Filer</h2><p>{lenker or "–"}</p>')
+    if st.get("status") != "kjører":
+        deler.append(f'<form method="post" action="/oppdater/{mappe}"><button type="submit">Fullfør manglende steg</button> '
+                     '<span class="mut">lager steg som mangler (f.eks. patent, pitch, lansering) og oppdaterer rapporten</span></form>')
     return side(mappe, "".join(deler), oppdater=st.get("status") == "kjører")
 
 
@@ -263,6 +273,15 @@ class Handler(BaseHTTPRequestHandler):
         self._svar(404, "Finnes ikke")
 
     def do_POST(self):
+        m = re.fullmatch(r"/oppdater/([\w-]+)", self.path)
+        if m and os.path.isdir(os.path.join(PRODUKTER, m.group(1))) and not m.group(1).startswith("_"):
+            mappe = m.group(1)
+            if status_for(mappe).get("status") != "kjører":
+                ide = status_for(mappe).get("ide") or mappe
+                threading.Thread(target=kjor, args=(ide, self.server.modell, lambda _: None, mappe), daemon=True).start()
+            self.send_response(303)
+            self.send_header("Location", f"/p/{mappe}")
+            return self.end_headers()
         if self.path != "/start":
             return self._svar(404, "Finnes ikke")
         n = int(self.headers.get("Content-Length") or 0)
@@ -290,6 +309,8 @@ def web(port, vert, modell):
 def main():
     p = argparse.ArgumentParser(description="Designmaskinen: idé inn, designpakke ut.")
     p.add_argument("ide", nargs="?", help="produktidéen, i anførselstegn")
+    p.add_argument("--oppdater", metavar="MAPPE",
+                   help="fullfør manglende steg for et eksisterende produkt i produkter/MAPPE")
     p.add_argument("--modell", help="Claude-modell (standard: Claude Codes standardmodell)")
     p.add_argument("--tørr", action="store_true", help="vis kommandoen uten å kjøre")
     p.add_argument("--web", action="store_true", help="start nettsiden")
@@ -298,13 +319,19 @@ def main():
     a = p.parse_args()
     if a.web:
         return web(a.port, a.vert, a.modell)
+    if a.oppdater:
+        if not os.path.isdir(os.path.join(PRODUKTER, a.oppdater)):
+            p.error(f"fant ikke produkter/{a.oppdater}")
+        a.ide = a.ide or json.load(open(os.path.join(PRODUKTER, a.oppdater, "status.json"))).get("ide", a.oppdater) \
+            if os.path.exists(os.path.join(PRODUKTER, a.oppdater, "status.json")) else (a.ide or a.oppdater)
     if not a.ide:
-        p.error("skriv en idé, eller bruk --web")
+        p.error("skriv en idé, eller bruk --web / --oppdater MAPPE")
+    mappe = a.oppdater or slug(a.ide)
     if a.tørr:
-        print(json.dumps(kommando(a.ide, slug(a.ide), a.modell), ensure_ascii=False, indent=1))
-        print("Produktmappe: produkter/" + slug(a.ide))
+        print(json.dumps(kommando(a.ide, mappe, a.modell, bool(a.oppdater)), ensure_ascii=False, indent=1))
+        print("Produktmappe: produkter/" + mappe)
         return 0
-    mappe, kode = kjor(a.ide, a.modell)
+    mappe, kode = kjor(a.ide, a.modell, mappe=a.oppdater)
     print(f"\nResultat: produkter/{mappe}/RAPPORT.md")
     return kode
 

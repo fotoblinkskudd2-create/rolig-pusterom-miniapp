@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1350" height="638" viewBox="0 0 1350 638" font-family="Inter, DejaVu Sans, Arial, sans-serif"><defs><marker id="pil" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#3B2A20"/></marker></defs><rect width="1350" height="638" fill="#F4EDE3"/>
+<text x="675.0" y="36.0" font-size="22" text-anchor="middle" font-weight="bold" fill="#3B2A20">Tretimer – storyboard, video 30 s (16:9, stiplet = 9:16-utsnitt)</text>
+<text x="675.0" y="60.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#2F7F86">Bare påstander som er lov nå (06_pitch.md). Scene 6: ⏳ temperaturtekst først etter bestått T1.</text>
+<rect x="30" y="80" width="300" height="169" fill="#d6e6e8" stroke="#3B2A20" stroke-width="2"/>
+<rect x="30" y="80" width="74" height="22" fill="#3B2A20"/>
+<text x="67.0" y="96.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">1 · 0–3 s</text>
+<rect x="132.5" y="80" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="38" y="219" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="180.0" y="235.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Kald igjen?</text>
+<text x="30.0" y="269.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Detalj · statisk</text>
+<text x="30.0" y="287.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lunken kaffe, hinne på overflaten.</text>
+<text x="30.0" y="303.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: klokke tikker, Teams-pling.</text>
+<path d="M152,140 L156,200 L204,200 L208,140 Z" fill="#2F7F86" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M207,152 q18,4 14,22 q-4,12 -16,10" fill="none" stroke="#3B2A20" stroke-width="4"/>
+<ellipse cx="180" cy="142" rx="27" ry="5" fill="#8d7766"/>
+<text x="260.0" y="150.0" font-size="30" text-anchor="middle" font-weight="normal" fill="#2F7F86">❄</text>
+<rect x="360" y="80" width="300" height="169" fill="#d6e6e8" stroke="#3B2A20" stroke-width="2"/>
+<rect x="360" y="80" width="74" height="22" fill="#3B2A20"/>
+<text x="397.0" y="96.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">2 · 3–6 s</text>
+<rect x="462.5" y="80" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="368" y="219" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="510.0" y="235.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Tredje runde i mikroen i dag.</text>
+<text x="360.0" y="269.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Halvnær · rask push-in</text>
+<text x="360.0" y="287.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Montasje 3 klipp på taktslag.</text>
+<text x="360.0" y="303.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: mikropip ×3.</text>
+<circle cx="450" cy="142" r="13" fill="#2F7F86"/>
+<path d="M428,212 q0,-50 22,-52 q22,2 22,52 Z" fill="#2F7F86"/>
+<rect x="520" y="120" width="100" height="70" rx="6" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<rect x="528" y="130" width="62" height="50" fill="#2b2b2b"/>
+<text x="608.0" y="150.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#3B2A20">3×</text>
+<rect x="690" y="80" width="300" height="169" fill="#f1d9bd" stroke="#3B2A20" stroke-width="2"/>
+<rect x="690" y="80" width="74" height="22" fill="#3B2A20"/>
+<text x="727.0" y="96.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">3 · 6–10 s</text>
+<rect x="792.5" y="80" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="698" y="219" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="840.0" y="235.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Møt Tretimer.</text>
+<text x="690.0" y="269.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Nær · tilt ned, 60 fps</text>
+<text x="690.0" y="287.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Skifte: blå → varm grading.</text>
+<text x="690.0" y="303.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: musikken starter på første dråpe.</text>
+<rect x="810.0" y="140.0" width="60.0" height="72.0" rx="4.0" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M870.0,158.0 h14.0 a6.0,6.0 0 0 1 6.0,6.0 v25.2 a6.0,6.0 0 0 1 -6.0,6.0 h-14.0" fill="none" stroke="#3B2A20" stroke-width="4.0"/>
+<path d="M810,110 L865,110 L870,125 L838,125 Z" fill="#8A9198" stroke="#3B2A20"/>
+<path d="M840,125 q2,10 0,18" stroke="#3B2A20" stroke-width="5" fill="none"/>
+<path d="M879.0,160 q-8,-12 0,-24 q8,-12 0,-24" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+<path d="M891.0,160 q-8,-12 0,-24 q8,-12 0,-24" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+<rect x="1020" y="80" width="300" height="169" fill="#f1d9bd" stroke="#3B2A20" stroke-width="2"/>
+<rect x="1020" y="80" width="74" height="22" fill="#3B2A20"/>
+<text x="1057.0" y="96.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">4 · 10–14 s</text>
+<rect x="1122.5" y="80" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="1028" y="219" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="1170.0" y="235.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Tar opp overskuddsvarmen – gir den tilbake.</text>
+<text x="1020.0" y="269.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Detalj / 3D · langsom rotasjon</text>
+<text x="1020.0" y="287.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Animert snitt: PCM-lag lyser kobber.</text>
+<text x="1020.0" y="303.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: lavt, varmt sus.</text>
+<rect x="1118" y="112" width="104" height="100" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<rect x="1124" y="116" width="92" height="90" fill="#F4EDE3" stroke="#3B2A20" stroke-dasharray="3 2"/>
+<rect x="1130" y="120" width="80" height="84" fill="#D9822B"/>
+<rect x="1137" y="124" width="66" height="78" fill="#6b4a33"/>
+<line x1="1219" y1="142" x2="1246" y2="142" stroke="#3B2A20" stroke-width="1"/>
+<text x="1250.0" y="146.0" font-size="10" text-anchor="start" font-weight="normal" fill="#3B2A20">vakuum</text>
+<line x1="1207" y1="162" x2="1246" y2="162" stroke="#3B2A20" stroke-width="1"/>
+<text x="1250.0" y="166.0" font-size="10" text-anchor="start" font-weight="bold" fill="#D9822B">PCM</text>
+<line x1="1190" y1="182" x2="1246" y2="182" stroke="#3B2A20" stroke-width="1"/>
+<text x="1250.0" y="186.0" font-size="10" text-anchor="start" font-weight="normal" fill="#3B2A20">kaffe</text>
+<rect x="30" y="354" width="300" height="169" fill="#f1d9bd" stroke="#3B2A20" stroke-width="2"/>
+<rect x="30" y="354" width="74" height="22" fill="#3B2A20"/>
+<text x="67.0" y="370.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">5 · 14–18 s</text>
+<rect x="132.5" y="354" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="38" y="493" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="180.0" y="509.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Tett vakuumlokk. Drikk uten å ta det av.</text>
+<text x="30.0" y="543.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Nær · rack focus</text>
+<text x="30.0" y="561.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lokk på, skjørt over kanten, tommel skyver åpning.</text>
+<text x="30.0" y="577.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: mykt klikk på taktslag.</text>
+<rect x="142.5" y="402.0" width="75.0" height="90.0" rx="5.0" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M217.5,424.5 h17.5 a7.5,7.5 0 0 1 7.5,7.5 v31.5 a7.5,7.5 0 0 1 -7.5,7.5 h-17.5" fill="none" stroke="#3B2A20" stroke-width="5.0"/>
+<rect x="140.0" y="389.5" width="80.0" height="17.5" rx="3.8" fill="#3B2A20"/>
+<rect x="192.5" y="387.0" width="15.0" height="3.8" fill="#D9822B"/>
+<path d="M205,384 l12,-14" stroke="#3B2A20" stroke-width="2" marker-end="url(#pil)"/>
+<text x="240.0" y="372.0" font-size="11" text-anchor="start" font-weight="bold" fill="#3B2A20">skjørt</text>
+<rect x="360" y="354" width="300" height="169" fill="#efe3cf" stroke="#3B2A20" stroke-width="2"/>
+<rect x="360" y="354" width="74" height="22" fill="#3B2A20"/>
+<text x="397.0" y="370.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">6 · 18–23 s</text>
+<rect x="462.5" y="354" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="368" y="493" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="510.0" y="509.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Laget for den som drikker sakte.</text>
+<text x="360.0" y="543.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Total · timelapse + slider</text>
+<text x="360.0" y="561.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyset vandrer morgen → ettermiddag.</text>
+<text x="360.0" y="577.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">⏳ etter T1: «Over 55 °C ved siste slurk etter 3 t*»</text>
+<rect x="415" y="409" width="110" height="66" rx="4" fill="#3B2A20"/>
+<rect x="420" y="414" width="100" height="56" fill="#cfd8dc"/>
+<rect x="462" y="475" width="16" height="10" fill="#3B2A20"/>
+<rect x="549.0" y="428.6" width="42.0" height="50.4" rx="2.8" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M591.0,441.2 h9.8 a4.2,4.2 0 0 1 4.2,4.2 v17.6 a4.2,4.2 0 0 1 -4.2,4.2 h-9.8" fill="none" stroke="#3B2A20" stroke-width="2.8"/>
+<rect x="547.6" y="421.6" width="44.8" height="9.8" rx="2.1" fill="#3B2A20"/>
+<rect x="577.0" y="420.2" width="8.4" height="2.1" fill="#D9822B"/>
+<path d="M564.0,414 q-8,-12 0,-24 q8,-12 0,-24" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+<path d="M576.0,414 q-8,-12 0,-24 q8,-12 0,-24" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+<text x="390.0" y="394.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#3B2A20">09</text>
+<text x="510.0" y="394.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#3B2A20">10:30</text>
+<text x="630.0" y="394.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#D9822B">12</text>
+<line x1="405" y1="400" x2="630" y2="400" stroke="#3B2A20" stroke-dasharray="3 3"/>
+<rect x="690" y="354" width="300" height="169" fill="#f1d9bd" stroke="#3B2A20" stroke-width="2"/>
+<rect x="690" y="354" width="74" height="22" fill="#3B2A20"/>
+<text x="727.0" y="370.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">7 · 23–27 s</text>
+<rect x="792.5" y="354" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="698" y="493" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="840.0" y="509.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Ingen batteri. Ingen lading.</text>
+<text x="690.0" y="543.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Halvnær · håndholdt</text>
+<text x="690.0" y="561.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Siste slurk, fornøyd. Tomt bordhjørne – ingen lader.</text>
+<text x="690.0" y="577.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: musikk, fornøyd «mm».</text>
+<circle cx="800" cy="416" r="13" fill="#D9822B"/>
+<path d="M778,486 q0,-50 22,-52 q22,2 22,52 Z" fill="#D9822B"/>
+<rect x="823.5" y="394.4" width="33.0" height="39.6" rx="2.2" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M856.5,404.3 h7.7 a3.3,3.3 0 0 1 3.3,3.3 v13.9 a3.3,3.3 0 0 1 -3.3,3.3 h-7.7" fill="none" stroke="#3B2A20" stroke-width="2.2"/>
+<rect x="822.4" y="388.9" width="35.2" height="7.7" rx="1.7" fill="#3B2A20"/>
+<rect x="845.5" y="387.8" width="6.6" height="1.7" fill="#D9822B"/>
+<rect x="890" y="466" width="44" height="10" fill="none" stroke="#8A9198" stroke-dasharray="3 2"/>
+<line x1="886" y1="480" x2="938" y2="462" stroke="#2F7F86" stroke-width="2"/>
+<rect x="1020" y="354" width="300" height="169" fill="#F4EDE3" stroke="#3B2A20" stroke-width="2"/>
+<rect x="1020" y="354" width="74" height="22" fill="#3B2A20"/>
+<text x="1057.0" y="370.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">8 · 27–30 s</text>
+<rect x="1122.5" y="354" width="95.1" height="169" fill="none" stroke="#D9822B" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<rect x="1028" y="493" width="284" height="22" fill="#3B2A20" opacity="0.8"/>
+<text x="1170.0" y="509.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Tretimer – drikkeklar kaffe uten batteri.</text>
+<text x="1020.0" y="543.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3B2A20">Total (packshot) · statisk</text>
+<text x="1020.0" y="561.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Hero på havremelk, logo, «Forhåndsbestill».</text>
+<text x="1020.0" y="577.0" font-size="11" text-anchor="start" font-weight="normal" fill="#3B2A20">Lyd: siste akkord på taktslag.</text>
+<rect x="1137.0" y="399.8" width="66.0" height="79.2" rx="4.4" fill="#8A9198" stroke="#3B2A20" stroke-width="1.5"/>
+<path d="M1203.0,419.6 h15.4 a6.6,6.6 0 0 1 6.6,6.6 v27.7 a6.6,6.6 0 0 1 -6.6,6.6 h-15.4" fill="none" stroke="#3B2A20" stroke-width="4.4"/>
+<rect x="1134.8" y="388.8" width="70.4" height="15.4" rx="3.3" fill="#3B2A20"/>
+<rect x="1181.0" y="386.6" width="13.2" height="3.3" fill="#D9822B"/>
+<text x="1270.0" y="414.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#3B2A20">Tretimer</text>
+<rect x="1224" y="428" width="92" height="20" rx="10" fill="#D9822B"/>
+<text x="1270.0" y="442.0" font-size="9" text-anchor="middle" font-weight="bold" fill="#F4EDE3">Forhåndsbestill</text></svg>

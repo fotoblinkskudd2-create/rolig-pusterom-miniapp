@@ -22,6 +22,8 @@ class TestDesignmaskin(unittest.TestCase):
             self.assertIn(v, verktoy)
         self.assertNotIn("Bash(rm", verktoy)
         self.assertEqual(k[-2:], ["--model", "en-modell"])
+        o = dm.kommando("en kopp", "kopp", oppdater=True)
+        self.assertTrue(o[2].startswith("/design oppdater produkter/kopp/"))
 
     def test_hendelser(self):
         linjer = dm.beskriv_hendelse({"type": "assistant", "message": {"content": [
@@ -42,6 +44,7 @@ class TestDesignmaskin(unittest.TestCase):
     def test_sider(self):
         self.assertIn("Start design", dm.forside())
         self.assertIn("barnekniv", dm.produktside("barnekniv"))
+        self.assertIn("/oppdater/barnekniv", dm.produktside("barnekniv"))
         self.assertIsNone(dm.produktside("finnes_ikke"))
 
 

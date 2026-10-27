@@ -170,3 +170,84 @@ Filer i `produkter/kaffekopp_holder_kaffen_varm_3_timer/`:
 - beste.json
 - kaffekopp_holder_kaffen_varm_3_timer.scad (+ STL/PNG for hele koppen og hver del)
 - tegning.svg / tegning.png
+▶ Designmaskinen oppdaterer: en kaffekopp som holder kaffen varm i 3 timer uten strøm  ->  produkter/kaffekopp_holder_kaffen_varm_3_timer/
+🔧 Bash ls -la produkter/ produkter/kaffekopp_holder_kaffen_varm_3_timer/ produkter/_mal/ && cat README.md | head -50
+💬 Mangler: 03_patent.md, 06_pitch.md, 07_lansering.md, storyboard.svg. La meg lese eksisterende filer.
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer && cat 00_brief.md 01_research.md 02_ma…
+🔧 Read /root/.claude/projects/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/tool-results/b5j2wjbjk.txt
+🔧 Bash cd /home/user/oppfinnelsesmaskin && cat produkter/_mal/RAPPORT.md; ls produkter/*/; ls tester; grep -n "03_patent\|06_p…
+🔧 ToolSearch select:WebSearch,WebFetch
+🔧 WebSearch patent vacuum insulated mug phase change material lid skirt neck conduction
+🔧 WebSearch Temperfect mug patent US phase change material triple wall Joeveo
+🔧 WebSearch EP patent drinking vessel phase change material vacuum double wall "phase change" cup EP
+🔧 WebFetch https://patents.google.com/patent/US9974402
+🔧 WebFetch https://patents.google.com/patent/US8205468
+🔧 WebFetch https://patents.google.com/patent/US11206938
+💬 Jeg undersøker patenter for de manglende stegene (patent, pitch, lansering, storyboard). Fortsetter.
+🔧 WebFetch https://patents.google.com/patent/US11206938
+🔧 WebFetch https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/8205468
+🔧 WebSearch Ember mug lid patent OR "phase change" drinkware Ember Technologies patent US10995979 status
+🔧 WebFetch https://patents.google.com/patent/US10995979
+🔧 WebFetch https://patents.google.com/patent/US6634417
+🔧 WebFetch https://patents.google.com/patent/US11350778
+🔧 WebFetch https://patents.google.com/patent/CN111642950B/en
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer && head -60 kaffekopp_holder_kaffen_var…
+🔧 Bash sed -n 60,200p kaffekopp_holder_kaffen_varm_3_timer.scad; sed -n 50,100p problem.py
+🔧 WebSearch vacuum insulated container lid skirt covering outer shell rim reduce heat loss patent
+🔧 WebSearch Patentstyret gebyrer patentsøknad 2026 søknadsavgift nyhetsgranskning
+🔧 WebSearch EUIPO registered Community design fee 2026 registration fee
+🔧 WebFetch https://patents.google.com/patent/US20230146911A1/en
+💬 Patentsøket er ferdig (viktig funn: Thero-familiens kinesiske patent CN111642950B er aktivt til 2040, og det betyr noe når en kinesisk OEM skal produsere koppe…
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/03_patent.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/06_pitch.md
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/kaffekopp_holder_kaffen_varm_3_timer.png
+🔧 Bash cd /home/user/oppfinnelsesmaskin && sed -n 1,40p produkter/kaffekopp_holder_kaffen_varm_3_timer/tegning.py; python3 -m …
+💬 Nå lanseringsdokumentet og storyboardet.
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/07_lansering.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/storyboard.py
+🔧 Bash python3 produkter/kaffekopp_holder_kaffen_varm_3_timer/storyboard.py && python3 -m maskin.render produkter/kaffekopp_ho…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/storyboard.png
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer && python3 - <<'EOF' p='storyboard.py';…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/storyboard.png
+💬 Storyboard ser riktig ut. Nå oppdaterer jeg RAPPORT.md.
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/RAPPORT.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/kaffekopp_holder_kaffen_varm_3_timer/01_research.md
+🔧 Bash grep -n "kaffekopp\|^|" README.md | sed -n 1,60p | grep -n -i "kaffe\|tannb\|barnekniv\|drone"
+🔧 Bash python3 - <<'EOF' p='README.md'; s=open(p).read() s=s.replace("OpenSCAD, STL, tegning. Ikke testet. |","OpenSCAD, STL, …
+💬 Tretimer-pakken har nå de fire stegene som manglet: patent, pitch, lansering og storyboard. `RAPPORT.md` er oppdatert med funnene, og alle 8 testene i `python3…
+✅ Ferdig
+   tid 7.6 min, kost $2.13
+Tretimer-pakken har nå de fire stegene som manglet: patent, pitch, lansering og storyboard. `RAPPORT.md` er oppdatert med funnene, og alle 8 testene i `python3 -m unittest discover tester` passerer.
+
+**Kortbeslutning**
+Anbefalingen står fast. Bygg en prøveserie av to varianter: A med PCM (et faseendringsmateriale som tar opp og gir tilbake varme) og B uten. Lov bare «≥ 55 °C etter 3 t» før koppen er testet. Patentsøket ga ett nytt funn som endrer planen: det kinesiske patentet **CN111642950B** fra samme familie som det amerikanske Thero-patentet er gyldig til 2040. Det amerikanske patentet har falt bort. Hvis en kinesisk fabrikk lager koppen og den har alle trekkene i patentkravet, er det inngrep i Kina, selv om alt eksporteres. Derfor bør kontrakten med fabrikken kreve et lokk som ikke er skrudd på gjenger (vi har allerede et lokk med plugg) og ingen glassperle-forsegling av vakuumet.
+
+**Viktigste tall**
+- **Hvor fritt vi står:** Risikoen er lav for salg i Norden og EU, fordi jeg ikke fant noen europeisk utgave av de nærmeste patentene. For produksjon i Kina er den middels (anslått 10–20 %) til en kinesisk patentfullmektig har sett på saken (ca. 15–30 kNOK).
+- **Egen beskyttelse:** Det eneste som kan være nytt, er kombinasjonen PCM, lang hals og et lokkskjørt som isolerer sveisen. Jeg anslår 25–35 % sjanse for at det gir et nyttig patent. Anbefalingen er en norsk søknad (ca. 40–70 kNOK), EU-designregistrering og å holde PCM-oppskriften hemmelig. Konfidens 65 %.
+- **Pitch:** Jeg har stresstestet den med 9 angrep (investor, kunde, fagekspert). Tre av dem er helt eller delvis riktige: kosten er ikke bekreftet av noen fabrikk, inntjeningen er en nisjecase og ikke for risikokapital, og konseptet fins fra før (Temperfect).
+- **Lansering:** Fargepalett, tre fotooppsett og en 30-sekunders video i 8 scener. Jeg har sett på storyboardet og rettet layoutfeil.
+
+**Hva er usikkert**
+- Ingenting er målt. Alle temperatur- og tidstall er fra modellen og står på listen over påstander vi ikke kan bruke ennå. Videoen har en temperaturtekst som først kan brukes når temperaturtesten (T1) er bestått.
+- Jeg fikk ikke lest kravene i US8205468, så status er ikke sjekket. Det betyr bare noe for salg i USA.
+- Gebyrene for EU-design og norsk patentsøknad for 2026 er ikke verifisert.
+
+**Neste steg**
+1. Bestill en sjekk av hvor fritt vi står hos patentrådgiver, inkludert Kina. Send samtidig forespørsel om tilbud til tre fabrikker med de to kravene til lokk og forsegling (uke 1–4).
+2. Send inn norsk patentsøknad før prototypen vises til noen uten taushetsavtale.
+3. Lag prøveserien og kjør testene T1–T5. Først når T1 er bestått, kan temperaturløftet brukes i markedsføringen.
+
+Filer i `produkter/kaffekopp_holder_kaffen_varm_3_timer/`:
+- 03_patent.md
+- 06_pitch.md
+- 07_lansering.md
+- storyboard.py, storyboard.svg og storyboard.png
+- RAPPORT.md, med de nye seksjonene 6b og 6c, ny anbefaling 4 og 5, nye risikoer og en endringslogg
+
+Jeg la også inn en kort merknad om det kinesiske patentet i `01_research.md` og oppdaterte produktraden i `README.md`.

@@ -73,11 +73,39 @@ Rett modellen hvis optimaliseringen finner noe fysisk umulig (som skaft for tynt
 For hvert krav: testmetode, utstyr, utvalg/antall, **bestått-kriterium i tall**, estimert kost og tid.
 Siste punkt: hvordan målingene skal inn i `score()` for neste versjon.
 
-### 8. `RAPPORT.md` – beslutningsrapport
-Bruk `produkter/_mal/RAPPORT.md` nøyaktig. Fyll alle 8 seksjoner. Konfidens i % per anbefaling
+### 8. `03_patent.md` – kjent teknikk og patentkrav
+Ikke juridisk rådgivning – skriv det øverst. Bruk patentfunnene fra research (søk mer ved behov).
+- **Kjent teknikk:** tabell med patent/produkt, nummer/lenke, status (aktiv/bortfalt/utløpt, land), hva det dekker.
+- **Nyhetsanalyse (førsteprinsipper):** bryt designet ned i 3–7 tekniske trekk. For hvert: kjent fra (kilde) eller nytt? Hvilken *kombinasjon* gir en teknisk effekt ingen kilde viser?
+- **Utkast til krav:** 1 selvstendig krav (bredest mulig uten å treffe kjent teknikk) + 3–6 uselvstendige.
+  Kravspråk: «… omfattende …, karakterisert ved at …».
+- **FTO-risiko** (frihet til å operere): aktive patenter som kan treffe oss, med sannsynlighet og mottiltak (design rundt, lisens, innsigelse).
+- **Anbefaling:** søke patent / bruksmodell / designregistrering / holde som forretningshemmelighet / publisere for å blokkere – med kost og tid, og konfidens.
+
+### 9. `06_pitch.md` – salgsargument og stresstest
+- **Enlinjer** (≤ 15 ord) og **30-sekunders pitch**.
+- **3 sterkeste argumenter** etter PEEL (Poeng, Evidens med tall og merke, Forklaring, Link til kundens behov).
+  Merk appell: logos (tall), ethos (kilde/kompetanse), pathos (følelse) – minst ett av hver totalt.
+- **Stresstest:** de 3 hardeste angrepene fra hver av *skeptisk investor*, *kunde*, *fagekspert/myndighet*,
+  med ærlig svar. Er et angrep riktig, si det og hva som endres. Ikke svar med logiske feilslutninger
+  (stråmann, ad hominem, falsk dikotomi, autoritetsargument uten evidens) – navngi dem hvis motparten bruker dem.
+- **Påstander vi IKKE kan bruke ennå** (krever test eller dokumentasjon) – viktig for markedsføringsloven.
+
+### 10. `07_lansering.md` + `storyboard.svg` – visuell pakke
+- **Visuell profil:** stil i én setning, palett (4–5 hex med rolle og hvorfor – komplementær/analog), typografi.
+- **Produktfoto, 3 oppsett** (hero på hvit, livsstil/bruk, detalj av nøkkelfunksjonen): komposisjon (tredjedelsregel,
+  ledende linjer), lys (key/fill/back med plassering og forhold), kamera (brennvidde, f-tall, lukker, ISO), bakgrunn, etterarbeid.
+- **Video 30 s:** formål og målgruppe, format (16:9 og 9:16; 24 fps, 60 fps for slow motion), 6–8 scener i tabell:
+  tid, bildeutsnitt (total/halvnær/nær/detalj), kamerabevegelse, hva vises, tekst på skjerm, lyd. Klipp på taktslag
+  eller følelsesskifte. Første 3 sekunder må vise problemet; siste må vise produkt + løfte.
+- **`storyboard.svg`:** ruter for hver scene (enkel skisse eller symbol + tekst), render med `python3 -m maskin.render` og se på PNG-en.
+- Bare påstander fra `06_pitch.md` som er lov å bruke.
+
+### 11. `RAPPORT.md` – beslutningsrapport
+Bruk `produkter/_mal/RAPPORT.md` nøyaktig. Fyll alle seksjoner. Konfidens i % per anbefaling
 med begrunnelse. Scenarier best/mid/verst. Lenk til alle filer i mappen.
 
-### 9. Avslutt
+### 12. Avslutt
 - `python3 -m unittest discover tester` må passere (testen kjører alle produkter).
 - Legg produktet i tabellen i `README.md`.
 - Svar brukeren med: kortbeslutning (3–5 linjer), viktigste tall, hva som er usikkert, neste steg.
@@ -88,3 +116,10 @@ med begrunnelse. Scenarier best/mid/verst. Lenk til alle filer i mappen.
 - [ ] Alle tall har merke ([målt]/[kilde]/[modell]/[antakelse]).
 - [ ] PNG-ene er sett på og ser riktige ut.
 - [ ] Ingen påstand om at noe er testet når det bare er modellert.
+- [ ] Patentkravene er sjekket mot hver rad i kjent-teknikk-tabellen.
+- [ ] Pitch og lansering bruker bare påstander som er lov å bruke nå.
+
+## Oppdatere et eksisterende produkt
+Står det «oppdater produkter/<mappe>/» i input: les alle filer som finnes, lag bare stegene som mangler
+(eller som input ber om), og oppdater `RAPPORT.md` med de nye funnene. Ikke gjør om ferdige steg
+med mindre nye funn gjør dem feil – da retter du og skriver hva som ble endret i rapporten.

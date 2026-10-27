@@ -46,6 +46,16 @@ Merking av tall: `[målt]` · `[kilde: …]` · `[modell]` · `[antakelse]`
 | Mid | | | | |
 | Best | | | | |
 
+## 6b. Patent og beskyttelse (kort – detaljer i `03_patent.md`)
+- **Nytt:** <kombinasjonen av trekk som ikke finnes i kjent teknikk>
+- **Selvstendig krav (utkast):** <én setning>
+- **FTO-risiko:** <lav/middels/høy, hvorfor>
+- **Anbefaling:** <søke/registrere/holde hemmelig/publisere> (konfidens %)
+
+## 6c. Pitch (detaljer i `06_pitch.md`, `07_lansering.md`)
+- **Enlinjer:** <…>
+- **Hardeste innvending og svaret:** <…>
+
 ## 7. Handlingsplan
 
 | Steg | Hva | Tid | Kost (NOK) | Ansvar |
@@ -66,5 +76,5 @@ Merking av tall: `[målt]` · `[kilde: …]` · `[modell]` · `[antakelse]`
 - **Oppfølgingsspørsmål:** <3–5 spørsmål som ville gjort neste versjon bedre>
 
 ## Filer
-`00_brief.md` · `01_research.md` · `02_marked.md` · `problem.py` · `beste.json` · `robusthet.md` ·
+`00_brief.md` · `01_research.md` · `02_marked.md` · `03_patent.md` · `06_pitch.md` · `07_lansering.md` · `storyboard.svg/png` · `problem.py` · `beste.json` · `robusthet.md` ·
 `<slug>.scad` + STL/PNG · `tegning.svg/png` · `05_testplan.md`

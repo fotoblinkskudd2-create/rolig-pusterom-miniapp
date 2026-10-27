@@ -19,7 +19,8 @@ Kravet på 60 °C ved siste slurk har for liten margin til å loves før test. 5
 | 1 | **Bestill prøveserie av P1-A (med PCM) og P1-B (uten PCM, samme kropp) hos 2–3 OEM-er for vakuumbeger, og kjør testplanen (T1–T5) før noe verktøy kjøpes** | **80 %** | Fysikken er etablert (vakuum, stråling, fordamping) og robust i retning: alle scenarier slår referansen med ≥ 20 °C `[modell]`. Det som trekker ned: halsens varmetap (67 % av totalen) bygger på en antatt effektiv lengde |
 | 2 | **Lov «≥ 55 °C etter 3 t» (≥ 60 °C forvarmet), ikke «60 °C» generelt**, før T1 er bestått | **85 %** | Holder ned til +40 % varmetap `[modell]`. Kalibreringssjekk mot Stanley tyder på at modellen heller er pessimistisk enn optimistisk |
 | 3 | **Lanser A (PCM) som hovedprodukt til 599 NOK** hvis T1 og T11 (PCM-kappe tett) består. Ellers B til 449–499 NOK | **60 %** | A har den tydeligste historien («drikkeklar nå, varm om 3 t, uten batteri»). Men PCM gir mer vekt (+150 g), mer kost (+36 kr) og lekkasjerisiko. Betalingsviljen er ikke testet (T13 + forhåndssalg) |
-| 4 | **Bestill FTO-analyse hos patentrådgiver** (Thero US11350778B2 har falt bort og har ingen EP-familie; Booska-familien er aktiv) | 90 % (at det trengs) | Billig forsikring (≈ 20–40 kNOK) mot et kjent nærliggende patentområde |
+| 4 | **Bestill FTO-analyse hos patentrådgiver, inkludert Kina:** Thero-familiens **CN111642950B er aktiv til 2040**. Krev i OEM-kontrakten at lokket *ikke* er gjenget og at vakuumet ikke forsegles med glassperle i bunnen | 85 % (at det trengs før verktøy) | Nytt funn i `03_patent.md`: produksjon i Kina av noe som har alle trekkene i kravet er patentinngrep der, selv ved eksport. Vårt design har allerede pluggokk uten gjenger, så risikoen er lav–middels (10–20 %) |
+| 5 | **Lever en norsk prioritetssøknad** på hals + kantskjørt + PCM (krav-utkast i `03_patent.md`), og registrer designet i EU rett før lansering. Hold PCM-resept og fyllprosess som forretningshemmelighet | 65 % | Billig opsjon (≈ 40–70 kNOK). Søknaden kan trekkes før den publiseres. Det som trekker ned: svak oppfinnelseshøyde, for D3 (innervegg trukket ned fra kanten) + D7 (lokkskjørt) ligger nær |
 
 ## 3. Designet
 
@@ -83,16 +84,28 @@ TAM Norden + EU ≈ 5 mrd NOK/år · SAM (premium bordkopp, Norden + DE + NL) �
 | Mid | 5 000 | 599 NOK | ≈ 133 NOK | +315 kNOK (tilbakebetalt ≈ 3,2 år) |
 | Best | 15 000 | 649 NOK | ≈ 183 NOK | +2,15 MNOK (tilbakebetalt ≈ 0,5 år) |
 
+## 6b. Patent og beskyttelse (kort – detaljer i `03_patent.md`, ikke juridisk råd)
+- **Nytt:** Ingen enkeltdel er ny. Vakuum + PCM er kjent (Temperfect 2013, Thero 2019, PCM-kopper fra 1960- og 2000-tallet). Det eneste mulig nye er **kombinasjonen PCM + lang hals (≥ 15 mm ledningsvei) + lokkskjørt som isolerer sveisesonen**. Modellen viser at halsen står for 67 % av tapet `[modell]`, og ingen funnet kilde retter tiltak mot halsen i en PCM-kopp.
+- **Selvstendig krav (utkast):** Vakuumisolert drikkebeholder med PCM i kontakt med innerveggen, karakterisert ved at ledningsveien i halsen er ≥ 15 mm og at lokket har et skjørt som omslutter forbindelsessonen med minst lokkets varmemotstand.
+- **FTO-risiko:** **Lav** for salg i Norden og EU (ingen EP-familie funnet for Thero, Booska eller Ember). **Middels** for produksjon i Kina inntil CN111642950B er vurdert. Vi designer rundt med pluggokk uten gjenger og en annen vakuumforsegling enn glassperle. US8205468 må leses før eventuelt salg i USA.
+- **Anbefaling:** NO-prioritetssøknad, EU-designregistrering og forretningshemmelighet for PCM og fylling. Defensiv publisering hvis nyhetsrapporten er negativ (konfidens 65 %). Sannsynligheten for at kravet blir godkjent med nyttig bredde er ≈ 25–35 % `[antakelse]`.
+
+## 6c. Pitch (detaljer i `06_pitch.md`, `07_lansering.md`)
+- **Enlinjer (investor):** «Kaffekoppen som holder kaffen drikkeklar i tre timer – uten batteri og lading.» Dette er et *mål* som ikke er testet.
+- **Enlinjer (forbruker, lov nå):** «Drikkeklar kaffe uten batteri. Laget for den som drikker sakte.»
+- **Hardeste innvending og svaret:** *«Dette er Temperfect fra 2013 – hvorfor skal dere lykkes?»* Angrepet er delvis riktig. Konseptet er kjent og kan ikke patenteres bredt. Forskjellen er at Tretimer er en kopp med hank for skrivebordet og har et definert, testet løfte. Vi vet ikke hvorfor Temperfect ikke vokste, så ≥ 300 forhåndssalg er et stoppkriterium før verktøy.
+- **Påstander som ikke kan brukes før test:** alle temperatur- og tidstall, sammenligning med YETI, «tåler oppvaskmaskin», «patent pending» (før søknaden er levert) og alt om IARC/helse. Video og storyboard (`storyboard.png`) bruker bare påstander som er lov nå. Temperaturteksten i scene 6 er reservert til T1 er bestått.
+
 ## 7. Handlingsplan
 
 | Steg | Hva | Tid | Kost (NOK) | Ansvar |
 |---|---|---|---|---|
-| 0 | FTO/nyhetssøk hos patentrådgiver. RFQ til 3 OEM (A og B) | Uke 1–4 | 30 000 | Eier + patentrådgiver |
+| 0 | FTO hos patentrådgiver (NO/EU + kinesisk fullmektig for CN111642950B). RFQ til 3 OEM (A og B) med krav om pluggokk uten gjenger og ikke glassperle-forsegling. Lever NO-prioritetssøknad før prototypen vises til noen utenfor NDA | Uke 1–4 | 30 000 (FTO) + 15 000–30 000 (CN) + 40 000–70 000 (søknad) | Eier + patentrådgiver |
 | 1 | Prototype: OEM-prøveserie 6× A, 3× B (+ 3 YETI-referanse). 3D-print formmodell av STL for ergonomi | Uke 3–10 | 60 000–100 000 | OEM / produktutvikler |
 | 2 | Test T1–T6, T9, T12 (varme, PCM, mål, søl, berøring) → `05_testplan.md` | Uke 10–13 | 30 000 | Testansvarlig (lab: SINTEF/universitet for DSC) |
 | 3 | Kalibrer modellen (hals, lokk, PCM), kjør maskinen på nytt, lag P2 og bestem løfte og variant (A eller B) | Uke 13–15 | 10 000 | Ingeniør |
 | 4 | Langtidstester T7, T8, T10, T11 (oppvask, fall, matkontakt, PCM-sykling) parallelt med P2 | Uke 13–20 | 85 000 | Ekstern lab |
-| 5 | Pilot/forsalg: Kickstarter eller egen nettside med 12 brukere (T13) og video av måling. Mål ≥ 300 forhåndssalg | Uke 16–24 | 50 000 (innhold, annonser) | Marked |
+| 5 | Pilot/forsalg: Kickstarter eller egen nettside med 12 brukere (T13). Foto og 30 s video etter `07_lansering.md` og `storyboard.png`, med temperaturtekst bare hvis T1 er bestått. Mål ≥ 300 forhåndssalg. EU-designregistrering før publisering | Uke 16–24 | 50 000 (innhold, annonser) + ≈ 15 000 (design) | Marked |
 | 6 | Verktøy og produksjonsordre (≥ 2 000 stk) bare hvis stegene 2–5 består | Uke 24+ | ≈ 600 000–800 000 | Eier |
 
 ## 8. Risikoer og mottiltak
@@ -104,7 +117,10 @@ TAM Norden + EU ≈ 5 mrd NOK/år · SAM (premium bordkopp, Norden + DE + NL) �
 | OEM-kost > 170 NOK for A | Middels (35 %) | Mid-scenariet går i null | 3 tilbud. B som billigere variant. Pris 649 |
 | Kunder synes 64 °C er for kaldt | Middels (25 %) | Dårlige omtaler | Smeltepunkt er en fri parameter (56–68 °C). Test 62/64/66 i T13 |
 | Vakuumtap ved fall | Lav (10 %) | Kald kopp, reklamasjon | Yttervegg 0,45 mm i P2, fotring i silikon, T8 |
-| Patentkrav (Booska-familien eller ukjente EP/CN) | Lav (10 %) | Redesign eller lisens | FTO før verktøy |
+| Inngrep i CN111642950B ved produksjon hos kinesisk OEM | Lav–middels (10–20 %) | Produksjonsstans, redesign eller lisens | Pluggokk uten gjenger (allerede valgt), annen vakuumforsegling enn glassperle, skriftlig vurdering fra kinesisk fullmektig, eller OEM utenfor Kina |
+| Andre patenter (Booska krever innsats, Ember krever elektronikk, US8205468 ikke lest, ukjente EP) | Lav (≤ 10 %) | Redesign eller lisens | FTO før verktøy. Les US8205468 før salg i USA |
+| En OEM eller konkurrent patenterer vår hals/skjørt-løsning | Lav–middels (15 %) | Vi blir blokkert av vår egen idé | NO-prioritetssøknad før prototypen vises. Defensiv publisering som plan B |
+| Markedsføring bruker modelltall som fakta (markedsføringsloven) | Middels uten kontroll (20 %) | Pålegg eller bot, tap av tillit | Liste over påstander som ikke er lov i `06_pitch.md`. Hver tekst sjekkes mot listen før publisering |
 | Påstand kan ikke dokumenteres (GPSR/markedsføringsloven) | Lav hvis testet | Bot eller pålegg om endring | Definert testscenario i all markedsføring, rapport fra uavhengig lab |
 | Ember eller YETI lanserer noe lignende | Middels | Prispress | Raskt til marked via forhåndssalg. Bygg merkevare rundt «uten batteri» |
 
@@ -135,7 +151,16 @@ STL/PNG: [samlet snitt](kaffekopp_holder_kaffen_varm_3_timer.stl) ([png](kaffeko
 [ytterbeholder](kaffekopp_holder_kaffen_varm_3_timer_ytterbeholder.stl) ([png](kaffekopp_holder_kaffen_varm_3_timer_ytterbeholder.png)),
 [lokk](kaffekopp_holder_kaffen_varm_3_timer_lokk.stl) ([png](kaffekopp_holder_kaffen_varm_3_timer_lokk.png)),
 [hank](kaffekopp_holder_kaffen_varm_3_timer_hank.stl) ([png](kaffekopp_holder_kaffen_varm_3_timer_hank.png)) ·
-[`tegning.py`](tegning.py) → [`tegning.svg`](tegning.svg) / [`tegning.png`](tegning.png) · [`05_testplan.md`](05_testplan.md)
+[`tegning.py`](tegning.py) → [`tegning.svg`](tegning.svg) / [`tegning.png`](tegning.png) · [`05_testplan.md`](05_testplan.md) ·
+[`03_patent.md`](03_patent.md) · [`06_pitch.md`](06_pitch.md) · [`07_lansering.md`](07_lansering.md) ·
+[`storyboard.py`](storyboard.py) → [`storyboard.svg`](storyboard.svg) / [`storyboard.png`](storyboard.png)
+
+## Endringslogg
+- **2026-10-27 (oppdatering):** La til steg 8–10: `03_patent.md`, `06_pitch.md`, `07_lansering.md` og storyboard.
+  Nytt funn: **CN111642950B** (Kina-delen av Thero-familien) er aktiv til 2040. Det endrer anbefaling 4 fra
+  «FTO for USA/EU» til «FTO inkludert Kina», og gir to nye OEM-krav: pluggokk uten gjenger og ingen glassperle-forsegling.
+  Anbefaling 5 (patentsøknad og design) er ny. Seksjonene 6b og 6c er nye. Det er lagt til tre nye risikoer.
+  Modell, CAD, tegning og testplan er uendret, fordi ingen nye funn gjør dem feil.
 
 *STL-ene har vegger på minst 1,2 mm (`PRINT = true`) og er form-/ergonomiprototyper, ikke termiske prototyper.
 Den termiske prototypen må lages av OEM i stål med vakuum.*

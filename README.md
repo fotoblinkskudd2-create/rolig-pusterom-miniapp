@@ -18,6 +18,7 @@ mens maskinen jobber og viser rapport og bilder når den er ferdig.
 ```bash
 python3 designmaskin.py "en kaffekopp som holder kaffen varm i 3 timer uten strøm"
 python3 designmaskin.py "..." --tørr          # vis hva som kjøres, uten å kjøre
+python3 designmaskin.py --oppdater <mappe>    # fullfør manglende steg (eller nye steg) for et produkt
 ```
 
 ### Inne i Claude Code
@@ -36,6 +37,9 @@ Alt havner i `produkter/<navn>/`:
 | `problem.py` · `beste.json` · `robusthet.md` | Modell, beste design og hvor mye vi kan stole på det |
 | `*.scad` · `*.stl` · `*.png` · `tegning.svg` | CAD, 3D-print-filer og tegninger |
 | `05_testplan.md` | Hvordan kravene skal testes, med krav for bestått i tall |
+| `03_patent.md` | Kjent teknikk, nyhetsanalyse, utkast til patentkrav og FTO-risiko (ikke juridisk råd) |
+| `06_pitch.md` | Enlinjer, PEEL-argumenter og stresstest mot investor, kunde og ekspert |
+| `07_lansering.md` · `storyboard.svg/png` | Visuell profil, 3 produktfoto-oppsett og storyboard for 30 s video |
 | `fremdrift.txt` · `logg.jsonl` · `status.json` | Hva maskinen gjorde, steg for steg |
 
 ## Oppsett (én gang)
@@ -87,5 +91,5 @@ python3 -m unittest discover tester
 | `produkter/tannborste` | P1 «Ren»: tegning, OpenSCAD-modell, STL-filer, spesifikasjon. Ikke testet. |
 | `produkter/drone_propell` | P1 10″ og 10,5″: fysikkmodell (BEMT), 19–25 % mindre effekt i modellen, STL, tegninger. Krever numpy. |
 | `produkter/barnekniv` | K1 «Spikkevenn»: risikomodell, 81 % lavere kuttrisiko i modellen, OpenSCAD, STL, tegning. |
-| `produkter/kaffekopp_holder_kaffen_varm_3_timer` | P1 «Tretimer»: vakuum + PCM + vakuumlokk, termisk tidssimulering. 62,7 °C ved siste slurk etter 3 t i modellen (57,4 °C med +30 % tap) mot 38,6 °C for YETI. OpenSCAD, STL, tegning. Ikke testet. |
+| `produkter/kaffekopp_holder_kaffen_varm_3_timer` | P1 «Tretimer»: vakuum + PCM + vakuumlokk, termisk tidssimulering. 62,7 °C ved siste slurk etter 3 t i modellen (57,4 °C med +30 % tap) mot 38,6 °C for YETI. OpenSCAD, STL, tegning, patentanalyse (CN-FTO), pitch, lanseringspakke og storyboard. Ikke testet. |
 | `produkter/_mal` | Mal for modell og rapport |

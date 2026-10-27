@@ -70,7 +70,7 @@ kjøles 2,5 ganger så raskt per watt. Derfor er grensen i praksis **≈ 1,5 W v
 ## 5. Patenter (Google Patents, 2026-10-27, ikke juridisk vurdering)
 | Patent | Hva | Status | Betydning |
 |---|---|---|---|
-| **US11350778B2** (Thero Inc., prioritet 2019-09-05) | Kopp med yttervegg, mellomvegg og innervegg. Vakuum mellom ytter og midt, **PCM mellom midt og inner**, getter, glassforseglet hull, bufferlag, gjenget lokk | **Falt bort** pga. ubetalt avgift (lapse 2026-06-07 ifølge Google). Familie: CN111642950A/B, CN212546488U. **Ingen EP/WO** | Nærmeste teknikk. Krav 1 er snevert (glassperle-forsegling, gjenget lokk). Ingen beskyttelse i Europa ifølge familieoversikten |
+| **US11350778B2** (Thero Inc., prioritet 2019-09-05) | Kopp med yttervegg, mellomvegg og innervegg. Vakuum mellom ytter og midt, **PCM mellom midt og inner**, getter, glassforseglet hull, bufferlag, gjenget lokk | **Falt bort** pga. ubetalt avgift (lapse 2026-06-07 ifølge Google). Familie: CN111642950A/B, CN212546488U. **Ingen EP/WO**. *Tillegg ved oppdatering: CN111642950B er **aktiv** til 2040, se `03_patent.md`* | Nærmeste teknikk. Krav 1 er snevert (glassperle-forsegling, gjenget lokk). Ingen beskyttelse i Europa ifølge familieoversikten |
 | US9974402B2, US7934537, US10595654, US11206938, US9181015 (Booska) | PCM-hus som stikkes ned i en isolert kopp, flere PCM-kamre | US9974402B2 oppført som aktiv | Gjelder innsats/flere kamre. Vi har fast kappe og ett kammer, men FTO må sjekkes |
 | Temperfect/Joeveo (2013) og PCM-kopp-patenter fra 1960-tallet | Trippelvegg med vakuum og PCM | Publisert = **kjent teknikk** | Konseptet «vakuum + PCM» er ikke nytt og kan trolig ikke patenteres av oss. Det kan heller ikke stoppe oss |
 
