@@ -1,0 +1,95 @@
+[
+  {
+    "poeng": 0.7531,
+    "design": {
+      "kapasitet_ml": 330,
+      "diameter_mm": 70.28900309629125,
+      "vegg_mm": 0.35,
+      "hals_mm": 20.0,
+      "belegg": "kobber",
+      "kantskjort": true,
+      "lokk": "vakuumlokk",
+      "pcm_g": 73.44029842589443,
+      "pcm_smelt_c": 64.15998913432189,
+      "hank": true,
+      "innside": "keramikkbelegg"
+    },
+    "delpoeng": {
+      "varmeholding": 0.723723903188976,
+      "drikkevindu": 0.9465156570188373,
+      "bruk": 0.771350207407476,
+      "pris": 0.38872691933916426,
+      "_T_3t_bruk_C": 62.7,
+      "_T_3t_lukket_C": 63.0,
+      "_T_start_C": 67.2,
+      "_min_til_66C": 17,
+      "_vekt_g": 417,
+      "_hoyde_mm": 115,
+      "_ytre_diam_mm": 88.8,
+      "_kost_kr": 141,
+      "_pris_kr": 629
+    }
+  },
+  {
+    "poeng": 0.7494,
+    "design": {
+      "kapasitet_ml": 330,
+      "diameter_mm": 70.28900309629125,
+      "vegg_mm": 0.35,
+      "hals_mm": 20.0,
+      "belegg": "kobber",
+      "kantskjort": true,
+      "lokk": "vakuumlokk",
+      "pcm_g": 73.44029842589443,
+      "pcm_smelt_c": 64.15998913432189,
+      "hank": true,
+      "innside": "staal"
+    },
+    "delpoeng": {
+      "varmeholding": 0.723723903188976,
+      "drikkevindu": 0.9465156570188373,
+      "bruk": 0.7390145374841974,
+      "pris": 0.40040040040040037,
+      "_T_3t_bruk_C": 62.7,
+      "_T_3t_lukket_C": 63.0,
+      "_T_start_C": 67.2,
+      "_min_til_66C": 17,
+      "_vekt_g": 409,
+      "_hoyde_mm": 115,
+      "_ytre_diam_mm": 88.8,
+      "_kost_kr": 133,
+      "_pris_kr": 599
+    }
+  },
+  {
+    "poeng": 0.7398,
+    "design": {
+      "kapasitet_ml": 330,
+      "diameter_mm": 70.28900309629125,
+      "vegg_mm": 0.35,
+      "hals_mm": 20.0,
+      "belegg": "kobber",
+      "kantskjort": true,
+      "lokk": "vakuumlokk",
+      "pcm_g": 73.44029842589443,
+      "pcm_smelt_c": 64.15998913432189,
+      "hank": false,
+      "innside": "keramikkbelegg"
+    },
+    "delpoeng": {
+      "varmeholding": 0.723723903188976,
+      "drikkevindu": 0.9465156570188373,
+      "bruk": 0.6776046440982656,
+      "pris": 0.39643211100099107,
+      "_T_3t_bruk_C": 62.7,
+      "_T_3t_lukket_C": 63.0,
+      "_T_start_C": 67.2,
+      "_min_til_66C": 17,
+      "_vekt_g": 387,
+      "_hoyde_mm": 115,
+      "_ytre_diam_mm": 88.8,
+      "_kost_kr": 136,
+      "_pris_kr": 609
+    }
+  }
+]

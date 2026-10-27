@@ -87,4 +87,5 @@ python3 -m unittest discover tester
 | `produkter/tannborste` | P1 «Ren»: tegning, OpenSCAD-modell, STL-filer, spesifikasjon. Ikke testet. |
 | `produkter/drone_propell` | P1 10″ og 10,5″: fysikkmodell (BEMT), 19–25 % mindre effekt i modellen, STL, tegninger. Krever numpy. |
 | `produkter/barnekniv` | K1 «Spikkevenn»: risikomodell, 81 % lavere kuttrisiko i modellen, OpenSCAD, STL, tegning. |
+| `produkter/kaffekopp_holder_kaffen_varm_3_timer` | P1 «Tretimer»: vakuum + PCM + vakuumlokk, termisk tidssimulering. 62,7 °C ved siste slurk etter 3 t i modellen (57,4 °C med +30 % tap) mot 38,6 °C for YETI. OpenSCAD, STL, tegning. Ikke testet. |
 | `produkter/_mal` | Mal for modell og rapport |
