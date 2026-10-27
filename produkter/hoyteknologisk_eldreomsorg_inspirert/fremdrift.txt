@@ -1,0 +1,196 @@
+▶ Designmaskinen starter: høyteknologisk eldreomsorg inspirert av Japan: finn opp og design ett konkret system (hjelpemidler + teknologi + arbeidsmåte) som gjør at eldre i norske sykehjem og hjemmetjeneste får det mye bedre og slipper lidelser. Ta utgangspunkt i det som gir mest lidelse (fall og hoftebrudd, smerte som ikke oppdages hos personer med demens, liggesår, ensomhet, underernæring/dehydrering, uverdig hjelp ved stell og toalett, nattlig uro) og i japanske løsninger (mimamori-sensorer for nattlig tilsyn, forflytningsroboter som RIBA/Hug, Panasonic Resyone seng-rullestol, Cyberdyne HAL-eksoskjelett, PARO-robotsel og LOVOT, helsesensorer i toalett, kaigo-forsikring, Japans lokalbaserte integrerte omsorg). Velg det systemet som gir størst gevinst i livskvalitet per krone og frigjør tid for pleierne til menneskelig kontakt. Personvern (GDPR), samtykkekompetanse og verdighet er harde krav – ingen kameraovervåking uten samtykke. Lag modell for lidelse/livskvalitet (f.eks. QALY, fall per 1000 beboerdøgn, pleietid), kostnad for kommunen, CAD av det fysiske hjelpemiddelet og en pilotplan for en norsk kommune.  ->  produkter/hoyteknologisk_eldreomsorg_inspirert/
+🔧 Bash ls && ls produkter && cat produkter/_mal/problem.py && cat produkter/_mal/RAPPORT.md && ls produkter/hoyteknologisk_eld…
+🔧 Bash sed -n 60,200p README.md; cat produkter/hoyteknologisk_eldreomsorg_inspirert/status.json produkter/hoyteknologisk_eldre…
+🔧 Bash cat produkter/kaffekopp_holder_kaffen_varm_3_timer/problem.py; head -60 produkter/kaffekopp_holder_kaffen_varm_3_timer/…
+🔧 Bash sed -n 80,200p maskin/__init__.py; cat maskin/__main__.py | head -80; head -50 maskin/robusthet.py; sed -n 1,60p maskin…
+🔧 ToolSearch select:WebSearch,WebFetch
+🔧 WebSearch nursing home fall rate per 1000 bed days hip fracture incidence residents
+🔧 WebSearch Husebø BMJ 2011 stepwise pain treatment agitation dementia nursing home cluster randomised MOBID-2
+🔧 WebSearch Japan mimamori sensor nursing care night rounds reduction study Nemuri SCAN
+🔧 WebSearch PARO cost-effectiveness cluster randomised trial dementia agitation plush toy Mervin 2018
+🔧 WebSearch digitalt tilsyn sykehjem evaluering fall reduksjon nattilsyn Helsedirektoratet velferdsteknologi
+🔧 WebSearch Cochrane hip protectors nursing home hip fracture risk ratio Santesso 2014
+💬 Kort status: jeg samler forskning (fall, smerte ved demens, mimamori-sensorer, PARO, hoftebeskyttere) for modellen. Deretter skriver jeg designpakken.
+🔧 WebSearch pasient- og brukerrettighetsloven § 4-6a varslings- og lokaliseringsteknologi samtykkekompetanse
+🔧 WebSearch Denmark wash-and-dry toilet vasketoilet evaluation home care time saved ABT
+🔧 WebSearch TURN study repositioning every 3 or 4 hours high density foam mattress pressure ulcer nursing home Bergstrom 2013
+🔧 WebSearch bed exit alarm sensor randomized trial falls Sahota 2014 BMJ hospital no effect
+🔧 WebSearch Vitalthings Guardian radar sykehjem nattilsyn pris kommune
+🔧 WebSearch Google Patents bed exit prediction under-mattress sensor radar sitting up alert nurse patent
+🔧 WebSearch patent radar fall detection elderly room floor point cloud privacy Vayyar patent bed edge
+🔧 WebSearch SSB sykehjem antall plasser beboere 2024 hjemmetjenester mottakere kostnad per plass
+🔧 WebSearch hip fracture cost Norway first year NOK QALY loss nursing home residents mortality
+🔧 WebSearch Paramount Bed patent bed leaving prediction sitting up edge of bed sensor JP 離床 予測
+🔧 WebSearch Japan kaigo robot subsidy monitoring sensors night staffing ratio relaxation 2024 care facilities
+🔧 WebSearch radome thickness 60 GHz polycarbonate permittivity half wavelength
+🔧 WebSearch DFree bladder ultrasound sensor nursing home incontinence study results reduced diaper
+🔧 WebSearch Nobi smart lamp fall detection elderly care camera privacy price
+🔧 WebSearch betalingsvilje gode leveår 275 000 kroner alvorlighet Helsedirektoratet veileder 2024
+🔧 WebSearch trykksår forekomst sykehjem Norge punktprevalens pasientsikkerhetsprogrammet prosent
+🔧 WebSearch pain prevalence nursing home residents dementia Norway percent undertreated
+🔧 WebSearch Roomate digitalt tilsyn sykehjem kommune evaluering pris per rom
+🔧 WebSearch Panasonic Resyone price yen; Cyberdyne HAL lumbar rental price per month; LOVOT price subscription
+🔧 WebSearch nursing home residents falls at night proportion bedroom unwitnessed toileting time of day
+🔧 WebSearch Japan integrated community care system kaigo insurance long-term care insurance 2000 overview
+💬 Forskningen er nok til å forankre modellen. Nå skriver jeg modellen (`problem.py`): signaldeteksjon for varsling, responstid mot tid til å reise seg, og QALY/k…
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert && python3 - <<'EOF' import sys; sys.pa…
+🔧 Bash mkdir -p /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad && cat > /tmp/clau…
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/sjekk.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/sjekk.py
+🔧 Bash sed -i 's/"sensor": "radar", "dekning": 1.0, "terskel": 0.5,/"sensor": "radar", "dekning": 1.0, "terskel": 2.0,/' produ…
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash python3 -m maskin produkter/hoyteknologisk_eldreomsorg_inspirert --fokus livskvalitet_per_krone --lagre produkter/hoyte…
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash python3 -m maskin produkter/hoyteknologisk_eldreomsorg_inspirert --fokus livskvalitet_per_krone --lagre produkter/hoyte…
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash D=produkter/hoyteknologisk_eldreomsorg_inspirert; python3 -m maskin $D --fokus livskvalitet_per_krone --lagre $D/beste.…
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/kjor.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/kjor.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/kjor.py ELDRE_PESSI…
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/kjor.py livskvalite…
+💬 Status: optimering og robusthetsanalyse er ferdig. Jeg leser `robusthet.md` og regner ut sammenligningsvarianter før CAD.
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/robusthet.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/kjor.py livskvalite…
+🔧 Bash python3 -c "import json;d=json.load(open('produkter/hoyteknologisk_eldreomsorg_inspirert/beste.json'))[0]['design'];pri…
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Bash timeout 600 python3 -m maskin.render produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirer…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.png
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Bash timeout 600 python3 -m maskin.render produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirer…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.png
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Bash timeout 300 python3 -m maskin.render produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirer…
+💬 Status: CAD-modellen er rendret. Nå kontrollerer jeg bildene og rendrer delene hver for seg.
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.png
+🔧 Bash timeout 500 python3 -m maskin.render produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirer…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert_under…
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/deler.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/deler.py
+💬 Mens delene rendres, skriver jeg den tekniske tegningen.
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.py
+🔧 Bash python3 produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.py && python3 -m maskin.render produkter/hoyteknologisk_…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.png
+💬 Tegningen har overlappende tekst. CAD-en har også en reell feil: lyslederen kolliderer med batteriluken. Jeg retter begge.
+🔧 Bash grep -n "N_LED \* 12.5" produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad produk…
+🔧 Read /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/tasks/ba457pq60.output
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad
+🔧 Bash python3 - <<'EOF' import re f = "produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.py" t = open(f).read() rep = [ …
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.png
+🔧 Bash python3 - <<'EOF' f = "produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.py" t = open(f).read() rep = [ ('tekst(bx…
+💬 Status: tegningen er rettet. Jeg sjekker den på nytt og rendrer CAD-delene igjen med den rettede plasseringen av lyslederen.
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.png
+🔧 Bash python3 -m maskin.render produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.scad -D 'D…
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/deler.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/deler.py
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert_under…
+💬 Delene rendres i bakgrunnen. Jeg regner ut noen siste følsomhetstall for rapporten: pilotvariant, uten søvngevinst, og uten kontakttid-gevinst.
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/sens.py
+🔧 Bash python3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/sens.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/problem.py
+🔧 Bash python3 produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py | sed -n 6,40p
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py
+🔧 Bash python3 produkter/hoyteknologisk_eldreomsorg_inspirert/varianter.py | grep -E "^\| P|^\| D|Kilde|^\| (sovn|kontakt|smer…
+💬 Pilotvarianten P (kjerne + kosedyr) er mest robust i det pessimistiske scenariet, så den blir anbefalingen. Nå skriver jeg dokumentene, først brief og research.
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/00_brief.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/01_research.md
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert_SV1R.…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert_brake…
+💬 CAD-bildene ser riktige ut. Nå skriver jeg markedsanalysen.
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/02_marked.md
+▶ Designmaskinen oppdaterer: høyteknologisk eldreomsorg inspirert av Japan: finn opp og design ett konkret system (hjelpemidler + teknologi + arbeidsmåte) som gjør at eldre i norske sykehjem og hjemmetjeneste får det mye bedre og slipper lidelser. Ta utgangspunkt i det som gir mest lidelse (fall og hoftebrudd, smerte som ikke oppdages hos personer med demens, liggesår, ensomhet, underernæring/dehydrering, uverdig hjelp ved stell og toalett, nattlig uro) og i japanske løsninger (mimamori-sensorer for nattlig tilsyn, forflytningsroboter som RIBA/Hug, Panasonic Resyone seng-rullestol, Cyberdyne HAL-eksoskjelett, PARO-robotsel og LOVOT, helsesensorer i toalett, kaigo-forsikring, Japans lokalbaserte integrerte omsorg). Velg det systemet som gir størst gevinst i livskvalitet per krone og frigjør tid for pleierne til menneskelig kontakt. Personvern (GDPR), samtykkekompetanse og verdighet er harde krav – ingen kameraovervåking uten samtykke. Lag modell for lidelse/livskvalitet (f.eks. QALY, fall per 1000 beboerdøgn, pleietid), kostnad for kommunen, CAD av det fysiske hjelpemiddelet og en pilotplan for en norsk kommune.  ->  produkter/hoyteknologisk_eldreomsorg_inspirert/
+🔧 Bash ls -la produkter/hoyteknologisk_eldreomsorg_inspirert/ produkter/ && wc -l produkter/hoyteknologisk_eldreomsorg_inspire…
+🔧 Bash cd produkter/hoyteknologisk_eldreomsorg_inspirert && cat status.json; tail -40 fremdrift.txt; cat 00_brief.md 02_marked…
+🔧 Bash cd /home/user/oppfinnelsesmaskin && cat produkter/hoyteknologisk_eldreomsorg_inspirert/01_research.md; cat produkter/_m…
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter && head -45 hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_…
+🔧 Bash cd /home/user/oppfinnelsesmaskin && timeout 600 python3 -m unittest discover tester 2>&1 | tail -5
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/hoyteknologisk_eldreomsorg_inspirert.png
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/tegning.png
+🔧 ToolSearch select:WebSearch
+🔧 WebSearch patent bed exit detection under-mattress sensor activates night floor light amber when patient sits up
+🔧 WebSearch patent nursing home monitoring missing sensor signal fallback scheduled check rounds "bed sensor" heartbeat
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert && sed -n 1,60p varianter.py
+🔧 Bash cd /home/user/oppfinnelsesmaskin && tail -3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a4…
+🔧 Write /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a493063/scratchpad/k5.py
+🔧 Bash cd /home/user/oppfinnelsesmaskin && tail -3 /tmp/claude-0/-home-user-oppfinnelsesmaskin/5faf5464-4a5f-5e85-9755-96135a4…
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/05_testplan.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/05_testplan.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/03_patent.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/06_pitch.md
+🔧 Edit /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/06_pitch.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/storyboard.py
+🔧 Bash python3 produkter/hoyteknologisk_eldreomsorg_inspirert/storyboard.py && python3 -m maskin.render produkter/hoyteknologi…
+🔧 Read /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/storyboard.png
+💬 Storyboardet ser riktig ut: 8 ruter, ingen tekst overlapper, og 9:16-utsnittet er markert. Nå skriver jeg lanseringsfilen.
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/07_lansering.md
+🔧 Write /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert/RAPPORT.md
+🔧 Bash cd /home/user/oppfinnelsesmaskin/produkter/hoyteknologisk_eldreomsorg_inspirert && python3 - <<'EOF' f = "RAPPORT.md" t…
+💬 Nå README-tabellen og testene.
+🔧 Edit /home/user/oppfinnelsesmaskin/README.md
+🔧 Bash cd /home/user/oppfinnelsesmaskin && timeout 600 python3 -m unittest discover tester 2>&1 | tail -4
+💬 Designpakken for «Stille vakt» er komplett. Det som manglet, er nå laget: testplan med pilotplan, patentanalyse, pitch, lansering med storyboard og beslutnings…
+✅ Ferdig
+   tid 8.0 min, kost $2.23
+Designpakken for «Stille vakt» er komplett. Det som manglet, er nå laget: testplan med pilotplan, patentanalyse, pitch, lansering med storyboard og beslutningsrapport. Produktet står også i README, og testene passerer (8 av 8). Alle effekttallene er modellberegninger; ingenting er bygget eller testet ennå.
+
+**Kortbeslutning:** Jeg anbefaler en pilot over 18 måneder i én kommune, med rundt 100 sykehjemsbeboere og 50 hjemmeboende. Systemet heter P+ og består av:
+- **Nattilsyn ved behov:** en sensorstrimmel under madrassen og en batteridrevet modul på sengerammen (SV-1). Modulen tenner et svakt rav gulvlys når beboeren setter seg opp. Den har ikke kamera eller mikrofon.
+- **Smertekartlegging:** fast kartlegging med MOBID-2 (et norsk verktøy for personer med demens) hver måned, og et ukentlig team etter japansk modell («mimamori-team»).
+- **Kontakttid:** fast tid til hver beboer, lagt inn i turnusen.
+- **Hjelpemidler:** vaske-tørke-toalett for de som kan bli selvhjulpne, kosedyr, og hoftebeskytter og lav seng for de med høy risiko.
+
+Den japanske robotpakken (PARO, LOVOT, HAL, DFree, kamera) ga minst livskvalitet per krone i modellen. Den anbefales ikke.
+
+**Viktigste tall** (per 100 beboere per år, vanlig / pessimistisk anslag):
+
+| Mål | Vanlig | Pessimistisk |
+|---|---|---|
+| Gode leveår (QALY) | 4,4 | 3,1 |
+| Netto kost for kommunen per beboer | ca. 2 700 kr | ca. 7 700 kr |
+| Kost per gode leveår (samfunnet) | sparer penger | ca. 157 000 kr |
+| Hoftebrudd | −39 % | −31 % |
+| Fall per 1000 beboerdøgn (i dag 3,75) | 3,03 | 3,19 |
+| Frigjort pleietid per beboer | 32 timer | 18,5 timer |
+
+Selv det pessimistiske anslaget ligger godt under laveste offentlige betalingsvilje på 275 000 kr per gode leveår.
+
+**Hva som er usikkert:**
+- **To krav holder ikke:**
+  - Fall-kravet (≤ 3,0 per 1000 døgn) bommer med 1–6 %.
+  - Kontakttid på minst 3 minutter per beboer per døgn holder bare i det vanlige anslaget (1,8 minutter i det pessimistiske). Mottiltaket er at kontakttiden legges fast inn i turnusen i stedet for å avhenge av tiden sensoren frigjør.
+- **Rapporten er endret:** Den forrige anbefalingen (P, uten hoftebeskytter og lav seng) ga bare −19 % hoftebrudd mot kravet −25 %. Derfor er den utvidet til P+, og endringen er forklart i rapporten.
+- **Gevinsten bygger på antatte vekter:** søvn, kontakt og smerte står for 75 % av gevinsten. Er vektene for søvn og kontakt halvparten så store, faller gevinsten til omtrent 3,2 gode leveår, og kravet brytes i det pessimistiske anslaget.
+- **Gevinsten forsvinner hvis tiden tas ut som kutt:** Bruker kommunen den frigjorte tiden til å spare penger i stedet for kontakt, sparer den ca. 7 500 kr per beboer, men gevinsten faller til 2,9 gode leveår.
+- **Piloten er for liten til å bevise fallgevinsten:** den kan bare påvise en nedgang på rundt 40 %, mens modellen venter rundt 19 %. Hovedmålene i piloten er derfor livskvalitet, smerte og tid.
+- **Patent:** Oppfinnelseshøyden er svak. Det nærmeste kjente produktet er Curbell Safe Mobility Light, som tenner lys under sengen når pasienten går ut. Jeg anbefaler designregistrering, varemerke, å holde algoritmen hemmelig og å publisere logikken for fall tilbake til fast runde, slik at ingen andre kan patentere den. Patentstatus er ikke sjekket i registrene.
+
+**Neste steg:**
+1. Forankre piloten i kommuneledelsen og hos tillitsvalgte, og søk Helsedirektoratets innovasjonstilskudd.
+2. Bygg 10 prototyper av SV-1 og kjør laboratorietestene, inkludert CE-merking (ca. 0,46 MNOK).
+3. Lag personvernkonsekvensvurdering og en rutine for vedtak for beboere som ikke kan samtykke.
+4. Kjør piloten, innført stegvis i én avdeling om gangen (ca. 4,7 MNOK).
+5. Legg målingene inn i modellen (`problem.py`) og kjør den på nytt. Er sensoren ikke klar i tide, kan piloten starte med en radar som allerede finnes på rammeavtale; arbeidsmåten er den samme.
+
+Kilder fra de nye patentsøkene: [Curbell Safe Mobility Light](https://shop.cardinalhealth.ca/chc/safe-mobility-light), [US10470955](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10470955), [US2011/0037586](https://patents.justia.com/patent/20110037586), [US6078261](https://patents.google.com/patent/US6078261).
+
+Filer i `produkter/hoyteknologisk_eldreomsorg_inspirert/`:
+- RAPPORT.md
+- 05_testplan.md (inkludert pilotplanen)
+- 03_patent.md
+- 06_pitch.md
+- 07_lansering.md
+- storyboard.png

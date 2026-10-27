@@ -1,0 +1,9 @@
+{
+  "ide": "høyteknologisk eldreomsorg inspirert av Japan: finn opp og design ett konkret system (hjelpemidler + teknologi + arbeidsmåte) som gjør at eldre i norske sykehjem og hjemmetjeneste får det mye bedre og slipper lidelser. Ta utgangspunkt i det som gir mest lidelse (fall og hoftebrudd, smerte som ikke oppdages hos personer med demens, liggesår, ensomhet, underernæring/dehydrering, uverdig hjelp ved stell og toalett, nattlig uro) og i japanske løsninger (mimamori-sensorer for nattlig tilsyn, forflytningsroboter som RIBA/Hug, Panasonic Resyone seng-rullestol, Cyberdyne HAL-eksoskjelett, PARO-robotsel og LOVOT, helsesensorer i toalett, kaigo-forsikring, Japans lokalbaserte integrerte omsorg). Velg det systemet som gir størst gevinst i livskvalitet per krone og frigjør tid for pleierne til menneskelig kontakt. Personvern (GDPR), samtykkekompetanse og verdighet er harde krav – ingen kameraovervåking uten samtykke. Lag modell for lidelse/livskvalitet (f.eks. QALY, fall per 1000 beboerdøgn, pleietid), kostnad for kommunen, CAD av det fysiske hjelpemiddelet og en pilotplan for en norsk kommune.",
+  "status": "ferdig",
+  "start": "2026-10-27 20:55:26",
+  "avbrutt": "containeren startet på nytt",
+  "slutt": "2026-10-27 21:03:29",
+  "kost_usd": 2.2305681,
+  "returkode": 0
+}

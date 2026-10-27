@@ -92,4 +92,5 @@ python3 -m unittest discover tester
 | `produkter/drone_propell` | P1 10″ og 10,5″: fysikkmodell (BEMT), 19–25 % mindre effekt i modellen, STL, tegninger. Krever numpy. |
 | `produkter/barnekniv` | K1 «Spikkevenn»: risikomodell, 81 % lavere kuttrisiko i modellen, OpenSCAD, STL, tegning. |
 | `produkter/kaffekopp_holder_kaffen_varm_3_timer` | P1 «Tretimer»: vakuum + PCM + vakuumlokk, termisk tidssimulering. 62,7 °C ved siste slurk etter 3 t i modellen (57,4 °C med +30 % tap) mot 38,6 °C for YETI. OpenSCAD, STL, tegning, patentanalyse (CN-FTO), pitch, lanseringspakke og storyboard. Ikke testet. |
+| `produkter/hoyteknologisk_eldreomsorg_inspirert` | «Stille vakt» P+: japansk-inspirert system for sykehjem/hjemmetjeneste. Behovsstyrt nattilsyn med kamerafri strimmel + kantmodul SV-1 (rav gulvlys, batteri), MOBID-2, mimamori-team og kontakttid i turnus. ≈ 4,4 QALY per 100 beboere/år for ≈ 2 700 kr/beboer i modellen (pess. 3,1 QALY, ICER ≈ 157 000 kr). Robotpakke forkastet. OpenSCAD, STL, tegning, patent, pitch, storyboard, pilotplan for kommune. Ikke testet. |
 | `produkter/_mal` | Mal for modell og rapport |
