@@ -24,6 +24,8 @@ import time
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from maskin import minne
+
 ROT = os.path.dirname(os.path.abspath(__file__))
 PRODUKTER = os.path.join(ROT, "produkter")
 
@@ -57,6 +59,7 @@ def kommando(ide, mappe, modell=None, oppdater=False):
         prompt = (f"/design {ide}\n\n"
                   f"(Kjøres automatisk av designmaskin.py uten bruker. Bruk produktmappen produkter/{mappe}/. "
                   "Ikke still spørsmål – gjør og dokumenter antakelser. Fullfør alle steg i skillen.)")
+    prompt += "\n\n" + minne.kontekst(ide)
     k = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose",
          "--permission-mode", "acceptEdits", "--allowedTools", ",".join(VERKTOY)]
     if modell:
@@ -110,6 +113,8 @@ def kjor(ide, modell=None, skriv=print, mappe=None):
     oppdater = mappe is not None
     mappe = mappe or slug(ide)
     os.makedirs(os.path.join(PRODUKTER, mappe), exist_ok=True)
+    if not oppdater:
+        minne.husk(ide, "ide", mappe, kilde="designmaskin")
     skriv_status(mappe, ide=ide, status="kjører", start=time.strftime("%Y-%m-%d %H:%M:%S"))
     fremdrift = open(os.path.join(PRODUKTER, mappe, "fremdrift.txt"), "a", buffering=1)
     logg = open(os.path.join(PRODUKTER, mappe, "logg.jsonl"), "a", buffering=1)
@@ -202,13 +207,67 @@ def forside():
                      f'<td class="mut">{html.escape(st.get("ide", ""))}</td>'
                      f'<td><span class="merke">{html.escape(st.get("status", ""))}</span></td></tr>')
     return side("Designmaskinen", f"""
-<h1>Designmaskinen</h1><p class="mut">Skriv en idé. Maskinen gjør research, markedsanalyse, modell,
+<h1>Designmaskinen</h1><p><a href="/minne">Minne: innspill, profil og lærdom →</a></p><p class="mut">Skriv en idé. Maskinen gjør research, markedsanalyse, modell,
 optimalisering, CAD, tegning, testplan og rapport. Tar typisk 20–60 minutter.</p>
 <div class="kort"><form method="post" action="/start">
 <label for="ide"><b>Idé</b></label>
 <textarea id="ide" name="ide" required placeholder="F.eks.: en sykkellås under 500 g som tåler 3 minutter med baufil"></textarea>
 <button type="submit">Start design</button></form></div>
 <h2>Produkter</h2><div class="kort"><table><tr><th>Mappe</th><th>Idé</th><th>Status</th></tr>{''.join(rader)}</table></div>""")
+
+
+def minneside():
+    def fil(navn):
+        sti = os.path.join(minne.MINNE, navn)
+        return open(sti).read() if os.path.exists(sti) else "–"
+    rader = "".join(
+        f'<tr><td class="mut">{html.escape(r["tid"])}</td><td><span class="merke">{html.escape(r["type"])}</span></td>'
+        f'<td>{html.escape(r["tekst"])}</td><td class="mut">{html.escape(r.get("produkt") or "")}</td></tr>'
+        for r in reversed(minne.innspill()[-200:]))
+    valg = "".join(f'<option value="{t}"{" selected" if t == "tilbakemelding" else ""}>{t}</option>'
+                   for t in minne.TYPER if t != "fil")
+    return side("Minne", f"""
+<p><a href="/">← designmaskinen</a></p><h1>Minne</h1>
+<p class="mut">Alt her leses av designmaskinen før hvert nytt design. Skriv det du vil at den skal huske:
+tilbakemeldinger, preferanser, idéer. Filer (skisser, bilder, PDF) havner i minne/filer/.</p>
+<div class="kort"><form method="post" action="/husk">
+<label for="tekst"><b>Husk dette</b></label>
+<textarea id="tekst" name="tekst" required placeholder="F.eks.: Jeg liker løsninger uten app for den eldre. Kniven ble for dyr – mål under 300 kr."></textarea>
+<p><label for="type">Type </label><select id="type" name="type">{valg}</select>
+<label for="produkt"> Gjelder produkt </label><input id="produkt" name="produkt" placeholder="valgfritt, f.eks. barnekniv"></p>
+<button type="submit">Lagre i minnet</button></form>
+<p><label for="filvalg"><b>Legg ved fil</b></label> <input id="filvalg" type="file"> <span id="filstatus" class="mut"></span></p></div>
+<script>
+document.getElementById("filvalg").addEventListener("change", async e => {{
+  const f = e.target.files[0]; if (!f) return;
+  const st = document.getElementById("filstatus"); st.textContent = "laster opp …";
+  const b64 = await new Promise(r => {{ const fr = new FileReader(); fr.onload = () => r(fr.result.split(",")[1]); fr.readAsDataURL(f); }});
+  const res = await fetch("/fil", {{method: "POST", headers: {{"Content-Type": "application/json"}},
+    body: JSON.stringify({{navn: f.name, data: b64, notat: document.getElementById("tekst").value}})}});
+  st.textContent = res.ok ? "lagret: " + f.name : "feilet: " + await res.text();
+}});
+</script>
+<h2>Innspill</h2><div class="kort" style="overflow-x:auto"><table><tr><th>Tid</th><th>Type</th><th>Tekst</th><th>Produkt</th></tr>{rader}</table></div>
+<h2>Profil</h2><pre>{html.escape(fil("profil.md"))}</pre>
+<h2>Lærdom</h2><pre>{html.escape(fil("laerdom.md"))}</pre>""")
+
+
+def lagre_fil(navn, data_b64, notat=""):
+    """Lagre en opplastet fil i minne/filer/ og logg den. Returnerer filnavnet."""
+    import base64
+    trygt = re.sub(r"[^\w.\-]", "_", os.path.basename(navn))[:80] or "fil"
+    if trygt.startswith("."):
+        trygt = "_" + trygt
+    d = os.path.join(minne.MINNE, "filer")
+    os.makedirs(d, exist_ok=True)
+    data = base64.b64decode(data_b64, validate=True)
+    if len(data) > 20 * 1024 * 1024:
+        raise ValueError("filen er større enn 20 MB")
+    navn_ut = time.strftime("%Y%m%d-%H%M%S-") + trygt
+    with open(os.path.join(d, navn_ut), "wb") as f:
+        f.write(data)
+    minne.husk(f"minne/filer/{navn_ut}" + (f" – {notat}" if notat else ""), "fil")
+    return navn_ut
 
 
 def produktside(mappe):
@@ -260,6 +319,8 @@ class Handler(BaseHTTPRequestHandler):
         sti = urllib.parse.unquote(urllib.parse.urlparse(self.path).path)
         if sti == "/":
             return self._svar(200, forside())
+        if sti == "/minne":
+            return self._svar(200, minneside())
         m = re.fullmatch(r"/p/([\w-]+)", sti)
         if m:
             s = produktside(m.group(1))
@@ -273,6 +334,26 @@ class Handler(BaseHTTPRequestHandler):
         self._svar(404, "Finnes ikke")
 
     def do_POST(self):
+        if self.path == "/husk":
+            n = int(self.headers.get("Content-Length") or 0)
+            felt = urllib.parse.parse_qs(self.rfile.read(n).decode())
+            tekst = (felt.get("tekst") or [""])[0].strip()
+            typ = (felt.get("type") or ["notat"])[0]
+            if not tekst or typ not in minne.TYPER:
+                return self._svar(400, "Mangler tekst eller ugyldig type")
+            minne.husk(tekst, typ, (felt.get("produkt") or [""])[0].strip() or None)
+            self.send_response(303)
+            self.send_header("Location", "/minne")
+            return self.end_headers()
+        if self.path == "/fil":
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 30 * 1024 * 1024:
+                return self._svar(413, "For stor fil")
+            try:
+                d = json.loads(self.rfile.read(n))
+                return self._svar(200, lagre_fil(d["navn"], d["data"], d.get("notat", "")), "text/plain; charset=utf-8")
+            except (ValueError, KeyError) as e:
+                return self._svar(400, f"Kunne ikke lagre: {e}", "text/plain; charset=utf-8")
         m = re.fullmatch(r"/oppdater/([\w-]+)", self.path)
         if m and os.path.isdir(os.path.join(PRODUKTER, m.group(1))) and not m.group(1).startswith("_"):
             mappe = m.group(1)
@@ -316,7 +397,16 @@ def main():
     p.add_argument("--web", action="store_true", help="start nettsiden")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--vert", default="127.0.0.1", help="bind-adresse (127.0.0.1 = bare denne maskinen)")
+    p.add_argument("--husk", metavar="TEKST", help="lagre et innspill i minnet (uten å kjøre design)")
+    p.add_argument("--type", default="tilbakemelding", choices=minne.TYPER, help="type innspill for --husk")
+    p.add_argument("--minne", action="store_true", help="vis hva minnet vil gi designmaskinen for idéen")
     a = p.parse_args()
+    if a.husk:
+        print("Husket:", json.dumps(minne.husk(a.husk, a.type), ensure_ascii=False))
+        return 0
+    if a.minne:
+        print(minne.kontekst(a.ide or ""))
+        return 0
     if a.web:
         return web(a.port, a.vert, a.modell)
     if a.oppdater:

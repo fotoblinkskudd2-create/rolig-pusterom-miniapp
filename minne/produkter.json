@@ -1,0 +1,81 @@
+[
+  {
+    "mappe": "produkter/barnekniv",
+    "ide": "barnekniv",
+    "status": "ferdig",
+    "sammendrag": "**Mål:** En ekte spikkekniv for barn i alderen 6–12 år. Det skal være mye vanskeligere å kutte seg med den, men den skal spikke godt nok til at barnet lærer riktig teknikk og blir trygg. **Status:** Prototype. Ikke testet, ikke sertifisert.",
+    "filer": [
+      "SPESIFIKASJON.md",
+      "robusthet.md"
+    ]
+  },
+  {
+    "mappe": "produkter/drone_propell",
+    "ide": "drone propell",
+    "status": "ferdig",
+    "sammendrag": "**Krav:** Minst 17 % mer effektiv enn en vanlig 10×4,5-propell. Det vil si minst 17 % mer skyvkraft per watt, eller like mye mindre strøm for samme løft. **Bruk:** Quadcopter på 1,6 kg (3,92 N per propell i sveving), motorer for 10″-propeller. **Status:** Designet og beregnet med en modell (BEMT), men ikke testet på testbenk.",
+    "filer": [
+      "SPESIFIKASJON.md"
+    ]
+  },
+  {
+    "mappe": "produkter/hoyteknologisk_eldreomsorg_inspirert",
+    "ide": "høyteknologisk eldreomsorg inspirert av Japan: finn opp og design ett konkret system (hjelpemidler + teknologi + arbeidsmåte) som gjør at eldre i norske sykehjem og hjemmetjeneste får det mye bedre og slipper lidelser. Ta utgangspunkt i det som gir mest lidelse (fall og hoftebrudd, smerte som ikke oppdages hos personer med demens, liggesår, ensomhet, underernæring/dehydrering, uverdig hjelp ved stell og toalett, nattlig uro) og i japanske løsninger (mimamori-sensorer for nattlig tilsyn, forflytningsroboter som RIBA/Hug, Panasonic Resyone seng-rullestol, Cyberdyne HAL-eksoskjelett, PARO-robotsel og LOVOT, helsesensorer i toalett, kaigo-forsikring, Japans lokalbaserte integrerte omsorg). Velg det systemet som gir størst gevinst i livskvalitet per krone og frigjør tid for pleierne til menneskelig kontakt. Personvern (GDPR), samtykkekompetanse og verdighet er harde krav – ingen kameraovervåking uten samtykke. Lag modell for lidelse/livskvalitet (f.eks. QALY, fall per 1000 beboerdøgn, pleietid), kostnad for kommunen, CAD av det fysiske hjelpemiddelet og en pilotplan for en norsk kommune.",
+    "status": "ferdig",
+    "sammendrag": "Kjør en 18 måneders pilot i én kommune (≈ 100 sykehjemsbeboere + 50 hjemmeboende) med **variant P+**. P+ består av behovsstyrt nattilsyn med en kamerafri sensorstrimmel og kantmodul (SV-1) med rav gulvlys, MOBID-2-smertekartlegging hver måned, et ukentlig mimamori-team, kontakttid lagt fast inn i turnus, vaske-tørke-toalett for utvalgte, kosedyr og hoftebeskytter/lav seng for dem med høy risiko. I modellen gir det **≈ 4,4 QALY per 100 beboere per år** for **≈ 2 700 kr netto per beboer** (pessimistisk 3,1 QALY / 7 700 kr, ICER ≈ 157 000 kr/QALY). Ikke kjøp den japanske robotpakken. Den ga minst",
+    "filer": [
+      "00_brief.md",
+      "01_research.md",
+      "02_marked.md",
+      "03_patent.md",
+      "05_testplan.md",
+      "06_pitch.md",
+      "07_lansering.md",
+      "RAPPORT.md",
+      "robusthet.md",
+      "varianter.md"
+    ]
+  },
+  {
+    "mappe": "produkter/kaffekopp_holder_kaffen_varm_3_timer",
+    "ide": "en kaffekopp som holder kaffen varm i 3 timer uten strøm",
+    "status": "ferdig",
+    "sammendrag": "**Bygg P1 som plattform:** én vakuumkropp med lang hals og vakuumlokk med kantskjørt, i to varianter: **A med PCM** (premium) og **B uten PCM** (reserve). Test begge før verktøybestilling. Modellen gir A **62,7 °C ved siste slurk etter 3 t** mot 38,6 °C for en YETI-kopp med skyvelokk. Med 30 % høyere varmetap enn antatt blir det bare **57,4 °C**. Markedsløftet blir derfor **≥ 55 °C, og ≥ 60 °C når koppen er forvarmet**, til test viser mer.",
+    "filer": [
+      "00_brief.md",
+      "01_research.md",
+      "02_marked.md",
+      "03_patent.md",
+      "05_testplan.md",
+      "06_pitch.md",
+      "07_lansering.md",
+      "RAPPORT.md",
+      "robusthet.md"
+    ]
+  },
+  {
+    "mappe": "produkter/tannborste",
+    "ide": "tannborste",
+    "status": "ferdig",
+    "sammendrag": "**Mål:** Fjerne mest mulig plakk, uten å skade tannkjøttet. **Status:** Dette er en prototype for testing. Den er ikke godkjent som medisinsk utstyr eller CE-merket. **Filer:** `prototype.scad` (parametrisk 3D-modell), `p1_hode.stl` og `p1_skaft.stl` (for 3D-print), `prototype_tegning.svg` (teknisk tegning).",
+    "filer": [
+      "README.md",
+      "SPESIFIKASJON.md"
+    ]
+  },
+  {
+    "mappe": "konsepter/eldreomsorg",
+    "ide": "eldreomsorg",
+    "status": "ferdig",
+    "sammendrag": "- **Brukersentrert:** den eldre skal ikke måtte lære noe nytt eller bære noe. - **Sikkerhet og verdighet:** ingen kamera uten samtykke, og ingen løsning som føles som overvåking. - **Skalerbarhet:** hyllevare der det går, og en kommune skal kunne kjøpe det. - **«Omotenashi»:** omsorg som ser behovet før noen må be om hjelp.",
+    "filer": [
+      "00_oversikt.md",
+      "01_kjelelyset.md",
+      "02_formmat.md",
+      "03_pustelaken.md",
+      "04_solvoppdrag.md",
+      "05_lant_utsikt.md",
+      "06_anbefaling.md"
+    ]
+  }
+]

@@ -26,6 +26,15 @@ eksplisitte, rimelige antakelser, skriv dem i `00_brief.md`, og fortsett.
 
 ## Steg
 
+### 0. Les minnet (alltid først)
+- `minne/profil.md`: hvem eieren er og hvordan resultatet skal se ut.
+- `minne/laerdom.md`: regler fra tidligere produkter. Følg dem og nevn hvilke du brukte i rapporten.
+- `python3 -m maskin.minne kontekst "<idé>"`: relevante innspill og lignende produkter. Les rapportene til de 1–3 mest
+  like produktene, og gjenbruk modeller, tall og lærdom derfra.
+- `minne/filer/`: skisser, bilder og dokumenter eieren har lastet opp. Se på dem som hører til idéen (Read
+  viser bilder) og bruk dem som krav eller inspirasjon.
+- Står det i promptet en blokk som starter med «## Fra minnet», er den allerede hentet for deg.
+
 Lag `produkter/<slug>/` (små bokstaver, bindestrek-fri, `_` mellom ord, æøå → ae/o/a). Skriv filene i rekkefølge:
 
 ### 1. `00_brief.md` – avklaring
@@ -105,7 +114,14 @@ Ikke juridisk rådgivning – skriv det øverst. Bruk patentfunnene fra research
 Bruk `produkter/_mal/RAPPORT.md` nøyaktig. Fyll alle seksjoner. Konfidens i % per anbefaling
 med begrunnelse. Scenarier best/mid/verst. Lenk til alle filer i mappen.
 
-### 12. Avslutt
+### 12. Oppdater minnet
+- Legg 1–3 nye regler nederst i `minne/laerdom.md`, med produktnavn og dato. Bare ting som gjelder **på tvers av produkter**.
+  Er en regel motbevist, retter du den.
+- Har du lært noe nytt om eieren (pris, smak, mål), legger du det til i `minne/profil.md`.
+- `python3 -m maskin.minne indeks` oppdaterer produktindeksen.
+- Skriv i `RAPPORT.md` under en egen overskrift «Minne»: hvilke innspill, lærdommer og tidligere produkter som påvirket designet, og hvordan.
+
+### 13. Avslutt
 - `python3 -m unittest discover tester` må passere (testen kjører alle produkter).
 - Legg produktet i tabellen i `README.md`.
 - Svar brukeren med: kortbeslutning (3–5 linjer), viktigste tall, hva som er usikkert, neste steg.
@@ -118,6 +134,7 @@ med begrunnelse. Scenarier best/mid/verst. Lenk til alle filer i mappen.
 - [ ] Ingen påstand om at noe er testet når det bare er modellert.
 - [ ] Patentkravene er sjekket mot hver rad i kjent-teknikk-tabellen.
 - [ ] Pitch og lansering bruker bare påstander som er lov å bruke nå.
+- [ ] Minnet er lest (steg 0) og oppdatert (steg 12), og rapporten forklarer hvordan det ble brukt.
 
 ## Oppdatere et eksisterende produkt
 Står det «oppdater produkter/<mappe>/» i input: les alle filer som finnes, lag bare stegene som mangler
