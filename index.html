@@ -2,18 +2,56 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1f1c" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pusterom">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>Pusterom – Rolig mini-app</title>
 <style>
   :root {
     --bg: #f5f7f4;
     --card: #ffffff;
     --text: #3a4a3f;
-    --muted: #7a8a7f;
+    --muted: #5d6e62;
+    --line: #e2e9e4;
     --accent: #a8c5b0;
+    --on-accent: #2a3a2f;
+    --focus: #3a4a3f;
     --soft-blue: #d4e4f0;
     --soft-beige: #f0e9df;
     --soft-green: #e0ebe3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1a1f1c;
+      --card: #243029;
+      --text: #e0ebe3;
+      --muted: #a7b5aa;
+      --line: #33423a;
+      --accent: #8fb49b;
+      --on-accent: #111814;
+      --focus: #e0ebe3;
+      --soft-blue: #2c3d4a;
+      --soft-beige: #3a332b;
+      --soft-green: #2b3a30;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1a1f1c;
+    --card: #243029;
+    --text: #e0ebe3;
+    --muted: #a7b5aa;
+    --line: #33423a;
+    --accent: #8fb49b;
+    --on-accent: #111814;
+    --focus: #e0ebe3;
+    --soft-blue: #2c3d4a;
+    --soft-beige: #3a332b;
+    --soft-green: #2b3a30;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -21,8 +59,13 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
     line-height: 1.5;
+  }
+  button, textarea { color: inherit; }
+  button:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
   }
   .page {
     display: none;
@@ -47,6 +90,10 @@
     font-size: 0.95rem;
     margin-bottom: 20px;
   }
+  .privacy {
+    font-size: 0.85rem;
+    margin: -8px 0 24px;
+  }
   .mood-scale {
     display: flex;
     justify-content: space-between;
@@ -56,12 +103,12 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
   }
   .mood-btn.selected {
     border-color: var(--accent);
@@ -71,7 +118,7 @@
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 14px;
     font-size: 1rem;
@@ -84,7 +131,7 @@
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: var(--on-accent);
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -97,6 +144,13 @@
   .btn-secondary {
     background: var(--soft-blue);
     margin-top: 12px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+    min-height: 1.5em;
+    margin: 12px 0 0;
   }
   .message {
     background: var(--soft-green);
@@ -120,10 +174,10 @@
     height: 140px;
     border-radius: 50%;
     background: var(--soft-blue);
-    transition: transform 4s ease-in-out;
+    transition: transform 4s ease-in-out, background 4s ease-in-out;
   }
   .circle.inhale { transform: scale(1.6); background: var(--accent); }
-  .circle.exhale { transform: scale(1); }
+  .circle.exhale { transform: scale(1); transition-duration: 6s; }
   .breath-text {
     text-align: center;
     font-size: 1.3rem;
@@ -142,18 +196,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    gap: 12px;
+    border: 1px solid var(--line);
   }
   .action-card.done {
-    opacity: 0.6;
+    opacity: 0.7;
     background: var(--soft-green);
   }
   .action-card button {
+    flex-shrink: 0;
     background: none;
     border: 1px solid var(--accent);
     border-radius: 12px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
+    padding: 8px 14px;
+    min-width: 64px;
+    font-size: 0.9rem;
     cursor: pointer;
     color: var(--text);
   }
@@ -162,7 +219,7 @@
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .history-item .date {
     font-size: 0.85rem;
@@ -176,8 +233,8 @@
     background: var(--card);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
+    padding: 10px 0 calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
   }
   .nav button {
@@ -191,6 +248,8 @@
     gap: 4px;
     cursor: pointer;
     padding: 6px 10px;
+    min-width: 64px;
+    min-height: 48px;
   }
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
@@ -201,6 +260,11 @@
     text-align: center;
     margin-top: 24px;
   }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -208,16 +272,18 @@
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
   <p class="support">Hvordan har du det akkurat nå?</p>
-  <div class="mood-scale" id="moodScale">
-    <button class="mood-btn" data-mood="1">😔</button>
-    <button class="mood-btn" data-mood="2">😕</button>
-    <button class="mood-btn" data-mood="3">😐</button>
-    <button class="mood-btn" data-mood="4">🙂</button>
-    <button class="mood-btn" data-mood="5">😌</button>
+  <p class="privacy">🔒 Alt blir på denne enheten.</p>
+  <div class="mood-scale" id="moodScale" role="group" aria-label="Hvordan har du det?">
+    <button class="mood-btn" data-mood="1" aria-label="Ikke bra" aria-pressed="false">😔</button>
+    <button class="mood-btn" data-mood="2" aria-label="Litt tungt" aria-pressed="false">😕</button>
+    <button class="mood-btn" data-mood="3" aria-label="Nøytralt" aria-pressed="false">😐</button>
+    <button class="mood-btn" data-mood="4" aria-label="Ganske bra" aria-pressed="false">🙂</button>
+    <button class="mood-btn" data-mood="5" aria-label="Rolig" aria-pressed="false">😌</button>
   </div>
-  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
+  <textarea id="note" aria-label="Notat (valgfritt)" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
-  <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
+  <p class="hint" id="formHint" role="status"></p>
+  <div class="message" id="saveMsg" role="status">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
 </div>
 
@@ -225,9 +291,9 @@
   <h1>Pusterom</h1>
   <p class="support">Følg sirkelen. Pust rolig.</p>
   <div class="circle-wrap">
-    <div class="circle" id="breathCircle"></div>
+    <div class="circle" id="breathCircle" aria-hidden="true"></div>
   </div>
-  <div class="breath-text" id="breathText">Trykk start</div>
+  <div class="breath-text" id="breathText" aria-live="polite">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
 </div>
 
@@ -243,11 +309,11 @@
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
 </div>
 
-<nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+<nav class="nav" aria-label="Hovedmeny">
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span aria-hidden="true">🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span aria-hidden="true">🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span aria-hidden="true">✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span aria-hidden="true">📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -265,18 +331,37 @@ let selectedMood = null;
 let breathing = false;
 let breathInterval = null;
 let phase = 0; // 0 inhale, 1 hold, 2 exhale
+let hintTimeout = null;
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showHint(text) {
+  const hint = document.getElementById('formHint');
+  hint.textContent = text;
+  clearTimeout(hintTimeout);
+  hintTimeout = setTimeout(() => { hint.textContent = ''; }, 4000);
+}
 
 document.querySelectorAll('.mood-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.mood-btn').forEach(b => {
+      b.classList.remove('selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
     btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
     selectedMood = btn.dataset.mood;
+    document.getElementById('formHint').textContent = '';
   });
 });
 
 function saveCheckin() {
   if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+    showHint('Velg hvordan du har det først.');
     return;
   }
   const note = document.getElementById('note').value.trim();
@@ -291,7 +376,10 @@ function saveCheckin() {
   document.getElementById('saveMsg').classList.add('show');
   document.getElementById('note').value = '';
   selectedMood = null;
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
   setTimeout(() => document.getElementById('saveMsg').classList.remove('show'), 4000);
   renderHistory();
 }
@@ -299,8 +387,12 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => {
+    const isActive = b.dataset.page === name;
+    b.classList.toggle('active', isActive);
+    if (isActive) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -350,7 +442,7 @@ function renderActions() {
     const isDone = done[today] && done[today].includes(i);
     const card = document.createElement('div');
     card.className = 'action-card' + (isDone ? ' done' : '');
-    card.innerHTML = `<span>${a}</span><button onclick="toggleAction(${i})">${isDone ? '✓' : 'Gjør'}</button>`;
+    card.innerHTML = `<span>${escapeHtml(a)}</span><button onclick="toggleAction(${i})" aria-pressed="${isDone}">${isDone ? '✓ Gjort' : 'Gjør'}</button>`;
     list.appendChild(card);
   });
 }
@@ -378,7 +470,7 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + escapeHtml(e.note) + '</div>' : ''}`;
       container.appendChild(item);
     });
   }
