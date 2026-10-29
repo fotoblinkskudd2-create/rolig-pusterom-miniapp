@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brevkniven x Rentevekkeren - prototype</title>
+<style>
+:root{--bg:#0f0d0c;--fg:#f2e8d5;--acc:#ff4d2e;--mut:#8a7f72}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:2rem;margin:.5em 0 0;color:var(--acc)}
+p.sub{color:var(--mut)}
+.kort{border:1px solid #33291f;border-radius:12px;padding:16px;margin:16px 0}
+input,textarea{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #33291f;background:#1a1613;color:var(--fg)}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:var(--acc);color:#0f0d0c;font-weight:700;cursor:pointer}
+.stor{font-size:2.4rem;font-variant-numeric:tabular-nums}
+</style></head><body><main>
+<h1>Brevkniven x Rentevekkeren</h1><p class="sub">Konvolutter som venter på deg som en dom med frimerke, og verre: renta tikker opp mens du later som du sover</p>
+<div class="kort">
+<p>Ulest post fra inkasso og annet mørkt</p>
+<p class="stor" id="antall">3</p>
+<button id="nytt">Nytt brev kommer</button> <button id="apne">Åpne ett</button>
+</div>
+<div class="kort" id="logg"><p>Klar. Ingen har åpnet noe ennå.</p></div>
+</main>
+<script>
+let antall = 3;
+const linjer = [
+  'Du skylder penger. Vi vet hvor du bor.',
+  'Siste varsel. Dette er ikke en spøk, men du er det.',
+  'Renten er endret. Fremtiden din er nå dyrere.'
+];
+const vis = () => document.getElementById('antall').textContent = antall;
+document.getElementById('nytt').onclick = () => { antall++; vis(); };
+document.getElementById('apne').onclick = () => {
+  const logg = document.getElementById('logg');
+  if (antall === 0) { logg.innerHTML = '<p>Ingenting å åpne. Nærmeste du kommer fred.</p>'; return; }
+  antall--; vis();
+  const p = document.createElement('p');
+  p.textContent = linjer[Math.floor(Math.random() * linjer.length)];
+  logg.appendChild(p);
+};
+</script></body></html>

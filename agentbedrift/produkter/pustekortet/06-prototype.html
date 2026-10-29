@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pustekortet - prototype</title>
+<style>
+:root{--bg:#0f0d0c;--fg:#f2e8d5;--acc:#ff4d2e;--mut:#8a7f72}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:2rem;margin:.5em 0 0;color:var(--acc)}
+p.sub{color:var(--mut)}
+.kort{border:1px solid #33291f;border-radius:12px;padding:16px;margin:16px 0}
+input,textarea{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #33291f;background:#1a1613;color:var(--fg)}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:var(--acc);color:#0f0d0c;font-weight:700;cursor:pointer}
+.stor{font-size:2.4rem;font-variant-numeric:tabular-nums}
+</style></head><body><main>
+<h1>Pustekortet</h1><p class="sub">Hodet kjører løp, kroppen har ikke fått beskjed</p>
+<div class="kort" style="text-align:center">
+<div id="sirkel" style="width:160px;height:160px;margin:24px auto;border-radius:50%;background:var(--acc);opacity:.6;transition:transform 1s linear"></div>
+<p class="stor" id="fase">Klar</p>
+<button id="start">Start</button>
+</div>
+</main>
+<script>
+const faser = [['Inn', 4, 1.6], ['Hold', 4, 1.6], ['Ut', 6, 0.7], ['Hvil', 2, 1]];
+let timer = null, i = 0, teller = 0;
+const sirkel = document.getElementById('sirkel');
+const fase = document.getElementById('fase');
+const knapp = document.getElementById('start');
+function steg() {
+  const [navn, sek, skala] = faser[i];
+  if (teller === 0) sirkel.style.transform = 'scale(' + skala + ')';
+  fase.textContent = navn + ' (' + (sek - teller) + ')';
+  teller++;
+  if (teller > sek) { teller = 0; i = (i + 1) % faser.length; }
+}
+knapp.onclick = () => {
+  if (timer) { clearInterval(timer); timer = null; knapp.textContent = 'Start'; fase.textContent = 'Pause'; return; }
+  knapp.textContent = 'Stopp';
+  steg();
+  timer = setInterval(steg, 1000);
+};
+</script></body></html>

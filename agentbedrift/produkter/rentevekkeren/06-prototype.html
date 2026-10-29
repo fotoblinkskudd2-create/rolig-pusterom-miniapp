@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rentevekkeren - prototype</title>
+<style>
+:root{--bg:#0f0d0c;--fg:#f2e8d5;--acc:#ff4d2e;--mut:#8a7f72}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:2rem;margin:.5em 0 0;color:var(--acc)}
+p.sub{color:var(--mut)}
+.kort{border:1px solid #33291f;border-radius:12px;padding:16px;margin:16px 0}
+input,textarea{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #33291f;background:#1a1613;color:var(--fg)}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:var(--acc);color:#0f0d0c;font-weight:700;cursor:pointer}
+.stor{font-size:2.4rem;font-variant-numeric:tabular-nums}
+</style></head><body><main>
+<h1>Rentevekkeren</h1><p class="sub">Renta tikker opp mens du later som du sover</p>
+<div class="kort">
+<label>Saldo (kr) <input id="saldo" type="number" value="250000"></label><br><br>
+<label>Rente (% per år) <input id="rente" type="number" value="14.5" step="0.1"></label>
+</div>
+<div class="kort">
+<p>Renta tikker nå med</p>
+<p class="stor" id="sek">0,00 kr/s</p>
+<p>Siden du åpnet fanen: <b id="totalt">0,00 kr</b></p>
+</div>
+</main>
+<script>
+const start = Date.now();
+const fmt = (n, d) => n.toLocaleString('no-NO', {minimumFractionDigits: d, maximumFractionDigits: d});
+function oppdater() {
+  const saldo = parseFloat(document.getElementById('saldo').value) || 0;
+  const rente = parseFloat(document.getElementById('rente').value) || 0;
+  const kronerPerSek = saldo * rente / 100 / 365 / 86400;
+  const sekunder = (Date.now() - start) / 1000;
+  document.getElementById('sek').textContent = fmt(kronerPerSek, 4) + ' kr/s';
+  document.getElementById('totalt').textContent = fmt(kronerPerSek * sekunder, 2) + ' kr';
+}
+document.querySelectorAll('input').forEach(i => i.addEventListener('input', oppdater));
+setInterval(oppdater, 1000);
+oppdater();
+</script></body></html>

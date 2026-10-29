@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+<rect width="800" height="500" fill="#0f0d0c"/>
+<rect x="20" y="20" width="760" height="460" rx="16" fill="none" stroke="#ff4d2e" stroke-width="2"/>
+<text x="40" y="70" font-size="36" font-weight="700" fill="#ff4d2e">Rentevekkeren</text>
+<text x="40" y="110" font-size="18" fill="#8a7f72">Renta tikker opp mens du later som du sover</text>
+<text x="40" y="190" font-size="18" fill="#f2e8d5">- Viser rentetelling per sekund, lydløst, på skrivebordet</text>
+<text x="40" y="218" font-size="18" fill="#f2e8d5">- Du legger inn saldo og rente, den regner resten</text>
+<text x="40" y="246" font-size="18" fill="#f2e8d5">- Skjermen blir rød når døgnrenta er dyrere enn kaffebudsjettet</text>
+<text x="40" y="460" font-size="14" fill="#8a7f72">Skisse rentevekkeren. Ikke målskalert, ikke produksjonstegning.</text>
+</svg>

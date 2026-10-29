@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kaosdagboken - prototype</title>
+<style>
+:root{--bg:#0f0d0c;--fg:#f2e8d5;--acc:#ff4d2e;--mut:#8a7f72}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:2rem;margin:.5em 0 0;color:var(--acc)}
+p.sub{color:var(--mut)}
+.kort{border:1px solid #33291f;border-radius:12px;padding:16px;margin:16px 0}
+input,textarea{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #33291f;background:#1a1613;color:var(--fg)}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:var(--acc);color:#0f0d0c;font-weight:700;cursor:pointer}
+.stor{font-size:2.4rem;font-variant-numeric:tabular-nums}
+</style></head><body><main>
+<h1>Kaosdagboken</h1><p class="sub">Hodet glemmer alt som føltes riktig å skrive ned</p>
+<div class="kort">
+<p id="prompt"></p>
+<textarea id="tekst" rows="5" style="width:100%;box-sizing:border-box"></textarea>
+<label>Humør (1-10) <input id="humor" type="range" min="1" max="10" value="5"></label>
+<p><button id="lagre">Lagre kaoset</button></p>
+</div>
+<div class="kort" id="liste"></div>
+</main>
+<script>
+const prompter = [
+  'Hva har du lovet deg selv i dag som du allerede har brutt?',
+  'Hva ville du sagt til systemet hvis det hadde ansikt?',
+  'Hva kjentes i beina i dag?'
+];
+document.getElementById('prompt').textContent = prompter[Math.floor(Math.random() * prompter.length)];
+let oppforinger = [];
+try { oppforinger = JSON.parse(localStorage.getItem('dagbok') || '[]'); } catch (e) { oppforinger = []; }
+function vis() {
+  const html = oppforinger.slice().reverse().map(o =>
+    '<p><b>' + o.dato + ' - humør ' + o.humor + '</b><br>' + o.tekst.replace(/</g, '&lt;') + '</p>').join('');
+  document.getElementById('liste').innerHTML = html || '<p>Tomt. Ennå.</p>';
+}
+document.getElementById('lagre').onclick = () => {
+  const tekst = document.getElementById('tekst').value.trim();
+  if (!tekst) return;
+  oppforinger.push({dato: new Date().toLocaleString('no-NO'), humor: document.getElementById('humor').value, tekst});
+  try { localStorage.setItem('dagbok', JSON.stringify(oppforinger)); } catch (e) {}
+  document.getElementById('tekst').value = '';
+  vis();
+};
+vis();
+</script></body></html>

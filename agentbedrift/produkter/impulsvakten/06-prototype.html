@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Impulsvakten - prototype</title>
+<style>
+:root{--bg:#0f0d0c;--fg:#f2e8d5;--acc:#ff4d2e;--mut:#8a7f72}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:2rem;margin:.5em 0 0;color:var(--acc)}
+p.sub{color:var(--mut)}
+.kort{border:1px solid #33291f;border-radius:12px;padding:16px;margin:16px 0}
+input,textarea{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #33291f;background:#1a1613;color:var(--fg)}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:var(--acc);color:#0f0d0c;font-weight:700;cursor:pointer}
+.stor{font-size:2.4rem;font-variant-numeric:tabular-nums}
+</style></head><body><main>
+<h1>Impulsvakten</h1><p class="sub">Handlekurven vet mer om deg enn du gjør</p>
+<div class="kort">
+<label>Handlekurv (kr) <input id="kurv" type="number" value="1490"></label><br><br>
+<label>Din grense (kr) <input id="grense" type="number" value="500"></label><br><br>
+<button id="sjekk">Sjekk meg</button>
+</div>
+<div class="kort" id="svar"><p>Ingen dom ennå.</p></div>
+</main>
+<script>
+document.getElementById('sjekk').onclick = () => {
+  const kurv = parseFloat(document.getElementById('kurv').value) || 0;
+  const grense = parseFloat(document.getElementById('grense').value) || 0;
+  const svar = document.getElementById('svar');
+  if (kurv <= grense) { svar.innerHTML = '<p>Under grensa. Grønt lys. Kjøp det du trenger, ikke det du fantaserer om.</p>'; return; }
+  svar.innerHTML = '<p>Stopp. Du er ' + (kurv - grense) + ' kr over grensa.</p>'
+    + '<p>Vent 30 minutter. Pust inn i fire, ut i seks.</p>'
+    + '<input id="bekreft" placeholder="Skriv: JEG ER SIKKER"> <button id="kjop">Kjøp likevel</button>';
+  document.getElementById('kjop').onclick = () => {
+    if (document.getElementById('bekreft').value.trim() === 'JEG ER SIKKER') {
+      svar.innerHTML = '<p>Ok. Det er ditt liv. Kvitteringen i søppelet, vakten i bakhodet.</p>';
+    } else {
+      svar.innerHTML += '<p>Det er ikke sikkert du er sikker. Prøv igjen senere.</p>';
+    }
+  };
+};
+</script></body></html>
