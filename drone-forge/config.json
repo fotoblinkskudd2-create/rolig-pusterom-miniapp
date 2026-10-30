@@ -1,0 +1,54 @@
+{
+  "budget": {
+    "max_concepts": 30,
+    "max_frontier_calls": 6,
+    "max_parallel_width": 8
+  },
+  "reducer": {
+    "survivor_cap": 8,
+    "min_score": 4.0,
+    "max_per_group": 3,
+    "weights": {
+      "physical_feasibility": 25,
+      "mission_value": 20,
+      "novelty": 15,
+      "prototype_ease": 15,
+      "ip_whitespace": 10,
+      "cost_score": 10,
+      "alex_fit": 5
+    }
+  },
+  "energy": {
+    "air_density_kg_m3": 1.225,
+    "gravity_m_s2": 9.81,
+    "figure_of_merit": 0.65,
+    "system_overhead": 1.3,
+    "usable_battery_fraction": 0.8,
+    "min_endurance_min": 8
+  },
+  "final": {
+    "weights_positive": {
+      "physical_feasibility": 1.5,
+      "mission_value": 1.5,
+      "prototype_ease": 1.2,
+      "novelty": 1.0,
+      "ip_whitespace": 1.1,
+      "commercial_value": 1.4,
+      "alex_fit": 1.2
+    },
+    "weights_negative": {
+      "technical_risk": 1.0,
+      "capital_requirement": 0.8,
+      "regulatory_risk": 0.8,
+      "complexity": 1.0
+    },
+    "ranks": ["BUILD", "TEST", "WATCH"]
+  },
+  "repair": {
+    "max_cycles": 2,
+    "timeout_s": 300
+  },
+  "retries": {
+    "agent": 0
+  }
+}

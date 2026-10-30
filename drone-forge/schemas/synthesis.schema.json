@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Concept synthesis output (raw, before the forge fills defaults)",
+  "type": "object",
+  "required": ["concepts"],
+  "properties": {
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "problem",
+          "user",
+          "environment",
+          "defining_novelty",
+          "origin",
+          "architecture"
+        ],
+        "properties": {
+          "origin": {
+            "type": "object",
+            "required": ["use_case"],
+            "properties": {
+              "use_case": { "type": "string" }
+            }
+          },
+          "architecture": {
+            "type": "object",
+            "required": ["airframe", "propulsion"]
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

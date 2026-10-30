@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Drone concept",
+  "type": "object",
+  "required": [
+    "concept_id",
+    "origin",
+    "problem",
+    "user",
+    "environment",
+    "defining_novelty",
+    "architecture",
+    "constraints",
+    "scores",
+    "risks",
+    "verification",
+    "ip",
+    "commercial",
+    "status",
+    "kill_reason",
+    "repair_cycles",
+    "unknowns"
+  ],
+  "properties": {
+    "concept_id": { "type": "string", "pattern": "^DF-[0-9]{3}$" },
+    "origin": {
+      "type": "object",
+      "required": ["use_case", "source_agent", "generation"],
+      "properties": {
+        "use_case": { "type": "string" },
+        "source_agent": { "type": "string" },
+        "generation": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "problem": { "type": "string" },
+    "user": { "type": "string" },
+    "environment": { "type": "string" },
+    "defining_novelty": { "type": "string" },
+    "architecture": {
+      "type": "object",
+      "required": ["airframe", "propulsion", "energy", "control", "sensing", "materials"],
+      "properties": {
+        "airframe": { "type": "string" },
+        "propulsion": { "type": "string" },
+        "energy": { "type": "string" },
+        "control": { "type": "string" },
+        "sensing": { "type": "string" },
+        "materials": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "constraints": {
+      "type": "object",
+      "required": [
+        "mass_estimate_g",
+        "power_estimate_w",
+        "flight_time_estimate_min",
+        "payload_g",
+        "temperature_range_c",
+        "rotor_disk_area_m2",
+        "battery_wh"
+      ],
+      "properties": {
+        "mass_estimate_g": { "type": ["number", "null"], "minimum": 0 },
+        "power_estimate_w": { "type": ["number", "null"], "minimum": 0 },
+        "flight_time_estimate_min": { "type": ["number", "null"], "minimum": 0 },
+        "payload_g": { "type": ["number", "null"], "minimum": 0 },
+        "temperature_range_c": {
+          "type": ["array", "null"],
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "rotor_disk_area_m2": { "type": ["number", "null"], "minimum": 0 },
+        "battery_wh": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "physical_feasibility",
+        "mission_value",
+        "novelty",
+        "prototype_ease",
+        "ip_whitespace",
+        "commercial_value",
+        "cost_score",
+        "alex_fit"
+      ],
+      "properties": {
+        "physical_feasibility": { "type": "number", "minimum": 0, "maximum": 10 },
+        "mission_value": { "type": "number", "minimum": 0, "maximum": 10 },
+        "novelty": { "type": "number", "minimum": 0, "maximum": 10 },
+        "prototype_ease": { "type": "number", "minimum": 0, "maximum": 10 },
+        "ip_whitespace": { "type": "number", "minimum": 0, "maximum": 10 },
+        "commercial_value": { "type": "number", "minimum": 0, "maximum": 10 },
+        "cost_score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "alex_fit": { "type": "number", "minimum": 0, "maximum": 10 }
+      },
+      "additionalProperties": false
+    },
+    "risks": {
+      "type": "object",
+      "required": ["technical_risk", "capital_requirement", "regulatory_risk", "complexity"],
+      "properties": {
+        "technical_risk": { "type": "number", "minimum": 0, "maximum": 10 },
+        "capital_requirement": { "type": "number", "minimum": 0, "maximum": 10 },
+        "regulatory_risk": { "type": "number", "minimum": 0, "maximum": 10 },
+        "complexity": { "type": "number", "minimum": 0, "maximum": 10 }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "physics",
+        "energy",
+        "materials",
+        "adversarial"
+      ],
+      "properties": {
+        "physics": { "enum": ["PASS", "UNCERTAIN", "FAIL", "NOT_RUN"] },
+        "energy": { "enum": ["PASS", "UNCERTAIN", "FAIL", "NOT_RUN"] },
+        "materials": { "enum": ["PASS", "UNCERTAIN", "FAIL", "NOT_RUN"] },
+        "adversarial": { "enum": ["PASS", "REPAIR", "KILL", "NOT_RUN"] }
+      },
+      "additionalProperties": false
+    },
+    "ip": {
+      "type": "object",
+      "required": ["verdict", "closest_prior_art", "possible_novel_core"],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "LOW WHITESPACE",
+            "MEDIUM WHITESPACE",
+            "HIGH WHITESPACE",
+            "PROBABLY CROWDED",
+            "UNKNOWN",
+            "NOT_RUN"
+          ]
+        },
+        "closest_prior_art": { "type": "array", "items": { "type": "string" } },
+        "possible_novel_core": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "commercial": {
+      "type": "object",
+      "required": ["verdict"],
+      "properties": {
+        "buyer": { "type": "string" },
+        "pain": { "type": "string" },
+        "current_alternative": { "type": "string" },
+        "advantage": { "type": "string" },
+        "price_band": { "type": "string" },
+        "pilot": { "type": "string" },
+        "sales_friction": { "type": "string" },
+        "verdict": { "enum": ["BUYER FOUND", "WEAK", "KILL", "NOT_RUN"] }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "enum": [
+        "generated",
+        "physics_failed",
+        "energy_failed",
+        "reduced_out",
+        "survivor",
+        "repair",
+        "killed",
+        "verified",
+        "ip_checked",
+        "commercial_checked",
+        "ranked"
+      ]
+    },
+    "kill_reason": { "type": ["string", "null"] },
+    "repair_cycles": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "repair_deltas": { "type": "array", "items": { "type": "object" } },
+    "unknowns": { "type": "array", "items": { "type": "string" } },
+    "final_rank": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

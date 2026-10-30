@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Field updates for existing concepts",
+  "description": "Used by form, controls, propulsion, autonomy, repair, ip and commercial nodes. 'fields' is deep-merged into the concept; 'delta' is required for repair nodes.",
+  "type": "object",
+  "required": ["updates"],
+  "properties": {
+    "updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept_id", "fields"],
+        "properties": {
+          "concept_id": { "type": "string", "pattern": "^DF-[0-9]{3}$" },
+          "fields": { "type": "object" },
+          "delta": {
+            "type": "object",
+            "required": ["change", "problem_fixed", "new_mass_g", "new_power_w", "new_complexity", "new_risks"],
+            "properties": {
+              "change": { "type": "string" },
+              "problem_fixed": { "type": "string" },
+              "new_mass_g": { "type": ["number", "null"] },
+              "new_power_w": { "type": ["number", "null"] },
+              "new_complexity": { "type": "string" },
+              "new_risks": { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

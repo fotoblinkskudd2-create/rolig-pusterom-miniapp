@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "intake",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": [],
+      "schema": "intake",
+      "apply": "store",
+      "timeout_s": 180
+    },
+    {
+      "id": "scan_industrial",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "width_group": "usecase",
+      "timeout_s": 240
+    },
+    {
+      "id": "scan_maritime",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "width_group": "usecase",
+      "timeout_s": 240
+    },
+    {
+      "id": "scan_arctic",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "width_group": "usecase",
+      "timeout_s": 240
+    },
+    {
+      "id": "scan_sar",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "width_group": "usecase",
+      "timeout_s": 240
+    },
+    {
+      "id": "scan_creative",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "width_group": "usecase",
+      "timeout_s": 240
+    },
+    {
+      "id": "tech_transfer",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "timeout_s": 300
+    },
+    {
+      "id": "old_idea_miner",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["intake"],
+      "schema": "scan",
+      "apply": "store",
+      "timeout_s": 240
+    },
+    {
+      "id": "synthesize",
+      "kind": "agent",
+      "tier": "frontier",
+      "deps": [
+        "scan_industrial",
+        "scan_maritime",
+        "scan_arctic",
+        "scan_sar",
+        "scan_creative",
+        "tech_transfer",
+        "old_idea_miner"
+      ],
+      "schema": "synthesis",
+      "apply": "add_concepts",
+      "timeout_s": 600
+    },
+    {
+      "id": "physics",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["synthesize"],
+      "schema": "verdicts",
+      "apply": "apply_verdicts:physics",
+      "timeout_s": 300
+    },
+    {
+      "id": "energy",
+      "kind": "code",
+      "tier": "none",
+      "deps": ["synthesize"],
+      "handler": "energy_check",
+      "timeout_s": 30
+    },
+    {
+      "id": "materials",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["synthesize"],
+      "schema": "verdicts",
+      "apply": "apply_verdicts:materials",
+      "timeout_s": 300
+    },
+    {
+      "id": "hard_reduce",
+      "kind": "code",
+      "tier": "none",
+      "deps": ["physics", "energy", "materials"],
+      "handler": "hard_reduce",
+      "timeout_s": 30
+    },
+    {
+      "id": "form",
+      "kind": "agent",
+      "tier": "frontier",
+      "deps": ["hard_reduce"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 600
+    },
+    {
+      "id": "controls",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["form"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 300
+    },
+    {
+      "id": "propulsion",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["form"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 300
+    },
+    {
+      "id": "autonomy",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["form"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 300
+    },
+    {
+      "id": "adversarial",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["controls", "propulsion", "autonomy"],
+      "schema": "verifier",
+      "apply": "apply_adversarial",
+      "timeout_s": 300
+    },
+    {
+      "id": "repair",
+      "kind": "code",
+      "tier": "none",
+      "deps": ["adversarial"],
+      "handler": "repair_loop",
+      "timeout_s": 900
+    },
+    {
+      "id": "ip_gate",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["repair"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 300
+    },
+    {
+      "id": "commercial_gate",
+      "kind": "agent",
+      "tier": "mid",
+      "deps": ["ip_gate"],
+      "schema": "updates",
+      "apply": "apply_updates",
+      "timeout_s": 300
+    },
+    {
+      "id": "final_reduce",
+      "kind": "code",
+      "tier": "none",
+      "deps": ["commercial_gate"],
+      "handler": "final_reduce",
+      "timeout_s": 30
+    },
+    {
+      "id": "human_gate",
+      "kind": "code",
+      "tier": "none",
+      "deps": ["final_reduce"],
+      "handler": "human_gate",
+      "timeout_s": 30
+    }
+  ]
+}

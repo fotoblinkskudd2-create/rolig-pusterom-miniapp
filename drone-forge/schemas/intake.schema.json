@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intake",
+  "type": "object",
+  "required": [
+    "actual_problem",
+    "user",
+    "operating_environment",
+    "desired_result",
+    "hard_constraints",
+    "price_constraint",
+    "certification_constraint",
+    "unknowns",
+    "previous_related_concepts",
+    "must_not_assume"
+  ],
+  "properties": {
+    "actual_problem": { "type": "string", "minLength": 1 },
+    "user": { "type": "string" },
+    "operating_environment": { "type": "string" },
+    "desired_result": { "type": "string" },
+    "hard_constraints": { "type": "array", "items": { "type": "string" } },
+    "price_constraint": { "type": "string" },
+    "certification_constraint": { "type": "string" },
+    "unknowns": { "type": "array", "items": { "type": "string" } },
+    "previous_related_concepts": { "type": "array", "items": { "type": "string" } },
+    "must_not_assume": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

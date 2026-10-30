@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Adversarial flight verifier output",
+  "type": "object",
+  "required": ["verifications"],
+  "properties": {
+    "verifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "concept_id",
+          "fatal_failures",
+          "repairable_failures",
+          "unknowns",
+          "verdict",
+          "confidence"
+        ],
+        "properties": {
+          "concept_id": { "type": "string", "pattern": "^DF-[0-9]{3}$" },
+          "fatal_failures": { "type": "array", "items": { "type": "string" } },
+          "repairable_failures": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "unknowns": { "type": "array", "items": { "type": "string" } },
+          "verdict": { "enum": ["PASS", "REPAIR", "KILL"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

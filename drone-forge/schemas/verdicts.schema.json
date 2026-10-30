@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Per-concept verdicts (physics, materials)",
+  "type": "object",
+  "required": ["verdicts"],
+  "properties": {
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept_id", "verdict", "reason"],
+        "properties": {
+          "concept_id": { "type": "string", "pattern": "^DF-[0-9]{3}$" },
+          "verdict": { "enum": ["PASS", "UNCERTAIN", "FAIL"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "assumptions": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
