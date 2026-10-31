@@ -1,0 +1,319 @@
+{
+  "prototype_series": [
+    {
+      "id": "P1",
+      "title": "Ensomhetssignal – ring én",
+      "problem_statement": "Ensomhet og isolasjon behandles sjelden som egen tilstand i små apper. Isolation Mirror i repoet er en stub som gir tre generelle steg og ingen vei til andre mennesker. Mange enslige mister kontakt gradvis og merker det først når de er langt nede.",
+      "target_user": "Enslige voksne (30+ og 65+) som har flyttet, mistet nære eller jobber alene hjemmefra. Pilot med én målgruppe først: [MÅLGRUPPE_PLACEHOLDER].",
+      "value_proposition": "Lokal, konkret og lavterskel: ingen sky, ingen profil og ingen krav om å dele følelser. Appen foreslår ett lite kontaktsteg per uke (send melding, ring, hils på nabo) og husker hva brukeren faktisk gjorde, uten skam ved hopp over.",
+      "concept_brief": "Ukentlig, valgfri «ring én»-sjekk som kombinerer humørlogg fra Pusterom med ett konkret, lite sosialt steg. Forslagene bygger på brukerens egne lagrede kontakter og lagres kun på enheten.",
+      "user_journey": "1. Brukeren åpner appen søndag og svarer på «Hvor mange har du snakket med denne uken?» (0 / 1 / 2–3 / 4+). 2. Ved 0 får brukeren ett forslag med én handling, for eksempel «Send en hei til Kari fra jobb». 3. Brukeren velger forslaget, får en ferdig tekst som kan redigeres, og åpner kontakten i telefonens egne apper. 4. Brukeren markerer steget som «Gjort» eller «Ikke i dag», og begge er gyldige. 5. Ukesammendraget viser utvikling over tid uten sammenligning med andre. 6. Etter tre uker uten kontakt vises én nøytral henvisning til lokale tilbud, hentet fra [LOKALT_TILBUD_PLACEHOLDER].",
+      "core_features": [
+        "Ukentlig sjekk med fem valg og ingen obligatoriske felt",
+        "Ett kontaktforslag om gangen, basert på egne lagrede kontakter (lokalt)",
+        "Ferdigskrevne meldingsforslag som kan redigeres",
+        "Deling via telefonens egne apper (sms og ring) med lenker, uten egen meldingstjeneste",
+        "Ukesammendrag som viser utvikling over tid, lagret lokalt"
+      ],
+      "optional_features": [
+        "Import av kontakter fra vCard-fil",
+        "Lokal påminnelse om å hilse på nabo (kun på enheten, av som standard)",
+        "Kobling til frivillige og kommunale tilbud via [LOKALT_TILBUD_PLACEHOLDER]",
+        "Eksport av ukeshistorikk til samme .txt-format som Pusterom"
+      ],
+      "design_requirements": {
+        "ergonomics": true,
+        "sustainability": true,
+        "accessibility": true,
+        "scalability": true
+      },
+      "technology_stack": [
+        "HTML, CSS og vanilje JavaScript (samme stack som eksisterende repo)",
+        "localStorage for små data, IndexedDB ved behov for mer historikk",
+        "Service worker for offline-bruk (PWA)",
+        "sms: og tel: lenker for kontakt via telefonens egne apper"
+      ],
+      "risk_and_mitigation": "Risiko: appen oppleves som overvåking eller gir skam ved hopp over. Mitigering: «Ikke i dag» er like gyldig som «Gjort», det finnes ingen streak-teller, og ingen push-varsler uten at brukeren har slått dem på. Risiko: appen tolkes som behandling eller erstatning for hjelp. Mitigering: tydelig tekst om at appen ikke erstatter hjelp, og fast lenke til [HJELPETJENESTE_PLACEHOLDER] i bunnen. Risiko: delt enhet gir innsyn i data. Mitigering: PIN eller skjul-modus i v2.",
+      "cost_and_feasibility": "Gjennomførbarhet: høy for MVP på én til to uker i eksisterende kodebase. Kostnad: lav. Statisk hosting er gratis til lav kostnad (anslått 0–500 kr/mnd). Hovedkostnaden er brukertesting med 8–12 personer, anslått [TESTBUDSJETT_PLACEHOLDER]. Markedspotensial: stor målgruppe, men vanskelig å nå uten partnere. Sannsynlig inngang er kommuner, frivillige organisasjoner eller arbeidsgiverens velferdstilbud. Behovet er antatt ut fra intensjonen i Isolation Mirror, ikke validert med brukerdata.",
+      "prototype_plan": "1. Intervju 6 enslige brukere (30–75 år) om hva de gjør før de tar kontakt. 2. Papirprototype av ukesjekk og ett forslag, testet på én dag. 3. Klikkbar HTML-prototype som ny fane i eksisterende app (én uke). 4. Test med 8 brukere: fullfører de steget, og hvor stopper de? 5. Mål: minst 50 % fullfører steget over to uker, og ingen bruker rapporterer skam. 6. Beslutt videre utvikling ut fra data.",
+      "alternatives": [
+        {
+          "option_id": "P1A",
+          "concept_brief": "Papirkort med QR-kode",
+          "rationale": "Lavest terskel for eldre og for dem uten smarttelefon. Kan deles via bibliotek og legekontor. Svakere oppfølging og ingen lagring av ukedata."
+        },
+        {
+          "option_id": "P1B",
+          "concept_brief": "Stemmesjekk via telefonsvarer eller høyttaler",
+          "rationale": "Tilgjengelig for synshemmede og eldre. Krever telefoniløsning og gir høyere driftskostnad, men oppleves mer personlig enn tekst."
+        },
+        {
+          "option_id": "P1C",
+          "concept_brief": "Frivillig-koordinert nabovenn",
+          "rationale": "Størst menneskelig effekt, men krever organisasjon, rekruttering og lang oppstart. Er en tjeneste, ikke bare en app."
+        }
+      ],
+      "milestones": [
+        "Uke 1: intervjuer gjennomført og liste over kontaktforslag ferdig",
+        "Uke 2: klikkbar prototype i repoet",
+        "Uke 4: brukertest med 8 personer og beslutning om videre retning",
+        "Uke 8: pilot med [PARTNER_PLACEHOLDER]"
+      ],
+      "output_format_examples": {
+        "note": "Ukesjekk-kort med én handling, to knapper («Gjort» og «Ikke i dag») og én lenke til [HJELPETJENESTE_PLACEHOLDER]."
+      }
+    },
+    {
+      "id": "P2",
+      "title": "Avlastningsloggen",
+      "problem_statement": "Pårørende som gir daglig omsorg for syke eller funksjonshemmede familiemedlemmer er nesten usynlige i helsetilbud og i apper. De logger sjelden belastningen fordi det oppleves som egoisme, og avlastningsbehovet blir oversett til de kollapser.",
+      "target_user": "Ubetalte pårørende (voksne barn, ektefeller, foreldre) med daglig omsorg, særlig de som ikke kjenner rettighetene sine til avlastning.",
+      "value_proposition": "Lar pårørende registrere omsorgstimer og energi uten å dele noe, og viser når belastningen krysser en grense som utløser et konkret neste steg: kontakt kommunens koordinator, søk avlastning eller be nettverket om hjelp. Lokal lagring gjør det trygt å skrive ærlig.",
+      "concept_brief": "Omsorgslogg med timer, energi og ett ord om dagen. Når belastningen over flere dager passerer en egen terskel, leder appen til én handling om gangen. Ingen diagnoser og ingen kontakt med helsevesen uten brukerens valg.",
+      "user_journey": "1. Pårørende åpner appen etter en tung dag og registrerer omsorgstimer (skyver) og energinivå (1–5). 2. Etter tre dager med høy belastning vises en rolig melding: «Du har båret mye. Vil du ha tre steg til avlastning?». 3. Appen gir ett steg om gangen, for eksempel ring kommunens helse- og omsorgstjeneste, eller skriv en forespørsel til nettverket. 4. Brukeren kan skrive ut et ferdig brev til koordinator med data fra loggen. 5. Pusterom er koblet til loggen, og kort pust vises før og etter omsorgsøkter.",
+      "core_features": [
+        "Omsorgslogg med timer, energinivå og ett ord om dagen",
+        "Terskelvarsel basert på egne data, beregnet lokalt",
+        "«Be om hjelp»-skriver med ferdig tekst til koordinator og nettverk",
+        "Kort pust-økt før og etter omsorgsøkt",
+        "Eksport til tekst eller PDF til møte med kommunen"
+      ],
+      "optional_features": [
+        "Deling av ukeoppsummering med én søsken via kryptert lenke (valgfritt, v2)",
+        "Oversikt over lokale avlastningstilbud via [LOKALT_TILBUD_PLACEHOLDER]",
+        "Påminnelse om hvile, avslått som standard"
+      ],
+      "design_requirements": {
+        "ergonomics": true,
+        "sustainability": true,
+        "accessibility": true,
+        "scalability": true
+      },
+      "technology_stack": [
+        "HTML/JS PWA i samme stack som eksisterende app",
+        "localStorage eller IndexedDB for loggen",
+        "Web Share API for deling",
+        "Web Crypto API for kryptert deling (v2)"
+      ],
+      "risk_and_mitigation": "Risiko: appen blir enda en belastning eller gir skyldfølelse. Mitigering: ingen sammenligning med andre, ingen «dårlig dag»-tekst, og logging er valgfri. Risiko: sensitiv helseinformasjon. Mitigering: lagres kun lokalt uten konto, og brukeren får tydelig informasjon om at eksport er deres eget ansvar. Risiko: feil informasjon om rettigheter. Mitigering: lenker til offisielle kilder og fagkontroll av alle tekstmaler før publisering, med [KOMMUNE_PLACEHOLDER] som kontrollpunkt.",
+      "cost_and_feasibility": "Gjennomførbarhet: høy for MVP på to uker. Kostnad: lav. Hovedutgiften er fagkontroll av rettighetstekster (anslått [FAGKONTROLL_PLACEHOLDER]) og brukertesting. Markedspotensial: stort, udekket behov, men målgruppen er spredt. Inngang via pårørendeorganisasjoner og kommunale koordinatorer. Behovet er antatt og ikke validert. Intervjuer må gjøres før terskelmotoren bygges.",
+      "prototype_plan": "1. Intervju 5–8 pårørende om hva de ville logget, og når de ville blitt minnet på hjelp. 2. Papirlogg i én uke med 3 deltakere. 3. HTML-prototype med logg og terskelvarsel (hardkodet regel). 4. Test: fyller de inn loggen etter fire dager? Bruker de «Be om hjelp»-skriveren? 5. Fagkontroll av alle tekstmaler før bruk. 6. Juster terskelen med data.",
+      "alternatives": [
+        {
+          "option_id": "P2A",
+          "concept_brief": "Avlastningskalender uten logg",
+          "rationale": "Enklere: brukeren setter egne avlastningsdager i en kalendervisning. Mindre data å lagre, men også mindre innsikt om belastningen."
+        },
+        {
+          "option_id": "P2B",
+          "concept_brief": "Samtalebasert innsjekk i chatstil",
+          "rationale": "Lavere terskel enn skjema, men høyere risiko for feilråd. Krever streng språkmodellvakt og fagkontroll."
+        },
+        {
+          "option_id": "P2C",
+          "concept_brief": "Nettverkskoordinering med delt kalender",
+          "rationale": "Størst praktisk effekt for hjelperne, men krever konto, sky og personvernvurdering (DPIA). Passer ikke lokal-først-prinsippet."
+        }
+      ],
+      "milestones": [
+        "Uke 1: intervjuer gjennomført og fagkontroll-liste klar",
+        "Uke 2: papirlogg-pilot ferdig",
+        "Uke 4: HTML-prototype med terskelvarsel",
+        "Uke 8: pilot med én pårørendeorganisasjon"
+      ],
+      "output_format_examples": {
+        "note": "Én loggføring med skyver for timer og energi, ett fritekstfelt og én knapp «Vis neste steg»."
+      }
+    },
+    {
+      "id": "P3",
+      "title": "Etter tapet – sorgrom på enheten",
+      "problem_statement": "Sorg er en av de mest oversette livsfasene i digitale tjenester. Den kommer uten varsel, varer lenge og gir tilbakeslag på datoer som bursdager og høytider. Eksisterende apper er generelle mindfulness-apper eller behandler sorg som sykdom. Konkrete steder å få hjelp er spredt og vanskelige å finne midt i en krise.",
+      "target_user": "Voksne som har mistet en nær (død, skilsmisse, tap av barn eller helse) de siste 0–24 månedene. Særlig de uten nettverk eller med tap de ikke kan dele.",
+      "value_proposition": "Et rolig, lokalt sted som kjenner tapsdatoer og tilbakevendende smerte uten å sende noe til sky. Her kan man skrive til den som er borte, ha en plan for vanskelige dager og finne hjelp når sorgen blir for tung.",
+      "concept_brief": "Personlig sorgrom med datokalender, en skriveplass til den som er borte, og en «Vanskelig dag»-modus som reduserer innholdet til pust, ett skrivefelt og ett hjelpealternativ.",
+      "user_journey": "1. Brukeren legger inn navn, dato og eventuelle vanskelige dager (valgfritt). 2. Før bursdag eller årsdag minner appen rolig og foreslår en ettertanke. Det er aldri et krav. 3. På en tung dag trykker brukeren «Vanskelig dag» og får ett pustesteg, ett skrivefelt og en kort liste med hjelpekanaler. 4. Tekstene lagres lokalt og kan lastes ned som privat dagbok. 5. Etter ett år spør appen om brukeren vil arkivere minnesiden.",
+      "core_features": [
+        "Personlig datokalender med tapsdatoer og årsdager",
+        "«Vanskelig dag»-modus med redusert innhold",
+        "Skriveplass til den som er borte, lagret lokalt",
+        "Lokal eksport til privat dagbok",
+        "Hjelpeknapp med [HJELPETJENESTE_PLACEHOLDER] og kriseinformasjon, synlig i alle moduser"
+      ],
+      "optional_features": [
+        "Valgfri ferdig melding til en tillitsperson",
+        "Innhold utviklet sammen med [FAGPARTNER_PLACEHOLDER]",
+        "Filter for triggere som sanger og steder",
+        "Minnealbum med bilder lagret lokalt"
+      ],
+      "design_requirements": {
+        "ergonomics": true,
+        "sustainability": true,
+        "accessibility": true,
+        "scalability": true
+      },
+      "technology_stack": [
+        "HTML/JS PWA",
+        "localStorage eller IndexedDB",
+        "Egen datofunksjon for kalender, uten eksterne biblioteker",
+        "Eksport via Blob og download-attributt"
+      ],
+      "risk_and_mitigation": "Risiko: appen forsterker sorgen eller gir falsk trygghet. Mitigering: ingen automatiske meldinger uten brukerens valg, og tydelig tekst om at appen ikke er behandling. Risiko: suicidale tanker. Mitigering: fast kriseinformasjon og protokoll godkjent av fagpartner før lansering, og ingen innhold som normaliserer selvskade. Risiko: tekster som ikke passer kultur eller tro. Mitigering: tomme valg, egne ord og ingen standardfraser.",
+      "cost_and_feasibility": "Gjennomførbarhet: middels. MVP kan bygges på to til tre uker, men trenger fagpartner for trygg tekst og krisepolitikk. Kostnad: lav driftskostnad. Hovedkostnaden er fagkontroll og brukerinvolvering, anslått [FAGKONTROLL_PLACEHOLDER]. Markedspotensial: stabilt behov, og få aktører tilbyr en lokal og privat løsning. Inntekt er ikke hovedmålet. Mulige modeller er organisasjonslisens eller støtte fra helsetjenester. Behovet er støttet av erfaring, men ikke målt i repoet.",
+      "prototype_plan": "1. Samtaler med 5–6 etterlatte og 2 fagpersoner om hva som hjalp og hva som skadet. 2. Innholdsplan og kriseprotokoll, godkjent av fagpartner. 3. Klikkbar prototype med datokalender og «Vanskelig dag»-modus. 4. Test med 6 brukere i trygge omgivelser: hva føles presset, hva føles godt? 5. Juster tekst og fjern alt som virker påtvingende. 6. Pilot med én organisasjon og oppfølging etter fire uker.",
+      "alternatives": [
+        {
+          "option_id": "P3A",
+          "concept_brief": "Brevskriving til den som er borte",
+          "rationale": "Mest fokusert og enklest. Krever mindre datologikk og gir færre risikoer, men gir mindre struktur på de tyngste dagene."
+        },
+        {
+          "option_id": "P3B",
+          "concept_brief": "Ritualkalender for høytider",
+          "rationale": "Konkrete handlinger på viktige dager, som å tenne lys, gå en tur eller lage et måltid. Lett å designe, men kan oppleves påtvingende hvis ritualet ikke passer."
+        },
+        {
+          "option_id": "P3C",
+          "concept_brief": "Finner for støttegrupper",
+          "rationale": "Kobler brukeren til lokale grupper. Nyttigst i etterkant, men krever kartlegging av grupper og en tjeneste som må oppdateres."
+        }
+      ],
+      "milestones": [
+        "Uke 1–2: intervjuer gjennomført og tekstutkast klart",
+        "Uke 3: kriseprotokoll godkjent av fagpartner",
+        "Uke 5: klikkbar prototype",
+        "Uke 8: pilot med 6 brukere"
+      ],
+      "output_format_examples": {
+        "note": "Dato-kort med navn, dato og knappen «Vanskelig dag». I vanskelig-dag-modus vises kun pust, skrivefelt og hjelpeknapp."
+      }
+    },
+    {
+      "id": "P4",
+      "title": "Ett grep om gangen",
+      "problem_statement": "Dagens Små grep viser alle sju handlingene samtidig og bruker avkrysning, som kan kjennes som et prestasjonsmål. Mennesker med ADHD, autisme, utbrenthet eller depresjon har ofte lav energi og høy beslutningsbelastning. De blir overveldet av lister i stedet for hjulpet.",
+      "target_user": "Voksne med ADHD, autisme, utbrenthet eller lav energi som bruker små hverdagsgrep for å regulere seg, og som sliter med lister og påminnelser.",
+      "value_proposition": "Viser ett grep om gangen, valgt etter egen energi og tilgjengelig tid, med en innebygd tidsgrense. Ingen streak, ingen liste med «ikke gjort» og ingen dårlig samvittighet hvis man hopper over.",
+      "concept_brief": "Energitilpasset versjon av Små grep. Brukeren oppgir energi (lav, middels, høy) og tid (2, 5 eller 15 minutter). Appen foreslår ett grep med timer og en stille avslutningsknapp.",
+      "user_journey": "1. Brukeren trykker «Trenger et grep» og velger energi og tid. 2. Appen viser ett kort forslag, for eksempel «Drikk et glass vann sakte» eller «Legg telefonen bort i 2 minutter». 3. Brukeren trykker «Start» og får en tidsramme med valgfri lyd eller vibrasjon. 4. Etter tiden velger brukeren «Ferdig» eller «Ikke nå». Begge er like gyldige. 5. Appen viser kun dagens samlede grep, aldri en streak.",
+      "core_features": [
+        "Valg av energi (lav, middels, høy) og tid (2, 5, 15 minutter)",
+        "Ett forslag om gangen, tilpasset valgene",
+        "Timer med valgfri lyd og vibrasjon",
+        "«Ferdig» og «Ikke nå» med lik vekt",
+        "Grepsliste som brukeren selv kan redigere"
+      ],
+      "optional_features": [
+        "Grepsbibliotek utviklet med [FAGPARTNER_PLACEHOLDER]",
+        "Rekkefølge basert på hva brukeren oftest merker effekt av",
+        "Påminnelse på klokkeslett brukeren selv velger",
+        "Visning av én oppgave om gangen i dagsoversikten"
+      ],
+      "design_requirements": {
+        "ergonomics": true,
+        "sustainability": true,
+        "accessibility": true,
+        "scalability": true
+      },
+      "technology_stack": [
+        "HTML, CSS og vanilje JavaScript i samme repo",
+        "localStorage for valg og logg",
+        "Notification API og Vibration API med fallback",
+        "Egen timerlogikk uten tredjepartsbiblioteker"
+      ],
+      "risk_and_mitigation": "Risiko: appen blir for enkel og gir liten effekt. Mitigering: test forslagene, ikke bare flyten. Risiko: forslagene tolkes som medisinske. Mitigering: ingen helsepåstander i teksten og fagkontroll før publisering. Risiko: lyd og vibrasjon forstyrrer. Mitigering: av som standard, tydelig av/på-valg og respekt for redusert bevegelse.",
+      "cost_and_feasibility": "Gjennomførbarhet: høy. MVP kan bygges på én til to uker i eksisterende kode. Kostnad: lav. Hovedutgiften er brukertesting og fagkontroll av grepsbibliotek, anslått [TESTBUDSJETT_PLACEHOLDER]. Markedspotensial: stort, og delvis overlappende med eksisterende produktivitetsapper. Differensieringen er at appen fjerner lister, streaks og krav, ikke at den legger til flere funksjoner. Behovet er stort i målgruppen, men antatt uten brukerdata.",
+      "prototype_plan": "1. Intervju 6 personer med ADHD eller autisme om hva som gjør lister vanskelige. 2. Papirtest med ett kort per energinivå, der deltakeren velger selv. 3. Klikkbar prototype med energi- og tidsvalg og timer. 4. Test med 8 personer over to uker: bruker de appen når energien er lav? 5. Mål: færre hopp over med skam, og høyere andel «Ikke nå» uten at brukeren slutter. 6. Iterer grepsbiblioteket.",
+      "alternatives": [
+        {
+          "option_id": "P4A",
+          "concept_brief": "Tilfeldig grep ved åpning",
+          "rationale": "Enklest mulig og uten valg. Passer dem som ikke vil bestemme, men kan gi irrelevante forslag på dårlige dager."
+        },
+        {
+          "option_id": "P4B",
+          "concept_brief": "Stemmestyrt grep",
+          "rationale": "Mindre skjermbruk og bedre når energien er lav. Krever talegjenkjenning og er vanskeligere å teste på tvers av enheter."
+        },
+        {
+          "option_id": "P4C",
+          "concept_brief": "Grep mellom møter i kalenderen",
+          "rationale": "Bruker dagens eksisterende rytme. Krever kalenderintegrasjon og tillatelser, som gir personvernkrav."
+        }
+      ],
+      "milestones": [
+        "Uke 1: intervjuer gjennomført og energi-tid-matrise klar",
+        "Uke 2: papirtest ferdig",
+        "Uke 3: klikkbar prototype",
+        "Uke 6: test med 8 personer og beslutning"
+      ],
+      "output_format_examples": {
+        "note": "Én kortside med energi- og tidsvalg, ett grep, timer og to knapper med lik vekt: «Ferdig» og «Ikke nå»."
+      }
+    },
+    {
+      "id": "P5",
+      "title": "Rolig for alle – tilgjengelighetslag for Pusterom",
+      "problem_statement": "Gjennomgangen av repoet viser konkrete tilgjengelighetsbrudd. Viewporten har user-scalable=no, som blokkerer zoom (WCAG 1.4.4). Humørknappene er bare emojier uten tekst eller tilstandsmelding. Pusteanimasjonen mangler støtte for redusert bevegelse. Pustetekstene annonseres ikke for skjermlesere. Synshemmede, personer med vestibulære lidelser og eldre med nedsatt hørsel blir ekskludert fra nettopp den appen som skal roe dem.",
+      "target_user": "Synshemmede og svaksynte, personer med vestibulære lidelser eller bevegelsesfølsomhet, eldre med nedsatt hørsel, og alle som bruker appen med skjermleser eller stor skrift.",
+      "value_proposition": "Den rolige appen i målgruppen som er bygget for skjermleser, stor skrift, lydstyrt pust og redusert bevegelse fra starten, ikke som ettertanke. Samme enkle grensesnitt, men brukeren velger selv hvordan roen skal kjennes.",
+      "concept_brief": "Tilgjengelighetslag over eksisterende Pusterom: modus for stor tekst, redusert bevegelse, lyd- og haptisk pustetakt, skjermleser-annonsering av hver fase og tydelige etiketter på alle kontroller.",
+      "user_journey": "1. Brukeren åpner appen og får ett kort valg: «Vil du ha det tilpasset?», med alternativene stor tekst, redusert bevegelse og lyd. 2. Valgene lagres lokalt. 3. Under pust annonseres hver fase («Pust inn, fire sekunder») til skjermleser og/eller spilles av som lyd. 4. Humørvalgene har tekst («Veldig dårlig», «Bra»), og valgt nivå annonseres. 5. Brukeren kan endre valgene når som helst i innstillingene.",
+      "core_features": [
+        "Modus for stor tekst som respekterer zoom (fjerner user-scalable=no)",
+        "Redusert bevegelse: pusten vises med tekst og lyd i stedet for skalering",
+        "Lyd- og haptisk pustetakt, av/på",
+        "aria-live-annonsering av hver pustefase og humørvalg",
+        "Tydelige etiketter og synlig fokusmarkering på alle kontroller"
+      ],
+      "optional_features": [
+        "Høykontrast-tema og mørk modus",
+        "Talegjenkjenning for notat",
+        "Verifisering med brukere som har synshemming via [TESTGRUPPE_PLACEHOLDER]",
+        "Nynorsk og engelsk språkversjon"
+      ],
+      "design_requirements": {
+        "ergonomics": true,
+        "sustainability": true,
+        "accessibility": true,
+        "scalability": true
+      },
+      "technology_stack": [
+        "HTML, CSS og vanilje JavaScript i samme repo",
+        "ARIA-attributter og aria-live",
+        "prefers-reduced-motion og prefers-contrast media queries",
+        "Web Audio API for pustetakt",
+        "Vibration API med fallback"
+      ],
+      "risk_and_mitigation": "Risiko: et eget tilgjengelighetsmodus blir glemt i vanlig modus. Mitigering: tilgjengelighet bygges inn i standarden, og valgene fungerer som overstyringer. Risiko: lyd forstyrrer andre rundt brukeren. Mitigering: lavt standardvolum og anbefaling om hodetelefoner. Risiko: for liten testdekning. Mitigering: test med VoiceOver og NVDA på ekte enheter før pilot.",
+      "cost_and_feasibility": "Gjennomførbarhet: svært høy. De fleste endringene er små i eksisterende kode, anslått tre til fem dager. Kostnad: lav. Hovedkostnaden er ekspertrevisjon og testing med brukere, anslått [REVISJON_PLACEHOLDER]. Markedspotensial: liten egen inntjening, men høy verdi som standard for andre produkter. Universell utforming er et lovkrav for offentlige virksomheter i Norge, og bør verifiseres mot gjeldende forskrift før det brukes i anskaffelser. Behovet er dokumentert i koden, ikke i brukerdata.",
+      "prototype_plan": "1. Automatisk gjennomgang med axe eller Lighthouse på de to HTML-filene i dag, for en funnliste. 2. Tilgjengelighetslaget bygges som egen gren uten å endre standardvisningen (uke 1). 3. Test med VoiceOver og NVDA med to brukere (uke 2). 4. Test av redusert bevegelse med brukere som er bevegelsesfølsomme (uke 2). 5. Rett funnene og gjenta testen med 5 brukere. 6. Publiser som standard hvis det ikke gjenstår blokkerende funn.",
+      "alternatives": [
+        {
+          "option_id": "P5A",
+          "concept_brief": "Lydbasert app uten skjerm",
+          "rationale": "Maksimal tilgjengelighet for synshemmede, men krever en ny interaksjonsmodell og er mindre tilgjengelig for døve."
+        },
+        {
+          "option_id": "P5B",
+          "concept_brief": "Egen tilgjengelighetsversjon på eget domene",
+          "rationale": "Tydelig for brukerne, men splitter kodebasen og øker risikoen for at oppdateringer glemmes."
+        },
+        {
+          "option_id": "P5C",
+          "concept_brief": "Ren revisjon uten nye funksjoner",
+          "rationale": "Raskest og billigst, men løser bare bruddene og gir ingen ny verdi for målgruppen."
+        }
+      ],
+      "milestones": [
+        "Dag 1: automatisk revisjon og funnliste",
+        "Uke 1: tilgjengelighetslag som egen gren",
+        "Uke 2: test med skjermleser og bevegelsesfølsomme brukere",
+        "Uke 3: publisering som standard"
+      ],
+      "output_format_examples": {
+        "note": "Innstillingsside med tre brytere (stor tekst, redusert bevegelse, lyd-pust), lagret lokalt og av som standard."
+      }
+    }
+  ]
+}
