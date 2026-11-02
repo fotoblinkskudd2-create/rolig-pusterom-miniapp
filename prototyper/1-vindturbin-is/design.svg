@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" font-family="sans-serif">
+  <rect width="640" height="340" fill="#ffffff"/>
+  <text x="20" y="30" font-size="18" font-weight="bold">Tuberkel-forkant: snitt (skisse, ikke i skala)</text>
+  <!-- Bladprofil: forkant til venstre -->
+  <path d="M60,170 C120,120 260,112 430,160 C260,196 120,214 60,170 Z" fill="#dfe9f3" stroke="#223344" stroke-width="2"/>
+  <!-- Tuberkler langs forkanten -->
+  <path d="M60,170 Q70,150 80,170 T100,170 T120,170" fill="none" stroke="#c0392b" stroke-width="3"/>
+  <!-- SLIPS-sone: 0-10 % av korden -->
+  <path d="M60,170 C90,150 110,145 130,150" fill="none" stroke="#2e86c1" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <!-- Varmesone (aktiv backup) -->
+  <path d="M60,170 C75,162 95,160 110,162" fill="none" stroke="#e67e22" stroke-width="3" stroke-dasharray="6 4"/>
+  <!-- Mål -->
+  <line x1="60" y1="250" x2="100" y2="250" stroke="#333"/>
+  <text x="66" y="268" font-size="13">R = 15 mm</text>
+  <line x1="120" y1="250" x2="200" y2="250" stroke="#333"/>
+  <text x="124" y="268" font-size="13">λ = 40 mm (bølgelengde)</text>
+  <text x="60" y="290" font-size="13" fill="#c0392b">Rød: tuberkler, A = 6 mm fremover/bakover</text>
+  <text x="60" y="308" font-size="13" fill="#2e86c1">Blå: væske-smurt overflate (passiv, 0-10 % av korden)</text>
+  <text x="60" y="326" font-size="13" fill="#e67e22">Oransje stiplet: lokal varme, kun ved isdetektor</text>
+  <text x="440" y="200" font-size="13" fill="#555">Forkant →</text>
+</svg>

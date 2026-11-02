@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" font-family="sans-serif">
+  <rect width="640" height="340" fill="#ffffff"/>
+  <text x="20" y="30" font-size="18" font-weight="bold">Drikkeunderlag: ovenfra (skisse, ikke i skala)</text>
+  <!-- Underlag -->
+  <circle cx="320" cy="180" r="110" fill="#eef3f7" stroke="#223" stroke-width="2"/>
+  <!-- Lysring -->
+  <circle cx="320" cy="180" r="40" fill="none" stroke="#e6a23c" stroke-width="4"/>
+  <!-- Kopp (stiplet) -->
+  <circle cx="320" cy="180" r="32" fill="none" stroke="#777" stroke-dasharray="4 3"/>
+  <!-- Vektcelle-lomme -->
+  <rect x="280" y="173" width="80" height="13" fill="#c9d6e3" stroke="#334"/>
+  <text x="258" y="200" font-size="12" fill="#334">Vektcelle 80 mm</text>
+  <!-- Kabelkanal -->
+  <rect x="320" y="177" width="110" height="6" fill="#999"/>
+  <!-- Mål -->
+  <line x1="210" y1="300" x2="430" y2="300" stroke="#333"/>
+  <text x="270" y="318" font-size="13">Ø110 mm, tykkelse 14 mm</text>
+  <text x="20" y="62" font-size="12" fill="#555">Oransje: lysring (mykt puls-lys ved lang tid uten væske)</text>
+  <text x="20" y="80" font-size="12" fill="#555">Grått stiplet: plassering av kopp</text>
+  <text x="20" y="98" font-size="12" fill="#555">Grått: kabelkanal til elektronikk</text>
+</svg>

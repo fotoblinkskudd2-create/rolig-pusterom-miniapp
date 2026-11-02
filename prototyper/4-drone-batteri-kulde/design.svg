@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" font-family="sans-serif">
+  <rect width="640" height="340" fill="#ffffff"/>
+  <text x="20" y="30" font-size="18" font-weight="bold">Batterihylse: snitt (skisse, ikke i skala)</text>
+  <!-- Ytre skall -->
+  <rect x="120" y="70" width="390" height="210" rx="10" fill="#dfe6ee" stroke="#223" stroke-width="2"/>
+  <!-- PCM-lomme over batteriet -->
+  <rect x="135" y="85" width="360" height="22" fill="#f9e3a6" stroke="#8a6d1d" stroke-dasharray="4 3"/>
+  <text x="200" y="101" font-size="12" fill="#5a4510">PCM-lomme (8 mm)</text>
+  <!-- Batterikammer -->
+  <rect x="135" y="107" width="360" height="148" fill="#c9d6e3" stroke="#334"/>
+  <text x="235" y="186" font-size="14" fill="#223">Batteri 150 × 75 × 40 mm</text>
+  <!-- Kontaktspor -->
+  <rect x="106" y="150" width="30" height="34" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+  <text x="60" y="172" font-size="12" fill="#c0392b">Kontakt</text>
+  <!-- Mål -->
+  <line x1="120" y1="305" x2="510" y2="305" stroke="#333"/>
+  <text x="270" y="322" font-size="13">Ytre lengde 180 mm (150 + 2 × 15 isolasjon)</text>
+  <line x1="530" y1="70" x2="530" y2="280" stroke="#333"/>
+  <text x="540" y="180" font-size="13">Høyde 78 mm</text>
+  <text x="20" y="62" font-size="12" fill="#555">Isolasjon 15 mm rundt, skum eller aerogel [verifiser]</text>
+</svg>

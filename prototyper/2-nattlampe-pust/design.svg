@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="sans-serif">
+  <rect width="640" height="360" fill="#ffffff"/>
+  <text x="20" y="30" font-size="18" font-weight="bold">Pusteklokke: sideriss (skisse, ikke i skala)</text>
+  <!-- Kuppel (diffusor) -->
+  <path d="M220,170 A100,100 0 0 1 420,170 Z" fill="#f5deb3" stroke="#6b4c1e" stroke-width="2" opacity="0.8"/>
+  <!-- Base -->
+  <rect x="220" y="170" width="200" height="60" rx="6" fill="#e8e8e8" stroke="#333" stroke-width="2"/>
+  <!-- Knapp -->
+  <circle cx="420" cy="200" r="8" fill="#555"/>
+  <!-- LED -->
+  <circle cx="320" cy="168" r="6" fill="#d98c1c"/>
+  <!-- Mål -->
+  <line x1="220" y1="260" x2="420" y2="260" stroke="#333"/>
+  <text x="290" y="278" font-size="13">Ø100 mm (base)</text>
+  <line x1="160" y1="170" x2="160" y2="95" stroke="#333"/>
+  <line x1="160" y1="230" x2="160" y2="170" stroke="#333"/>
+  <text x="100" y="140" font-size="13">H_dome 70</text>
+  <text x="100" y="205" font-size="13">H_base 25</text>
+  <!-- Forklaringer -->
+  <text x="20" y="315" font-size="13">Rav-LED (ca. 590 nm) bak matt kuppel. Knapp på siden.</text>
+  <text x="20" y="335" font-size="13">Rytme: 5 s inn, 5 s ut (6 pust/min). Av etter 15 min.</text>
+  <text x="20" y="352" font-size="13">Ingen skjerm, ingen lyd. Lysstyrke: 3 steg, under 5 lux ved 30 cm [verifiser]</text>
+</svg>
