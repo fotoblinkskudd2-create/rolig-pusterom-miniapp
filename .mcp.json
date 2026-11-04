@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "midjourney": {
+      "command": "npx",
+      "args": ["-y", "@thenavidm/midjourney-mcp-cli@latest"]
+    }
+  }
+}
