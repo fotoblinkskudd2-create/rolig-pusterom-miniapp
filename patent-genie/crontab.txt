@@ -1,0 +1,2 @@
+# Daglig kjøring kl 06:00. Kommentert ut: legg inn med `crontab -e` når nøklene er på plass.
+# 0 6 * * * cd /ABSOLUTT/STI/patent-genie && .venv/bin/python run.py >> log/cron.log 2>&1
