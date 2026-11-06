@@ -1,0 +1,11 @@
+{
+  "name": "rolig-pusterom-local",
+  "owner": { "name": "Alexander Kleppestø" },
+  "plugins": [
+    {
+      "name": "write-like-a-human",
+      "source": "./write-like-a-human",
+      "description": "Turn robotic AI drafts into writing that sounds like you. 13 skills."
+    }
+  ]
+}
