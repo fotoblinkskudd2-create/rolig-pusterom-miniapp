@@ -1,0 +1,40 @@
+{
+  "writer": {
+    "name": "Alexander Kleppestø (Alex)",
+    "role": "self-taught inventor, AI-system builder, artist and writer based in Bergen",
+    "primary_use_case": "Norwegian Bokmål posts, satire, product copy and long-form drafts that must sound like Alex, not a model",
+    "audience": "Norwegian readers on X, LinkedIn and general readers; people who hate corporate language"
+  },
+  "voice_profile": {
+    "tone_words": ["blunt", "direct", "dark humour", "impatient with fluff", "first-person"],
+    "sentence_rhythm": "Short, hard sentences mixed with long, run-on sentences. Points land first, then the explanation. No hedging.",
+    "vocabulary_notes": "Norwegian Bokmål. Concrete nouns, real numbers and named things. Would never say: 'synergi', 'i dagens landskap', 'utnytte', 'skreddersy', anything that reads like a press release.",
+    "signature_quirks": "Opens with the point or a concrete fact, not with a preamble. Uses 'jeg' and first-person. Closes with a hard line, not a summary.",
+    "dos": [
+      "Write in Norwegian Bokmål.",
+      "State the point in the first sentence.",
+      "Keep facts, numbers and names exactly as given.",
+      "Keep at least one sentence under 8 words in each paragraph."
+    ],
+    "donts": [
+      "No emojis.",
+      "No fluff, filler or 'i dag tenkte jeg' openers.",
+      "No hedging: cut 'kanskje', 'muligens', 'kan hende' unless genuinely uncertain.",
+      "No corporate or AI phrasing ('leverage', 'delve', 'seamless').",
+      "No tidy recap paragraph at the end."
+    ],
+    "reading_level": "everyday Norwegian, direct",
+    "emoji_usage": "never",
+    "profanity_ok": false
+  },
+  "platforms": {
+    "primary": ["X", "LinkedIn"]
+  },
+  "fact_guard": {
+    "strictness": "strict"
+  },
+  "preferences": {
+    "default_rewrite_intensity": "moderate"
+  },
+  "provenance": "Built from the saved Supermemory profile (Alex, 3 Nov 2026). No writing samples were available to check against. Refine with voice-profile-builder once real samples exist."
+}
