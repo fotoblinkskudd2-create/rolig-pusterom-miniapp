@@ -51,9 +51,9 @@ PROMPT_MALER = [
 ]
 CAPTION_MALER = [
     "{C1}. Jeg leste det to ganger for å være sikker. Det ble ikke bedre.",
-    "De kaller det {k2}. Jeg kaller det maling på en vegg de må vaske i morgen.",
+    "Saken heter {k1}. Jeg kaller det maling på en vegg de må vaske i morgen.",
     "Noen tjener på {k1}. Det er ikke deg, og det er definitivt ikke meg.",
-    "{C2}: nok en sak der skjemaet er viktigere enn mennesket som fyller det ut.",
+    "{C1}: nok en sak der skjemaet er viktigere enn mennesket som fyller det ut.",
     "Jeg sprayet {k1} på betongen. Den varer lenger enn pressemeldingen.",
 ]
 

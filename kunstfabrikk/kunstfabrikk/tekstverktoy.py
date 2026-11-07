@@ -56,7 +56,7 @@ def nokkelord(tekst: str, n: int = 6) -> list[str]:
             teller[o] += 1.5
         if len(o) >= 8:
             teller[o] += 0.5
-    rangert = sorted(teller.items(), key=lambda kv: (-kv[1], kv[0]))
+    rangert = sorted(teller.items(), key=lambda kv: (-kv[1], -len(kv[0]), kv[0]))
     return [o for o, _ in rangert[:n]]
 
 

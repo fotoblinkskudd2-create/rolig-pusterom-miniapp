@@ -103,6 +103,20 @@ python -m kunstfabrikk tekst --fil min-raatekst.txt --llm        # Claude lager 
 - **Hardeste setninger:** scoret på tunge ord (svik, løgn, rettssak, barnevern, inkasso …), korthet, førsteperson, absolutter og konkrete tall. Ordlisten `TUNGE_ORD` i `tekst.py` kan utvides fritt.
 - **Output:** hvert kapittel skrives også til egen fil i `struktur-<tid>-kapitler/`.
 
+## Selvstendige script (kun standardbibliotek)
+
+`standalone/` har tre enkeltfiler du kan kopiere hvor som helst, og som ikke trenger installasjon:
+
+```bash
+python standalone/anti_slop_pipeline.py "black and white spray stencil on wet Bergen concrete" @eksempler/nyhet.txt
+#   -> output.json {base, variants[6], captions[3], suno_line, bilder[4], valgt} + captions.txt
+python standalone/news_satire_agent.py eksempler/nyhet.txt        # bare JSON: {prompts[2], captions[3]}
+python standalone/fokusplan.py prosjekter.txt --start 18:00       # markdown-tabell, kunst og agent først
+```
+
+- **Ingen API-kall:** "bildegenereringen" i `anti_slop_pipeline.py` er simulert. Scoring er promptlengde pluss en tilfeldig faktor, slik prompten ba om. Velg selv i Midjourney og lim inn URL-en i `[SREF_URL]`.
+- **Midjourney-parametre:** `MJ_VERSJON` (standard `8.2`) og `MJ_PARAMS` står øverst i hver fil. Endre dem hvis versjonen din er en annen.
+
 ## Anti-slop
 
 `antislop.py` gjør to ting:
