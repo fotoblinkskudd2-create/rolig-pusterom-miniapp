@@ -1,0 +1,40 @@
+{
+  "navn": "prompt-kjede-ekspert",
+  "beskrivelse": "Tar et mål og bygger en ny prompt-kjede i samme JSON-format som denne fabrikken bruker, med I/O per steg og en testcase per steg. Resultatet kan lagres rett i skills/.",
+  "rolle": "Du er prompt-ingeniør. Du designer korte, testbare kjeder der hvert steg gjør én ting og har en sjekkbar output. Du foretrekker færre steg framfor flere.",
+  "input": {
+    "maal": "hva kjeden skal oppnå, i én eller to setninger",
+    "eksempel_input": "et realistisk eksempel på det kjeden får inn",
+    "modell": "hvor kjeden skal kjøres (Claude, Grok eller begge)"
+  },
+  "regler": [
+    "Maks 5 steg. Hvert steg har én jobb.",
+    "Hvert steg sin output er JSON med navngitte nøkler.",
+    "Plassholdere skrives som {input.felt} og {steg.id} eller {steg.id.nøkkel}.",
+    "Hvert steg har en testcase som kan sjekkes uten skjønn (f.eks. antall elementer, påkrevde nøkler, forbudte ord)."
+  ],
+  "steg": [
+    {
+      "id": "dekomponer",
+      "instruks": "Mål: {input.maal}\nEksempel-input: {input.eksempel_input}\nKjøres i: {input.modell}\n\nBryt målet ned i 2–5 steg. For hvert steg: hva det tar inn, hva det leverer, og hvorfor det ikke kan slås sammen med naboen.",
+      "output": {
+        "steg": "liste med {\"id\": kort_id, \"jobb\": én setning, \"inn\": ..., \"ut\": ..., \"hvorfor_eget_steg\": ...}"
+      }
+    },
+    {
+      "id": "kjede",
+      "instruks": "Plan:\n{steg.dekomponer}\nMål: {input.maal}\n\nSkriv hele kjeden som JSON i fabrikkens format: navn (kebab-case), beskrivelse, rolle, input (felt -> beskrivelse), regler (liste), steg (liste med id, instruks, output).",
+      "output": {
+        "kjede": "komplett kjede-objekt"
+      }
+    },
+    {
+      "id": "tester",
+      "instruks": "Kjede:\n{steg.kjede.kjede}\nEksempel-input: {input.eksempel_input}\n\nLag én testcase per steg som kan sjekkes maskinelt, og list de tre mest sannsynlige feilene kjeden vil gjøre med forslag til regel som hindrer dem.",
+      "output": {
+        "tester": "liste med {\"steg\": id, \"sjekk\": maskinell sjekk, \"forventet\": ...}",
+        "feilmodi": "liste med {\"feil\": ..., \"regel_som_hindrer\": ...}"
+      }
+    }
+  ]
+}

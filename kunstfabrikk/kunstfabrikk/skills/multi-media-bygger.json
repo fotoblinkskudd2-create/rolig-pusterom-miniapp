@@ -1,0 +1,52 @@
+{
+  "navn": "multi-media-bygger",
+  "beskrivelse": "Gjør én idé til en samlet mediepakke: konsept, to Midjourney-prompts, en Suno-prompt, en caption og en shotliste på seks klipp for en kort video.",
+  "rolle": "Du er art director for en liten, sint uavhengig kunstpraksis. Alt du lager henger sammen visuelt og tonalt. Du skriver presise produksjonsspesifikasjoner, ikke reklametekst.",
+  "input": {
+    "ide": "idéen, nyheten eller følelsen pakken skal bygges rundt",
+    "visuell_stil": "stilgrunnlag (f.eks. svart/hvit stencil på våt betong, én rød aksent)",
+    "format": "hovedformat (f.eks. Instagram reel 9:16, karusell 4:5)"
+  },
+  "regler": [
+    "Alle deler skal bruke samme sentrale visuelle metafor.",
+    "Midjourney-prompts på engelsk, 40–80 ord, uten kvalitetsord (8k, masterpiece, hyperrealistic osv.).",
+    "Suno-prompt: stil-tagger i hakeparentes uten artistnavn, deretter maks fire tekstlinjer på norsk.",
+    "Shotlisten må kunne filmes eller animeres av én person uten budsjett."
+  ],
+  "steg": [
+    {
+      "id": "konsept",
+      "instruks": "Idé: {input.ide}\nVisuell stil: {input.visuell_stil}\nFormat: {input.format}\n\nDefiner konseptet: én sentral visuell metafor, én tittel på maks fire ord, tonen i tre ord og fargepaletten.",
+      "output": {
+        "metafor": "én setning",
+        "tittel": "maks 4 ord",
+        "tone": "liste med 3 ord",
+        "palett": "liste med 2–4 farger"
+      }
+    },
+    {
+      "id": "bilder",
+      "instruks": "Konsept:\n{steg.konsept}\nStil: {input.visuell_stil}\nFormat: {input.format}\n\nLag to Midjourney-prompts: én åpningsbilde og ett avslutningsbilde som snur metaforen. Ta med parametre (--ar tilpasset formatet, --v 7, --style raw).",
+      "output": {
+        "mj_aapning": "prompt med parametre",
+        "mj_avslutning": "prompt med parametre"
+      }
+    },
+    {
+      "id": "lyd_tekst",
+      "instruks": "Konsept:\n{steg.konsept}\n\nLag Suno-prompt og en rå caption (maks 3 setninger, førsteperson).",
+      "output": {
+        "suno": "stil-tagger + maks 4 linjer",
+        "caption": "caption"
+      }
+    },
+    {
+      "id": "shotliste",
+      "instruks": "Konsept:\n{steg.konsept}\nBilder:\n{steg.bilder}\nLyd:\n{steg.lyd_tekst.suno}\nFormat: {input.format}\n\nLag en shotliste på nøyaktig 6 klipp med varighet som summerer til 15–30 sekunder.",
+      "output": {
+        "klipp": "liste med 6 objekter: {\"nr\": 1, \"sekunder\": 3, \"bilde\": hva vises, \"bevegelse\": kamera/animasjon, \"tekst_paa_skjerm\": eller tom}",
+        "total_sekunder": "tall"
+      }
+    }
+  ]
+}

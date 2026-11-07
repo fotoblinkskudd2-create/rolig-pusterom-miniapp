@@ -1,0 +1,6 @@
+# Navn | prio | frist | sist | type | neste
+Bergen stencil-serie | prio=1 | sist=2026-10-20 | type=kunst | neste=lag 6 sref-varianter fra varmestua-bildet
+Nyhets-satire daglig | prio=1 | sist=2026-11-05 | type=satire | neste=kjør på dagens NRK-saker
+Skill-fabrikk | prio=2 | sist=2026-10-01 | type=agent | neste=eksporter raa-kunst-bombe og test i Grok
+Familie/justis-bok | prio=2 | frist=2026-11-15 | sist=2026-10-12 | type=skriving | neste=strukturer kapittel 1–3
+Rolig pusterom 1.2 | prio=3 | sist=2026-08-29 | type=agent | neste=legg til eksport til PDF
