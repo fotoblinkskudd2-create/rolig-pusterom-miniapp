@@ -24,3 +24,7 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Skilleevne
+
+Åpne `skilleevne.html` (eller lenken nederst på Hjem). Den lagrer lokalt under nøkkelen `skilleevne`, med resultat før og etter, treningsdato og boostere. Startsiden har en knapp for å eksportere til JSON. Søkelenkene i «Før du deler» sender teksten til den tjenesten du klikker på, og ingen andre steder.

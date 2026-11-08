@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skilleevne</title>
+<style>
+  :root {
+    --bg: #f5f7f4; --card: #ffffff; --text: #33433a; --muted: #6c7c71;
+    --line: #e2e8e3; --accent: #a8c5b0; --accent-strong: #5f8a6c;
+    --soft-blue: #d9e7f2; --soft-beige: #f2ebe1; --soft-green: #e2ede5;
+    --warn: #f6e3d3; --warn-text: #7a4a22; --bad: #f3dcdc; --bad-text: #7a2a2a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161c18; --card: #1f2722; --text: #dde6df; --muted: #93a398;
+      --line: #2e3832; --accent: #5f8a6c; --accent-strong: #9cc4a6;
+      --soft-blue: #1e2c38; --soft-beige: #2b2620; --soft-green: #213028;
+      --warn: #3a2c1f; --warn-text: #f0c9a3; --bad: #3a2222; --bad-text: #f0b5b5;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; min-height: 100vh; }
+  .page { display: none; padding: 24px 16px 64px; max-width: 560px; margin: 0 auto; }
+  .page.active { display: block; }
+  h1 { font-size: 1.55rem; font-weight: 650; margin-bottom: 10px; }
+  h2 { font-size: 1.15rem; font-weight: 600; margin: 22px 0 10px; }
+  h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+  p { margin-bottom: 14px; }
+  .muted { color: var(--muted); font-size: 0.93rem; }
+  .small { font-size: 0.82rem; color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .card.tap { cursor: pointer; display: block; width: 100%; text-align: left; font: inherit; color: inherit; }
+  .card.tap:active { opacity: .85; }
+  .pill { display: inline-block; font-size: .75rem; padding: 2px 9px; border-radius: 999px; background: var(--soft-green); color: var(--accent-strong); font-weight: 600; margin-bottom: 6px; }
+  .pill.warn { background: var(--warn); color: var(--warn-text); }
+  .pill.bad { background: var(--bad); color: var(--bad-text); }
+  .core { background: var(--soft-beige); border-radius: 16px; padding: 16px; margin: 16px 0; }
+  .core strong { display: block; font-size: 1.08rem; margin-bottom: 4px; }
+  .btn { display: block; width: 100%; background: var(--accent); color: #1f2f24; border: none; border-radius: 14px; padding: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; font-family: inherit; }
+  .btn.secondary { background: var(--soft-blue); color: var(--text); }
+  .btn.ghost { background: none; border: 1px solid var(--line); color: var(--text); font-weight: 500; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .row { display: flex; gap: 10px; }
+  .row .btn { flex: 1; }
+  .back { background: none; border: none; color: var(--muted); font: inherit; font-size: .92rem; cursor: pointer; padding: 4px 0; margin-bottom: 10px; }
+  .post { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; font-size: 1.04rem; margin: 14px 0; min-height: 110px; }
+  .post .who { font-size: .8rem; color: var(--muted); margin-bottom: 8px; }
+  .progress { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin: 6px 0 4px; }
+  .progress div { height: 100%; background: var(--accent-strong); transition: width .25s; }
+  textarea, input[type=text] { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font: inherit; background: var(--card); color: var(--text); margin-bottom: 10px; }
+  textarea { min-height: 84px; resize: vertical; }
+  label { display: block; font-size: .9rem; font-weight: 600; margin: 10px 0 6px; }
+  select { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 10px; font: inherit; background: var(--card); color: var(--text); margin-bottom: 10px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
+  .check:last-child { border-bottom: none; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; }
+  .seg { display: flex; gap: 6px; margin-top: 8px; }
+  .seg button { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 10px; padding: 8px 4px; font: inherit; font-size: .85rem; cursor: pointer; }
+  .seg button.on { background: var(--soft-green); border-color: var(--accent-strong); font-weight: 600; }
+  .stat { display: flex; gap: 10px; margin: 10px 0; }
+  .stat > div { flex: 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; text-align: center; }
+  .stat .n { font-size: 1.5rem; font-weight: 700; display: block; }
+  .stat .l { font-size: .78rem; color: var(--muted); }
+  .feedback { border-radius: 14px; padding: 14px; margin-top: 12px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--soft-green); }
+  .feedback.no { background: var(--warn); color: var(--warn-text); }
+  .out { white-space: pre-wrap; background: var(--soft-beige); border-radius: 14px; padding: 14px; font-size: .93rem; margin-top: 10px; }
+  a { color: var(--accent-strong); }
+  ul.plain { list-style: none; }
+  ul.plain li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  ul.plain li:last-child { border-bottom: none; }
+  ol.steps { padding-left: 20px; }
+  ol.steps li { margin-bottom: 8px; }
+  .src { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .92rem; }
+  .src:last-child { border-bottom: none; }
+  .src .cite { font-weight: 600; }
+  .fix { border-left: 3px solid var(--warn-text); padding: 4px 0 4px 12px; margin-bottom: 14px; font-size: .93rem; }
+  .meter { position: relative; height: 10px; background: linear-gradient(90deg, var(--bad), var(--soft-green) 50%, var(--warn)); border-radius: 6px; margin: 18px 0 4px; }
+  .meter i { position: absolute; top: -5px; width: 4px; height: 20px; background: var(--text); border-radius: 2px; }
+  .meter-l { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); }
+  .linkrow a { display: block; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; text-decoration: none; background: var(--card); }
+</style>
+</head>
+<body>
+
+<!-- ============ START ============ -->
+<div id="p-start" class="page active">
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Skilleevne</h1>
+  <p class="muted">Et lite treningsrom mot manipulasjon. Bygget på forskning som er sjekket, ikke synset.</p>
+
+  <div class="core">
+    <strong>Skepsis er ikke en ferdighet. Skilleevne er.</strong>
+    Å tro på ingenting er like lett å lure som å tro på alt. Målet er å skille manipulerende fra ærlig — ikke å bli mistenksom mot alt.
+  </div>
+
+  <h2>Ditt løp</h2>
+  <div id="journey"></div>
+
+  <h2>Verktøy</h2>
+  <button class="card tap" onclick="go('del')"><h3>Før du deler</h3><span class="muted">Ett minutt med friksjon: nøyaktighetsspørsmål, lateral lesing, teknikksjekk.</span></button>
+  <button class="card tap" onclick="go('samtale')"><h3>Når noen du er glad i tror</h3><span class="muted">Spørsmål som åpner, sannhetssandwich, og en åpen AI-samtale etter Costello-designet.</span></button>
+  <button class="card tap" onclick="go('tiltak')"><h3>Tiltakssjekk</h3><span class="muted">Er et tiltak mot feilinformasjon forskningsbasert, eller bare forskningsformet? Ti spørsmål.</span></button>
+  <button class="card tap" onclick="go('kilder')"><h3>Kilder og rettelser</h3><span class="muted">Hver studie har en DOI. Pluss det vi fant galt i designrapporten.</span></button>
+
+  <p class="small" style="margin-top:18px">Alt blir på denne enheten. Ingen konto, ingen sporing. Lenker til søk åpnes først når du trykker.</p>
+  <div class="row">
+    <button class="btn ghost" onclick="exportData()">Eksporter resultater</button>
+    <button class="btn ghost" onclick="resetAll()">Nullstill</button>
+  </div>
+</div>
+
+<!-- ============ TEST ============ -->
+<div id="p-test" class="page">
+  <button class="back" onclick="go('start')">← Avbryt</button>
+  <h1 id="testTitle">Måling</h1>
+  <p class="muted" id="testIntro"></p>
+  <div class="progress"><div id="testBar" style="width:0"></div></div>
+  <div class="small" id="testCount"></div>
+  <div class="post" id="testPost"><div class="who">Innlegg i feeden</div><div id="testText"></div></div>
+  <p class="muted" style="margin-bottom:4px">Bruker dette innlegget en manipulasjonsteknikk?</p>
+  <div class="row">
+    <button class="btn secondary" onclick="answer(true)">Ja, manipulerende</button>
+    <button class="btn secondary" onclick="answer(false)">Nei, ærlig nok</button>
+  </div>
+  <p class="small" style="margin-top:12px">Ikke tenk lenge. Det er ikke spørsmål om du er enig — bare om <em>grepet</em>.</p>
+</div>
+
+<!-- ============ RESULT ============ -->
+<div id="p-result" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1 id="resTitle">Resultat</h1>
+  <div id="resBody"></div>
+</div>
+
+<!-- ============ TRENING ============ -->
+<div id="p-trening" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <div class="small" id="trCount"></div>
+  <div class="progress"><div id="trBar" style="width:0"></div></div>
+  <div id="trBody"></div>
+</div>
+
+<!-- ============ BOOSTER ============ -->
+<div id="p-booster" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1>Booster</h1>
+  <p class="muted">Hent frem fra hukommelsen før du ser svaret. Det er selve mekanismen: aktiv gjenkalling holder effekten ved like (Maertens mfl. 2025).</p>
+  <div class="small" id="boCount"></div>
+  <div id="boBody"></div>
+</div>
+
+<!-- ============ FØR DU DELER ============ -->
+<div id="p-del" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1>Før du deler</h1>
+  <p class="muted">Appen sier ikke hva som er sant. Den gir deg ett minutt friksjon — det er det som er målt å virke.</p>
+
+  <label for="delText">Lim inn overskriften, påstanden eller lenken</label>
+  <textarea id="delText" placeholder="F.eks. «Ny studie: kaffe kurerer …»"></textarea>
+
+  <div class="card">
+    <span class="pill">1 · Nøyaktighet</span>
+    <h3>Hvor sannsynlig er det at dette er sant?</h3>
+    <p class="small">Bare det å stille spørsmålet flytter oppmerksomheten mot nøyaktighet og reduserer deling av feilinformasjon (Pennycook &amp; Rand 2021). Effekten er liten per gang, men nesten gratis.</p>
+    <input type="range" id="delAcc" min="0" max="100" value="50" style="width:100%" oninput="$('delAccV').textContent=this.value+' %'">
+    <div class="small">Ditt anslag: <b id="delAccV">50 %</b></div>
+  </div>
+
+  <div class="card">
+    <span class="pill">2 · Stopp</span>
+    <h3>Hva kjenner du i kroppen?</h3>
+    <p class="small">Sterk følelse (sinne, frykt, triumf) er ikke bevis for at noe er galt — men det er et signal om å vente. Emosjonelt ladet innhold deles mer.</p>
+    <div class="seg" id="delFeel">
+      <button onclick="seg(this)">Rolig</button><button onclick="seg(this)">Engasjert</button><button onclick="seg(this)">Sint / redd</button>
+    </div>
+  </div>
+
+  <div class="card linkrow">
+    <span class="pill">3 · Les sidelengs</span>
+    <h3>Forlat siden. Sjekk hva andre sier.</h3>
+    <p class="small">Faktasjekkere graver ikke inn i siden — de åpner nye faner og sjekker avsenderen andre steder. Det er lateral lesing, testet i klasseroms-RCT (Wineburg mfl. 2022). Søkene under sender teksten din til den tjenesten.</p>
+    <a href="#" onclick="return look('wiki')">Hvem er avsenderen? (Wikipedia)</a>
+    <a href="#" onclick="return look('fact')">Er dette faktasjekket før? (Google Fact Check Explorer)</a>
+    <a href="#" onclick="return look('faktisk')">Har Faktisk.no skrevet om det?</a>
+    <a href="#" onclick="return look('news')">Hva skriver andre redaksjoner?</a>
+    <a href="https://tineye.com" target="_blank" rel="noopener">Bilde? Omvendt bildesøk (TinEye)</a>
+  </div>
+
+  <div class="card">
+    <span class="pill">4 · Grepet</span>
+    <h3>Ser du noen av teknikkene?</h3>
+    <div id="delTech"></div>
+  </div>
+
+  <button class="btn" onclick="delSummary()">Oppsummer</button>
+  <div class="out" id="delOut" style="display:none"></div>
+</div>
+
+<!-- ============ SAMTALE ============ -->
+<div id="p-samtale" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1>Når noen du er glad i tror</h1>
+  <p class="muted">Faktadumping virker dårlig. Det som er målt å virke, er relasjon, gode spørsmål og grundige fakta — i den rekkefølgen.</p>
+
+  <h2>1. Først: hva gjør troen for personen?</h2>
+  <p>Konspirasjonstro dekker ofte behov: å <b>forstå</b> noe uoversiktlig, å føle <b>kontroll og trygghet</b>, og å ha et godt <b>bilde av seg selv og sin gruppe</b> (Douglas, Sutton &amp; Cichocka 2017). Hvis du tar fra noen et svar uten å møte behovet, leter de etter et nytt.</p>
+
+  <h2>2. Spørsmål som åpner</h2>
+  <ul class="plain card">
+    <li>«Hvor sikker er du, på en skala fra 0 til 10?»</li>
+    <li>«Hva var det som overbeviste deg første gang?»</li>
+    <li>«Hvis det var feil, hvordan tror du vi kunne fått vite det?»</li>
+    <li>«Hva skulle til for at du ble litt mindre sikker? Og jeg — hva skulle til for meg?»</li>
+    <li>«Kan du forklare hvordan det fungerer, steg for steg?» <span class="small">(Å forklare avslører ofte hull man ikke visste om.)</span></li>
+  </ul>
+  <p class="small">Lytt mer enn du snakker. Ikke-dømmende samtaler har gitt varige holdningsendringer i felteksperimenter (Broockman &amp; Kalla 2016) — men det er ikke testet direkte på konspirasjonstro. Behandle det som et godt utgangspunkt, ikke en garanti.</p>
+
+  <h2>3. Sannhetssandwich</h2>
+  <p class="muted">Når du skal rette noe: fakta først, myten én gang med advarsel, hvorfor den er misvisende, fakta igjen. Avslør <em>teknikken</em>, ikke bare påstanden — det beskytter også de som lytter (Schmid &amp; Betsch 2019).</p>
+  <label>Fakta (kort, konkret)</label><input type="text" id="sFakta" placeholder="Hva er det beste vi vet?">
+  <label>Myten (nevn den én gang)</label><input type="text" id="sMyte" placeholder="Hva sies?">
+  <label>Teknikken den bruker</label><select id="sTek"></select>
+  <label>Alternativ forklaring</label><input type="text" id="sAlt" placeholder="Hvorfor virker myten troverdig? Hva er den egentlige forklaringen?">
+  <button class="btn" onclick="sandwich()">Lag sandwich</button>
+  <div class="out" id="sOut" style="display:none"></div>
+  <button class="btn ghost" id="sCopy" style="display:none" onclick="copy('sOut')">Kopier</button>
+
+  <h2>4. En åpen AI-samtale</h2>
+  <p class="muted">Costello, Pennycook &amp; Rand (<i>Science</i> 2024) lot 2 044 konspirasjonstroende snakke med GPT-4 om sine <em>egne</em> argumenter. Troen falt med ~20 %, og effekten holdt etter to måneder. Mekanismen var grundige, skreddersydde fakta — ikke sjarm.</p>
+  <div class="core"><strong>Gjør det <em>med</em> personen, aldri <em>på</em> dem.</strong>Vis prompten. Si hva målet er. Effekten tåler åpenhet — og uten samtykke er det manipulasjon i seg selv.</div>
+  <label>Påstanden</label><input type="text" id="aiClaim" placeholder="Hva tror personen?">
+  <label>Personens egne grunner (med deres ord)</label><textarea id="aiWhy" placeholder="Hvorfor tror de det? Hva har de sett?"></textarea>
+  <button class="btn" onclick="aiPrompt()">Lag åpen prompt</button>
+  <div class="out" id="aiOut" style="display:none"></div>
+  <button class="btn ghost" id="aiCopy" style="display:none" onclick="copy('aiOut')">Kopier</button>
+  <p class="small" style="margin-top:10px">Språkmodeller tar feil. Sjekk viktige påstander i svaret selv, med lateral lesing.</p>
+</div>
+
+<!-- ============ TILTAKSSJEKK ============ -->
+<div id="p-tiltak" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1>Tiltakssjekk</h1>
+  <p class="muted">Et kurs, en kampanje, en app, en lov mot feilinformasjon. Er den bygget på forskning, eller bare kledd i den? Svar ærlig — «vet ikke» teller som nei, fordi det som ikke er målt, ikke er vist.</p>
+  <label for="tName">Hva vurderer du?</label>
+  <input type="text" id="tName" placeholder="F.eks. «Kildekritikk-kampanje for eldre»">
+  <div id="tList"></div>
+  <button class="btn" onclick="tiltakScore()">Vurder</button>
+  <div id="tOut"></div>
+</div>
+
+<!-- ============ KILDER ============ -->
+<div id="p-kilder" class="page">
+  <button class="back" onclick="go('start')">← Til start</button>
+  <h1>Kilder og rettelser</h1>
+  <p class="muted">Alle studier under er slått opp i Crossref 8. november 2026: tittel, tidsskrift, år og DOI stemmer. Der vi har lest sammendraget, står det hva studien faktisk fant.</p>
+
+  <h2>Rettelser til designrapporten</h2>
+  <p class="small">Rapporten var skrevet av ti AI-agenter. Den er god på retning — men tall drifter når agenter siterer agenter. Dette fant vi da vi sjekket mot kildene:</p>
+  <div id="fixes"></div>
+
+  <h2>Studier</h2>
+  <div class="card" id="srcList"></div>
+  <p class="small">Ikke fagfellevurdert, men brukt: Lewandowsky mfl., <i>The Debunking Handbook 2020</i> (sannhetssandwich-formatet). Teknikksettet i treningen følger Roozenbeek mfl. 2022 (fem teknikker) pluss konspirasjonsramme fra FLICC (Cook mfl. 2017). Innleggene i testene er fiktive og skrevet for dette verktøyet; de er ikke validert som MIST (Maertens mfl. 2023).</p>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const TECH = {
+  emo:   { name: "Emosjonelt språk", short: "Ord som skal få deg til å føle før du tenker.",
+           how: "Frykt, sinne og sjokk senker terskelen for å dele. Ordene gjør jobben bevisene burde gjort.",
+           test: "Hva står igjen av påstanden hvis du stryker adjektivene og store bokstaver?" },
+  dilemma: { name: "Falskt dilemma", short: "Bare to valg — når det finnes flere.",
+           how: "Du presses til å velge side. Mellomløsninger, nyanser og «jeg vet ikke ennå» forsvinner.",
+           test: "Finnes det et tredje alternativ? Nesten alltid." },
+  synde: { name: "Syndebukk", short: "Et sammensatt problem får én skyldig gruppe.",
+           how: "Komplekse årsaker blir én gruppe å være sint på. Det føles som en forklaring, men er en retning for sinne.",
+           test: "Hvilke andre årsaker nevnes ikke? Hvem tjener på at akkurat denne gruppen får skylden?" },
+  person: { name: "Personangrep", short: "Angriper personen, ikke argumentet.",
+           how: "Utseende, privatliv eller motiv brukes for å slippe å svare på det personen faktisk sier.",
+           test: "Hva er argumentet til personen? Blir det svart på?" },
+  inkoh: { name: "Selvmotsigelse", short: "To påstander som ikke kan være sanne samtidig.",
+           how: "Målet er ikke en sammenhengende forklaring, men å så tvil fra så mange kanter som mulig.",
+           test: "Hvis første påstand stemmer — kan den andre da stemme?" },
+  konsp: { name: "Konspirasjonsramme", short: "Tilfeldigheter blir bevis. Manglende bevis blir bevis på skjuling.",
+           how: "Retoriske spørsmål, «tenk selv» og antydninger om skjulte aktører. Påstanden kan aldri motbevises — og det er poenget.",
+           test: "Hva ville vært et bevis på at dette IKKE er en sammensvergelse? Finnes det noe?" }
+};
+const TECH_KEYS = Object.keys(TECH);
+
+// Testinnlegg: m = manipulerende (med teknikk), n = nøytral. Tre sett: A/B (pre/post, motbalansert) og C (booster).
+const SETS = {
+  A: [
+    { m:1, t:"emo", x:"SJOKKERENDE: Foreldre er LIVREDDE etter det som skjedde på skolen i går. Et mareritt ingen burde oppleve. Del før det er for sent!!!" },
+    { m:1, t:"dilemma", x:"Enten støtter du den nye bomringen, eller så bryr du deg ikke om barnas fremtid. Det finnes ingen mellomting." },
+    { m:1, t:"synde", x:"Trafikkulykkene i sentrum har én årsak: syklistene. Fjern dem, så er problemet løst." },
+    { m:1, t:"person", x:"Hvorfor skal vi høre på en klimaforsker som har dyre ferievaner og stygge klær? Hun er en hykler, punktum." },
+    { m:1, t:"inkoh", x:"Det har ikke blitt varmere de siste 50 årene. Og uansett er oppvarmingen helt naturlig og skyldes sola." },
+    { m:1, t:"konsp", x:"Det de IKKE forteller deg om vannverket: hvorfor tror du rapporten ble levert på en fredag ettermiddag? Tilfeldig? Tenk selv." },
+    { m:0, x:"Kommunestyret vedtok i går å utvide åpningstiden på biblioteket. Saksdokumentene ligger på kommunens nettside." },
+    { m:0, x:"Matvareprisene i fylket steg mer enn landssnittet i fjor, ifølge nye tall fra fylkeskommunen." },
+    { m:0, x:"Strømprisene har vært høye i vinter. Forskere peker på flere årsaker, blant annet lav fyllingsgrad i magasinene og høy etterspørsel." },
+    { m:0, x:"Legevakten melder om lange ventetider denne uken på grunn av et influensautbrudd. De ber folk ringe før de kommer." },
+    { m:0, x:"Tre aviser skrev om samme sak i dag, etter at politiet holdt pressekonferanse i morges." },
+    { m:0, x:"Det blir regnvær i helgen. Meteorologene varsler opptil 40 mm i løpet av lørdagen." }
+  ],
+  B: [
+    { m:1, t:"emo", x:"Hjerteskjærende: pensjonister fryser i mørket mens strømselskapene feirer. Hvor lenge skal vi tåle denne grusomheten?" },
+    { m:1, t:"dilemma", x:"Du kan velge vindkraft, eller du kan velge å la naturen dø. Så enkelt er det." },
+    { m:1, t:"synde", x:"Strømprisene er høye fordi én gruppe ødelegger for oss alle: folk som lader elbil om kvelden." },
+    { m:1, t:"person", x:"Professoren som kritiserer bompengeplanen er skilt og bor alene. Det sier vel det meste om dømmekraften hans." },
+    { m:1, t:"inkoh", x:"Den nye medisinen virker ikke i det hele tatt – og den er så sterk at den overbelaster kroppen." },
+    { m:1, t:"konsp", x:"Det er ingen tilfeldighet at tre aviser skrev samme sak samme dag. Noen styrer dette. Spør deg selv hvem som tjener på det." },
+    { m:0, x:"Trafikketaten har registrert flere ulykker i sentrum i år. De undersøker nå om fartsgrensen bør senkes." },
+    { m:0, x:"Skolen innfører mobilfri skoledag fra januar. Foreldre kan gi innspill på et møte torsdag." },
+    { m:0, x:"Forskere er uenige om hvor mye skjermtid påvirker søvn. En ny oversiktsstudie finner en liten, men målbar sammenheng." },
+    { m:0, x:"Ordføreren foreslår ny svømmehall. Kostnaden er anslått til 180 millioner, og forslaget skal behandles i desember." },
+    { m:0, x:"Den nye bybanen fraktet flere passasjerer enn ventet første måned, men har hatt forsinkelser i rushtiden." },
+    { m:0, x:"Vannverket har publisert årsrapporten. Prøvene viser at drikkevannet holder kravene, men to ledninger skal skiftes." }
+  ],
+  C: [
+    { m:1, t:"emo", x:"Den nye mattrenden som gjør barna dine syke – foreldre over hele landet er rystet. Du kommer til å gråte når du leser dette." },
+    { m:1, t:"dilemma", x:"Er du for skjermforbud i skolen, eller vil du at barna skal bli avhengige? Velg side." },
+    { m:1, t:"synde", x:"Alt som har gått galt i kommunen de siste årene kan spores tilbake til én gruppe: hytteeierne." },
+    { m:1, t:"person", x:"Ordføreren vil bygge ny svømmehall? Hun kan ikke engang svømme selv. Ikke ta henne seriøst." },
+    { m:1, t:"inkoh", x:"Ingen bruker egentlig den nye bybanen. Den er så full at det er umulig å få sitteplass." },
+    { m:1, t:"konsp", x:"Bak den nye parkeringsappen står en liten gruppe som vil vite hvor du er hele tiden. De vil aldri innrømme det." },
+    { m:0, x:"Jeg er uenig i den nye bomringen. Jeg tror den rammer folk utenfor sentrum hardest, og vil se en utredning av alternativer." },
+    { m:0, x:"En professor i samferdsel mener inntektsanslagene i bompengeplanen er for optimistiske, og viser til tall fra lignende prosjekter." },
+    { m:0, x:"Ny medisin mot migrene er godkjent. I studiene fikk om lag én av tre færre anfall. Vanlige bivirkninger er kvalme og tretthet." },
+    { m:0, x:"Pensjonistforeningen ber om bedre informasjon om strømstøtte og inviterer til åpent møte på mandag." },
+    { m:0, x:"Vindkraftutbyggingen i fjellet er omstridt. Tilhengere viser til fornybar energi, motstandere til naturinngrep. Saken høres i mars." },
+    { m:0, x:"Kommunen søker frivillige til strandrydding lørdag. Hansker og sekker deles ut ved moloen." }
+  ]
+};
+
+// Trening: ett matchet par per teknikk. Brukeren velger hvilken som bruker teknikken.
+const TRAIN = {
+  emo:   { n:"Brannvesenet minner om å sjekke røykvarsleren før jul.", m:"Denne julen kan bli din siste hvis du overser DETTE. Brannvesenet er desperate – ikke la familien din brenne inne." },
+  dilemma: { n:"Biblioteket vurderer å kutte i åpningstid eller i innkjøp. Innbyggerne kan si sin mening i en undersøkelse.", m:"Enten kutter vi åpningstiden, eller så legges biblioteket ned for godt. Velg." },
+  synde: { n:"Bussene er ofte forsinket i høst. Selskapet oppgir veiarbeid og mangel på sjåfører som årsaker.", m:"Bussene er forsinket fordi de unge sjåførene ikke gidder å jobbe. Det er hele forklaringen." },
+  person: { n:"En økonom mener det nye skatteforslaget vil ramme småbedrifter, og viser til beregninger fra lignende ordninger.", m:"Økonomen som kritiserer skatteforslaget har aldri drevet bedrift og ser ut som en tenåring. Hvem bryr seg om hva han mener?" },
+  inkoh: { n:"Kommunen sier fjorårets budsjett gikk i underskudd, blant annet på grunn av økte energikostnader.", m:"Kommunen brukte ikke en krone på energi i fjor. Og energiregningen var helt ute av kontroll." },
+  konsp: { n:"Rådmannen slutter i stillingen. Kommunen opplyser at hun har fått ny jobb i en annen kommune.", m:"Rådmannen «sluttet» plutselig i dag. Ny jobb, sier de. Lurer på hva hun visste som ingen andre fikk vite?" }
+};
+
+const SOURCES = [
+  ["Vosoughi, Roy & Aral (2018)", "The spread of true and false news online. Science.", "10.1126/science.aap9559", "Falske nyheter spredte seg lenger, raskere og bredere enn sanne på Twitter."],
+  ["Grinberg mfl. (2019)", "Fake news on Twitter during the 2016 U.S. presidential election. Science.", "10.1126/science.aau2706", "Eksponeringen var konsentrert: rundt 1 % av brukerne sto for 80 % av eksponeringen for falske nyhetskilder."],
+  ["Douglas, Sutton & Cichocka (2017)", "The psychology of conspiracy theories. Current Directions in Psychological Science.", "10.1177/0963721417718261", "Konspirasjonstro henger sammen med behov for forståelse, kontroll og et positivt selv- og gruppebilde."],
+  ["Imhoff mfl. (2022)", "Conspiracy mentality and political orientation across 26 countries. Nature Human Behaviour.", "10.1038/s41562-021-01258-7", "Konspirasjonsmentalitet er sterkest på de politiske ytterfløyene."],
+  ["Ecker mfl. (2022)", "The psychological drivers of misinformation belief and its resistance to correction. Nature Reviews Psychology.", "10.1038/s44159-021-00006-y", "Oversikt: hvorfor korrigerte forestillinger lever videre."],
+  ["Cook, Lewandowsky & Ecker (2017)", "Neutralizing misinformation through inoculation. PLOS ONE.", "10.1371/journal.pone.0175799", "Å avsløre argumentasjonsteknikken på forhånd nøytraliserte effekten av misvisende informasjon."],
+  ["Roozenbeek mfl. (2022)", "Psychological inoculation improves resilience against misinformation on social media. Science Advances.", "10.1126/sciadv.abo6254", "Korte videoer om fem manipulasjonsteknikker forbedret gjenkjenning, også i et felteksperiment på YouTube."],
+  ["Basol, Roozenbeek & van der Linden (2020)", "Good news about Bad News: Gamified inoculation boosts confidence and cognitive immunity. Journal of Cognition.", "10.5334/joc.91", "Spillet Bad News som inokulasjon."],
+  ["Modirrousta-Galian & Higham (2023)", "Gamified inoculation interventions do not improve discrimination between true and fake news. JEP: General.", "10.1037/xge0001395", "Reanalyse med signaldeteksjon: spillene gjorde folk mer tilbøyelige til å kalle alt falskt — ikke flinkere til å skille. Derfor måler denne appen d′ og c hver for seg."],
+  ["Maertens mfl. (2025)", "Psychological booster shots targeting memory increase long-term resistance against misinformation. Nature Communications.", "10.1038/s41467-025-57205-x", "Fem preregistrerte forsøk (N = 11 759): tekst- og videoinokulasjon holdt i en måned, spill forfalt raskere, og hukommelsesboostere styrket effekten."],
+  ["Pennycook & Rand (2021)", "Shifting attention to accuracy can reduce misinformation online. Nature.", "10.1038/s41586-021-03344-2", "Folk deler ofte fordi nøyaktighet ikke er i tankene; et enkelt nøyaktighetsspørsmål reduserte deling av feilinformasjon."],
+  ["Pennycook mfl. (2024)", "Inoculation and accuracy prompting increase accuracy discernment in combination but not alone. Nature Human Behaviour.", "10.1038/s41562-024-02023-2", "Tittelen sier det: i kombinasjon, men ikke alene. Derfor kobler appen trening og nøyaktighetsspørsmål."],
+  ["Pennycook mfl. (2020)", "The implied truth effect. Management Science.", "10.1287/mnsc.2019.3478", "Merker du bare noe falskt innhold, blir umerket falskt innhold trodd mer."],
+  ["Wineburg mfl. (2022)", "Lateral reading on the open Internet: A district-wide field study. Journal of Educational Psychology.", "10.1037/edu0000740", "Opplæring i lateral lesing forbedret elevenes vurdering av nettkilder."],
+  ["Kozyreva, Wineburg, Lewandowsky & Hertwig (2022)", "Critical ignoring as a core competence for digital citizens. Current Directions in Psychological Science.", "10.1177/09637214221121570", "Å velge bort oppmerksomhet er like viktig som å gi den."],
+  ["Allen, Watts & Rand (2024)", "Quantifying the impact of misinformation and vaccine-skeptical content on Facebook. Science.", "10.1126/science.adk3451", "Ufaktasjekket, vaksineskeptisk innhold hadde 46 ganger større anslått effekt enn innhold faktasjekkere flagget — fordi det ble sett så mye mer. Misvisende-men-sant er en større kilde enn rent falskt."],
+  ["Piccardi mfl. (2025)", "Reranking partisan animosity in algorithmic social media feeds alters affective polarization. Science.", "10.1126/science.adu5584", "Mindre fiendtlig innhold i feeden (N = 1 256, 10 dager) senket fiendtlighet mot motparten med drøyt 2 poeng på en 100-skala. Kausalt, men lite."],
+  ["Costello, Pennycook & Rand (2024)", "Durably reducing conspiracy beliefs through dialogues with AI. Science.", "10.1126/science.adq1814", "2 044 deltakere: troen falt ~20 %, holdt etter to måneder, og smittet over på urelaterte konspirasjoner."],
+  ["Schmid & Betsch (2019)", "Effective strategies for rebutting science denialism in public discussions. Nature Human Behaviour.", "10.1038/s41562-019-0632-4", "Å motbevise både innhold og teknikk reduserte fornekterens innflytelse på publikum."],
+  ["Broockman & Kalla (2016)", "Durably reducing transphobia: A field experiment on door-to-door canvassing. Science.", "10.1126/science.aad9713", "Ikke-dømmende samtaler ga varig holdningsendring. Ikke testet på konspirasjonstro."],
+  ["Hautus (1995)", "Corrections for extreme proportions and their biasing effects on estimated values of d′. BRM.", "10.3758/bf03203619", "Log-lineær korreksjon, brukt i appens d′-utregning."],
+  ["Maertens mfl. (2023)", "The Misinformation Susceptibility Test (MIST). Behavior Research Methods.", "10.3758/s13428-023-02124-2", "Validert måleinstrument. Appens innlegg er ikke validert slik."],
+  ["Lin mfl. (2024, preprint)", "Reducing misinformation sharing at scale using digital accuracy prompt ads. PsyArXiv.", "10.31234/osf.io/u8anb", "Nøyaktighetsannonser i stor skala på Facebook. Ikke fagfellevurdert ifølge Crossref per i dag."]
+];
+
+const FIXES = [
+  ["«Faktasjekkene fikk 489x færre visninger» (Allen mfl. 2024)", "Tallet finnes ikke i sammendraget. Studien finner at <b>ufaktasjekket</b> vaksineskeptisk innhold hadde <b>46 ganger</b> større anslått effekt enn <b>flagget</b> feilinformasjon. Poenget er sterkere enn rapporten sa: det farligste var misvisende, men ikke direkte falskt."],
+  ["«Inokulasjon + nøyaktighetsprompt virker bedre sammen enn alene» (Pennycook mfl. 2024)", "Tittelen er: <i>increase accuracy discernment in combination but not alone</i>. Hver for seg økte de ikke skilleevnen. Det er en mye viktigere designregel."],
+  ["«~39 % forfall på én måned; boostere gjenoppretter fullt» (Maertens mfl. 2025)", "Sammendraget sier: tekst og video holdt i en måned, spill forfalt raskere, boostere styrket effekten. Tallet 39 % og «fullt» lar seg ikke spore dit."],
+  ["«Debunking g≈0,16 (Biddlestone 2025)»", "Biddlestone mfl. 2025 i <i>Psychological Bulletin</i> er en meta-analyse av <b>motiver</b> for konspirasjonstro, ikke av effekten av debunking. Effektstørrelsen er feilattribuert."],
+  ["«Critical ignoring … (2023)»", "Kozyreva mfl. ble publisert i 2022. Liten feil, men den sier noe om hvordan sitater drifter."],
+  ["«Felt-RCT på Facebook, N = 33 mill.»", "Lin mfl. er et preprint (PsyArXiv 2024) ifølge Crossref. Kan godt stemme, men er ikke fagfellevurdert ennå."],
+  ["Piccardi mfl. 2025 som «den reneste kausale evidensen»", "Kausal, ja. Men effekten var drøyt 2 poeng på en 100-punkts skala over 10 dager. Liten effekt, stor metode."]
+];
+
+const TILTAK = [
+  ["Måler den skilleevne — evnen til å skille manipulerende fra ærlig — og ikke bare økt skepsis?", "Modirrousta-Galian & Higham 2023: spillene økte mistenksomhet, ikke skilleevne.", 2],
+  ["Er effekten sammenlignet med en kontrollgruppe (helst randomisert)?", "Uten kontroll vet du ikke om endringen skyldes tiltaket.", 2],
+  ["Er effekten målt igjen etter minst en måned?", "Maertens mfl. 2025: effekter forfaller, spill raskest.", 2],
+  ["Har den en plan for repetisjon (boostere)?", "Maertens mfl. 2025: hukommelsesboostere styrker effekten.", 1],
+  ["Måler den hva folk faktisk gjør (deler, klikker), ikke bare hva de sier?", "Pennycook & Rand 2021; holdning ≠ atferd.", 1],
+  ["Retter den seg mot teknikker og mekanismer — ikke mot bestemte meninger?", "Roozenbeek mfl. 2022; teknikk unngår «hvem bestemmer sannheten».", 1],
+  ["Unngår den å merke bare noe av innholdet (som gjør umerket falskt mer troverdig)?", "Pennycook mfl. 2020: implied truth-effekten.", 1],
+  ["Når den dem som faktisk er mest eksponert — ikke bare de som melder seg frivillig?", "Grinberg mfl. 2019: eksponeringen er konsentrert hos få.", 1],
+  ["Er den preregistrert, og blir nullresultater publisert?", "Ellers ser du bare suksessene.", 1],
+  ["Har den uavhengig styring, åpen finansiering og mulighet for å klage?", "Normativt krav fra rapportens guardrail: mot-feilinformasjon skal ikke selv bli propaganda.", 1]
+];
+
+/* ================= STATE ================= */
+const KEY = "skilleevne";
+let S = load();
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const $ = id => document.getElementById(id);
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+function go(p) {
+  document.querySelectorAll(".page").forEach(x => x.classList.remove("active"));
+  $("p-" + p).classList.add("active");
+  window.scrollTo(0, 0);
+  if (p === "start") renderStart();
+}
+
+/* ================= STATISTIKK ================= */
+// Invers normalfordeling (Acklam)
+function probit(p) {
+  const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.3577518672690,-30.66479806614716,2.506628277459239];
+  const b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155288572];
+  const c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783];
+  const d=[0.007784695709041462,0.3224671290700398,2.445134137142996,3.754408661907416];
+  const pl=0.02425, ph=1-pl; let q, r;
+  if (p < pl) { q=Math.sqrt(-2*Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  if (p <= ph) { q=p-0.5; r=q*q; return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+  q=Math.sqrt(-2*Math.log(1-p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+}
+// Signaldeteksjon med log-lineær korreksjon (Hautus 1995). Signal = manipulerende innlegg.
+function sdt(resps) {
+  let hit=0, miss=0, fa=0, cr=0;
+  resps.forEach(r => { if (r.m) { r.y ? hit++ : miss++; } else { r.y ? fa++ : cr++; } });
+  const H = (hit+0.5)/(hit+miss+1), F = (fa+0.5)/(fa+cr+1);
+  const zH = probit(H), zF = probit(F);
+  return { hit, miss, fa, cr, dprime: zH - zF, c: -(zH + zF)/2, missedTech: resps.filter(r => r.m && !r.y).map(r => r.t) };
+}
+const f2 = x => (x >= 0 ? "" : "−") + Math.abs(x).toFixed(2).replace(".", ",");
+
+/* ================= START ================= */
+function daysSince(ts) { return Math.floor((Date.now() - ts) / 86400000); }
+const BOOST_DAYS = 21; // designvalg: innenfor månedsvinduet der effekten er målt å holde (Maertens mfl. 2025)
+
+function renderStart() {
+  const j = $("journey"); const pre = S.pre, post = S.post, trained = S.trainedAt;
+  const step = (n, title, desc, status, action, label, enabled) => `
+    <div class="card"><span class="pill ${status==='Gjort'?'':'warn'}">${n} · ${status}</span>
+    <h3>${title}</h3><div class="muted">${desc}</div>
+    ${action ? `<button class="btn ${status==='Gjort'?'ghost':''}" ${enabled?'':'disabled'} onclick="${action}">${label}</button>` : ""}</div>`;
+  let html = "";
+  html += step(1, "Mål skilleevnen din", "12 korte innlegg. Ca. 2 minutter. Vi måler hvor godt du skiller — og om du heller mot å mistenke alt.",
+    pre ? "Gjort" : "Start her", pre ? "showResult('pre')" : "startTest('pre')", pre ? "Se resultat" : "Start måling", true);
+  html += step(2, "Vaksinen: seks teknikker", "Forvarsel, en svekket dose, og øvelse. Ca. 6 minutter. Prinsippet er det samme som i Bad News og Jigsaws prebunking-videoer.",
+    trained ? "Gjort" : (pre ? "Neste" : "Låst"), "startTrain()", trained ? "Ta den igjen" : "Start trening", !!pre);
+  html += step(3, "Mål igjen", "Nye innlegg, samme oppsett. Nå ser du om du ble flinkere — eller bare strengere.",
+    post ? "Gjort" : (trained ? "Neste" : "Låst"), post ? "showResult('post')" : "startTest('post')", post ? "Se sammenligning" : "Start måling 2", !!trained);
+  if (post) {
+    const last = S.boosterAt || S.post.at; const ds = daysSince(last); const due = ds >= BOOST_DAYS;
+    html += step(4, "Booster", due ? `Det er ${ds} dager siden sist. Effekter forfaller uten repetisjon. Tid for en dose.`
+      : `Neste booster om ${BOOST_DAYS - ds} dager. Du kan ta den tidligere.`, due ? "Nå" : "Senere", "startBooster()", "Ta booster", true);
+  }
+  j.innerHTML = html;
+}
+
+/* ================= TEST ================= */
+let T = null;
+function shuffle(a) { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const k = Math.floor(Math.random()*(i+1)); [a[i], a[k]] = [a[k], a[i]]; } return a; }
+function startTest(phase) {
+  // Motbalansering: tilfeldig hvilket sett som er pre og post, så settenes vanskelighet jevner seg ut over brukere.
+  if (!S.order) { S.order = Math.random() < 0.5 ? ["A","B"] : ["B","A"]; save(); }
+  const set = phase === "pre" ? S.order[0] : phase === "post" ? S.order[1] : "C";
+  T = { phase, set, items: shuffle(SETS[set]), i: 0, resps: [] };
+  $("testTitle").textContent = phase === "pre" ? "Måling 1" : phase === "post" ? "Måling 2" : "Booster-test";
+  $("testIntro").textContent = phase === "pre"
+    ? "Noen innlegg bruker et manipulerende grep. Andre er helt vanlige. Du får ikke fasit underveis — det er en måling, ikke en øvelse."
+    : "Samme oppsett, nye innlegg. Ingen fasit underveis.";
+  go("test"); showItem();
+}
+function showItem() {
+  const it = T.items[T.i];
+  $("testText").textContent = it.x;
+  $("testCount").textContent = `${T.i + 1} av ${T.items.length}`;
+  $("testBar").style.width = (T.i / T.items.length * 100) + "%";
+}
+function answer(y) {
+  const it = T.items[T.i];
+  T.resps.push({ m: !!it.m, t: it.t || null, y });
+  T.i++;
+  if (T.i < T.items.length) { showItem(); return; }
+  const r = sdt(T.resps); r.at = Date.now(); r.set = T.set;
+  if (T.phase === "booster") { S.boosterAt = r.at; (S.boosters = S.boosters || []).push(r); save(); showResult("booster", r); return; }
+  S[T.phase] = r; save(); showResult(T.phase);
+}
+
+function biasText(c) {
+  if (c < -0.35) return ["Du flagger mye", "Du kalte også mange ærlige innlegg manipulerende. Det er ikke trygghet, det er kynisme — og det gjør deg sårbar for dem som sier «ingen kan stoles på».", "bad"];
+  if (c > 0.35) return ["Du slipper mye gjennom", "Du ga mange innlegg tvilen til gode, også noen med tydelige grep.", "warn"];
+  return ["Balansert", "Du heller verken mot å mistenke alt eller å godta alt.", ""];
+}
+function resultBlock(r) {
+  const [bt, bd, cls] = biasText(r.c);
+  const pos = Math.max(0, Math.min(100, 50 + r.c * 40));
+  return `
+    <div class="stat">
+      <div><span class="n">${f2(r.dprime)}</span><span class="l">Skilleevne (d′)</span></div>
+      <div><span class="n">${r.hit}/${r.hit + r.miss}</span><span class="l">Grep oppdaget</span></div>
+      <div><span class="n">${r.fa}/${r.fa + r.cr}</span><span class="l">Ærlige mistenkt</span></div>
+    </div>
+    <div class="card">
+      <span class="pill ${cls}">Skjevhet: ${bt}</span>
+      <div class="meter"><i style="left:calc(${pos}% - 2px)"></i></div>
+      <div class="meter-l"><span>Mistenker alt</span><span>Balansert</span><span>Godtar alt</span></div>
+      <p class="muted" style="margin-top:10px">${bd}</p>
+    </div>`;
+}
+function showResult(phase, rOverride) {
+  const body = $("resBody");
+  const explain = `<p class="small">d′ (d-prime) er et mål fra signaldeteksjonsteori: hvor godt du skiller to typer innlegg, uavhengig av hvor streng du er. 0 = tilfeldig; rundt 1 = brukbart; over 2 = sterkt. Med 12 innlegg er målet grovt — et speil, ikke en diagnose.</p>`;
+  if (phase === "pre") {
+    $("resTitle").textContent = "Måling 1";
+    body.innerHTML = resultBlock(S.pre) + explain +
+      `<p>Nå kommer treningen. Den viser deg seks grep, med svake eksempler, før du møter dem ute.</p>
+       <button class="btn" onclick="startTrain()">Start trening</button>`;
+  } else if (phase === "post") {
+    $("resTitle").textContent = "Før og etter";
+    const a = S.pre, b = S.post, dd = b.dprime - a.dprime, dc = b.c - a.c;
+    let verdict;
+    if (dd > 0.3) verdict = ["Du ble flinkere til å skille.", "Skilleevnen gikk opp. Det er den effekten som teller."];
+    else if (dc < -0.3) verdict = ["Du ble strengere — ikke flinkere.", "Skilleevnen sto omtrent stille, men du mistenker mer. Det er nøyaktig feilen Modirrousta-Galian & Higham (2023) fant i reanalysen av inokulasjonsspillene. Prøv treningen igjen og se etter grepet, ikke tonen."];
+    else if (dd < -0.3) verdict = ["Det gikk ned denne gangen.", "Med 12 innlegg kan tilfeldigheter slå ut. Ta boosteren om noen uker og se om mønsteret holder."];
+    else verdict = ["Omtrent som før.", "Ingen tydelig endring. Det er et ærlig resultat — mange tiltak viser det samme når de måles skikkelig."];
+    body.innerHTML = `
+      <div class="core"><strong>${verdict[0]}</strong>${verdict[1]}</div>
+      <div class="stat">
+        <div><span class="n">${f2(a.dprime)} → ${f2(b.dprime)}</span><span class="l">Skilleevne (d′)</span></div>
+        <div><span class="n">${f2(a.c)} → ${f2(b.c)}</span><span class="l">Skjevhet (c)</span></div>
+      </div>
+      <h2>Måling 2 i detalj</h2>` + resultBlock(b) + explain +
+      `<p class="small">Hvorfor to tall? Fordi et tiltak som bare får folk til å si «falskt» oftere, ser ut som suksess hvis du bare teller treff. Det er derfor vi viser både d′ og c.</p>
+       <p>Effekter forfaller. Om ${BOOST_DAYS} dager er boosteren klar på startsiden.</p>
+       <button class="btn" onclick="go('start')">Til start</button>`;
+  } else {
+    const r = rOverride;
+    $("resTitle").textContent = "Booster";
+    const ref = S.post;
+    body.innerHTML = (ref ? `<div class="stat"><div><span class="n">${f2(ref.dprime)} → ${f2(r.dprime)}</span><span class="l">d′ fra måling 2 til nå</span></div><div><span class="n">${f2(ref.c)} → ${f2(r.c)}</span><span class="l">Skjevhet (c)</span></div></div>` : "")
+      + resultBlock(r) + explain + `<button class="btn" onclick="go('start')">Til start</button>`;
+  }
+  go("result");
+}
+
+/* ================= TRENING ================= */
+let TR = null;
+function startTrain() { TR = { order: shuffle(TECH_KEYS), i: 0, stage: "learn" }; go("trening"); renderTrain(); }
+function renderTrain() {
+  const n = TR.order.length;
+  $("trBar").style.width = (TR.i / n * 100) + "%";
+  if (TR.i >= n) {
+    S.trainedAt = Date.now(); save();
+    $("trCount").textContent = "Ferdig";
+    $("trBody").innerHTML = `<h1>Ferdig med vaksinen</h1>
+      <p>Du har sett seks grep. Merk: forskningen viser at trening alene ikke er nok — den virker best sammen med et spørsmål om nøyaktighet idet du skal dele (Pennycook mfl. 2024). Bruk «Før du deler» når det gjelder.</p>
+      <button class="btn" onclick="startTest('post')" ${S.post ? "disabled" : ""}>Mål igjen</button>
+      <button class="btn ghost" onclick="go('start')">Til start</button>`;
+    return;
+  }
+  const k = TR.order[TR.i], t = TECH[k], pair = TRAIN[k];
+  $("trCount").textContent = `Teknikk ${TR.i + 1} av ${n}`;
+  if (TR.stage === "learn") {
+    $("trBody").innerHTML = `
+      <span class="pill warn">Forvarsel</span>
+      <h1>${t.name}</h1>
+      <p><b>${t.short}</b></p>
+      <p>${t.how}</p>
+      <div class="core"><strong>Testspørsmål</strong>${t.test}</div>
+      <button class="btn" onclick="TR.stage='practice';renderTrain()">Øv</button>`;
+  } else {
+    const opts = shuffle([{ x: pair.m, m: 1 }, { x: pair.n, m: 0 }]);
+    TR.opts = opts;
+    $("trBody").innerHTML = `
+      <span class="pill">Svekket dose</span>
+      <h2>Hvilket innlegg bruker «${t.name.toLowerCase()}»?</h2>
+      ${opts.map((o, i) => `<button class="card tap post" style="min-height:0" onclick="pick(${i})">${esc(o.x)}</button>`).join("")}
+      <div class="feedback" id="trFb"></div>
+      <div id="trMake" style="display:none">
+        <label>Prøv selv: skriv det ærlige innlegget om med grepet</label>
+        <textarea id="trOwn" placeholder="Bare for deg. Lagres ikke."></textarea>
+        <p class="small">Å lage manipulasjonen selv er kjernen i Bad News-spillet: du ser grepet innenfra.</p>
+        <button class="btn" onclick="TR.i++;TR.stage='learn';renderTrain()">Neste teknikk</button>
+      </div>`;
+  }
+}
+function pick(i) {
+  const k = TR.order[TR.i], ok = TR.opts[i].m === 1, fb = $("trFb");
+  fb.className = "feedback show " + (ok ? "ok" : "no");
+  fb.innerHTML = (ok ? "<b>Riktig.</b> " : "<b>Ikke denne.</b> Det var det andre. ") + esc(TECH[k].test);
+  $("trMake").style.display = "block";
+}
+
+/* ================= BOOSTER ================= */
+let BO = null;
+function startBooster() { BO = { order: shuffle(TECH_KEYS), i: 0, shown: false }; go("booster"); renderBooster(); }
+function renderBooster() {
+  if (BO.i >= BO.order.length) {
+    $("boCount").textContent = "";
+    $("boBody").innerHTML = `<p>Seks grep hentet frem. Nå en kort test med nye innlegg.</p><button class="btn" onclick="startTest('booster')">Start booster-test</button>`;
+    return;
+  }
+  const k = BO.order[BO.i];
+  $("boCount").textContent = `${BO.i + 1} av ${BO.order.length}`;
+  $("boBody").innerHTML = `
+    <div class="post">${esc(TRAIN[k].m)}</div>
+    <p class="muted">Hvilket grep er dette? Si det for deg selv før du snur kortet.</p>
+    ${BO.shown ? `<div class="core"><strong>${TECH[k].name}</strong>${TECH[k].short}<br><span class="small">${TECH[k].test}</span></div>
+      <button class="btn" onclick="BO.i++;BO.shown=false;renderBooster()">Neste</button>`
+      : `<button class="btn secondary" onclick="BO.shown=true;renderBooster()">Snu kortet</button>`}`;
+}
+
+/* ================= FØR DU DELER ================= */
+function seg(b) { b.parentNode.querySelectorAll("button").forEach(x => x.classList.remove("on")); b.classList.add("on"); }
+function look(kind) {
+  const q = $("delText").value.trim();
+  if (!q) { $("delText").focus(); $("delText").placeholder = "Lim inn noe først"; return false; }
+  const e = encodeURIComponent(q);
+  const url = {
+    wiki: "https://no.wikipedia.org/w/index.php?search=" + e,
+    fact: "https://toolbox.google.com/factcheck/explorer/search/" + e,
+    faktisk: "https://www.google.com/search?q=" + encodeURIComponent("site:faktisk.no " + q),
+    news: "https://news.google.com/search?q=" + e + "&hl=no&gl=NO&ceid=NO:no"
+  }[kind];
+  window.open(url, "_blank", "noopener");
+  return false;
+}
+function delSummary() {
+  const acc = +$("delAcc").value;
+  const feelBtn = $("delFeel").querySelector(".on");
+  const feel = feelBtn ? feelBtn.textContent : "ikke valgt";
+  const techs = TECH_KEYS.filter(k => $("dt-" + k).checked).map(k => TECH[k].name);
+  let advice;
+  if (techs.length && acc < 70) advice = "Du ser grep og er usikker. Vent. Del gjerne heller en faktasjekk eller ingenting.";
+  else if (techs.length) advice = "Du tror det er sant, men ser grep. Kanskje finnes samme sak fortalt ærlig et annet sted — del den i stedet.";
+  else if (acc < 50) advice = "Du tror det mer sannsynlig er feil. Da er det ikke ditt å spre.";
+  else if (feel === "Sint / redd") advice = "Ingen grep funnet, men følelsen er sterk. Vent ti minutter og les én gang til.";
+  else advice = "Du har stoppet, sjekket og vurdert. Det er det du kan gjøre. Avgjørelsen er din.";
+  const o = $("delOut"); o.style.display = "block";
+  o.textContent = `Ditt anslag: ${acc} % sannsynlig sant\nFølelse: ${feel}\nGrep du så: ${techs.length ? techs.join(", ") : "ingen"}\n\n${advice}\n\nAppen vet ikke om påstanden er sann. Den vet bare at du tok deg tid.`;
+}
+
+/* ================= SAMTALE ================= */
+function sandwich() {
+  const f = $("sFakta").value.trim(), m = $("sMyte").value.trim(), k = $("sTek").value, a = $("sAlt").value.trim();
+  if (!f || !m) { $("sOut").style.display = "block"; $("sOut").textContent = "Fyll inn minst fakta og myte."; return; }
+  const tek = k ? `Påstanden bruker ${TECH[k].name.toLowerCase()}: ${TECH[k].short.toLowerCase()}` : "Påstanden ser overbevisende ut, men holder ikke når man sjekker.";
+  $("sOut").style.display = "block"; $("sCopy").style.display = "block";
+  $("sOut").textContent = `${f}\n\nDu har kanskje hørt at ${m.replace(/\.$/, "")}. Det stemmer ikke.\n\n${tek}${a ? "\n\n" + a : ""}\n\nDet vi vet: ${f}`;
+}
+function aiPrompt() {
+  const c = $("aiClaim").value.trim(), w = $("aiWhy").value.trim();
+  if (!c) { $("aiOut").style.display = "block"; $("aiOut").textContent = "Skriv inn påstanden først."; return; }
+  $("aiOut").style.display = "block"; $("aiCopy").style.display = "block";
+  $("aiOut").textContent =
+`Denne samtalen er åpen: vi som leser den vet hva den er for.
+
+Jeg tror dette: «${c}»
+${w ? `Grunnene mine: ${w}\n` : ""}
+Rollen din: Vær en respektfull, grundig samtalepartner. Målet er å teste om påstanden holder, med den beste tilgjengelige evidensen — ikke å vinne eller å gjøre narr av meg.
+
+Regler:
+1. Gå inn på MINE grunner én for én. Ikke generelle argumenter.
+2. Vær konkret: tall, studier, hvem som har undersøkt det, og hvordan.
+3. Si tydelig når noe er usikkert eller omstridt, og når deler av det jeg sier faktisk stemmer.
+4. Ikke bruk emosjonelt press, hån eller personangrep.
+5. Spør meg hva som skulle til for at jeg endret mening, og hva som skulle til for at du gjorde det.
+6. Avslutt med en kort oppsummering og 2–3 kilder jeg kan sjekke selv.
+
+Spør meg først hvor sikker jeg er på en skala fra 0 til 100.`;
+}
+function copy(id) {
+  const t = $(id).textContent;
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(() => {
+    const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove();
+  });
+}
+
+/* ================= TILTAKSSJEKK ================= */
+function renderTiltak() {
+  $("tList").innerHTML = TILTAK.map((q, i) => `
+    <div class="card"><div>${q[0]}</div><div class="small">${q[1]}</div>
+    <div class="seg" data-q="${i}">
+      <button onclick="seg(this)" data-v="1">Ja, dokumentert</button>
+      <button onclick="seg(this)" data-v="0.5">Delvis</button>
+      <button onclick="seg(this)" data-v="0">Nei / vet ikke</button>
+    </div></div>`).join("");
+}
+function tiltakScore() {
+  let got = 0, max = 0; const missing = [];
+  TILTAK.forEach((q, i) => {
+    const on = document.querySelector(`.seg[data-q="${i}"] .on`);
+    const v = on ? +on.dataset.v : 0; got += v * q[2]; max += q[2];
+    if (v < 1) missing.push(q);
+  });
+  const pct = Math.round(got / max * 100);
+  const core = [0,1,2].every(i => { const on = document.querySelector(`.seg[data-q="${i}"] .on`); return on && on.dataset.v === "1"; });
+  let verdict, cls;
+  if (core && pct >= 75) { verdict = "Forskningsforankret"; cls = ""; }
+  else if (pct >= 45) { verdict = "Lovende, men ikke vist"; cls = "warn"; }
+  else { verdict = "Forskningsformet, ikke forskningsbasert"; cls = "bad"; }
+  const name = $("tName").value.trim() || "Tiltaket";
+  $("tOut").innerHTML = `<div class="card" style="margin-top:14px">
+    <span class="pill ${cls}">${verdict} · ${pct} %</span>
+    <h3>${esc(name)}</h3>
+    ${!core ? `<p class="muted">De tre første spørsmålene er kjernen: skilleevne, kontrollgruppe og utsatt måling. Uten dem vet ingen om tiltaket virker — uansett hvor mange studier det siterer.</p>` : ""}
+    ${missing.length ? `<h3 style="margin-top:10px">Det som mangler</h3><ul class="plain">${missing.map(q => `<li>${q[0]}<div class="small">${q[1]}</div></li>`).join("")}</ul>` : "<p>Ingenting mangler på denne listen. Sjelden vare.</p>"}
+  </div>`;
+}
+
+/* ================= KILDER ================= */
+function renderSources() {
+  $("srcList").innerHTML = SOURCES.map(s => `<div class="src"><div class="cite">${esc(s[0])}</div>
+    <div class="small">${esc(s[1])} <a href="https://doi.org/${s[2]}" target="_blank" rel="noopener">doi:${s[2]}</a></div>
+    <div>${esc(s[3])}</div></div>`).join("");
+  $("fixes").innerHTML = FIXES.map(f => `<div class="fix"><b>${esc(f[0])}</b><br>${f[1]}</div>`).join("");
+}
+
+/* ================= DIV ================= */
+function exportData() {
+  const blob = new Blob([JSON.stringify({ eksportert: new Date().toISOString(), ...S }, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "skilleevne-resultater.json"; a.click();
+}
+function resetAll() { if (confirm("Slette alle resultater på denne enheten?")) { S = {}; save(); renderStart(); } }
+
+function init() {
+  $("delTech").innerHTML = TECH_KEYS.map(k => `<label class="check" style="font-weight:400;margin:0"><input type="checkbox" id="dt-${k}"><span><b>${TECH[k].name}</b><br><span class="small">${TECH[k].short}</span></span></label>`).join("");
+  $("sTek").innerHTML = `<option value="">Velg (valgfritt)</option>` + TECH_KEYS.map(k => `<option value="${k}">${TECH[k].name}</option>`).join("");
+  renderTiltak(); renderSources(); renderStart();
+}
+init();
+</script>
+</body>
+</html>
