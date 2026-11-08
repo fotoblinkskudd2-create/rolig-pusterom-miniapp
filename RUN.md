@@ -24,3 +24,16 @@ Historikk → «Ta historikken med deg» → `pusterom-historikk.txt`.
 ## Isolation Mirror → Grok-bot
 
 Skriv note → Generer → Kopier prompt → lim i Labben eller Grok-bot med `/lab`.
+
+## Motgift (1.2)
+
+Hjem → «Motgift». Fire faner:
+
+| Fane | Gjør | Lagres lokalt |
+|---|---|---|
+| Tren | 12 oppdiktede poster, gjett teknikken (prebunking) | `motgift.quiz` (treffprosent) |
+| Sjekk | Lim inn tekst → markerer manipulasjonssignaler + SIFT + faktasjekk-lenker | ingenting |
+| Pause | 3 pust + «hvor sikker er du?» før deling | `motgift.pauses` |
+| Samtale | Guide for samtale med noen som tror + kopierbar AI-prompt | ingenting |
+
+Skanneren finner *teknikk*, ikke sannhet. Det står i appen.

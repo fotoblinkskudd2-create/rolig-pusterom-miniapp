@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motgift – Pusterom</title>
+<style>
+  :root {
+    --bg:#f5f7f4; --card:#fff; --text:#3a4a3f; --muted:#6f7f74; --accent:#a8c5b0;
+    --soft-blue:#d4e4f0; --soft-beige:#f0e9df; --soft-green:#e0ebe3; --line:#e5ebe6;
+    --warn:#f3e0c8; --warn-text:#7a4a14; --bad:#f2d6d6; --good:#d6ecdc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#1a1f1c; --card:#242b26; --text:#e0ebe3; --muted:#9aaa9f; --accent:#8fb59a;
+      --soft-blue:#2b3a46; --soft-beige:#3a352d; --soft-green:#2c3a30; --line:#33403a;
+      --warn:#4a3a24; --warn-text:#f0d2a8; --bad:#4a2c2c; --good:#2c4a34;
+    }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; padding-bottom:84px; }
+  .wrap { max-width:440px; margin:0 auto; padding:24px 16px 40px; }
+  a.back { color:var(--muted); font-size:.85rem; text-decoration:none; display:inline-block; margin-bottom:14px; }
+  h1 { font-size:1.5rem; font-weight:600; margin-bottom:6px; }
+  h2 { font-size:1.15rem; font-weight:600; margin:4px 0 10px; }
+  h3 { font-size:1rem; font-weight:600; margin-bottom:6px; }
+  p { color:var(--muted); font-size:.95rem; margin-bottom:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px; }
+  .tab { display:none; } .tab.active { display:block; }
+  .btn { display:block; width:100%; background:var(--accent); color:#1f2f24; border:none; border-radius:14px; padding:14px; font-size:1rem; font-weight:600; cursor:pointer; font-family:inherit; }
+  .btn.ghost { background:transparent; border:1px solid var(--line); color:var(--text); margin-top:10px; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  textarea, input[type=text] { width:100%; border:1px solid var(--line); border-radius:14px; padding:12px; font:inherit; font-size:1rem; background:var(--card); color:var(--text); margin-bottom:12px; }
+  textarea { min-height:110px; resize:vertical; }
+  .post { background:var(--soft-beige); border-radius:14px; padding:14px; font-size:1rem; margin-bottom:14px; white-space:pre-wrap; }
+  .choices { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .choice { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 8px; font:inherit; font-size:.9rem; color:var(--text); cursor:pointer; }
+  .choice.right { background:var(--good); border-color:var(--accent); }
+  .choice.wrong { background:var(--bad); }
+  .feedback { margin-top:12px; font-size:.95rem; display:none; }
+  .feedback.show { display:block; }
+  .meta { display:flex; justify-content:space-between; font-size:.85rem; color:var(--muted); margin-bottom:10px; }
+  .legend { font-size:.88rem; color:var(--muted); }
+  .legend b { color:var(--text); }
+  .legend div { margin-bottom:6px; }
+  mark { background:var(--warn); color:var(--warn-text); border-radius:4px; padding:0 2px; }
+  .scanout { white-space:pre-wrap; background:var(--soft-green); border-radius:14px; padding:14px; margin-bottom:12px; }
+  .signal { font-size:.9rem; margin-bottom:8px; }
+  .signal b { color:var(--text); }
+  .links a { display:block; padding:12px; border:1px solid var(--line); border-radius:12px; margin-bottom:8px; color:var(--text); text-decoration:none; background:var(--card); }
+  ol.steps { padding-left:20px; color:var(--text); }
+  ol.steps li { margin-bottom:10px; font-size:.95rem; }
+  ol.steps li span { color:var(--muted); display:block; font-size:.88rem; }
+  .note { font-size:.85rem; color:var(--muted); border-left:3px solid var(--accent); padding-left:10px; margin:10px 0 14px; }
+  .circle-wrap { display:flex; justify-content:center; align-items:center; height:200px; }
+  .circle { width:100px; height:100px; border-radius:50%; background:var(--soft-blue); transition:transform 4s ease-in-out, background 4s; }
+  .circle.inhale { transform:scale(1.6); background:var(--accent); }
+  .breath-text { text-align:center; font-size:1.2rem; min-height:2rem; margin-bottom:14px; }
+  .scale { display:flex; gap:6px; margin:10px 0 14px; }
+  .scale button { flex:1; padding:12px 0; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--text); font:inherit; cursor:pointer; }
+  .scale button.sel { background:var(--soft-green); border-color:var(--accent); }
+  pre { white-space:pre-wrap; font-size:.82rem; background:var(--soft-green); padding:12px; border-radius:12px; color:var(--text); font-family:ui-monospace,monospace; }
+  .hidden { display:none; }
+  .nav { position:fixed; bottom:0; left:0; right:0; background:var(--card); display:flex; justify-content:space-around; padding:8px 0 14px; border-top:1px solid var(--line); }
+  .nav button { background:none; border:none; font-size:.75rem; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:6px 10px; font-family:inherit; }
+  .nav button span { font-size:1.25rem; }
+  .nav button.active { color:var(--text); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Pusterom</a>
+  <h1>Motgift</h1>
+  <p>Verktøy mot manipulasjon og konspirasjonsteorier. Bygget på forskning, ikke på å latterliggjøre noen. Alt blir på denne enheten.</p>
+
+  <!-- TREN -->
+  <section id="tab-tren" class="tab active">
+    <h2>Tren øyet</h2>
+    <p>Noen vil lure deg med teknikker, ikke fakta. Lær teknikkene, så kjenner du dem igjen i neste myte også.</p>
+    <div class="card">
+      <div class="meta"><span id="qNum"></span><span id="qScore"></span></div>
+      <div class="post" id="qPost"></div>
+      <div class="choices" id="qChoices"></div>
+      <div class="feedback" id="qFeedback"></div>
+      <button class="btn ghost hidden" id="qNext" onclick="nextQ()">Neste</button>
+    </div>
+    <details class="card legend">
+      <summary><b>De seks teknikkene</b></summary>
+      <div style="margin-top:10px" id="legend"></div>
+    </details>
+    <p class="note">Metoden heter prebunking/inokulering. Korte øvelser om disse teknikkene økte folks evne til å kjenne igjen manipulasjon, også i en felttest på YouTube (Roozenbeek m.fl., Science Advances 2022). Alle postene her er oppdiktet.</p>
+  </section>
+
+  <!-- SJEKK -->
+  <section id="tab-sjekk" class="tab">
+    <h2>Sjekk en påstand</h2>
+    <p>Lim inn en post, en melding eller en overskrift.</p>
+    <textarea id="scanText" placeholder="Lim inn teksten her…"></textarea>
+    <button class="btn" onclick="scan()">Se etter teknikker</button>
+    <div id="scanResult" class="hidden" style="margin-top:14px">
+      <div class="scanout" id="scanMarked"></div>
+      <div class="card" id="scanSignals"></div>
+      <p class="note"><b>Dette er ikke en sannhetsmaskin.</b> Den finner signaler på manipulasjonsteknikk. Sanne ting kan skrives slik, og løgn kan skrives rolig. Bruk stegene under for å finne ut om det stemmer.</p>
+    </div>
+    <div class="card">
+      <h3>SIFT – fire steg, ett minutt</h3>
+      <ol class="steps">
+        <li>Stopp<span>Kjenner du sinne, frykt eller triumf? Det er et signal om å senke farten, ikke å dele.</span></li>
+        <li>Undersøk kilden<span>Forlat siden. Søk hvem som står bak, hva andre sier om dem.</span></li>
+        <li>Finn bedre dekning<span>Har en faktasjekker eller to uavhengige redaksjoner omtalt det?</span></li>
+        <li>Spor til originalen<span>Bilde: omvendt bildesøk. Studie: les sammendraget, ikke overskriften.</span></li>
+      </ol>
+    </div>
+    <div class="card links">
+      <h3>Les lateralt</h3>
+      <input type="text" id="claim" placeholder="Påstanden med egne ord (f.eks. «strømprisen styres av WEF»)">
+      <div id="linkList"></div>
+    </div>
+  </section>
+
+  <!-- PAUSE -->
+  <section id="tab-pause" class="tab">
+    <h2>Før du deler</h2>
+    <p>Tre rolige pust. Så ett spørsmål. Bare det å tenke på om noe er sant, gjør at folk deler færre falske nyheter (Pennycook m.fl., Nature 2021).</p>
+    <div class="card">
+      <div class="circle-wrap"><div class="circle" id="pCircle"></div></div>
+      <div class="breath-text" id="pText">Trykk start</div>
+      <button class="btn" id="pBtn" onclick="startPause()">Start pausen</button>
+      <div id="pAsk" class="hidden" style="margin-top:16px">
+        <h3>Hvor sikker er du på at det er sant?</h3>
+        <div class="scale" id="pScale"></div>
+        <div id="pAfter" class="hidden">
+          <p id="pAdvice" style="color:var(--text)"></p>
+          <button class="btn" onclick="endPause(true)">Jeg deler</button>
+          <button class="btn ghost" onclick="endPause(false)">Jeg venter / sjekker først</button>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="pStats"></p>
+  </section>
+
+  <!-- SAMTALE -->
+  <section id="tab-samtale" class="tab">
+    <h2>Snakke med noen du er glad i</h2>
+    <p>Målet er ikke å vinne. Det er å bevare relasjonen og flytte sikkerheten litt. Folk tror ofte fordi troen gir kontroll, mening eller fellesskap. Behovet må tas på alvor.</p>
+    <div class="card">
+      <ol class="steps">
+        <li>Velg et rolig øyeblikk<span>Ikke foran andre. Ikke når noen er stresset.</span></li>
+        <li>Lytt først<span>«Hva fikk deg til å tenke på dette?» Ofte ligger frykt eller maktesløshet under.</span></li>
+        <li>Spør om sikkerhet<span>«Fra 1 til 10, hvor sikker er du?» → «Hvorfor ikke 10?» Tvilen de sier selv, veier mest.</span></li>
+        <li>Spør om kriterier<span>«Hva ville fått deg til å endre mening?»</span></li>
+        <li>Gi ett konkret motbevis<span>Svar på deres sterkeste argument, ikke en stråmann. Fakta → myten én gang → hvorfor den lurer → fakta.</span></li>
+        <li>Anerkjenn det som er sant<span>Myndigheter og selskaper har løyet før. Si det. Det gir deg troverdighet.</span></li>
+        <li>Avslutt varmt<span>Relasjonen er kanalen. Uten den blir det ingen neste samtale.</span></li>
+      </ol>
+      <p class="note">Unngå: latterliggjøring, merkelapper som «konspirasjonsteoretiker», 40 lenker på rad.</p>
+    </div>
+    <div class="card">
+      <h3>Forbered deg med AI</h3>
+      <p>I en stor studie (Costello, Pennycook & Rand, Science 2024) ble troen på konspirasjonsteorier rundt 20 % svakere etter tre korte, saklige dialoger med en AI. Effekten varte i to måneder. Her lager du en prompt du kan lime inn i Claude eller en annen assistent. Ingenting sendes herfra.</p>
+      <input type="text" id="sBelief" placeholder="Hva tror personen? (f.eks. «månelandingen var falsk»)">
+      <textarea id="sWhy" placeholder="Hvorfor tror de det, med deres egne ord? (valgfritt)" style="min-height:80px"></textarea>
+      <div class="scale" id="sMode">
+        <button class="sel" data-m="meg">Jeg vil forstå selv</button>
+        <button data-m="dem">Øve på samtalen</button>
+      </div>
+      <button class="btn" onclick="makePrompt()">Lag prompt</button>
+      <div id="sOut" class="hidden" style="margin-top:12px">
+        <pre id="sPrompt"></pre>
+        <button class="btn ghost" id="sCopy" onclick="copyPrompt()">Kopier prompt</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="nav">
+  <button class="active" data-tab="tren"><span>🎯</span>Tren</button>
+  <button data-tab="sjekk"><span>🔎</span>Sjekk</button>
+  <button data-tab="pause"><span>🌬️</span>Pause</button>
+  <button data-tab="samtale"><span>🤝</span>Samtale</button>
+</nav>
+
+<script>
+/* ---------- lagring (tåler privat modus) ---------- */
+function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function esc(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- navigasjon ---------- */
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  save('motgift.tab', name);
+  window.scrollTo(0, 0);
+}
+
+/* ---------- TREN ---------- */
+const TECH = {
+  emosjon:      { navn: 'Emosjonelt språk', hint: 'Frykt- og sinneord, VERSALER, «sjokkerende». Vil at du skal føle før du tenker.' },
+  usammenheng:  { navn: 'Usammenheng',      hint: 'To påstander som ikke kan være sanne samtidig, men brukes side om side.' },
+  dilemma:      { navn: 'Falskt dilemma',   hint: '«Enten … eller». Skjuler alle mellomløsningene.' },
+  syndebukk:    { navn: 'Syndebukk',        hint: 'Én gruppe får skylden for et sammensatt problem.' },
+  personangrep: { navn: 'Personangrep',     hint: 'Angriper personen, ikke argumentet.' },
+  ekspert:      { navn: 'Falsk ekspert',    hint: 'Tittel uten relevant fagfelt, «innsider», «lege avslører».' }
+};
+const POSTS = [
+  { post: 'SJOKKERENDE!!! Det de putter i Fjellbris-vannet ditt kommer til å GJØRE BARNA DINE SYKE. Foreldre er livredde. Del NÅ!', riktig: 'emosjon', hvorfor: 'Versaler, «sjokkerende», «livredde», «del nå». Ingen fakta om hva stoffet er eller hvor mye. Målet er frykt, ikke informasjon.' },
+  { post: 'Enten støtter du det nye bompengesystemet i Vestvik, eller så hater du miljøet. Det finnes ingen mellomting.', riktig: 'dilemma', hvorfor: '«Enten … eller … ingen mellomting». Man kan bry seg om miljøet og likevel mene at akkurat dette systemet er dårlig.' },
+  { post: 'Strømprisen er høy fordi innflytterne fra Nordmarka bruker så mye strøm. Det er DE som ødelegger for oss andre.', riktig: 'syndebukk', hvorfor: 'Strømpris styres av kraftmarked, kabler, vær og nedbør. Her får én gruppe skylden for et sammensatt problem.' },
+  { post: 'Klimaforskeren Ida Brekke snakker om havnivå, men hun kjører jo bil og flyr på ferie. Hvorfor skal vi høre på en hykler?', riktig: 'personangrep', hvorfor: 'Om hun flyr, sier ingenting om havnivåmålingene er riktige. Argumentet angripes ikke, bare personen.' },
+  { post: 'Dr. Hans Vold, utdannet veterinær, avslører: Den nye hjertemedisinen er farlig for mennesker. Legene tør ikke si det!', riktig: 'ekspert', hvorfor: 'Doktortittel, men feil fagfelt. Og «legene tør ikke» gjør at all motstand blir et bevis for påstanden.' },
+  { post: 'Ingen gikk noensinne på månen. Og forresten var astronautene som døde der oppe drept av NASA fordi de visste for mye.', riktig: 'usammenheng', hvorfor: 'Hvis ingen var på månen, kan ingen ha dødd der. To påstander som utelukker hverandre brukes sammen fordi begge gir mistillit.' },
+  { post: 'Hvis du tar bussen i Bergvik i stedet for å kjøre selv, er du en sau som gjør det politikerne sier. Velg: frihet eller kontroll.', riktig: 'dilemma', hvorfor: '«Velg: frihet eller kontroll». Bussvalg er ikke et valg mellom frihet og slaveri. Mange andre grunner er skjult.' },
+  { post: 'Ekspert på velvære og «indre energi», Lise Moen, sier at 5G-mastene i Østlia gir hodepine. Hun har 200 000 følgere.', riktig: 'ekspert', hvorfor: 'Følgertall er ikke kompetanse. «Velvære» er ikke strålevern eller medisin. Hva sier Strålevernet og forskningen?' },
+  { post: 'Arbeidsledigheten stiger fordi pensjonistene ikke vil gå av. De sitter på jobbene og stjeler fremtiden til de unge.', riktig: 'syndebukk', hvorfor: 'Ledighet påvirkes av konjunktur, rente, bransjer og mye mer. Én gruppe gjøres til fiende.' },
+  { post: 'Ingen har sett denne rapporten fordi den er hemmelig, og den viser helt klart at alle tall fra SSB er falske. Les den her: [lenke]', riktig: 'usammenheng', hvorfor: 'Den er «hemmelig», men lenket. Den «viser klart» noe ingen har sett. Påstandene spiser hverandre.' },
+  { post: 'Hun som skrev faktasjekken er jo bare en 25 år gammel journalist fra Oslo. Hva vet hun om livet på bygda?', riktig: 'personangrep', hvorfor: 'Alder og bosted sier ingenting om kildene i faktasjekken stemmer. Sjekk kildene, ikke personen.' },
+  { post: 'FORRÅDT. Lokalpolitikerne har SOLGT ut Fjordheim og lyver deg rett i ansiktet. Kjenner du ikke sinnet koke?', riktig: 'emosjon', hvorfor: '«Forrådt», «solgt», «sinnet koke». Teksten forteller deg hva du skal føle, uten å si hva som faktisk er solgt.' }
+];
+
+let order = [], qi = 0;
+let quiz = load('motgift.quiz', { svar: 0, riktige: 0 });
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function startQuiz() { order = shuffle(POSTS.map((_, i) => i)); qi = 0; renderQ(); }
+function renderQ() {
+  const p = POSTS[order[qi]];
+  document.getElementById('qNum').textContent = `Post ${qi + 1} av ${POSTS.length}`;
+  document.getElementById('qScore').textContent = quiz.svar ? `Treff totalt: ${Math.round(100 * quiz.riktige / quiz.svar)} %` : '';
+  document.getElementById('qPost').textContent = p.post;
+  const fb = document.getElementById('qFeedback'); fb.className = 'feedback'; fb.innerHTML = '';
+  document.getElementById('qNext').classList.add('hidden');
+  const box = document.getElementById('qChoices'); box.innerHTML = '';
+  Object.keys(TECH).forEach(id => {
+    const b = document.createElement('button');
+    b.className = 'choice'; b.textContent = TECH[id].navn; b.dataset.id = id;
+    b.onclick = () => answer(id);
+    box.appendChild(b);
+  });
+}
+function answer(id) {
+  const p = POSTS[order[qi]];
+  const ok = id === p.riktig;
+  quiz.svar++; if (ok) quiz.riktige++; save('motgift.quiz', quiz);
+  document.querySelectorAll('#qChoices .choice').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.id === p.riktig) b.classList.add('right');
+    else if (b.dataset.id === id) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('qFeedback');
+  fb.innerHTML = `<b>${ok ? 'Riktig.' : 'Ikke helt. Det var ' + TECH[p.riktig].navn.toLowerCase() + '.'}</b> ${esc(p.hvorfor)}`;
+  fb.classList.add('show');
+  const next = document.getElementById('qNext');
+  next.textContent = qi === POSTS.length - 1 ? 'Ta runden på nytt' : 'Neste';
+  next.classList.remove('hidden');
+  document.getElementById('qScore').textContent = `Treff totalt: ${Math.round(100 * quiz.riktige / quiz.svar)} %`;
+}
+function nextQ() { if (qi === POSTS.length - 1) startQuiz(); else { qi++; renderQ(); } }
+document.getElementById('legend').innerHTML = Object.values(TECH).map(t => `<div><b>${t.navn}:</b> ${t.hint}</div>`).join('');
+
+/* ---------- SJEKK ---------- */
+const SIGNALS = [
+  { id: 'emosjon', navn: 'Emosjonelt språk', re: /\b(sjokkerende|skremmende|livredd\w*|forrådt|forræderi|skandale|katastrofe|ondskap|ond|kokende|raseri|folkemord|massemord|shocking)\b/gi, hva: 'Ord som skal gi frykt eller sinne før du tenker.' },
+  { id: 'hast', navn: 'Hastverk / «før det slettes»', re: /(del (nå|før|dette|videre)|før (det|den) (blir )?(slettet|fjernet|sensurert)|blir sensurert|haster|spre(d)? (dette|ordet)|share before)/gi, hva: 'Press for å dele før du rekker å sjekke.' },
+  { id: 'hemmelig', navn: 'Skjult sannhet', re: /(vil ikke at du skal (vite|se|høre|forstå)|det de ikke (forteller|sier)|skjuler (det|sannheten)|mørklegg\w*|sannheten om|våkn(e)? opp|vekk(e)? deg|sheeple|saueflokk\w*|\bsau(er|ene)?\b|ingen tilfeldighet|ikke (en )?tilfeldighet|tilfeldig\?|dekket over|wake up)/gi, hva: 'Rammer inn påstanden som hemmelig, slik at fravær av bevis blir et bevis.' },
+  { id: 'syndebukk', navn: 'Syndebukk / skjult elite', re: /(eliten|globalist\w*|big ?pharma|legemiddelindustrien|\bnwo\b|new world order|deep state|dypstaten|\bwef\b|de mektige|skyggeregjering\w*|de der oppe|cabal)/gi, hva: 'En skjult gruppe får skylden for et sammensatt problem.' },
+  { id: 'medier', navn: 'Mistro mot alle kilder', re: /(\bmsm\b|mainstream ?media|løgnpress\w*|systemmedi\w*|statskanal\w*|fake news|ikke stol på noen|alle lyver)/gi, hva: 'Avviser all uavhengig sjekk på forhånd.' },
+  { id: 'ekspert', navn: 'Ekspert uten kontekst', re: /((lege|forsker|ekspert|professor|doktor|insider|innsider|varsler|whistleblower)\w* (avslører|innrømmer|bekrefter|sier)|eksperter sier|forskere sier|studier viser)/gi, hva: 'Hvem? Hvilket fagfelt? Hvilken studie? Uten navn og kilde kan det ikke sjekkes.' },
+  { id: 'absolutt', navn: 'Absolutte påstander', re: /\b(alle|ingen|alltid|aldri|garantert|bevist|helt sikkert|uten tvil|beviser)\b|\b100 ?%/gi, hva: 'Virkeligheten er sjelden 100 %. Absolutter er lette å si og vanskelige å belegge.' },
+  { id: 'research', navn: '«Gjør din egen research»', re: /(gjør (din|deres) egen (research|undersøkelse)|do your own research|tenk selv|søk det opp selv)/gi, hva: 'Høres kritisk ut, men peker ofte mot kilder som bekrefter det du allerede tror.' },
+  { id: 'dilemma', navn: 'Falskt dilemma', re: /(enten [^.!?]{1,60} eller|hvis du ikke [^.!?]{1,60}(er du|så er du)|velg side|med oss eller mot oss)/gi, hva: 'Bare to valg tilbys. Hva med alle andre?' }
+];
+
+function scan() {
+  const text = document.getElementById('scanText').value;
+  const out = document.getElementById('scanResult');
+  if (!text.trim()) { out.classList.add('hidden'); return; }
+  const ranges = [], hits = {};
+  SIGNALS.forEach(s => {
+    s.re.lastIndex = 0; let m;
+    while ((m = s.re.exec(text)) !== null) {
+      if (!m[0]) { s.re.lastIndex++; continue; }
+      ranges.push([m.index, m.index + m[0].length]);
+      (hits[s.id] = hits[s.id] || new Set()).add(m[0].toLowerCase());
+    }
+  });
+  // VERSALER og utropstegn
+  const words = text.match(/\b[A-ZÆØÅ]{4,}\b/g) || [];
+  const bangs = (text.match(/!{2,}/g) || []).length;
+  let m; const capsRe = /\b[A-ZÆØÅ]{4,}\b|!{2,}/g;
+  if (words.length >= 2 || bangs) { while ((m = capsRe.exec(text)) !== null) ranges.push([m.index, m.index + m[0].length]); }
+
+  // slå sammen overlappende områder og bygg markert tekst trygt
+  ranges.sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  ranges.forEach(r => { const last = merged[merged.length - 1]; if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]); else merged.push(r.slice()); });
+  let html = '', pos = 0;
+  merged.forEach(([a, b]) => { html += esc(text.slice(pos, a)) + '<mark>' + esc(text.slice(a, b)) + '</mark>'; pos = b; });
+  html += esc(text.slice(pos));
+  document.getElementById('scanMarked').innerHTML = html;
+
+  const found = SIGNALS.filter(s => hits[s.id]);
+  let sig = '';
+  if (words.length >= 2 || bangs) sig += `<div class="signal"><b>Rop (VERSALER / !!!)</b> – Volum erstatter argument.</div>`;
+  found.forEach(s => { sig += `<div class="signal"><b>${s.navn}</b> – ${s.hva} <span style="color:var(--muted)">(${[...hits[s.id]].map(esc).join(', ')})</span></div>`; });
+  const n = found.length + ((words.length >= 2 || bangs) ? 1 : 0);
+  const head = n === 0 ? 'Fant ingen typiske teknikk-signaler. Det betyr ikke at det stemmer – sjekk kilden likevel.'
+    : n <= 2 ? `Fant ${n} signal${n > 1 ? 'er' : ''}. Verdt et ekstra blikk.`
+    : `Fant ${n} ulike signaler. Teksten bruker flere klassiske manipulasjonsgrep. Ta en pause før du deler.`;
+  document.getElementById('scanSignals').innerHTML = `<h3>${head}</h3>` + sig;
+  out.classList.remove('hidden');
+  if (!document.getElementById('claim').value) { document.getElementById('claim').value = text.trim().split(/\s+/).slice(0, 10).join(' '); renderLinks(); }
+}
+
+function renderLinks() {
+  const q = document.getElementById('claim').value.trim();
+  const e = encodeURIComponent(q);
+  const items = q ? [
+    ['Faktisk.no', `https://www.google.com/search?q=site%3Afaktisk.no+${e}`],
+    ['Google Fact Check Explorer', `https://toolbox.google.com/factcheck/explorer/search/${e};hl=no`],
+    ['Wikipedia (norsk)', `https://no.wikipedia.org/w/index.php?search=${e}`],
+    ['Nyhetssøk', `https://news.google.com/search?q=${e}&hl=no&gl=NO&ceid=NO:no`],
+    ['Søk med «faktasjekk»', `https://www.google.com/search?q=${e}+faktasjekk`]
+  ] : [];
+  items.push(['Omvendt bildesøk (Google Lens)', 'https://lens.google.com/'], ['Omvendt bildesøk (TinEye)', 'https://tineye.com/']);
+  document.getElementById('linkList').innerHTML = items.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${n} ↗</a>`).join('');
+}
+document.getElementById('claim').addEventListener('input', renderLinks);
+
+/* ---------- PAUSE ---------- */
+let pTimer = null, pRunning = false;
+let pauses = load('motgift.pauses', { tatt: 0, ventet: 0 });
+function renderPauseStats() {
+  document.getElementById('pStats').textContent = pauses.tatt
+    ? `Du har tatt ${pauses.tatt} pause${pauses.tatt > 1 ? 'r' : ''} før deling. ${pauses.ventet} gang${pauses.ventet === 1 ? '' : 'er'} valgte du å vente eller sjekke.`
+    : 'Kun lagret på denne enheten.';
+}
+function startPause() {
+  if (pRunning) return;
+  pRunning = true;
+  const btn = document.getElementById('pBtn'), c = document.getElementById('pCircle'), t = document.getElementById('pText');
+  btn.disabled = true; document.getElementById('pAsk').classList.add('hidden');
+  let n = 0;
+  const cycle = () => {
+    if (n === 3) { t.textContent = 'Godt.'; c.className = 'circle'; btn.disabled = false; btn.textContent = 'Pust en runde til'; pRunning = false; showAsk(); return; }
+    t.textContent = `Pust inn… (${n + 1}/3)`; c.className = 'circle inhale';
+    pTimer = setTimeout(() => { t.textContent = 'Pust ut…'; c.className = 'circle'; pTimer = setTimeout(() => { n++; cycle(); }, 5000); }, 4000);
+  };
+  cycle();
+}
+function showAsk() {
+  const box = document.getElementById('pScale'); box.innerHTML = '';
+  const labels = ['1', '2', '3', '4', '5'];
+  labels.forEach((l, i) => {
+    const b = document.createElement('button'); b.textContent = l;
+    b.onclick = () => {
+      box.querySelectorAll('button').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
+      const v = i + 1;
+      document.getElementById('pAdvice').textContent = v <= 2 ? 'Du er usikker. Da er det et godt tegn å vente – eller sjekke i fanen Sjekk først.'
+        : v <= 4 ? 'Ganske sikker. Vet du hvor det kommer fra? Ett søk tar 30 sekunder.'
+        : 'Helt sikker. Fint – kan du peke på kilden hvis noen spør?';
+      document.getElementById('pAfter').classList.remove('hidden');
+    };
+    box.appendChild(b);
+  });
+  document.getElementById('pAfter').classList.add('hidden');
+  document.getElementById('pAsk').classList.remove('hidden');
+}
+function endPause(shared) {
+  pauses.tatt++; if (!shared) pauses.ventet++; save('motgift.pauses', pauses);
+  document.getElementById('pAsk').classList.add('hidden');
+  document.getElementById('pText').textContent = shared ? 'Greit. Du tok en pause først.' : 'Godt valg. Sjekk-fanen er klar.';
+  document.getElementById('pBtn').textContent = 'Start pausen';
+  renderPauseStats();
+  if (!shared) setTimeout(() => showTab('sjekk'), 1200);
+}
+
+/* ---------- SAMTALE ---------- */
+let sMode = 'meg';
+document.querySelectorAll('#sMode button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#sMode button').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); sMode = b.dataset.m;
+}));
+function makePrompt() {
+  const belief = document.getElementById('sBelief').value.trim() || '[skriv påstanden her]';
+  const why = document.getElementById('sWhy').value.trim();
+  const base = `Påstand: «${belief}»` + (why ? `\nBegrunnelse med egne ord: «${why}»` : '');
+  const p = sMode === 'meg'
+    ? `Jeg vil forstå en påstand ærlig, uten å bli dømt.\n\n${base}\n\nGjør dette:\n1. Spør meg først hvor sikker jeg er (0–100) og hva som overbeviser meg mest.\n2. Ta mitt sterkeste argument på alvor. Svar konkret på det med de beste tilgjengelige bevisene, og si hvor sikre de er.\n3. Si tydelig hva som er sant eller rimelig i påstanden, og hva som ikke holder.\n4. Hold tonen rolig og respektfull. Ingen latterliggjøring.\n5. Etter tre runder: spør hvor sikker jeg er nå, og oppsummer hva vi har funnet.\nSvar på norsk. Hvis du er usikker på et faktum, si det.`
+    : `Jeg skal snakke med noen jeg er glad i som tror på dette, og vil øve.\n\n${base}\n\nSpill personen på en realistisk og respektfull måte (ikke en karikatur). Jeg øver på å lytte, spørre om sikkerhet 1–10, spørre hva som ville endret mening, og gi ett konkret motbevis.\nEtter hver av mine replikker: gi meg én kort, ærlig tilbakemelding i [hakeparentes] – virket det, eller fikk det personen til å gå i forsvar?\nEtter fem runder: oppsummer hva som fungerte og hva jeg bør gjøre annerledes. Svar på norsk.`;
+  document.getElementById('sPrompt').textContent = p;
+  document.getElementById('sOut').classList.remove('hidden');
+  document.getElementById('sCopy').textContent = 'Kopier prompt';
+}
+function copyPrompt() {
+  const txt = document.getElementById('sPrompt').textContent, btn = document.getElementById('sCopy');
+  const done = () => { btn.textContent = 'Kopiert ✓'; };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
+  function fallback() { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = 'Merk teksten og kopier manuelt'; } ta.remove(); }
+}
+
+/* ---------- init ---------- */
+startQuiz(); renderLinks(); renderPauseStats();
+showTab(load('motgift.tab', 'tren'));
+</script>
+</body>
+</html>

@@ -219,6 +219,7 @@
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <a class="btn btn-secondary" href="motgift.html" style="text-align:center;text-decoration:none;margin-top:12px;background:var(--soft-beige)">Motgift: kjenn igjen manipulasjon</a>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -299,8 +300,8 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('onclick') === `switchPage('${name}')`));
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
