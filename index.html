@@ -201,12 +201,36 @@
     text-align: center;
     margin-top: 24px;
   }
+  .local { font-size: 0.8rem; text-align: center; margin: 24px 0 0; }
+  .local a { color: var(--muted); }
+  /* Health-gate */
+  .gate { background: var(--card); border: 1px solid #e8eee9; border-radius: 16px; padding: 16px; margin-bottom: 24px; }
+  .gate h2 { font-size: 1.05rem; margin-bottom: 12px; }
+  .gate label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 0.95rem; }
+  .gate input[type=number] { width: 80px; padding: 8px; border: 1px solid #e0e6e1; border-radius: 10px; font-size: 1rem; text-align: center; }
+  .gate input[type=range] { flex: 1; }
+  .gate input[type=checkbox] { width: 22px; height: 22px; }
+  .verdict { border-radius: 14px; padding: 14px; margin-top: 12px; display: none; font-size: 0.95rem; }
+  .verdict.show { display: block; }
+  .verdict.gronn { background: var(--soft-green); }
+  .verdict.gul { background: #f6efd6; }
+  .verdict.rod { background: #f3dcdc; }
 </style>
 </head>
 <body>
 
 <div id="page-hjem" class="page active">
   <h1>Hei. Du er trygg her.</h1>
+
+  <div class="gate">
+    <h2>Dagens port</h2>
+    <label>Søvn i natt (timer) <input type="number" id="gSleep" min="0" max="14" step="0.5" inputmode="decimal"></label>
+    <label>Gjort dagens øvelser <input type="checkbox" id="gStrength"></label>
+    <label>Stress <input type="range" id="gStress" min="0" max="10" value="5"> <b id="gStressVal">5</b></label>
+    <button class="btn" onclick="runGate()">Sjekk porten</button>
+    <div class="verdict" id="gateVerdict"></div>
+  </div>
+
   <p class="support">Hvordan har du det akkurat nå?</p>
   <div class="mood-scale" id="moodScale">
     <button class="mood-btn" data-mood="1">😔</button>
@@ -219,6 +243,7 @@
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
   <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <p class="support local">Alt blir på denne enheten. Ingen konto, ingen sky.<br><a href="isolation-mirror.html">Isolation Mirror →</a></p>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -241,13 +266,14 @@
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
   <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <button class="btn btn-secondary" onclick="exportHistory()">Ta historikken med deg</button>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-page="hjem" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
+  <button data-page="pusterom" onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
+  <button data-page="grep" onclick="switchPage('grep')"><span>✋</span>Små grep</button>
+  <button data-page="historikk" onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -274,11 +300,70 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
   });
 });
 
-function saveCheckin() {
-  if (!selectedMood) {
-    alert('Velg hvordan du har det først.');
+// ---- Health-gate: søvn, styrke, stress. Grønn / gul / rød. ----
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; }
+}
+function store(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+
+document.getElementById('gStress').addEventListener('input', e => {
+  document.getElementById('gStressVal').textContent = e.target.value;
+});
+
+function gateLevel(sleep, strength, stress) {
+  const misses = (sleep < 6) + (!strength) + (stress > 5);
+  if (sleep < 4.5 || stress >= 8 || misses >= 2) return 'rod';
+  return misses === 1 ? 'gul' : 'gronn';
+}
+
+const gateText = {
+  gronn: 'Grønn. Én bygg-oppgave + én kreativ leveranse. Hard stopp 21:00.',
+  gul: 'Gul. Én ting, maks 45 minutter. Ingen ny kode i dag.',
+  rod: 'Rød. Ingen bygging i dag. Pust, spis, drikk, hvil. Det er jobben i dag.'
+};
+
+function redLast7(list) {
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  return list.filter(g => g.level === 'rod' && new Date(g.date) > weekAgo).length;
+}
+
+function runGate() {
+  const sleepRaw = document.getElementById('gSleep').value;
+  const v = document.getElementById('gateVerdict');
+  if (sleepRaw === '') {
+    v.className = 'verdict show gul';
+    v.textContent = 'Skriv inn timer søvn først.';
     return;
   }
+  const sleep = parseFloat(sleepRaw);
+  const strength = document.getElementById('gStrength').checked;
+  const stress = parseInt(document.getElementById('gStress').value, 10);
+  const level = gateLevel(sleep, strength, stress);
+  const list = load('gate', []);
+  const today = new Date().toDateString();
+  const kept = list.filter(g => new Date(g.date).toDateString() !== today);
+  kept.unshift({ date: new Date().toISOString(), sleep, strength, stress, level });
+  store('gate', kept);
+  let text = gateText[level];
+  if (redLast7(kept) >= 3) {
+    text += ' — 3 røde dager på 7: KILL. Stopp all bygging i 7 dager og snakk med fastlege eller behandler.';
+  }
+  v.className = 'verdict show ' + level;
+  v.textContent = text;
+  renderHistory();
+}
+
+function saveCheckin() {
+  const msg = document.getElementById('saveMsg');
+  if (!selectedMood) {
+    msg.textContent = 'Velg hvordan du har det først.';
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 3000);
+    return;
+  }
+  msg.textContent = 'Takk. Det er bra at du sjekket inn.';
   const note = document.getElementById('note').value.trim();
   const entry = {
     date: new Date().toISOString(),
@@ -299,8 +384,9 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.page === name));
+  window.scrollTo(0, 0);
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -378,7 +464,15 @@ function renderHistory() {
       const moodEmoji = ['', '😔', '😕', '😐', '🙂', '😌'][e.mood] || '😐';
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `<div class="date">${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}</div>${e.note ? '<div>' + e.note + '</div>' : ''}`;
+      const date = document.createElement('div');
+      date.className = 'date';
+      date.textContent = `${d.toLocaleDateString('no-NO', {weekday:'short', day:'numeric', month:'short'})} · ${moodEmoji}`;
+      item.appendChild(date);
+      if (e.note) {
+        const n = document.createElement('div');
+        n.textContent = e.note;
+        item.appendChild(n);
+      }
       container.appendChild(item);
     });
   }
@@ -386,7 +480,26 @@ function renderHistory() {
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
-  document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
+  const gates = load('gate', []).filter(g => new Date(g.date) > weekAgo);
+  const dots = { gronn: '🟢', gul: '🟡', rod: '🔴' };
+  const gateLine = gates.length ? ` Port: ${gates.slice().reverse().map(g => dots[g.level]).join(' ')}` : '';
+  document.getElementById('weekSummary').textContent =
+    `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.${gateLine}`;
+}
+
+function exportHistory() {
+  const checkins = load('checkins', []);
+  const gates = load('gate', []);
+  const lines = ['PUSTEROM – historikk', `Eksportert ${new Date().toLocaleString('no-NO')}`, '', '## Sjekk-inn (humør 1–5)'];
+  checkins.forEach(e => lines.push(`${new Date(e.date).toLocaleString('no-NO')} · ${e.mood}${e.note ? ' · ' + e.note : ''}`));
+  lines.push('', '## Port (søvn t / øvelser / stress 0–10 → nivå)');
+  gates.forEach(g => lines.push(`${new Date(g.date).toLocaleDateString('no-NO')} · ${g.sleep} / ${g.strength ? 'ja' : 'nei'} / ${g.stress} → ${g.level}`));
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pusterom-historikk.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 // init

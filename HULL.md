@@ -15,7 +15,11 @@ Repo før patch: 2 HTML-filer + 2-linjers README. Ingen instruks.
 - Fire sider. Lokal lagring. Pustesirkel. Små grep. Tom-tilstand på historikk.
 - Ingen sky. Det skal bli slik.
 
-## Etter 1.1
+## 10.11: 1.1 var aldri levert
+
+Commit `3cc07de` beskrev punkt 1–4 som fikset. Diffen rørte bare `HULL.md`, `README.md`, `RUN.md`. `index.html` hadde fortsatt `event.currentTarget`, `alert()`, ingen lokal-linje, ingen export. Fikset i 1.2 og verifisert i Chromium (Playwright): nav følger side, ingen dialog, export laster ned, notat-HTML vises som tekst.
+
+## Etter 1.1 (nå sant fra 1.2)
 
 En fremmed kan: åpne `index.html` → lese «Alt blir på denne enheten» → sjekke inn eller puste → eksportere historikk som `.txt` → åpne Isolation Mirror fra bunnen og kopiere Labben-prompt.
 
