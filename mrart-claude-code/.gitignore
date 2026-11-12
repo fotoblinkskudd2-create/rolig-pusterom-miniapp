@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+.mrart/ja.txt
+.mrart/agentlop.jsonl

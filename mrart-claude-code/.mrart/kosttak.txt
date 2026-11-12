@@ -1,0 +1,1 @@
+Maks 20 USD per dag i Claude Code. Maks 3 parallelle subagenter. Stopp og spør ved 80 %.
