@@ -1,0 +1,23 @@
+{
+  "name": "rolig-pusterom-miniapp",
+  "version": "1.0.0",
+  "description": "Rolig mini-app: innsjekk, pusterom, små grep, historikk.",
+  "scripts": {
+    "generate:audio": "node scripts/generate-audio.mjs",
+    "generate:manifest": "node scripts/generate-audio.mjs --manifest-only"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp/issues"
+  },
+  "homepage": "https://github.com/fotoblinkskudd2-create/rolig-pusterom-miniapp#readme",
+  "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.77.0"
+  },
+  "private": true,
+  "type": "module"
+}

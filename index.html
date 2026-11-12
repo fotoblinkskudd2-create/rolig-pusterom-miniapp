@@ -201,6 +201,24 @@
     text-align: center;
     margin-top: 24px;
   }
+  .moments { margin-top: 36px; }
+  .moments h2 { font-size: 1.1rem; margin-bottom: 4px; }
+  .set-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  .set-tabs button {
+    border: 1px solid #d5e0d8; background: var(--card); color: var(--text);
+    border-radius: 999px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer;
+  }
+  .set-tabs button.active { background: var(--accent); border-color: var(--accent); font-weight: 600; }
+  .clip-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .clip-list button {
+    width: 100%; text-align: left; border: none; background: var(--soft-green);
+    color: var(--text); border-radius: 14px; padding: 12px 14px; font-size: 0.92rem;
+    line-height: 1.4; cursor: pointer; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .clip-list button.playing { background: var(--soft-blue); }
+  .clip-list .num { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 1.4em; }
+  .riff-btn { background: #2b2b2b !important; color: #f5f5f5 !important; }
+  .audio-missing { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -229,6 +247,15 @@
   </div>
   <div class="breath-text" id="breathText">Trykk start</div>
   <button class="btn" id="breathBtn" onclick="toggleBreath()">Start</button>
+
+  <section class="moments" id="moments" hidden>
+    <h2>Korte øyeblikk</h2>
+    <p class="support">Trykk på en setning for å høre den.</p>
+    <div class="set-tabs" id="setTabs"></div>
+    <ul class="clip-list" id="clipList"></ul>
+    <button class="btn riff-btn" id="riffBtn" onclick="playRiff()">🤘 Metal-riff</button>
+    <p class="audio-missing" id="audioMissing" hidden>Fant ikke lydfilen. Er mappen <code>audio/</code> med?</p>
+  </section>
 </div>
 
 <div id="page-grep" class="page">
@@ -303,6 +330,7 @@ function switchPage(name) {
   event.currentTarget.classList.add('active');
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
+  if (name !== 'pusterom' && typeof stopAudio === 'function') stopAudio();
 }
 
 function toggleBreath() {
@@ -392,6 +420,74 @@ function renderHistory() {
 // init
 renderActions();
 renderHistory();
+</script>
+<script src="audio/clips.js"></script>
+<script>
+const player = new Audio();
+let currentSet = 0;
+let playingEl = null;
+
+function stopAudio() {
+  player.pause();
+  if (playingEl) playingEl.classList.remove('playing');
+  playingEl = null;
+}
+
+function playSrc(src, el) {
+  const same = playingEl === el && !player.paused;
+  stopAudio();
+  if (same) return;
+  document.getElementById('audioMissing').hidden = true;
+  player.src = src;
+  playingEl = el;
+  el.classList.add('playing');
+  player.play().catch(() => {
+    document.getElementById('audioMissing').hidden = false;
+    stopAudio();
+  });
+}
+
+player.addEventListener('ended', stopAudio);
+player.addEventListener('error', () => {
+  if (!playingEl) return;
+  document.getElementById('audioMissing').hidden = false;
+  stopAudio();
+});
+
+function playRiff() {
+  playSrc(window.PUSTEROM_AUDIO.riff, document.getElementById('riffBtn'));
+}
+
+function renderMoments() {
+  const data = window.PUSTEROM_AUDIO;
+  if (!data) return;
+  document.getElementById('moments').hidden = false;
+  const tabs = document.getElementById('setTabs');
+  tabs.innerHTML = '';
+  data.sets.forEach((set, i) => {
+    const b = document.createElement('button');
+    b.textContent = set.title;
+    if (i === currentSet) b.classList.add('active');
+    b.onclick = () => { stopAudio(); currentSet = i; renderMoments(); };
+    tabs.appendChild(b);
+  });
+  const list = document.getElementById('clipList');
+  list.innerHTML = '';
+  data.sets[currentSet].clips.forEach((clip, i) => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = i + 1;
+    const txt = document.createElement('span');
+    txt.textContent = clip.text;
+    b.append(num, txt);
+    b.onclick = () => playSrc(clip.src, b);
+    li.appendChild(b);
+    list.appendChild(li);
+  });
+}
+renderMoments();
 </script>
 </body>
 </html>

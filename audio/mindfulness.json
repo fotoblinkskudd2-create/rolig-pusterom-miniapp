@@ -1,0 +1,87 @@
+{
+  "voiceId": "MULNGIATG7qUsJ0Sjuhy",
+  "voiceName": "Kristine – Norwegian (Oslo)",
+  "modelId": "eleven_multilingual_v2",
+  "riff": {
+    "file": "metal-riff.mp3",
+    "lengthMs": 20000,
+    "prompt": "Heavy instrumental metal riff, down-tuned seven-string guitars, tight palm-muted chugs, slow crushing doom tempo around 70 BPM, thunderous double-kick drums, distorted bass. Ends on one long ringing chord that fades into silence. No vocals."
+  },
+  "sets": [
+    {
+      "title": "Pust",
+      "lines": [
+        "Pust inn gjennom nesen. Bare én gang. Det holder.",
+        "Kjenn at luften er kald på vei inn, og varm på vei ut.",
+        "Du trenger ikke puste riktig. Du trenger bare å puste.",
+        "Pust ut lengre enn du pustet inn. Kroppen forstår beskjeden.",
+        "Legg en hånd på magen. La den heve seg. La den synke.",
+        "Tell fire inn. Tell seks ut. Glem tallene hvis de stresser deg.",
+        "Pausen mellom to pust er din. Ingen kan ta den.",
+        "Slipp skuldrene ned fra ørene. De har ikke noe der å gjøre.",
+        "Hvert pust er en ny start. Du får uendelig mange.",
+        "Ett pust til. Så er du her."
+      ]
+    },
+    {
+      "title": "Kroppen",
+      "lines": [
+        "Kjenn føttene mot gulvet. Gulvet holder deg. Du trenger ikke holde deg selv.",
+        "Løsne kjeven. Den biter på noe som ikke er her.",
+        "Legg merke til hendene dine. Er de knyttet? Åpne dem.",
+        "Kjenn tyngden av kroppen der du sitter. Den får lov til å være tung.",
+        "Hvor i kroppen sitter uroen nå? Bare se på den. Ikke fiks den.",
+        "Mykne pannen. Mykne øynene. Mykne alt du kan.",
+        "Hjertet ditt har slått hele dagen uten å be om noe. Takk det.",
+        "Strekk deg litt. Som en katt. Ingen ser på.",
+        "Kroppen er ikke et problem som skal løses. Den er hjemmet ditt.",
+        "Kjenn temperaturen i rommet mot huden. Det er nok å kjenne på nå."
+      ]
+    },
+    {
+      "title": "Tanker",
+      "lines": [
+        "Tanker er ikke fakta. De er vær. Det går over.",
+        "Gi tanken et navn. Bekymring. Planlegging. Gammel film. Så la den gå.",
+        "Du er ikke stemmen i hodet. Du er den som hører på den.",
+        "La tankene seile forbi som lastebiler på motorveien. Du står på brua.",
+        "Du må ikke løse alt i dag. Bare det neste lille.",
+        "Hjernen din prøver å beskytte deg. Si takk. Si nei takk.",
+        "Det verste scenarioet er bare et scenario. Ikke en plan.",
+        "Legg merke til én lyd du hører akkurat nå. Bare den.",
+        "Det er lov å ikke vite. Det er lov å vente.",
+        "Tanken kommer tilbake. Det er greit. Du kommer også tilbake. Til pusten."
+      ]
+    },
+    {
+      "title": "Når det koker",
+      "lines": [
+        "Sinne er energi. Du trenger ikke kaste det på noen. Bare kjenn hvor varmt det er.",
+        "Brystet strammer seg. La det stramme. Pust inn i stramheten.",
+        "Du har lov til å være rasende. Du har også lov til å vente med å handle.",
+        "Ti sekunder. Det er alt du trenger før du svarer.",
+        "Kjenn knyttnevene. Klem hardt. Hardere. Og slipp.",
+        "Raseriet sier noe viktig. Lytt til beskjeden, ikke til volumet.",
+        "Gå ut døra hvis du må. Kald luft er gratis.",
+        "Du er ikke det som skjedde med deg. Du er den som fortsatt står.",
+        "Skrik i en pute om du må. Kroppen trenger å bli kvitt det.",
+        "Stormen har vært her før. Du er fortsatt her. Det sier noe."
+      ]
+    },
+    {
+      "title": "Natt",
+      "lines": [
+        "Dagen er ferdig. Du trenger ikke vinne den lenger.",
+        "Kjenn dyna. Kjenn vekten. Ingenting skal skje nå.",
+        "Det du ikke rakk, venter. Det forsvinner ikke om du sover.",
+        "Pust saktere enn klokka. La den tikke alene.",
+        "Mørket er ikke farlig. Det er bare lyset som hviler.",
+        "Si god natt til hodet ditt. Det har jobbet hardt.",
+        "Hvis du ikke sover, så hviler du. Det teller også.",
+        "Kjenn at kroppen synker en centimeter dypere ned i madrassen.",
+        "I morgen er en annen dag. Den kan vente til i morgen.",
+        "Du klarte det. Én dag til. God natt."
+      ]
+    }
+  ]
+}
