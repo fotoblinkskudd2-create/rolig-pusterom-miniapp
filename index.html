@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d0f0e">
 <title>Pusterom – Rolig mini-app</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
   :root {
-    --bg: #f5f7f4;
-    --card: #ffffff;
-    --text: #3a4a3f;
-    --muted: #7a8a7f;
-    --accent: #a8c5b0;
-    --soft-blue: #d4e4f0;
-    --soft-beige: #f0e9df;
-    --soft-green: #e0ebe3;
+    --bg: #0d0f0e;
+    --card: #171a18;
+    --card-2: #1e2220;
+    --text: #e6e9e6;
+    --muted: #8a938c;
+    --accent: #7fb98e;
+    --accent-dim: #2c4a35;
+    --line: #262b28;
+    --warn: #c9a86a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -21,7 +26,7 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: 90px;
     line-height: 1.5;
   }
   .page {
@@ -35,7 +40,6 @@
     font-size: 1.6rem;
     font-weight: 600;
     margin-bottom: 12px;
-    color: var(--text);
   }
   h2 {
     font-size: 1.25rem;
@@ -56,7 +60,7 @@
   .mood-btn {
     flex: 1;
     background: var(--card);
-    border: 2px solid #e5ebe6;
+    border: 2px solid var(--line);
     border-radius: 16px;
     padding: 14px 4px;
     font-size: 1.5rem;
@@ -65,26 +69,61 @@
   }
   .mood-btn.selected {
     border-color: var(--accent);
-    background: var(--soft-green);
+    background: var(--accent-dim);
     transform: scale(1.05);
   }
+  .note-wrap { position: relative; }
   textarea {
     width: 100%;
     min-height: 80px;
-    border: 1px solid #e0e6e1;
+    border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 14px;
+    padding: 14px 52px 14px 14px;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
     background: var(--card);
+    color: var(--text);
     margin-bottom: 16px;
+  }
+  textarea::placeholder { color: var(--muted); }
+  .mic-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--card-2);
+    color: var(--muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mic-btn.listening {
+    color: #fff;
+    background: #a33;
+    border-color: #a33;
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .mic-status {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: -10px 0 14px;
+    min-height: 1em;
   }
   .btn {
     display: block;
     width: 100%;
     background: var(--accent);
-    color: #2a3a2f;
+    color: #0d1410;
     border: none;
     border-radius: 16px;
     padding: 16px;
@@ -95,11 +134,22 @@
   }
   .btn:active { opacity: 0.85; }
   .btn-secondary {
-    background: var(--soft-blue);
+    background: var(--card-2);
+    color: var(--text);
+    border: 1px solid var(--line);
     margin-top: 12px;
   }
+  .btn-ghost {
+    background: none;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    margin-top: 12px;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
   .message {
-    background: var(--soft-green);
+    background: var(--accent-dim);
+    color: var(--text);
     border-radius: 16px;
     padding: 16px;
     margin-top: 20px;
@@ -119,10 +169,10 @@
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    background: var(--soft-blue);
+    background: var(--card-2);
     transition: transform 4s ease-in-out;
   }
-  .circle.inhale { transform: scale(1.6); background: var(--accent); }
+  .circle.inhale { transform: scale(1.6); background: var(--accent-dim); }
   .circle.exhale { transform: scale(1); }
   .breath-text {
     text-align: center;
@@ -142,11 +192,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e8eee9;
+    gap: 12px;
+    border: 1px solid var(--line);
   }
   .action-card.done {
     opacity: 0.6;
-    background: var(--soft-green);
+    background: var(--accent-dim);
   }
   .action-card button {
     background: none;
@@ -156,17 +207,19 @@
     font-size: 0.85rem;
     cursor: pointer;
     color: var(--text);
+    white-space: nowrap;
   }
   .history-item {
     background: var(--card);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
-    border: 1px solid #e8eee9;
+    border: 1px solid var(--line);
   }
   .history-item .date {
     font-size: 0.85rem;
     color: var(--muted);
+    margin-bottom: 2px;
   }
   .nav {
     position: fixed;
@@ -176,9 +229,8 @@
     background: var(--card);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 14px;
-    border-top: 1px solid #e5ebe6;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+    padding: 10px 0 max(14px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
   }
   .nav button {
     background: none;
@@ -195,11 +247,53 @@
   .nav button.active { color: var(--text); font-weight: 600; }
   .nav button span { font-size: 1.3rem; }
   .summary {
-    background: var(--soft-beige);
+    background: var(--card-2);
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 16px;
     text-align: center;
     margin-top: 24px;
+  }
+  .plan-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 24px;
+  }
+  .plan-card h2 { margin-bottom: 8px; }
+  .plan-card ul {
+    margin: 12px 0 0 18px;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .plan-card li { margin-bottom: 6px; }
+  .plan-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+  .export-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .export-row .btn-ghost { flex: 1; margin-top: 0; }
+  details {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  details summary { cursor: pointer; }
+  details pre {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    overflow-x: auto;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--text);
   }
 </style>
 </head>
@@ -215,10 +309,14 @@
     <button class="mood-btn" data-mood="4">🙂</button>
     <button class="mood-btn" data-mood="5">😌</button>
   </div>
-  <textarea id="note" placeholder="Vil du skrive noen ord? (valgfritt)"></textarea>
+  <div class="note-wrap">
+    <textarea id="note" placeholder="Vil du skrive eller si noen ord? (valgfritt)"></textarea>
+    <button class="mic-btn" id="micBtn" title="Snakk inn notat" aria-label="Snakk inn notat">🎙️</button>
+  </div>
+  <div class="mic-status" id="micStatus"></div>
   <button class="btn" onclick="saveCheckin()">Lagre sjekk-inn</button>
   <div class="message" id="saveMsg">Takk. Det er bra at du sjekket inn.</div>
-  <button class="btn btn-secondary" onclick="switchPage('pusterom')">Pust med meg</button>
+  <button class="btn btn-secondary" data-goto="pusterom">Pust med meg</button>
 </div>
 
 <div id="page-pusterom" class="page">
@@ -240,14 +338,32 @@
 <div id="page-historikk" class="page">
   <h1>Din oversikt</h1>
   <div id="historyList"></div>
-  <div class="summary" id="weekSummary">Du har tatt vare på deg selv 0 ganger denne uken.</div>
+  <div class="summary" id="weekSummary"></div>
+
+  <div class="export-row">
+    <button class="btn-ghost" onclick="exportData('json')">Eksporter JSON</button>
+    <button class="btn-ghost" onclick="exportData('csv')">Eksporter CSV</button>
+    <button class="btn-ghost" onclick="exportData('plan')">Dagsplan</button>
+  </div>
+
+  <div class="plan-card" id="planCard" style="display:none">
+    <h2>Dagens recovery-plan</h2>
+    <div id="planBody"></div>
+    <div class="plan-meta">Generert lokalt. OpenClaw-agenten kan hente den samme planen via <code>RoligPusterom.getRecoveryPlan()</code>.</div>
+  </div>
+
+  <details>
+    <summary>OpenClaw-hook</summary>
+    <p style="margin-top:10px">Agent-config ligger i <code>openclaw/recovery-plan.agent.json</code>. Den trigges daglig og bygger en recovery-plan fra dine lokale sjekk-ins – ingenting forlater enheten din.</p>
+    <pre id="openclawHookPreview"></pre>
+  </details>
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="switchPage('hjem')"><span>🏠</span>Hjem</button>
-  <button onclick="switchPage('pusterom')"><span>🌬️</span>Pusterom</button>
-  <button onclick="switchPage('grep')"><span>✋</span>Små grep</button>
-  <button onclick="switchPage('historikk')"><span>📖</span>Historikk</button>
+  <button class="active" data-goto="hjem"><span>🏠</span>Hjem</button>
+  <button data-goto="pusterom"><span>🌬️</span>Pusterom</button>
+  <button data-goto="grep"><span>✋</span>Små grep</button>
+  <button data-goto="historikk"><span>📖</span>Historikk</button>
 </nav>
 
 <script>
@@ -260,6 +376,27 @@ const actions = [
   "Legg telefonen bort i 10 minutter",
   "Strekk armene over hodet"
 ];
+
+const recoveryActions = {
+  low: [
+    "Start med Pusterom: 4-2-6 pust i 3 minutter",
+    "Send en kort melding til noen du stoler på",
+    "Gå ut i frisk luft i 5 minutter",
+    "Skriv tre setninger om det som tynger – uten å rette",
+    "Drikk et glass vann sakte"
+  ],
+  mid: [
+    "Pusterom: 4-2-6 pust i 2 minutter",
+    "Gjør to små grep fra listen",
+    "Skriv ned én ting du er takknemlig for",
+    "Legg telefonen bort i 10 minutter"
+  ],
+  high: [
+    "Én rolig pustesyklus i Pusterom",
+    "Velg ett smått grep og gjør det",
+    "Noter hva som gikk bra i dag"
+  ]
+};
 
 let selectedMood = null;
 let breathing = false;
@@ -274,18 +411,27 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
   });
 });
 
+document.querySelectorAll('[data-goto]').forEach(el => {
+  el.addEventListener('click', () => switchPage(el.dataset.goto));
+});
+
+function getCheckins() {
+  return JSON.parse(localStorage.getItem('checkins') || '[]');
+}
+
 function saveCheckin() {
   if (!selectedMood) {
     alert('Velg hvordan du har det først.');
     return;
   }
+  stopListening();
   const note = document.getElementById('note').value.trim();
   const entry = {
     date: new Date().toISOString(),
     mood: selectedMood,
     note: note
   };
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = getCheckins();
   list.unshift(entry);
   localStorage.setItem('checkins', JSON.stringify(list));
   document.getElementById('saveMsg').classList.add('show');
@@ -299,8 +445,9 @@ function saveCheckin() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.goto === name);
+  });
   if (name === 'historikk') renderHistory();
   if (name === 'grep') renderActions();
 }
@@ -367,7 +514,7 @@ function toggleAction(i) {
 }
 
 function renderHistory() {
-  const list = JSON.parse(localStorage.getItem('checkins') || '[]');
+  const list = getCheckins();
   const container = document.getElementById('historyList');
   container.innerHTML = '';
   if (list.length === 0) {
@@ -382,14 +529,147 @@ function renderHistory() {
       container.appendChild(item);
     });
   }
-  // week count
   const now = new Date();
   const weekAgo = new Date(now - 7*24*60*60*1000);
   const weekCount = list.filter(e => new Date(e.date) > weekAgo).length;
   document.getElementById('weekSummary').textContent = `Du har tatt vare på deg selv ${weekCount} ganger denne uken. Det er fint.`;
 }
 
-// init
+/* ---------- Recovery plan (OpenClaw hook) ---------- */
+
+function getRecoveryPlan() {
+  const list = getCheckins();
+  const last3 = list.slice(0, 3).map(e => Number(e.mood));
+  const avg = last3.length ? last3.reduce((a, b) => a + b, 0) / last3.length : 3;
+  const band = avg <= 2.5 ? 'low' : avg <= 3.5 ? 'mid' : 'high';
+  return {
+    generated_at: new Date().toISOString(),
+    source: 'rolig-pusterom-miniapp',
+    mood_average_last3: Math.round(avg * 10) / 10,
+    intensity: band,
+    plan: recoveryActions[band],
+    checkins_total: list.length
+  };
+}
+
+function renderPlan() {
+  const plan = getRecoveryPlan();
+  const card = document.getElementById('planCard');
+  card.style.display = 'block';
+  document.getElementById('planBody').innerHTML =
+    `<p class="support">Basert på dine siste sjekk-ins (snitt ${plan.mood_average_last3}).</p>` +
+    '<ul>' + plan.plan.map(p => `<li>${p}</li>`).join('') + '</ul>';
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ---------- Export ---------- */
+
+function download(filename, text, mime) {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+function exportData(kind) {
+  const stamp = new Date().toISOString().slice(0, 10);
+  if (kind === 'json') {
+    const payload = {
+      exported_at: new Date().toISOString(),
+      checkins: getCheckins(),
+      doneActions: JSON.parse(localStorage.getItem('doneActions') || '{}')
+    };
+    download(`pusterom-export-${stamp}.json`, JSON.stringify(payload, null, 2), 'application/json');
+  } else if (kind === 'csv') {
+    const rows = ['date,mood,note'];
+    getCheckins().forEach(e => {
+      const note = (e.note || '').replace(/"/g, '""').replace(/\n/g, ' ');
+      rows.push(`${e.date},${e.mood},"${note}"`);
+    });
+    download(`pusterom-checkins-${stamp}.csv`, rows.join('\n'), 'text/csv');
+  } else if (kind === 'plan') {
+    renderPlan();
+    download(`pusterom-dagsplan-${stamp}.json`, JSON.stringify(getRecoveryPlan(), null, 2), 'application/json');
+  }
+}
+
+/* ---------- Voice input (Web Speech API) ---------- */
+
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+let listening = false;
+
+function initMic() {
+  const btn = document.getElementById('micBtn');
+  if (!SpeechRec) {
+    btn.style.display = 'none';
+    return;
+  }
+  rec = new SpeechRec();
+  rec.lang = 'no-NO';
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.onresult = ev => {
+    let finalText = '';
+    let interim = '';
+    for (let i = 0; i < ev.results.length; i++) {
+      if (ev.results[i].isFinal) finalText += ev.results[i][0].transcript;
+      else interim += ev.results[i][0].transcript;
+    }
+    if (finalText) {
+      const ta = document.getElementById('note');
+      ta.value = (ta.value ? ta.value + ' ' : '') + finalText.trim();
+    }
+    document.getElementById('micStatus').textContent = interim ? 'Hører: ' + interim : '';
+  };
+  rec.onerror = ev => {
+    stopListening();
+    document.getElementById('micStatus').textContent = 'Mikrofon: ' + ev.error;
+  };
+  rec.onend = () => { if (listening) rec.start(); };
+  btn.addEventListener('click', () => listening ? stopListening() : startListening());
+}
+
+function startListening() {
+  try {
+    listening = true;
+    rec.start();
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('micStatus').textContent = 'Lytter … snakk norsk.';
+  } catch (e) { listening = false; }
+}
+
+function stopListening() {
+  if (!rec) return;
+  listening = false;
+  try { rec.stop(); } catch (e) {}
+  document.getElementById('micBtn').classList.remove('listening');
+  document.getElementById('micStatus').textContent = '';
+}
+
+/* ---------- OpenClaw hook preview ---------- */
+
+const OPENCLAW_HOOK = {
+  agent: 'pusterom-recovery-plan',
+  trigger: { type: 'cron', schedule: '0 8 * * *', timezone: 'Europe/Oslo' },
+  action: 'build_recovery_plan',
+  data_source: 'localStorage:checkins',
+  output: 'pusterom-dagsplan.json'
+};
+document.getElementById('openclawHookPreview').textContent = JSON.stringify(OPENCLAW_HOOK, null, 2);
+
+/* ---------- PWA ---------- */
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+/* ---------- init ---------- */
+
+window.RoligPusterom = { getRecoveryPlan, getCheckins };
+initMic();
 renderActions();
 renderHistory();
 </script>

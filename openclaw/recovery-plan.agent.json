@@ -1,0 +1,41 @@
+{
+  "agent": "pusterom-recovery-plan",
+  "version": "1.0",
+  "description": "Daily recovery-plan generator for Rolig Pusterom. Reads the user's local check-ins and produces a plan. All data stays on the user's device.",
+  "trigger": {
+    "type": "cron",
+    "schedule": "0 8 * * *",
+    "timezone": "Europe/Oslo",
+    "comment": "Kjører hver morgen kl. 08 norsk tid. Forslag: også kjør kl. 21 hvis siste sjekk-inn var lav (<=2)."
+  },
+  "input": {
+    "source": "localStorage",
+    "key": "checkins",
+    "fallback": "empty list -> mid intensity"
+  },
+  "logic": {
+    "mood_average": "mean of mood for the 3 most recent check-ins",
+    "bands": {
+      "low": "avg <= 2.5 -> recoveryActions.low (5 steg, ekstra støtte)",
+      "mid": "avg <= 3.5 -> recoveryActions.mid (4 steg)",
+      "high": "avg > 3.5 -> recoveryActions.high (3 steg)"
+    }
+  },
+  "action": {
+    "type": "call",
+    "target": "window.RoligPusterom.getRecoveryPlan()",
+    "alternative": "GET / -> eval JS, or read openclaw/recovery-actions.json for the static action tables"
+  },
+  "output": {
+    "file": "pusterom-dagsplan.json",
+    "schema": {
+      "generated_at": "ISO-8601",
+      "source": "rolig-pusterom-miniapp",
+      "mood_average_last3": "number",
+      "intensity": "low | mid | high",
+      "plan": ["string"],
+      "checkins_total": "number"
+    }
+  },
+  "privacy": "Ingen data sendes ut av enheten. Agenten leser bare eksporten brukeren deler, eller kjører i brukerens egen nettleser."
+}
