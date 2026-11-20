@@ -422,6 +422,7 @@ function getCheckins() {
 let pendingSave = false;
 
 function saveCheckin() {
+  if (pendingSave) return;
   if (!selectedMood) {
     alert('Velg hvordan du har det først.');
     return;
