@@ -419,12 +419,23 @@ function getCheckins() {
   return JSON.parse(localStorage.getItem('checkins') || '[]');
 }
 
+let pendingSave = false;
+
 function saveCheckin() {
   if (!selectedMood) {
     alert('Velg hvordan du har det først.');
     return;
   }
-  stopListening();
+  if (listening) {
+    // Venter til siste dikterte ord lander i notatet før vi lagrer.
+    pendingSave = true;
+    stopListening();
+    return;
+  }
+  doSaveCheckin();
+}
+
+function doSaveCheckin() {
   const note = document.getElementById('note').value.trim();
   const entry = {
     date: new Date().toISOString(),
@@ -614,7 +625,7 @@ function initMic() {
   rec.onresult = ev => {
     let finalText = '';
     let interim = '';
-    for (let i = 0; i < ev.results.length; i++) {
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
       if (ev.results[i].isFinal) finalText += ev.results[i][0].transcript;
       else interim += ev.results[i][0].transcript;
     }
@@ -628,7 +639,10 @@ function initMic() {
     stopListening();
     document.getElementById('micStatus').textContent = 'Mikrofon: ' + ev.error;
   };
-  rec.onend = () => { if (listening) rec.start(); };
+  rec.onend = () => {
+    if (listening) rec.start();
+    else if (pendingSave) { pendingSave = false; doSaveCheckin(); }
+  };
   btn.addEventListener('click', () => listening ? stopListening() : startListening());
 }
 
@@ -637,7 +651,7 @@ function startListening() {
     listening = true;
     rec.start();
     document.getElementById('micBtn').classList.add('listening');
-    document.getElementById('micStatus').textContent = 'Lytter … snakk norsk.';
+    document.getElementById('micStatus').textContent = 'Lytter … snakk norsk. Talen går via nettleserens taletjeneste.';
   } catch (e) { listening = false; }
 }
 
